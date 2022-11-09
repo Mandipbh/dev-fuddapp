@@ -76,11 +76,7 @@ const RestaurantsData = [
     name: 'Zancos Steak House',
     location: '',
   },
-  {
-    id: 3,
-    name: 'Zancos Steak House',
-    location: '',
-  },
+ 
 ];
 
 export {foodCategory, popularRestaurants, RestaurantsData};
