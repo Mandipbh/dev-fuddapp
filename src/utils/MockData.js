@@ -76,7 +76,146 @@ const RestaurantsData = [
     name: 'Zancos Steak House',
     location: '',
   },
- 
 ];
 
-export {foodCategory, popularRestaurants, RestaurantsData};
+const foodData = [
+  {id: 0, title: 'Farmacie'},
+  {id: 1, title: 'Pet'},
+  {id: 2, title: 'Supermercati'},
+  {id: 3, title: 'Bambini'},
+  {id: 4, title: 'Farmacie'},
+  {id: 5, title: 'Pet'},
+];
+
+const foodDetailsData = [
+  {
+    title: 'Antipasti',
+    items: [
+      {
+        id: 0,
+        title: 'BBQ chicken fillets',
+        price: '€ 15.00',
+      },
+      {
+        id: 1,
+        title: 'BBQ chicken fillets',
+        price: '€ 15.00',
+      },
+      {
+        id: 2,
+        title: 'BBQ chicken fillets',
+        price: '€ 15.00',
+      },
+    ],
+  },
+  {
+    title: 'Steaks',
+    items: [
+      {
+        id: 0,
+        title: 'BBQ chicken fillets',
+        price: '€ 15.00',
+      },
+      {
+        id: 1,
+        title: 'BBQ chicken fillets',
+        price: '€ 15.00',
+      },
+      {
+        id: 2,
+        title: 'BBQ chicken fillets',
+        price: '€ 15.00',
+      },
+    ],
+  },
+  {
+    title: 'Burger',
+    items: [
+      {
+        id: 0,
+        title: 'BBQ chicken fillets',
+        price: '€ 15.00',
+      },
+      {
+        id: 1,
+        title: 'BBQ chicken fillets',
+        price: '€ 15.00',
+      },
+    ],
+  },
+  {
+    title: 'Fantasy Salad',
+    items: [
+      {
+        id: 0,
+        title: 'BBQ chicken fillets',
+        price: '€ 15.00',
+      },
+      {
+        id: 1,
+        title: 'BBQ chicken fillets',
+        price: '€ 15.00',
+      },
+    ],
+  },
+  {
+    title: 'Works',
+    items: [
+      {
+        id: 0,
+        title: 'BBQ chicken fillets',
+        price: '€ 15.00',
+      },
+    ],
+  },
+];
+
+const profileData = [
+  {
+    id: 0,
+    title: 'I miei Ordini',
+  },
+  {
+    id: 1,
+    title: 'Il mio account',
+  },
+  {
+    id: 2,
+    title: 'I miei indirizzi',
+  },
+  {
+    id: 3,
+    title: 'Contatti',
+  },
+  {
+    id: 4,
+    title: 'Esci',
+  },
+];
+
+const dummyAddress = [
+  {
+    id: 0,
+    name: 'David Barba',
+    address: 'Via dalle palle, 88, 90146 Palermo PA, Italia',
+    email: 'johndoe@mail.com',
+    phone: '+1 800-321-4321',
+  },
+  {
+    id: 0,
+    name: 'David Barba',
+    address: 'Via dalle palle, 88, 90146 Palermo PA, Italia',
+    email: 'johndoe@mail.com',
+    phone: '+1 800-321-4321',
+  },
+];
+
+export {
+  foodCategory,
+  popularRestaurants,
+  RestaurantsData,
+  foodData,
+  foodDetailsData,
+  profileData,
+  dummyAddress,
+};

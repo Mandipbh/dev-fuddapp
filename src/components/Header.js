@@ -29,7 +29,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: scale(12),
   },
   logo: {
-    resizeMode: 'cover',
+    resizeMode: 'contain',
+    height: scale(65),
+    width: theme.SCREENWIDTH / 2,
+    marginVertical: scale(10),
   },
   iconView: {
     backgroundColor: theme.colors.purpal,

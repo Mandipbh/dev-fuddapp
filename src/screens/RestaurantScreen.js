@@ -17,7 +17,15 @@ import {useNavigation} from '@react-navigation/native';
 const RestaurantScreen = () => {
   const navigation = useNavigation();
   const renderList = ({item, index}) => {
-    return <Restaurant item={item} index={index} />;
+    return (
+      <Restaurant
+        item={item}
+        index={index}
+        onPress={() => {
+          navigation.navigate('Details');
+        }}
+      />
+    );
   };
   return (
     <SafeAreaView style={styles.container}>

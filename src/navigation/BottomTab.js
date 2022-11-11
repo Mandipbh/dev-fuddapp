@@ -3,12 +3,13 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Home, Account, Restaurant} from '../screens';
+import {Home, Account, Restaurant, RestaturantDetails} from '../screens';
 import {scale, theme} from '../utils';
 import {Platform, Text, View} from 'react-native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 const Tab = createBottomTabNavigator();
-
+const Stack = createNativeStackNavigator();
 const Comman = () => {
   return (
     <View style={{flex: 1, backgroundColor: theme.colors.white}}>
@@ -17,10 +18,27 @@ const Comman = () => {
   );
 };
 
+const Restaturant = () => {
+  return (
+    <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Screen
+        name="RISTORANTI"
+        component={Restaurant}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Details"
+        component={RestaturantDetails}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
+  );
+};
+
 const BottomTab = () => {
   return (
     <Tab.Navigator
-      initialRouteName="RISTORANTI"
+      initialRouteName="ACCOUNT"
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: true,
@@ -65,7 +83,7 @@ const BottomTab = () => {
 
       <Tab.Screen
         name="RISTORANTI"
-        component={Restaurant}
+        component={Restaturant}
         options={{
           tabBarIcon: ({focused}) => {
             return (

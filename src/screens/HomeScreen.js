@@ -1,5 +1,7 @@
 import {
+  FlatList,
   Image,
+  ImageBackground,
   Platform,
   SafeAreaView,
   ScrollView,
@@ -9,11 +11,20 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/Feather';
 import {scale, theme} from '../utils';
-import {Header, Button, Label, Title, RestaurantsCard} from '../components';
-import {foodCategory, popularRestaurants} from '../utils/MockData';
+import {
+  Header,
+  Button,
+  Label,
+  Title,
+  RestaurantsCard,
+  CategoryCard,
+  FoodCard,
+} from '../components';
+import {foodCategory, foodData, popularRestaurants} from '../utils/MockData';
+import LinearGradient from 'react-native-linear-gradient';
 
 const Category = () => {
   return (
@@ -24,14 +35,7 @@ const Category = () => {
         showsHorizontalScrollIndicator={false}
         horizontal>
         {foodCategory?.map((item, index) => {
-          return (
-            <View style={styles.itemView} key={index}>
-              <TouchableOpacity style={[styles.categoryView, styles.shadow]}>
-                <Image source={{uri: item.image}} style={styles.categoryIcon} />
-              </TouchableOpacity>
-              <Label title={item.name} style={styles.categoryLabel} />
-            </View>
-          );
+          return <CategoryCard item={item} index={index} />;
         })}
       </ScrollView>
     </View>
@@ -79,6 +83,36 @@ const Restaturants = () => {
 };
 
 const HomeScreen = () => {
+  const [categoryView, setCategoryView] = useState(false);
+  const Food = () => {
+    return (
+      <>
+        <FoodCard
+          // item={item}
+          index={0}
+          onPress={() => {
+            setCategoryView(false);
+          }}
+          styleImage={{width: '95%'}}
+        />
+        <FlatList
+          data={foodData}
+          numColumns={2}
+          renderItem={({item, index}) => {
+            return (
+              <FoodCard
+                item={item}
+                index={index}
+                onPress={() => {
+                  setCategoryView(false);
+                }}
+              />
+            );
+          }}
+        />
+      </>
+    );
+  };
   return (
     <SafeAreaView style={styles.container}>
       <Header />
@@ -90,22 +124,35 @@ const HomeScreen = () => {
             color={theme.colors.placeholder}
           />
           <TextInput
-            placeholder="Inserisci il tuo indirizzo completo"
+            placeholder={
+              categoryView
+                ? 'Cosa ti portiamo?'
+                : 'Inserisci il tuo indirizzo completo'
+            }
             style={styles.searchbox}
             placeholderTextColor={theme.colors.placeholder}
           />
         </View>
-        <Button
-          title="Trova ristoranti"
-          style={styles.ristroBtn}
-          titleStyle={styles.btnText}
-        />
+        {!categoryView ? (
+          <Button
+            onPress={() => {
+              setCategoryView(true);
+            }}
+            title={'Trova ristoranti'}
+            style={styles.ristroBtn}
+            titleStyle={styles.btnText}
+          />
+        ) : (
+          <View style={{marginVertical: scale(20)}} />
+        )}
         <ScrollView
           style={styles.scrollView}
           showsVerticalScrollIndicator={false}>
-          {Category()}
+          {categoryView && Food()}
+
+          {!categoryView && Category()}
           {PopularRestaturants()}
-          {Restaturants()}
+          {!categoryView && Restaturants()}
         </ScrollView>
       </View>
     </SafeAreaView>
@@ -152,7 +199,7 @@ const styles = StyleSheet.create({
     width: '65%',
     height: scale(38),
     backgroundColor: theme.colors.purpal,
-    marginVertical: scale(15),
+    marginTop: scale(20),
   },
   btnText: {
     fontSize: scale(14),
@@ -162,32 +209,9 @@ const styles = StyleSheet.create({
   scrollView: {
     height: '67%',
   },
-  scrollViewContainer: {
-    // paddingBottom:Platform.OS=='ios'? scale(30),
-  },
+
   categoryContainer: {
     marginTop: scale(25),
-  },
-  itemView: {
-    marginHorizontal: scale(5),
-    alignItems: 'center',
-  },
-  categoryView: {
-    backgroundColor: theme.colors.white,
-    height: scale(60),
-    width: scale(60),
-    borderRadius: scale(15),
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  categoryIcon: {
-    height: scale(40),
-    width: scale(40),
-    resizeMode: 'contain',
-  },
-  categoryLabel: {
-    fontSize: scale(12),
-    marginTop: scale(4),
   },
   title: {
     fontSize: scale(16),
@@ -200,5 +224,9 @@ const styles = StyleSheet.create({
   },
   seeAll: {
     fontSize: scale(11),
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(144, 130, 152, 0.55)',
   },
 });

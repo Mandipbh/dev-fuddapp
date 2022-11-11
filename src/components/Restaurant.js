@@ -12,9 +12,9 @@ import {Label, Title} from './Label';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon1 from 'react-native-vector-icons/Entypo';
 const Restaurant = props => {
-  const {item, index} = props;
+  const {item, index, onPress} = props;
   return (
-    <View style={styles.cardView} key={index}>
+    <TouchableOpacity onPress={onPress} style={styles.cardView} key={index}>
       <Image
         source={{
           uri: 'https://t3.ftcdn.net/jpg/03/42/82/20/240_F_342822084_Sz4Hsw2STInarbm1eIVzNpvD2bFApzC8.jpg',
@@ -69,7 +69,7 @@ const Restaurant = props => {
           <Label title="Orddine minimo 15€" style={styles.details} />
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -128,12 +128,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  review: {
-    fontSize: scale(11),
-    marginHorizontal: scale(5),
-    color: theme.colors.white,
-    fontWeight: '600',
-  },
+    review: {
+      fontSize: scale(11),
+      marginHorizontal: scale(5),
+      color: theme.colors.white,
+      fontWeight: '600',
+    },
   km: {
     padding: scale(4),
     borderRadius: scale(10),
@@ -146,6 +146,6 @@ const styles = StyleSheet.create({
   },
   details: {
     fontSize: scale(11),
-    color: theme.colors.purpal1,
+    color: theme.colors.lightblue1,
   },
 });

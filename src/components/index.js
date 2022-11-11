@@ -8,6 +8,10 @@ export {default as Signup} from './Signup';
 export {default as Header} from './Header';
 export {default as RestaurantsCard} from './RestaurantsCard';
 export {default as Restaurant} from './Restaurant';
+export {default as CategoryCard} from './CategoryCard';
+export {default as FoodCard} from './FoodCard';
+export {default as Address} from './Address';
+
 //models
 export {default as Loader} from './appModel/Loader';
 export {default as AlertModel} from './appModel/AlertModel';
