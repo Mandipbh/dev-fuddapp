@@ -5,7 +5,8 @@ import InputBox from './InputBox';
 import {Label} from './Label';
 import Button from './Button';
 
-const Login = () => {
+const Login = props => {
+  const {onPress} = props;
   return (
     <View style={styles.container}>
       <Label title={'Accedi al tuo account'} style={styles.title} />
@@ -17,13 +18,15 @@ const Login = () => {
       <InputBox placeholder="Password" style={styles.input} />
       <Button
         title="Login"
-        style={styles.loginButton}
+        style={[styles.loginButton, {marginTop: scale(15)}]}
         titleStyle={[styles.buttonLabel, {color: theme.colors.white}]}
+        onPress={onPress}
       />
       <Button
         title="Password dimenticata"
         style={[styles.loginButton, {backgroundColor: theme.colors.purpal}]}
         titleStyle={[styles.buttonLabel, {color: theme.colors.white}]}
+        onPress={onPress}
       />
       <Label title="Oppure" style={[styles.title, {marginTop: scale(20)}]} />
       <View style={[styles.devider, {marginBottom: scale(10)}]} />
@@ -33,12 +36,14 @@ const Login = () => {
           title="Login con Facebook"
           style={[styles.loginButton, {backgroundColor: theme.colors.blue}]}
           titleStyle={[styles.buttonLabel, {color: theme.colors.white}]}
+          onPress={onPress}
         />
         <Button
           Icon="md-logo-apple"
           title="Accedi con Apple"
           style={[styles.loginButton, {backgroundColor: theme.colors.black}]}
           titleStyle={[styles.buttonLabel, {color: theme.colors.white}]}
+          onPress={onPress}
         />
         <Button
           title="Registri con indrizzon email"
@@ -47,6 +52,7 @@ const Login = () => {
             {backgroundColor: theme.colors.primary, zIndex: 1},
           ]}
           titleStyle={[styles.buttonLabel, {color: theme.colors.white}]}
+          onPress={onPress}
         />
       </View>
       <View style={styles.appTextView}>
@@ -63,20 +69,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: theme.colors.white,
-    marginHorizontal: scale(8),
-    padding: scale(15),
-    paddingHorizontal: scale(22),
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 0.2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 0.5,
-    paddingVertical: theme.SCREENHEIGHT * 0.03,
+    // marginHorizontal: scale(8),
+    // padding: scale(15),
+    // paddingHorizontal: scale(22),
+    // shadowColor: '#000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 0.2,
+    // },
+    // shadowOpacity: 0.25,
+    // shadowRadius: 0.5,
+    // paddingVertical: theme.SCREENHEIGHT * 0.03,
 
-    elevation: scale(2),
-    borderRadius: scale(12),
+    // elevation: scale(2),
+    // borderRadius: scale(12),
   },
   title: {
     fontWeight: '500',
@@ -94,7 +100,7 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     backgroundColor: theme.colors.primary,
-    height: scale(40),
+    height: scale(35),
   },
   buttonLabel: {
     fontWeight: '700',

@@ -64,7 +64,7 @@ const InputBox = props => {
       <TextInput
         multiline={multiline}
         value={value}
-        placeholderTextColor={theme.colors.black}
+        placeholderTextColor={theme.colors.gray}
         keyboardType={keyboardType ? keyboardType : 'default'}
         onChangeText={onChangeText}
         placeholder={placeholder}
@@ -109,7 +109,7 @@ const InputBox = props => {
 const styles = StyleSheet.create({
   inputContainer: {
     marginHorizontal: scale(20),
-    marginBottom: scale(19),
+    marginBottom: scale(7),
     height: theme.SCREENHEIGHT * 0.068,
     flexDirection: 'row',
     borderBottomWidth: scale(0.8),

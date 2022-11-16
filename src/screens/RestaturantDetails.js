@@ -14,12 +14,13 @@ import Icon from 'react-native-vector-icons/Feather';
 import Icon1 from 'react-native-vector-icons/SimpleLineIcons';
 import Icon2 from 'react-native-vector-icons/Entypo';
 import {scale, theme} from '../utils';
-import {Button, Label, Title} from '../components';
+import {Button, FullScreenImage, Label, Title} from '../components';
 import LinearGradient from 'react-native-linear-gradient';
 import {foodDetailsData} from '../utils/MockData';
 
 const RestaturantDetails = () => {
   const [selectedIndex, setSelIndex] = useState(0);
+  const [viewImg, setViewImg] = useState(false);
   const renderMenus = ({item, index}) => {
     return (
       <View key={index} style={styles.menuView}>
@@ -42,12 +43,18 @@ const RestaturantDetails = () => {
               <>
                 <View style={styles.itemView} key={i}>
                   <View style={styles.row}>
-                    <Image
-                      source={{
-                        uri: 'https://img.freepik.com/free-photo/side-view-shawarma-with-fried-potatoes-board-cookware_176474-3215.jpg?size=338&ext=jpg&ga=GA1.2.1181264738.1665484240&semt=sph',
-                      }}
-                      style={styles.productImage}
-                    />
+                    <TouchableOpacity
+                      onPress={() => {
+                        setViewImg(!viewImg);
+                      }}>
+                      <Image
+                        source={{
+                          uri: 'https://img.freepik.com/free-photo/side-view-shawarma-with-fried-potatoes-board-cookware_176474-3215.jpg?size=338&ext=jpg&ga=GA1.2.1181264738.1665484240&semt=sph',
+                        }}
+                        style={styles.productImage}
+                      />
+                    </TouchableOpacity>
+
                     <View style={{marginLeft: scale(10)}}>
                       <Label title={m?.title} style={styles.productname} />
                       <Label title={m?.price} style={styles.price} />
@@ -149,6 +156,12 @@ const RestaturantDetails = () => {
           contentContainerStyle={{paddingBottom: scale(30)}}
         />
       </View>
+      <FullScreenImage
+        isVisible={viewImg}
+        close={() => {
+          setViewImg(!viewImg);
+        }}
+      />
     </View>
   );
 };

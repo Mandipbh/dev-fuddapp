@@ -38,7 +38,7 @@ const Restaturant = () => {
 const BottomTab = () => {
   return (
     <Tab.Navigator
-      initialRouteName="ACCOUNT"
+      // initialRouteName="RISTORANTI"
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: true,

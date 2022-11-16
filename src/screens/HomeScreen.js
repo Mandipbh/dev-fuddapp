@@ -71,7 +71,7 @@ const Restaturants = () => {
       </View>
 
       <ScrollView
-        contentContainerStyle={{paddingVertical: scale(5)}}
+        contentContainerStyle={{paddingVertical: scale(15)}}
         showsHorizontalScrollIndicator={false}
         horizontal>
         {popularRestaurants.reverse()?.map((item, index) => {

@@ -210,6 +210,33 @@ const dummyAddress = [
   },
 ];
 
+const orderData = [
+  {
+    id: 1,
+    name: 'Zancos',
+    price: '€ 24.00',
+    date: '20/07/2020',
+    orderdetails: '2x Pizza Mix, 1x Cola',
+    totalAmount: '$ 24.00',
+  },
+  {
+    id: 2,
+    name: 'Fury Burger',
+    price: '€ 26.00',
+    date: '20/07/2020',
+    orderdetails: '2x Pizza Mix, 1x Cola',
+    totalAmount: '$ 24.00',
+  },
+  {
+    id: 2,
+    name: 'Gusto Bistro',
+    date: '20/07/2020',
+    price: '€ 30.00',
+    orderdetails: '2x Pizza Mix, 1x Cola',
+    totalAmount: '$ 24.00',
+  },
+];
+
 export {
   foodCategory,
   popularRestaurants,
@@ -218,4 +245,5 @@ export {
   foodDetailsData,
   profileData,
   dummyAddress,
+  orderData,
 };

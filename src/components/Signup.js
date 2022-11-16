@@ -5,7 +5,8 @@ import InputBox from './InputBox';
 import {Label} from './Label';
 import Button from './Button';
 
-const Login = () => {
+const Signup = props => {
+  const {onPress} = props;
   return (
     <View style={styles.container}>
       <Label title={'Registrati'} style={styles.title} />
@@ -17,9 +18,10 @@ const Login = () => {
       <InputBox placeholder="Password" style={styles.input} />
       <InputBox placeholder="Conferma password" style={styles.input} />
       <Button
-        title="Login"
+        title="Registrati"
         style={styles.loginButton}
         titleStyle={[styles.buttonLabel, {color: theme.colors.white}]}
+        onPress={onPress}
       />
 
       <View style={styles.appTextView}>
@@ -30,26 +32,26 @@ const Login = () => {
     </View>
   );
 };
-export default Login;
+export default Signup;
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: theme.colors.white,
-    marginHorizontal: scale(8),
-    padding: scale(15),
-    paddingHorizontal: scale(22),
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 0.2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 0.5,
-    paddingVertical: theme.SCREENHEIGHT * 0.03,
+    // marginHorizontal: scale(8),
+    // padding: scale(15),
+    // paddingHorizontal: scale(22),
+    // shadowColor: '#000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 0.2,
+    // },
+    // shadowOpacity: 0.25,
+    // shadowRadius: 0.5,
+    // paddingVertical: theme.SCREENHEIGHT * 0.03,
 
-    elevation: scale(2),
-    borderRadius: scale(12),
+    // elevation: scale(2),
+    // borderRadius: scale(12),
   },
   title: {
     fontWeight: '500',
@@ -68,6 +70,7 @@ const styles = StyleSheet.create({
   loginButton: {
     backgroundColor: theme.colors.primary,
     height: scale(40),
+    marginTop: scale(10),
   },
   buttonLabel: {
     fontWeight: '700',

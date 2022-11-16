@@ -11,7 +11,12 @@ export {default as Restaurant} from './Restaurant';
 export {default as CategoryCard} from './CategoryCard';
 export {default as FoodCard} from './FoodCard';
 export {default as Address} from './Address';
+export {default as SaveAddress} from './SaveAddress';
+export {default as MyOrders} from './MyOrders';
+export {default as MyAccountInfo} from './MyAccountInfo';
 
 //models
 export {default as Loader} from './appModel/Loader';
 export {default as AlertModel} from './appModel/AlertModel';
+export {default as ChangePassword} from './appModel/ChangePassword';
+export {default as FullScreenImage} from './appModel/FullScreenImage';

@@ -17,8 +17,6 @@ const Address = () => {
         style={{maxHeight: theme.SCREENHEIGHT * 0.4}}
         showsVerticalScrollIndicator={false}>
         {dummyAddress.map((item, index) => {
-          console.log('length >> ', index);
-          console.log('dummyAddress length >> ', dummyAddress.length);
           return (
             <View
               key={index}
@@ -56,7 +54,8 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.white,
     borderBottomColor: theme.colors.gray,
     borderBottomWidth: scale(0.7),
-    marginVertical: scale(5),
+    marginVertical: scale(10),
+    paddingBottom: scale(10),
   },
   addresstxt: {
     fontSize: scale(12),
