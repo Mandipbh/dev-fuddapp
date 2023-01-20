@@ -25,6 +25,7 @@ import {
 } from '../components';
 import {foodCategory, foodData, popularRestaurants} from '../utils/MockData';
 import LinearGradient from 'react-native-linear-gradient';
+import DrawerModal from '../components/appModel/DrawerModal';
 
 const Category = () => {
   return (
@@ -75,7 +76,11 @@ const Restaturants = () => {
         showsHorizontalScrollIndicator={false}
         horizontal>
         {popularRestaurants.reverse()?.map((item, index) => {
-          return <RestaurantsCard item={item} index={index} />;
+          return (
+            <TouchableOpacity>
+              <RestaurantsCard item={item} index={index} />
+            </TouchableOpacity>
+          );
         })}
       </ScrollView>
     </View>
@@ -84,6 +89,12 @@ const Restaturants = () => {
 
 const HomeScreen = () => {
   const [categoryView, setCategoryView] = useState(false);
+  const [searchtxt, setSearchTxt] = useState('');
+  const [selectedModal, setSelectedModal] = useState(false);
+  const IconClosePicker = () => {
+    setSelectedModal(false);
+  };
+  console.log('Text Upadte', searchtxt);
   const Food = () => {
     return (
       <>
@@ -115,7 +126,8 @@ const HomeScreen = () => {
   };
   return (
     <SafeAreaView style={styles.container}>
-      <Header />
+      <Header onPressMenu={() => setSelectedModal(true)} />
+      <DrawerModal isVisible={selectedModal} close={IconClosePicker} />
       <View style={styles.mainContainer}>
         <View style={[styles.textinputContainer, styles.shadow]}>
           <Icon
@@ -124,6 +136,10 @@ const HomeScreen = () => {
             color={theme.colors.placeholder}
           />
           <TextInput
+            value={searchtxt}
+            onChangeText={txt => {
+              setSearchTxt(txt);
+            }}
             placeholder={
               categoryView
                 ? 'Cosa ti portiamo?'
@@ -194,6 +210,7 @@ const styles = StyleSheet.create({
     color: theme.colors.placeholder,
     marginLeft: scale(10),
     fontWeight: '600',
+    width: '100%',
   },
   ristroBtn: {
     width: '65%',

@@ -20,3 +20,4 @@ export {default as Loader} from './appModel/Loader';
 export {default as AlertModel} from './appModel/AlertModel';
 export {default as ChangePassword} from './appModel/ChangePassword';
 export {default as FullScreenImage} from './appModel/FullScreenImage';
+export {default as CartModel} from './appModel/CartModel';

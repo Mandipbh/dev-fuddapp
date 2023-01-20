@@ -1,16 +1,8 @@
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
-import {images, scale, theme} from '../utils';
+import {scale, theme} from '../utils';
 import Icon from 'react-native-vector-icons/Feather';
-import {Label, Title} from './Label';
+import {Label} from './Label';
 import {orderData} from '../utils/MockData';
 
 const MyOrders = () => {

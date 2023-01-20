@@ -23,8 +23,8 @@ const RestaurantsCard = props => {
           style={{
             width: null,
             flexDirection: 'row',
-            padding: scale(5),
-            paddingHorizontal: scale(10),
+            padding: scale(3),
+            paddingHorizontal: scale(3),
             borderRadius: scale(15),
           }}>
           <Icon1 name="thumbs-up" color={theme.colors.white} size={scale(12)} />
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   },
   review: {
     fontSize: scale(11),
-    marginHorizontal: scale(5),
+    marginHorizontal: scale(1),
     color: theme.colors.white,
     fontWeight: '600',
   },

@@ -3,17 +3,31 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Home, Account, Restaurant, RestaturantDetails} from '../screens';
+import {
+  Home,
+  Account,
+  Restaurant,
+  RestaturantDetails,
+  CartScreen,
+  Checkout,
+} from '../screens';
 import {scale, theme} from '../utils';
 import {Platform, Text, View} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {Label} from '../components';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 const Comman = () => {
   return (
-    <View style={{flex: 1, backgroundColor: theme.colors.white}}>
-      <Text>Hello</Text>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: theme.colors.white,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}>
+      <Label title="Comeing soon...." />
     </View>
   );
 };
@@ -31,6 +45,16 @@ const Restaturant = () => {
         component={RestaturantDetails}
         options={{headerShown: false}}
       />
+      <Stack.Screen
+        name="Cart"
+        component={CartScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Checkout"
+        component={Checkout}
+        options={{headerShown: false}}
+      />
     </Stack.Navigator>
   );
 };
@@ -40,6 +64,7 @@ const BottomTab = () => {
     <Tab.Navigator
       // initialRouteName="RISTORANTI"
       screenOptions={{
+        tabBarHideOnKeyboard: true,
         headerShown: false,
         tabBarShowLabel: true,
         tabBarActiveTintColor: theme.colors.purpal,

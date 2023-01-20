@@ -1,21 +1,26 @@
 import {
   FlatList,
+  Platform,
   SafeAreaView,
   StyleSheet,
-  Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/Feather';
 import {scale, theme} from '../utils';
 import {Label, Restaurant, Title} from '../components';
 import {RestaurantsData} from '../utils/MockData';
 import {useNavigation} from '@react-navigation/native';
+import SliderModal from '../components/appModel/SliderModal';
 
 const RestaurantScreen = () => {
   const navigation = useNavigation();
+  const [selectedModal, setSelectedModal] = useState(false);
+  const IconClosePicker = () => {
+    setSelectedModal(false);
+  };
   const renderList = ({item, index}) => {
     return (
       <Restaurant
@@ -40,7 +45,13 @@ const RestaurantScreen = () => {
             }}
           />
           <Title title="Ristoranti" style={styles.title} />
-          <Icon name="sliders" size={scale(22)} color={theme.colors.black} />
+          <Icon
+            onPress={() => setSelectedModal(true)}
+            name="sliders"
+            size={scale(22)}
+            color={theme.colors.black}
+          />
+          <SliderModal isVisible={selectedModal} close={IconClosePicker} />
         </View>
         <View style={styles.fillterView}>
           <TouchableOpacity style={styles.btn}>
@@ -59,7 +70,7 @@ const RestaurantScreen = () => {
             color={theme.colors.placeholder}
           />
           <TextInput
-            placeholder="Inserisci il tuo indirizzo completo"
+            placeholder="Piatti, ristoranti o tipi di cucina"
             style={styles.searchbox}
             placeholderTextColor={theme.colors.placeholder}
           />
@@ -84,10 +95,12 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     paddingHorizontal: scale(12),
+    paddingTop: Platform.OS === 'ios' ? 0 : scale(10),
   },
   headerView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: scale(3),
   },
   title: {
@@ -141,5 +154,6 @@ const styles = StyleSheet.create({
     color: theme.colors.placeholder,
     marginLeft: scale(10),
     fontWeight: '600',
+    width: '100%',
   },
 });

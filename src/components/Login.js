@@ -2,31 +2,80 @@ import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {scale, theme} from '../utils';
 import InputBox from './InputBox';
-import {Label} from './Label';
+import {Error, Label} from './Label';
 import Button from './Button';
+import {useState} from 'react';
 
 const Login = props => {
-  const {onPress} = props;
+  const {onPress, onPressLogin} = props;
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
+  const [nameErr, setNameErr] = useState('');
+  const [passwordErr, setpasswordErr] = useState('');
+  var regex = '^\\s+$';
+
+  let error = false;
+  const handleValidation = () => {
+    if (name.trim() === '') {
+      error = true;
+      setNameErr('Please enter username');
+    } else {
+      setNameErr('');
+    }
+    if (password.trim() === '') {
+      error = true;
+      setpasswordErr('Please enter password');
+    } else {
+      error = false;
+      setNameErr(null);
+      setpasswordErr(null);
+    }
+    return error;
+  };
+  const handleLogin = () => {
+    if (!handleValidation()) {
+      onPress();
+    } else {
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Label title={'Accedi al tuo account'} style={styles.title} />
       <View style={styles.devider} />
       <InputBox
         placeholder="Username"
+        value={name}
+        onChangeText={txt => {
+          setName(txt);
+        }}
         style={[styles.input, {marginTop: theme.SCREENHEIGHT * 0.03}]}
+        keyboardType="email-address"
       />
-      <InputBox placeholder="Password" style={styles.input} />
+      {nameErr && <Error error={nameErr} />}
+      <InputBox
+        secureTextEntry
+        value={password}
+        onChangeText={txt => {
+          setPassword(txt);
+        }}
+        placeholder="Password"
+        style={styles.input}
+      />
+      {passwordErr && <Error error={passwordErr} />}
       <Button
         title="Login"
         style={[styles.loginButton, {marginTop: scale(15)}]}
         titleStyle={[styles.buttonLabel, {color: theme.colors.white}]}
-        onPress={onPress}
+        onPress={() => {
+          handleLogin();
+        }}
       />
       <Button
         title="Password dimenticata"
         style={[styles.loginButton, {backgroundColor: theme.colors.purpal}]}
         titleStyle={[styles.buttonLabel, {color: theme.colors.white}]}
-        onPress={onPress}
+        onPress={onPressLogin}
       />
       <Label title="Oppure" style={[styles.title, {marginTop: scale(20)}]} />
       <View style={[styles.devider, {marginBottom: scale(10)}]} />
@@ -36,14 +85,14 @@ const Login = props => {
           title="Login con Facebook"
           style={[styles.loginButton, {backgroundColor: theme.colors.blue}]}
           titleStyle={[styles.buttonLabel, {color: theme.colors.white}]}
-          onPress={onPress}
+          onPress={onPressLogin}
         />
         <Button
           Icon="md-logo-apple"
           title="Accedi con Apple"
           style={[styles.loginButton, {backgroundColor: theme.colors.black}]}
           titleStyle={[styles.buttonLabel, {color: theme.colors.white}]}
-          onPress={onPress}
+          onPress={onPressLogin}
         />
         <Button
           title="Registri con indrizzon email"

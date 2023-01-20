@@ -2,26 +2,153 @@ import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {scale, theme} from '../utils';
 import InputBox from './InputBox';
-import {Label} from './Label';
+import {Error, Label} from './Label';
 import Button from './Button';
+import {useState} from 'react';
 
 const Signup = props => {
   const {onPress} = props;
+  const [name, setName] = useState('');
+  const [sureName, setSureName] = useState('');
+  const [email, setEmail] = useState('');
+  const [mobile, setMobile] = useState('');
+  const [password, setPassword] = useState('');
+  const [CPasseword, setCPasseword] = useState('');
+  const [errrMsg, setErrorMsg] = useState({
+    nameErr: '',
+    sureNameErr: '',
+    emailErr: '',
+    mobileErr: '',
+    passwordErr: '',
+    CPassewordErr: '',
+  });
+
+  let error = false;
+  const handleValidation = () => {
+    let Emailreg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    let errr = {...errrMsg};
+    if (name.trim() === '') {
+      errr.nameErr = 'Please enter name';
+      error = true;
+    } else {
+      errr.nameErr = '';
+    }
+    if (sureName.trim() === '') {
+      error = true;
+      errr.sureNameErr = 'Please enter surename';
+    } else {
+      errr.sureNameErr = '';
+    }
+    if (email.trim() === '') {
+      error = true;
+      errr.emailErr = 'Please enter email';
+    } else {
+      errr.emailErr = '';
+    }
+    if (Emailreg.test(email) === false) {
+      error = true;
+      errr.emailErr = 'Please enter valid email';
+    } else {
+      errr.emailErr = '';
+    }
+    if (mobile.trim() === '') {
+      error = true;
+      errr.mobileErr = 'Please enter mobile number';
+    } else {
+      errr.mobileErr = '';
+    }
+    if (password.trim() === '') {
+      error = true;
+      errr.passwordErr = 'Please enter password';
+    } else {
+      errr.passwordErr = '';
+    }
+    if (CPasseword.trim() === '') {
+      error = true;
+      errr.CPassewordErr = 'Please enter password';
+    } else if (password !== CPasseword) {
+      error = true;
+      errr.CPassewordErr = 'Password not match';
+    } else {
+      errr.CPassewordErr = '';
+    }
+
+    setErrorMsg(errr);
+    return error;
+  };
+
+  const handleSignup = () => {
+    if (!handleValidation()) {
+      onPress();
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Label title={'Registrati'} style={styles.title} />
       <View style={styles.devider} />
-      <InputBox placeholder="Nome" style={styles.input} />
-      <InputBox placeholder="Cognome" style={styles.input} />
-      <InputBox placeholder="Email" style={styles.input} />
-      <InputBox placeholder="Telefono" style={styles.input} />
-      <InputBox placeholder="Password" style={styles.input} />
-      <InputBox placeholder="Conferma password" style={styles.input} />
+      <InputBox
+        value={name}
+        onChangeText={txt => {
+          setName(txt);
+        }}
+        placeholder="Nome"
+        style={styles.input}
+      />
+      {errrMsg.nameErr && <Error error={errrMsg.nameErr} />}
+      <InputBox
+        value={sureName}
+        onChangeText={txt => {
+          setSureName(txt);
+        }}
+        placeholder="Cognome"
+        style={styles.input}
+      />
+      {errrMsg.sureNameErr && <Error error={errrMsg.sureNameErr} />}
+      <InputBox
+        value={email}
+        onChangeText={txt => {
+          setEmail(txt);
+        }}
+        placeholder="Email"
+        style={styles.input}
+      />
+      {errrMsg.emailErr && <Error error={errrMsg.emailErr} />}
+      <InputBox
+        value={mobile}
+        onChangeText={txt => {
+          setMobile(txt);
+        }}
+        placeholder="Telefono"
+        keyboardType="numeric"
+        style={styles.input}
+      />
+      {errrMsg.mobileErr && <Error error={errrMsg.mobileErr} />}
+      <InputBox
+        value={password}
+        onChangeText={txt => {
+          setPassword(txt);
+        }}
+        placeholder="Password"
+        style={styles.input}
+      />
+      {errrMsg.passwordErr && <Error error={errrMsg.passwordErr} />}
+      <InputBox
+        value={CPasseword}
+        onChangeText={txt => {
+          setCPasseword(txt);
+        }}
+        placeholder="Conferma password"
+        style={styles.input}
+      />
+      {errrMsg.CPassewordErr && <Error error={errrMsg.CPassewordErr} />}
       <Button
         title="Registrati"
         style={styles.loginButton}
         titleStyle={[styles.buttonLabel, {color: theme.colors.white}]}
-        onPress={onPress}
+        onPress={() => {
+          handleSignup();
+        }}
       />
 
       <View style={styles.appTextView}>

@@ -128,18 +128,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-    review: {
-      fontSize: scale(11),
-      marginHorizontal: scale(5),
-      color: theme.colors.white,
-      fontWeight: '600',
-    },
+  review: {
+    fontSize: scale(11),
+    // marginHorizontal: scale(5),
+    color: theme.colors.white,
+    fontWeight: '600',
+  },
   km: {
     padding: scale(4),
     borderRadius: scale(10),
     borderColor: theme.colors.gray,
     backgroundColor: theme.colors.purpal,
-    marginLeft: scale(5),
+    marginLeft: scale(-50),
   },
   bttomCon: {
     padding: scale(10),

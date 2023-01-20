@@ -14,13 +14,18 @@ import Icon from 'react-native-vector-icons/Feather';
 import Icon1 from 'react-native-vector-icons/SimpleLineIcons';
 import Icon2 from 'react-native-vector-icons/Entypo';
 import {scale, theme} from '../utils';
-import {Button, FullScreenImage, Label, Title} from '../components';
+import {Button, CartModel, FullScreenImage, Label, Title} from '../components';
 import LinearGradient from 'react-native-linear-gradient';
-import {foodDetailsData} from '../utils/MockData';
+import {foodDetailsData, RestoInfo} from '../utils/MockData';
+import {useNavigation} from '@react-navigation/native';
 
 const RestaturantDetails = () => {
   const [selectedIndex, setSelIndex] = useState(0);
   const [viewImg, setViewImg] = useState(false);
+  const [cartModel, setCartModel] = useState(false);
+  const [searchtxt, setSearchTxt] = useState('');
+  const [selectedItem, setSelectedItem] = useState(0);
+  const navigation = useNavigation();
   const renderMenus = ({item, index}) => {
     return (
       <View key={index} style={styles.menuView}>
@@ -66,7 +71,7 @@ const RestaturantDetails = () => {
                     color={theme.colors.purpal}
                     style={{marginRight: scale(6)}}
                     onPress={() => {
-                      alert('Add item in to cart');
+                      setCartModel(!cartModel);
                     }}
                   />
                 </View>
@@ -81,6 +86,26 @@ const RestaturantDetails = () => {
     );
   };
 
+  const renderInfo = ({item, index}) => {
+    return (
+      <View
+        style={[
+          styles.menuView,
+          {
+            flexDirection: 'row',
+            borderBottomWidth: 1,
+            borderColor: theme.colors.gray1,
+          },
+        ]}>
+        <Text style={styles.infoText}>{item.title}</Text>
+        <Text style={styles.infoText}>{item.time}</Text>
+      </View>
+    );
+  };
+  const handleModel = () => {
+    setCartModel(!cartModel);
+    navigation.navigate('Cart');
+  };
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -94,6 +119,9 @@ const RestaturantDetails = () => {
             name="chevron-left"
             size={scale(28)}
             color={theme.colors.white}
+            onPress={() => {
+              navigation.goBack();
+            }}
           />
           <View style={[styles.textinputContainer, styles.shadow]}>
             <Icon
@@ -105,6 +133,10 @@ const RestaturantDetails = () => {
               placeholder={'Cerca nel menu?'}
               style={styles.searchbox}
               placeholderTextColor={theme.colors.placeholder}
+              value={searchtxt}
+              onChangeText={txt => {
+                setSearchTxt(txt);
+              }}
             />
           </View>
           <Icon1 name="bag" size={scale(25)} color={theme.colors.white} />
@@ -141,20 +173,52 @@ const RestaturantDetails = () => {
         <Button
           title="Menu"
           style={[styles.filBtn, styles.shadow, {shadowRadius: scale(10)}]}
+          onPress={() => {
+            setSelectedItem(0);
+          }}
         />
         <Button
           title="Intormazioni"
           style={[styles.filBtn, styles.shadow, {shadowRadius: scale(10)}]}
+          onPress={() => {
+            setSelectedItem(1);
+          }}
         />
       </View>
       <View>
-        <FlatList
-          data={foodDetailsData}
-          renderItem={renderMenus}
-          showsVerticalScrollIndicator={false}
-          style={[styles.menusView, styles.shadow]}
-          contentContainerStyle={{paddingBottom: scale(30)}}
-        />
+        {selectedItem === 0 && (
+          <FlatList
+            data={foodDetailsData}
+            renderItem={renderMenus}
+            showsVerticalScrollIndicator={false}
+            style={[styles.menusView, styles.shadow]}
+            contentContainerStyle={{paddingBottom: scale(30)}}
+          />
+        )}
+      </View>
+      <View style={styles.infoContainer}>
+        <View style={styles.textView}>
+          <Text
+            style={{
+              color: theme.colors.gray,
+              fontSize: scale(16),
+              fontWeight: '800',
+            }}>
+            Zancos Steak House
+          </Text>
+          <Text
+            style={{
+              color: theme.colors.gray,
+              fontSize: scale(14),
+              fontWeight: '500',
+            }}>
+            Via dalle palle, 88, 90146 Palermo PA, Italia
+          </Text>
+        </View>
+        <Text style={styles.titleText}>Orari di apertura</Text>
+        {selectedItem === 1 && (
+          <FlatList data={RestoInfo} renderItem={renderInfo} />
+        )}
       </View>
       <FullScreenImage
         isVisible={viewImg}
@@ -162,6 +226,7 @@ const RestaturantDetails = () => {
           setViewImg(!viewImg);
         }}
       />
+      <CartModel isVisible={cartModel} close={handleModel} />
     </View>
   );
 };
@@ -279,10 +344,12 @@ const styles = StyleSheet.create({
     borderRadius: scale(12),
   },
   menuView: {
-    // padding: scale(10),
+    padding: scale(10),
     backgroundColor: theme.colors.white,
-    // marginHorizontal: scale(10),
-    paddingVertical: scale(10),
+    justifyContent: 'space-between',
+    paddingVertical: scale(5),
+    borderColor: theme.colors.gray,
+    marginHorizontal: scale(10),
   },
   colapseView: {
     flexDirection: 'row',
@@ -302,7 +369,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: scale(5),
     backgroundColor: theme.colors.backgroundColor,
-    // borderBottomColor: theme.colors.gray,
+    borderBottomColor: theme.colors.gray,
     width: '100%',
     paddingVertical: scale(5),
     // borderBottomWidth: scale(1),
@@ -326,5 +393,27 @@ const styles = StyleSheet.create({
     height: scale(0.6),
     alignSelf: 'center',
     backgroundColor: theme.colors.gray,
+  },
+  infoContainer: {
+    borderWidth: 1,
+    backgroundColor: theme.colors.white,
+    paddingVertical: scale(20),
+    marginHorizontal: scale(10),
+    borderRadius: 15,
+  },
+  infoText: {color: theme.colors.gray, fontWeight: '700'},
+  textView: {
+    marginHorizontal: scale(20),
+    borderBottomWidth: 1,
+    borderColor: theme.colors.gray1,
+    paddingBottom: scale(10),
+  },
+  titleText: {
+    color: theme.colors.gray,
+    fontSize: scale(14),
+    fontWeight: '800',
+    marginLeft: scale(20),
+    marginBottom: scale(30),
+    marginTop: scale(10),
   },
 });

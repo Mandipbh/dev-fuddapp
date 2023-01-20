@@ -87,6 +87,16 @@ const foodData = [
   {id: 5, title: 'Pet'},
 ];
 
+const RestoInfo = [
+  {id: 0, title: 'Lunedi', time: '12:00 - 23:00'},
+  {id: 1, title: 'Lunedi', time: '12:00 - 23:00'},
+  {id: 2, title: 'Lunedi', time: '12:00 - 23:00'},
+  {id: 3, title: 'Lunedi', time: '12:00 - 23:00'},
+  {id: 4, title: 'Lunedi', time: '12:00 - 23:00'},
+  {id: 5, title: 'Lunedi', time: '12:00 - 23:00'},
+  {id: 6, title: 'Lunedi', time: '12:00 - 23:00'},
+];
+
 const foodDetailsData = [
   {
     title: 'Antipasti',
@@ -237,6 +247,46 @@ const orderData = [
   },
 ];
 
+const cartData = [
+  {
+    id: 1,
+    title: 'Aggiungi Ingredienti',
+    isCheck: false,
+    items: [
+      {
+        id: 1,
+        title: 'Bacon Croccante',
+        price: '+ €1.00',
+      },
+      {
+        id: 2,
+        title: 'Bacon Croccante',
+        price: '+ €1.00',
+      },
+      {
+        id: 3,
+        title: 'Bacon Croccante',
+        price: '+ €1.00',
+      },
+    ],
+  },
+  {
+    id: 2,
+    title: 'Rimuovi Ingredienti',
+    isCheck: true,
+    items: [
+      {
+        name: 'Pomodoro',
+        check: true,
+      },
+      {
+        name: 'Pomodoro',
+        check: true,
+      },
+    ],
+  },
+];
+
 export {
   foodCategory,
   popularRestaurants,
@@ -246,4 +296,6 @@ export {
   profileData,
   dummyAddress,
   orderData,
+  cartData,
+  RestoInfo,
 };

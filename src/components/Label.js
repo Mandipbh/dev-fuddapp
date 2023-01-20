@@ -28,11 +28,11 @@ const Error = props => {
 const styles = StyleSheet.create({
   text: {
     fontSize: scale(13),
-    color: theme.colors.grey,
+    color: theme.colors.black1,
   },
   title: {
     color: theme.colors.black,
-    fontSize: scale(15),
+    fontSize: scale(15.5),
     fontWeight: '600',
   },
   error: {

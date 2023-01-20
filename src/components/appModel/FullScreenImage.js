@@ -2,9 +2,6 @@ import React from 'react';
 import {StyleSheet, View, Modal, ActivityIndicator, Image} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import {scale, theme} from '../../utils';
-import Button from '../Button';
-import InputBox from '../InputBox';
-import {Title, Label} from '../Label';
 
 const FullScreenImage = props => {
   const {isVisible, close, title, subTitle} = props;

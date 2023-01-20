@@ -9,11 +9,11 @@ const Header = props => {
   return (
     <View style={styles.headerContainer}>
       <TouchableOpacity style={styles.iconView} onPress={onPressMenu}>
-        <Icon name="menu" size={scale(22)} color={theme.colors.white} />
+        <Icon name="menu" size={scale(21)} color={theme.colors.white} />
       </TouchableOpacity>
       <Image source={images.appIcon} style={styles.logo} />
       <TouchableOpacity style={styles.iconView} onPress={onPressUser}>
-        <Icon name="user" size={scale(22)} color={theme.colors.white} />
+        <Icon name="user" size={scale(21)} color={theme.colors.white} />
       </TouchableOpacity>
     </View>
   );

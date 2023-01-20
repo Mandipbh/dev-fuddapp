@@ -2,14 +2,14 @@ import {
   Image,
   SafeAreaView,
   StyleSheet,
-  Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
-import Icon1 from 'react-native-vector-icons/Feather';
+import Icon1 from 'react-native-vector-icons/Ionicons';
+import Icon2 from 'react-native-vector-icons/Fontisto';
 import {images, scale, theme} from '../utils';
 import {
   Address,
@@ -24,9 +24,11 @@ import {
 import {profileData} from '../utils/MockData';
 
 const AccountScreen = () => {
-  const [reg, setReg] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [showImg, setImg] = useState(true);
+  const [text, setText] = useState('');
+  console.log('State Update', text);
+
   useEffect(() => {
     if (
       selectedMenu == null ||
@@ -72,10 +74,14 @@ const AccountScreen = () => {
                 placeholder={'Cerca indirizzo'}
                 style={styles.searchbox}
                 placeholderTextColor={theme.colors.placeholder}
+                value={text}
+                onChangeText={txt => {
+                  setText(txt);
+                }}
               />
               <Icon1
                 name="search"
-                size={scale(23)}
+                size={scale(22)}
                 color={theme.colors.placeholder}
               />
             </View>
@@ -169,7 +175,8 @@ const AccountScreen = () => {
               width: theme.SCREENWIDTH * 0.5,
               resizeMode: 'stretch',
               alignSelf: 'center',
-              marginVertical: scale(20),
+              marginTop: scale(15),
+              // marginVertical: scale(5),
             }}
           />
         )}
@@ -188,7 +195,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     // alignItems: 'center',
     backgroundColor: theme.colors.white,
-    marginHorizontal: scale(8),
+    // marginHorizontal: scale(5),
     padding: scale(15),
     paddingHorizontal: scale(22),
     shadowColor: theme.colors.gray,
@@ -248,10 +255,10 @@ const styles = StyleSheet.create({
   },
 
   textinputContainer: {
-    height: scale(40),
+    height: scale(45),
     backgroundColor: theme.colors.white,
     // borderWidth: scale(0.5),
-    borderRadius: scale(20),
+    borderRadius: scale(15),
     justifyContent: 'space-between',
     flexDirection: 'row',
     alignItems: 'center',

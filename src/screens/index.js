@@ -4,3 +4,5 @@ export {default as Account} from './AccountScreen';
 export {default as Home} from './HomeScreen';
 export {default as Restaurant} from './RestaurantScreen';
 export {default as RestaturantDetails} from './RestaturantDetails';
+export {default as CartScreen} from './CartScreen';
+export {default as Checkout} from './CheckoutScreen';

@@ -3,7 +3,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -19,7 +18,7 @@ const MyAccountInfo = () => {
     <View>
       <ScrollView
         style={{
-          height: theme.SCREENHEIGHT * 0.5,
+          height: theme.SCREENHEIGHT * 0.4,
         }}
         showsVerticalScrollIndicator={false}>
         <View style={styles.inputView}>

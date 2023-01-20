@@ -13,13 +13,17 @@ import {Title} from './Label';
 const FoodCard = props => {
   const {item, index, onPress, styleImage} = props;
   return (
-    <TouchableOpacity key={index} onPress={onPress}>
+    <TouchableOpacity
+      style={{height: scale(110)}}
+      key={index}
+      onPress={onPress}>
       <ImageBackground
         style={[styles.image, styleImage]}
         imageStyle={{
           borderRadius: scale(25),
           width: '100%',
           resizeMode: 'cover',
+          height: scale(100),
         }}
         source={{
           uri: 'https://img.freepik.com/free-photo/top-view-indian-food-with-copy-space_23-2148747659.jpg?size=626&ext=jpg&ga=GA1.2.1181264738.1665484240&semt=sph',
@@ -30,7 +34,7 @@ const FoodCard = props => {
           colors={[theme.colors.white, theme.colors.purpal]}
           style={styles.gradient}></LinearGradient>
         <Title
-          title={item?.title ? item?.title : 'Foods'}
+          title={item?.title ? item?.title : 'FOOD'}
           style={styles.title}
         />
       </ImageBackground>
@@ -48,17 +52,16 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   gradient: {
-    height: '100%',
+    height: '74%',
     width: '100%',
     opacity: 0.6,
     borderRadius: scale(25),
   },
   title: {
     color: theme.colors.white,
-    position: 'absolute',
     alignSelf: 'center',
-    bottom: theme.SCREENHEIGHT * 0.07,
-    fontSize: scale(16),
+    bottom: theme.SCREENHEIGHT * 0.08,
+    fontSize: scale(18),
     fontWeight: '800',
   },
 });

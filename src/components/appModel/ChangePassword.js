@@ -1,4 +1,5 @@
 import React from 'react';
+import {useState} from 'react';
 import {StyleSheet, View, Modal, ActivityIndicator} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import {scale, theme} from '../../utils';
@@ -8,6 +9,8 @@ import {Title, Label} from '../Label';
 
 const ChangePassword = props => {
   const {isVisible, close, title, subTitle} = props;
+  const [text, setText] = useState('');
+  console.log('State Update', text);
   return (
     <Modal
       transparent={true}
@@ -26,6 +29,10 @@ const ChangePassword = props => {
               style={styles.input}
               editable={false}
               inputStyle={styles.inputInner}
+              value={text}
+              onChangeText={txt => {
+                setText(txt);
+              }}
             />
             <InputBox
               placeholder="Nuova password"

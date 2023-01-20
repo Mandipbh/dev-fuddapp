@@ -8,9 +8,8 @@ const Stack = createNativeStackNavigator();
 
 const MianStack = () => {
   return (
-    <NavigationContainer >
-      <Stack.Navigator
-        screenOptions={{headerShown: false, tabBarHideOnKeyboard: true}}>
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{headerShown: false}}>
         <Stack.Screen
           name="Tab"
           component={BottomTab}

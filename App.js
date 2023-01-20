@@ -1,15 +1,17 @@
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import MianStack from './src/navigation/MianStack';
 import {Provider} from 'react-redux';
 import {store, persistor} from './src/redux/Store';
 import {PersistGate} from 'redux-persist/integration/react';
-import { LogBox } from 'react-native';
+import {LogBox} from 'react-native';
+import SplashScreen from 'react-native-splash-screen';
 
-export default App = () => {
-  useEffect(()=>{
+const App = () => {
+  useEffect(() => {
+    SplashScreen.hide();
     LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
-    LogBox.ignoreAllLogs()
-  },[])
+    LogBox.ignoreAllLogs();
+  }, []);
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
@@ -18,3 +20,4 @@ export default App = () => {
     </Provider>
   );
 };
+export default App;
