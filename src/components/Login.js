@@ -5,7 +5,8 @@ import InputBox from './InputBox';
 import {Error, Label} from './Label';
 import Button from './Button';
 import {useState} from 'react';
-
+import ApiService, {API} from '../utils/ApiService';
+import {useDispatch, useSelector} from 'react-redux';
 const Login = props => {
   const {onPress, onPressLogin} = props;
   const [name, setName] = useState('');
@@ -13,7 +14,7 @@ const Login = props => {
   const [nameErr, setNameErr] = useState('');
   const [passwordErr, setpasswordErr] = useState('');
   var regex = '^\\s+$';
-
+  const disptch =useDispatch()
   let error = false;
   const handleValidation = () => {
     if (name.trim() === '') {
@@ -34,6 +35,16 @@ const Login = props => {
   };
   const handleLogin = () => {
     if (!handleValidation()) {
+      try {
+        const folderFrm = {
+          email: name,
+          password: password,
+        };
+        const options = {payloads: folderFrm};
+        ApiService.post(API.login, options).then((res)=>{
+          if(res.status===200)
+        })
+      } catch (error) {}
       onPress();
     } else {
     }
