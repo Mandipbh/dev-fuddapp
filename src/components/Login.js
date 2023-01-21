@@ -42,10 +42,15 @@ const Login = props => {
         };
         const options = {payloads: folderFrm};
         ApiService.post(API.login, options).then((res)=>{
-          if(res.status===200)
+          console.log('red >> ',res)
+          // if(res.status===200){
+          //   // onPress();
+          // }
         })
-      } catch (error) {}
-      onPress();
+      } catch (error) {
+        console.log('error in login ',error)
+      }
+     
     } else {
     }
   };

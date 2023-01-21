@@ -1,7 +1,7 @@
 import axios from 'axios';
 // import { BASE_URL } from '../constants';
 
-const APP_API_URL ='http://api.mylead.net/api/';
+const APP_API_URL ='https://5f98-27-61-250-97.in.ngrok.io/api/';
 axios.interceptors.request.use(config => config);
 
 const execute = async (
@@ -57,6 +57,7 @@ const execute = async (
 export const API = {
     login: 'Users/SignIn',
     signUp: 'Users/SignUp',
+    getAllCategory:'Restaurant/GetAllCategory'
   };
 
 export default {
