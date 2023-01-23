@@ -1,12 +1,8 @@
 import {
   FlatList,
-  Image,
-  ImageBackground,
-  Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  Text,
   TextInput,
   TouchableOpacity,
   View,
@@ -24,13 +20,16 @@ import {
   FoodCard,
 } from '../components';
 import {foodCategory, foodData, popularRestaurants} from '../utils/MockData';
-import LinearGradient from 'react-native-linear-gradient';
 import DrawerModal from '../components/appModel/DrawerModal';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {useEffect} from 'react';
-import {getAllCategory} from '../redux/Actions/HomeAction';
+import {
+  getAllCategory,
+  getAllRestaurants,
+  getExternalRestaurants,
+} from '../redux/Actions/HomeAction';
 
-const Category = () => {
+const Category = ({categoryListData}) => {
   return (
     <View style={styles.categoryContainer}>
       <Title title="Categories" style={styles.title} />
@@ -38,15 +37,16 @@ const Category = () => {
         contentContainerStyle={{paddingVertical: scale(5)}}
         showsHorizontalScrollIndicator={false}
         horizontal>
-        {foodCategory?.map((item, index) => {
-          return <CategoryCard item={item} index={index} />;
-        })}
+        {categoryListData &&
+          categoryListData?.map((item, index) => {
+            return <CategoryCard item={item} index={index} />;
+          })}
       </ScrollView>
     </View>
   );
 };
 
-const PopularRestaturants = () => {
+const PopularRestaturants = ({ExternalRestaurantData}) => {
   return (
     <View style={styles.categoryContainer}>
       <View style={styles.popularView}>
@@ -58,9 +58,10 @@ const PopularRestaturants = () => {
         contentContainerStyle={{paddingVertical: scale(5)}}
         showsHorizontalScrollIndicator={false}
         horizontal>
-        {popularRestaurants?.map((item, index) => {
-          return <RestaurantsCard item={item} index={index} />;
-        })}
+        {ExternalRestaurantData &&
+          ExternalRestaurantData?.map((item, index) => {
+            return <RestaurantsCard item={item} index={index} />;
+          })}
       </ScrollView>
     </View>
   );
@@ -94,6 +95,8 @@ const HomeScreen = () => {
   const [categoryView, setCategoryView] = useState(false);
   const [searchtxt, setSearchTxt] = useState('');
   const [selectedModal, setSelectedModal] = useState(false);
+  const [categoryListData, setCategoryData] = useState([]);
+  const [ExternalRestaurantData, setExternalRestaurant] = useState([]);
   const dispatch = useDispatch();
   const IconClosePicker = () => {
     setSelectedModal(false);
@@ -101,8 +104,31 @@ const HomeScreen = () => {
 
   useEffect(() => {
     dispatch(getAllCategory());
+    let obj = {
+      id: 0,
+      date: '23-01-2023',
+      timeSlot: '16:00TO16:30',
+      category: '',
+      latitute: '',
+      longitude: '',
+    };
+    // dispatch(getAllRestaurants(obj));
+    dispatch(getExternalRestaurants());
   }, []);
-  const Food = () => {
+
+  useEffect(() => {});
+  const categoryData = useSelector(state => state.HomeReducers?.categoryList);
+  const ExternalRestaurant = useSelector(
+    state => state.HomeReducers.GetAllExternalRestaurant,
+  );
+  console.log('ExternalRestaurant>> ', ExternalRestaurant?.Restaurants);
+  useEffect(() => {
+    setCategoryData(categoryData?.Categories);
+  }, [categoryData]);
+  useEffect(() => {
+    setExternalRestaurant(ExternalRestaurant?.Restaurants);
+  }, []);
+  const Food = categoryListData => {
     return (
       <>
         <FoodCard
@@ -173,8 +199,10 @@ const HomeScreen = () => {
           showsVerticalScrollIndicator={false}>
           {categoryView && Food()}
 
-          {!categoryView && Category()}
-          {PopularRestaturants()}
+          {!categoryView && <Category categoryListData={categoryListData} />}
+          <PopularRestaturants
+            ExternalRestaurantData={ExternalRestaurantData}
+          />
           {!categoryView && Restaturants()}
         </ScrollView>
       </View>

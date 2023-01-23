@@ -22,11 +22,23 @@ import {
   Title,
 } from '../components';
 import {profileData} from '../utils/MockData';
+import {useSelector} from 'react-redux';
 
 const AccountScreen = () => {
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [showImg, setImg] = useState(true);
   const [text, setText] = useState('');
+  const isLogin = useSelector(state => state.UserReducer?.login);
+  const user = useSelector(state => state.UserReducer?.userDetails);
+  console.log('State Update', user);
+
+  useEffect(() => {
+    if (!isLogin) {
+      setSelectedMenu(4);
+    } else {
+      setSelectedMenu(1);
+    }
+  }, []);
 
   useEffect(() => {
     if (
@@ -113,7 +125,7 @@ const AccountScreen = () => {
         <View style={styles.detailsContainer}>
           {/* <Login /> */}
           {selectedMenu === 0 && <MyOrders />}
-          {selectedMenu === 1 && <MyAccountInfo />}
+          {selectedMenu === 1 && <MyAccountInfo user={user} />}
           {selectedMenu === 2 && <Address />}
           {selectedMenu === 11 && <SaveAddress />}
           {selectedMenu === 4 && (

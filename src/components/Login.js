@@ -7,6 +7,7 @@ import Button from './Button';
 import {useState} from 'react';
 import ApiService, {API} from '../utils/ApiService';
 import {useDispatch, useSelector} from 'react-redux';
+import {isLogin, userData} from '../redux/Actions/UserActions';
 const Login = props => {
   const {onPress, onPressLogin} = props;
   const [name, setName] = useState('');
@@ -42,10 +43,12 @@ const Login = props => {
         };
         const options = {payloads: folderFrm};
         ApiService.post(API.login, options).then(res => {
-          console.log('red >> ', res);
-          // if(res.status===200){
-          //   // onPress();
-          // }
+          if (res.Status === 'Success') {
+            console.log('res of login >> ', res);
+            disptch(userData(res));
+            disptch(isLogin(true));
+            // onPress();
+          }
         });
       } catch (error) {
         console.log('error in login ', error);

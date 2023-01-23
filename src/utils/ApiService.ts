@@ -58,7 +58,12 @@ export const API = {
     login: 'Users/SignIn',
     signUp: 'Users/SignUp',
     getAllCategory:'Restaurant/GetAllCategory',
+<<<<<<< Updated upstream
     getAllAddress:'Users/GetUserAddress?UserId='
+=======
+    getAllRestaurant:'Restaurant/GetAllRestaurant',
+    GetAllExternalRestaurant:"Restaurant/GetAllExternalRestaurant"
+>>>>>>> Stashed changes
   };
 
 export default {

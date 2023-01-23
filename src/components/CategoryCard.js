@@ -8,9 +8,9 @@ const CategoryCard = props => {
   return (
     <View style={styles.itemView} key={index}>
       <TouchableOpacity style={[styles.categoryView, styles.shadow]}>
-        <Image source={{uri: item?.image}} style={styles.categoryIcon} />
+        <Image source={{uri: item?.ImgFullPath}} style={styles.categoryIcon} />
       </TouchableOpacity>
-      <Label title={item?.name} style={styles.categoryLabel} />
+      <Label title={item?.Nome} style={styles.categoryLabel} />
     </View>
   );
 };

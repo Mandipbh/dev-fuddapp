@@ -12,7 +12,7 @@ import InputBox from './InputBox';
 import {Label} from './Label';
 import ChangePassword from './appModel/ChangePassword';
 
-const MyAccountInfo = () => {
+const MyAccountInfo = ({user}) => {
   const [passwordModel, setModel] = useState(false);
   return (
     <View>
@@ -24,7 +24,7 @@ const MyAccountInfo = () => {
         <View style={styles.inputView}>
           <Label title="NOME COMPLETO" style={styles.inputTitle} />
           <InputBox
-            placeholder="Davide Barba"
+            placeholder={user?.UserName ? user?.UserName : 'Davide Barba'}
             style={styles.input}
             editable={false}
             inputStyle={styles.inputInner}
