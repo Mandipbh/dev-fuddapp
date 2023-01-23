@@ -9,38 +9,56 @@ import React from 'react';
 import {scale, theme} from '../utils';
 import {Label} from './Label';
 import {dummyAddress} from '../utils/MockData';
+import {useDispatch, useSelector} from 'react-redux';
+import {useEffect} from 'react';
+import {getAllAddress} from '../redux/Actions/UserActions';
+import {useState} from 'react';
 
 const Address = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getAllAddress(18340));
+  }, []);
+  const [addressData, setAddressData] = useState([]);
+  const addressList = useSelector(state => state.HomeReducers.addressList);
+  console.log('addressList ?? ', addressList);
+  useEffect(() => {
+    setAddressData(addressList?.UserAddresses);
+  }, []);
   return (
     <View>
       <ScrollView
         style={{maxHeight: theme.SCREENHEIGHT * 0.4}}
         showsVerticalScrollIndicator={false}>
-        {dummyAddress.map((item, index) => {
-          return (
-            <View
-              key={index}
-              style={[
-                styles.addressCard,
-                {
-                  borderBottomColor:
-                    dummyAddress.length === index + 1
-                      ? theme.colors.white
-                      : theme.colors.gray,
-                },
-              ]}>
-              <View style={styles.nameCon}>
-                <Label title={item.name} />
-                <TouchableOpacity style={styles.btn}>
-                  <Label title="Modifica" style={styles.lbl} />
-                </TouchableOpacity>
+        {addressData &&
+          addressData.map((item, index) => {
+            return (
+              <View
+                key={index}
+                style={[
+                  styles.addressCard,
+                  {
+                    borderBottomColor:
+                      addressData.length === index + 1
+                        ? theme.colors.white
+                        : theme.colors.gray,
+                  },
+                ]}>
+                <View style={styles.nameCon}>
+                  <Label
+                    title={`${item.Name} ${item?.LastName}`}
+                    style={{fontWeight: '600'}}
+                  />
+                  <TouchableOpacity style={styles.btn}>
+                    <Label title="Modifica" style={styles.lbl} />
+                  </TouchableOpacity>
+                </View>
+                <Label title={item.AddressName} style={styles.addresstxt} />
+                <Label title={item.email} style={styles.email} />
+                <Label title={item.Telephone} style={styles.phone} />
               </View>
-              <Label title={item.address} style={styles.addresstxt} />
-              <Label title={item.email} style={styles.email} />
-              <Label title={item.phone} style={styles.phone} />
-            </View>
-          );
-        })}
+            );
+          })}
       </ScrollView>
     </View>
   );
@@ -50,7 +68,6 @@ export default Address;
 
 const styles = StyleSheet.create({
   addressCard: {
-    paddingBottom: scale(5),
     backgroundColor: theme.colors.white,
     borderBottomColor: theme.colors.gray,
     borderBottomWidth: scale(0.7),

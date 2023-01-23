@@ -27,7 +27,6 @@ const AccountScreen = () => {
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [showImg, setImg] = useState(true);
   const [text, setText] = useState('');
-  console.log('State Update', text);
 
   useEffect(() => {
     if (

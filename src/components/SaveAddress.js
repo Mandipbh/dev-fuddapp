@@ -4,14 +4,45 @@ import {images, scale, theme} from '../utils';
 import InputBox from './InputBox';
 import Button from './Button';
 import {useState} from 'react';
+import ApiService from '../utils/ApiService';
+import {useSelector} from 'react-redux';
 
 const SaveAddress = () => {
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastname] = useState(null);
   const [mobile, setMobile] = useState('');
   const [address, setAddress] = useState('');
-  const [number, setNumber] = useState('');
-  const [location, setLocation] = useState('');
-
+  const userData = useSelector(state => state?.UserReducer?.userDetails);
+  console.log('user details > ', userData);
+  const handleSave = () => {
+    try {
+      const frmData = {
+        Latitute: '',
+        Longitude: '',
+        UserId: '18341',
+        AddressId: 0,
+        StreetNo: '15',
+        Address: address,
+        City: 'test',
+        Postcode: '380059',
+        FullAddress: address,
+        Firstname: firstName,
+        Lastname: lastName,
+        Description: 'test',
+        Phone: mobile,
+      };
+      const options = {payloads: frmData};
+      ApiService.post('Users/SaveUserAddress', options)
+        .then(res => {
+          console.log('res address', res.data);
+        })
+        .catch(error => {
+          console.log('error catch ', error.response.data);
+        });
+    } catch (error) {
+      console.log('eror save address ', error);
+    }
+  };
   return (
     <View>
       <ScrollView
@@ -19,19 +50,19 @@ const SaveAddress = () => {
         contentContainerStyle={{alignSelf: 'center'}}
         showsVerticalScrollIndicator={false}>
         <InputBox
-          value={name}
+          value={firstName}
           onChangeText={txt => {
-            setName(txt);
+            setFirstName(txt);
           }}
-          placeholder="Davide Barba"
+          placeholder="first name"
           style={{marginBottom: scale(3), width: '95%'}}
         />
         <InputBox
-          value={mobile}
+          value={lastName}
           onChangeText={txt => {
-            setMobile(txt);
+            setLastname(txt);
           }}
-          placeholder="3804499872"
+          placeholder="last name"
           keyboardType="numeric"
           style={{marginBottom: scale(3)}}
         />
@@ -40,24 +71,16 @@ const SaveAddress = () => {
           onChangeText={txt => {
             setAddress(txt);
           }}
-          placeholder="Viale dalle palle, Palermo PA, Italia"
+          placeholder="Intercom at, staircase, floor"
           style={{marginBottom: scale(3)}}
         />
         <InputBox
-          value={number}
+          value={mobile}
           onChangeText={txt => {
             setMobile(txt);
           }}
-          placeholder="88"
+          placeholder="Telephone"
           style={{marginBottom: scale(3)}}
-        />
-        <InputBox
-          placeholder="Citofonare a, scala, piano"
-          style={{marginBottom: scale(3)}}
-          value={location}
-          onChangeText={txt => {
-            setLocation(txt);
-          }}
         />
       </ScrollView>
       <Image source={images.appIcon} style={styles.appIcon} />
@@ -65,6 +88,9 @@ const SaveAddress = () => {
         title="Salva indirinzo"
         titleStyle={styles.btntxt}
         style={styles.btn}
+        onPress={() => {
+          handleSave();
+        }}
       />
     </View>
   );

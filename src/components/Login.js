@@ -14,7 +14,7 @@ const Login = props => {
   const [nameErr, setNameErr] = useState('');
   const [passwordErr, setpasswordErr] = useState('');
   var regex = '^\\s+$';
-  const disptch =useDispatch()
+  const disptch = useDispatch();
   let error = false;
   const handleValidation = () => {
     if (name.trim() === '') {
@@ -41,16 +41,15 @@ const Login = props => {
           password: password,
         };
         const options = {payloads: folderFrm};
-        ApiService.post(API.login, options).then((res)=>{
-          console.log('red >> ',res)
+        ApiService.post(API.login, options).then(res => {
+          console.log('red >> ', res);
           // if(res.status===200){
           //   // onPress();
           // }
-        })
+        });
       } catch (error) {
-        console.log('error in login ',error)
+        console.log('error in login ', error);
       }
-     
     } else {
     }
   };

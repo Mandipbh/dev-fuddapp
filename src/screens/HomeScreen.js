@@ -26,9 +26,9 @@ import {
 import {foodCategory, foodData, popularRestaurants} from '../utils/MockData';
 import LinearGradient from 'react-native-linear-gradient';
 import DrawerModal from '../components/appModel/DrawerModal';
-import { useDispatch } from 'react-redux';
-import { useEffect } from 'react';
-import { getAllCategory } from '../redux/Actions/HomeAction';
+import {useDispatch} from 'react-redux';
+import {useEffect} from 'react';
+import {getAllCategory} from '../redux/Actions/HomeAction';
 
 const Category = () => {
   return (
@@ -94,15 +94,14 @@ const HomeScreen = () => {
   const [categoryView, setCategoryView] = useState(false);
   const [searchtxt, setSearchTxt] = useState('');
   const [selectedModal, setSelectedModal] = useState(false);
-  const dispatch=useDispatch()
+  const dispatch = useDispatch();
   const IconClosePicker = () => {
     setSelectedModal(false);
   };
 
-  useEffect(()=>{
-    dispatch(getAllCategory())
-   
-  },[])
+  useEffect(() => {
+    dispatch(getAllCategory());
+  }, []);
   const Food = () => {
     return (
       <>

@@ -9,16 +9,26 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/Feather';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import {scale, theme} from '../utils';
 import {Label, Restaurant, Title} from '../components';
 import {RestaurantsData} from '../utils/MockData';
 import {useNavigation} from '@react-navigation/native';
 import SliderModal from '../components/appModel/SliderModal';
+import {useDispatch, useSelector} from 'react-redux';
+import {useEffect} from 'react';
+import {getAllCategory} from '../redux/Actions/HomeAction';
 
 const RestaurantScreen = () => {
   const navigation = useNavigation();
   const [selectedModal, setSelectedModal] = useState(false);
-  const IconClosePicker = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getAllCategory());
+  }, []);
+  const categoryData = useSelector(state => state.HomeReducers?.categoryList);
+  const IconClosePicker = data => {
+    console.log('data of category ? ', data);
     setSelectedModal(false);
   };
   const renderList = ({item, index}) => {
@@ -51,17 +61,32 @@ const RestaurantScreen = () => {
             size={scale(22)}
             color={theme.colors.black}
           />
-          <SliderModal isVisible={selectedModal} close={IconClosePicker} />
+          <SliderModal
+            data={categoryData?.Categories}
+            isVisible={selectedModal}
+            close={IconClosePicker}
+          />
         </View>
         <View style={styles.fillterView}>
           <TouchableOpacity style={styles.btn}>
             <Icon name="clock" size={scale(15)} color={theme.colors.gray2} />
             <Label title="Orario consega" style={styles.lbl} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.btn}>
-            <Icon name="map-pin" size={scale(15)} color={theme.colors.gray2} />
-            <Label title="Orario consega" style={styles.lbl} />
-          </TouchableOpacity>
+          {/* <TouchableOpacity style={styles.btn}>
+            <Icon name="map-pin" size={scale(15)} color={theme.colors.gray2} /> */}
+          <GooglePlacesAutocomplete
+            placeholder="Search"
+            onPress={(data, details = null) => {
+              // 'details' is provided when fetchDetails = true
+              console.log(data, details);
+            }}
+            query={{
+              key: 'AIzaSyDxUeU36VnWRBXAok6txlBCV2rq9UhHWT4',
+              language: 'en',
+            }}
+          />
+          {/* <Label title="Orario consega" style={styles.lbl} />
+          </TouchableOpacity> */}
         </View>
         <View style={[styles.textinputContainer, styles.shadow]}>
           <Icon

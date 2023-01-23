@@ -4,12 +4,12 @@ const initialState = {
   login: false,
   onBoarding: false,
   userDetails: '',
+  address: [],
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
     case types.IS_LOGIN:
-      console.log('reducers >>. ', action.payload);
       return {
         ...state,
         login: action.payload,
@@ -18,6 +18,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         userDetails: action.payload,
+      };
+    }
+    case types.GETALLADDRESS: {
+      return {
+        ...state,
+        address: action.payload,
       };
     }
     case types.LOGOUT:

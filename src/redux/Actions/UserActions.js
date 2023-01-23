@@ -1,7 +1,7 @@
+import ApiService, {API} from '../../utils/ApiService';
 import * as types from './ActionsTypes';
 
 export const isLogin = payload => {
-  console.log('payload of login >>. ', payload);
   return {
     type: types.IS_LOGIN,
     payload,
@@ -9,9 +9,23 @@ export const isLogin = payload => {
 };
 
 export const userData = payload => {
-  console.log('data >> of user payload > ', payload);
   return {
     type: types.USER_DETAILS,
     payload,
+  };
+};
+
+export const getAllAddress = id => {
+  return (dispatch, getState) => {
+    console.log('getState >> ', getState().UserReducer);
+    try {
+      ApiService.get(API.getAllAddress + id).then(res => {
+        if (res) {
+          dispatch({type: types.GETALLADDRESS, payload: res});
+        }
+      });
+    } catch (error) {
+      console.log('error in Address', error);
+    }
   };
 };
