@@ -127,11 +127,17 @@ const AccountScreen = () => {
           {selectedMenu === 0 && <MyOrders />}
           {selectedMenu === 1 && <MyAccountInfo user={user} />}
           {selectedMenu === 2 && <Address />}
-          {selectedMenu === 11 && <SaveAddress />}
+          {selectedMenu === 11 && (
+            <SaveAddress
+              back={() => {
+                setSelectedMenu(2);
+              }}
+            />
+          )}
           {selectedMenu === 4 && (
             <Login
               onPress={() => {
-                setSelectedMenu(5);
+                setSelectedMenu(1);
               }}
             />
           )}

@@ -42,14 +42,19 @@ const Login = props => {
           password: password,
         };
         const options = {payloads: folderFrm};
-        ApiService.post(API.login, options).then(res => {
-          if (res.Status === 'Success') {
-            console.log('res of login >> ', res);
-            disptch(userData(res));
-            disptch(isLogin(true));
-            // onPress();
-          }
-        });
+        ApiService.post(API.login, options)
+          .then(res => {
+            if (res.Status === 'Success') {
+              console.log('res of login >> ', res);
+              disptch(userData(res));
+              disptch(isLogin(true));
+              onPress();
+            }
+          })
+          .catch(e => {
+            alert(e.response?.data?.Errors[0]);
+            // console.log('error in login> ', e.response?.data?.Errors[0]);
+          });
       } catch (error) {
         console.log('error in login ', error);
       }

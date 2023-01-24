@@ -8,23 +8,39 @@ import {
 import React from 'react';
 import {scale, theme} from '../utils';
 import {Label} from './Label';
-import {dummyAddress} from '../utils/MockData';
+import Icon from 'react-native-vector-icons/Feather';
 import {useDispatch, useSelector} from 'react-redux';
 import {useEffect} from 'react';
 import {getAllAddress} from '../redux/Actions/UserActions';
 import {useState} from 'react';
+import ApiService, {API} from '../utils/ApiService';
 
 const Address = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getAllAddress(18340));
+    dispatch(getAllAddress());
   }, []);
   const [addressData, setAddressData] = useState([]);
   const addressList = useSelector(state => state.HomeReducers.addressList);
   console.log('addressList ?? ', addressList);
   useEffect(() => {
     setAddressData(addressList?.UserAddresses);
-  }, []);
+  }, [addressList]);
+  const handleDeleteAddress = item => {
+    console.log('item >> ', item?.Id);
+    try {
+      ApiService.get(API.deleteAddress + item?.Id)
+        .then(res => {
+          dispatch(getAllAddress());
+          console.log('response <<<>> ', res);
+        })
+        .catch(error => {
+          console.log('error catch ', error);
+        });
+    } catch (error) {
+      console.log('error delete catch ', error);
+    }
+  };
   return (
     <View>
       <ScrollView
@@ -53,8 +69,20 @@ const Address = () => {
                     <Label title="Modifica" style={styles.lbl} />
                   </TouchableOpacity>
                 </View>
-                <Label title={item.AddressName} style={styles.addresstxt} />
-                <Label title={item.email} style={styles.email} />
+                <View style={styles.addressView}>
+                  <Label title={item.AddressName} style={styles.addresstxt} />
+                  <Icon
+                    name="trash-2"
+                    color={theme.colors.red}
+                    size={scale(16)}
+                    style={styles.deleteIcon}
+                    onPress={() => {
+                      handleDeleteAddress(item);
+                    }}
+                  />
+                </View>
+
+                {/* <Label title={item.email} style={styles.email} /> */}
                 <Label title={item.Telephone} style={styles.phone} />
               </View>
             );
@@ -73,6 +101,14 @@ const styles = StyleSheet.create({
     borderBottomWidth: scale(0.7),
     marginVertical: scale(10),
     paddingBottom: scale(10),
+  },
+  addressView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  deleteIcon: {
+    margin: scale(8),
   },
   addresstxt: {
     fontSize: scale(12),

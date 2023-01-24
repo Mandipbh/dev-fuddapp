@@ -5,22 +5,23 @@ import InputBox from './InputBox';
 import Button from './Button';
 import {useState} from 'react';
 import ApiService from '../utils/ApiService';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {getAllAddress} from '../redux/Actions/UserActions';
 
-const SaveAddress = () => {
+const SaveAddress = ({back}) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastname] = useState(null);
   const [mobile, setMobile] = useState('');
   const [address, setAddress] = useState('');
   const userData = useSelector(state => state?.UserReducer?.userDetails);
-  console.log('user details > ', userData);
+  const dispatch = useDispatch();
+  console.log('user details > ', userData?.UserId);
   const handleSave = () => {
     try {
       const frmData = {
-        Latitute: '',
-        Longitude: '',
-        UserId: '18341',
-        AddressId: 0,
+        Latitute: '654',
+        Longitude: '213',
+        UserId: userData?.UserId,
         StreetNo: '15',
         Address: address,
         City: 'test',
@@ -34,13 +35,21 @@ const SaveAddress = () => {
       const options = {payloads: frmData};
       ApiService.post('Users/SaveUserAddress', options)
         .then(res => {
-          console.log('res address', res.data);
+          console.log('res address', res?.Status);
+          if (res?.Status == 'Success') {
+            back();
+            dispatch(getAllAddress());
+          }
         })
         .catch(error => {
-          console.log('error catch ', error.response.data);
+          console.log('error catch ', error.response);
+          back();
+          dispatch(getAllAddress());
         });
     } catch (error) {
       console.log('eror save address ', error);
+      back();
+      dispatch(getAllAddress());
     }
   };
   return (

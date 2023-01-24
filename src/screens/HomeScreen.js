@@ -26,7 +26,7 @@ import {useEffect} from 'react';
 import {
   getAllCategory,
   getAllRestaurants,
-  getExternalRestaurants,
+  getpopularRestaurants,
 } from '../redux/Actions/HomeAction';
 
 const Category = ({categoryListData}) => {
@@ -112,8 +112,8 @@ const HomeScreen = () => {
       latitute: '',
       longitude: '',
     };
-    // dispatch(getAllRestaurants(obj));
-    dispatch(getExternalRestaurants());
+    dispatch(getAllRestaurants(obj));
+    dispatch(getpopularRestaurants());
   }, []);
 
   useEffect(() => {});
@@ -121,7 +121,6 @@ const HomeScreen = () => {
   const ExternalRestaurant = useSelector(
     state => state.HomeReducers.GetAllExternalRestaurant,
   );
-  console.log('ExternalRestaurant>> ', ExternalRestaurant?.Restaurants);
   useEffect(() => {
     setCategoryData(categoryData?.Categories);
   }, [categoryData]);

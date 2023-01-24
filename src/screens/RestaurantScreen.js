@@ -10,26 +10,54 @@ import {
 import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/Feather';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import DatePicker from 'react-native-date-picker';
 import {scale, theme} from '../utils';
-import {Label, Restaurant, Title} from '../components';
+import {Label, Restaurant, TimePickerModel, Title} from '../components';
 import {RestaurantsData} from '../utils/MockData';
 import {useNavigation} from '@react-navigation/native';
 import SliderModal from '../components/appModel/SliderModal';
 import {useDispatch, useSelector} from 'react-redux';
 import {useEffect} from 'react';
 import {getAllCategory} from '../redux/Actions/HomeAction';
+import moment from 'moment';
+import {getpopularRestaurants} from '../redux/Actions/RestaurantAction';
 
 const RestaurantScreen = () => {
   const navigation = useNavigation();
   const [selectedModal, setSelectedModal] = useState(false);
+  const [date, setDate] = useState(new Date());
+  const [open, setOpen] = useState(false);
+  const [timeModel, setTimeModel] = useState(false);
+  const [timeSloat, setTimeSlot] = useState([]);
+  const [restaurantsData, setRestaurantsData] = useState([]);
   const dispatch = useDispatch();
   useEffect(() => {
+    const data = {
+      date: '01-12-2022',
+      timeSlot: '16:00TO16:30',
+      category: '',
+      latitute: '',
+      longitude: '',
+    };
+    dispatch(getpopularRestaurants(data));
     dispatch(getAllCategory());
   }, []);
+
   const categoryData = useSelector(state => state.HomeReducers?.categoryList);
+  const restaurantData = useSelector(
+    state => state.RestaurantReducers?.restaurantList,
+  );
+  useEffect(() => {
+    setRestaurantsData(restaurantData?.Restaurants);
+  }, [restaurantData]);
   const IconClosePicker = data => {
-    console.log('data of category ? ', data);
     setSelectedModal(false);
+  };
+  const handleTimer = time => {
+    setTimeModel(!timeModel);
+    if (time !== null) {
+      setTimeSlot(time);
+    }
   };
   const renderList = ({item, index}) => {
     return (
@@ -61,33 +89,39 @@ const RestaurantScreen = () => {
             size={scale(22)}
             color={theme.colors.black}
           />
-          <SliderModal
-            data={categoryData?.Categories}
-            isVisible={selectedModal}
-            close={IconClosePicker}
-          />
         </View>
+
         <View style={styles.fillterView}>
-          <TouchableOpacity style={styles.btn}>
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() => {
+              setTimeModel(!timeModel);
+            }}>
             <Icon name="clock" size={scale(15)} color={theme.colors.gray2} />
-            <Label title="Orario consega" style={styles.lbl} />
+            <Label title={timeSloat} style={styles.lbl} />
           </TouchableOpacity>
-          {/* <TouchableOpacity style={styles.btn}>
-            <Icon name="map-pin" size={scale(15)} color={theme.colors.gray2} /> */}
-          <GooglePlacesAutocomplete
-            placeholder="Search"
-            onPress={(data, details = null) => {
-              // 'details' is provided when fetchDetails = true
-              console.log(data, details);
-            }}
-            query={{
-              key: 'AIzaSyDxUeU36VnWRBXAok6txlBCV2rq9UhHWT4',
-              language: 'en',
-            }}
-          />
-          {/* <Label title="Orario consega" style={styles.lbl} />
-          </TouchableOpacity> */}
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() => {
+              setOpen(!open);
+            }}>
+            <Icon name="calendar" size={scale(15)} color={theme.colors.gray2} />
+            <Label
+              title={moment(date).format('DD-MM-YYYY')}
+              style={styles.lbl}
+            />
+          </TouchableOpacity>
         </View>
+        {/* <GooglePlacesAutocomplete
+          placeholder="Inserisci indirizzo"
+          onPress={(data, details = null) => {
+            console.log(data, details);
+          }}
+          query={{
+            key: 'AIzaSyDxUeU36VnWRBXAok6txlBCV2rq9UhHWT4',
+            language: 'en',
+          }}
+        /> */}
         <View style={[styles.textinputContainer, styles.shadow]}>
           <Icon
             name="search"
@@ -100,13 +134,33 @@ const RestaurantScreen = () => {
             placeholderTextColor={theme.colors.placeholder}
           />
         </View>
+
         <FlatList
           style={{height: '70%'}}
-          data={RestaurantsData}
+          data={restaurantsData}
           renderItem={renderList}
           showsVerticalScrollIndicator={false}
         />
       </View>
+      <SliderModal
+        data={categoryData?.Categories}
+        isVisible={selectedModal}
+        close={IconClosePicker}
+      />
+      <DatePicker
+        modal
+        open={open}
+        date={date}
+        mode="date"
+        onConfirm={date => {
+          setOpen(false);
+          setDate(date);
+        }}
+        onCancel={() => {
+          setOpen(false);
+        }}
+      />
+      <TimePickerModel isVisible={timeModel} close={handleTimer} />
     </SafeAreaView>
   );
 };

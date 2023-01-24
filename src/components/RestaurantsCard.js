@@ -8,7 +8,6 @@ import {scale, theme} from '../utils';
 
 const RestaurantsCard = props => {
   const {item, index} = props;
-  console.log('item?.Canvasv >>', item?.Canvas);
   return (
     <View style={styles.itemView} key={index}>
       <TouchableOpacity style={[styles.restaurantView, styles.shadow]}>

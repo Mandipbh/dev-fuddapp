@@ -11,19 +11,20 @@ import {scale, theme} from '../utils';
 import {Label, Title} from './Label';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon1 from 'react-native-vector-icons/Entypo';
+import {APP_BASE_URL} from '../utils/ApiService';
 const Restaurant = props => {
   const {item, index, onPress} = props;
   return (
     <TouchableOpacity onPress={onPress} style={styles.cardView} key={index}>
       <Image
         source={{
-          uri: 'https://t3.ftcdn.net/jpg/03/42/82/20/240_F_342822084_Sz4Hsw2STInarbm1eIVzNpvD2bFApzC8.jpg',
+          uri: APP_BASE_URL + item?.Logo,
         }}
         style={styles.Icon}
       />
       <ImageBackground
         source={{
-          uri: 'https://as1.ftcdn.net/v2/jpg/02/97/67/70/1000_F_297677001_zX7ZzRq8DObUV5IWTHAIhAae6DuiEQh4.jpg',
+          uri: APP_BASE_URL + item?.Canvas,
         }}
         style={styles.backImage}
         imageStyle={styles.image}>
@@ -38,7 +39,7 @@ const Restaurant = props => {
       </ImageBackground>
       <View style={styles.bttomCon}>
         <View style={[styles.row, {justifyContent: 'space-between'}]}>
-          <Title title={item.name} style={styles.title} />
+          <Title title={item.Name} style={styles.title} />
           <LinearGradient
             colors={[theme.colors.purpal1, theme.colors.orange]}
             start={{x: 0, y: 0}}
@@ -54,7 +55,7 @@ const Restaurant = props => {
               color={theme.colors.white}
               size={scale(12)}
             />
-            <Text style={styles.review}>{'100%'}</Text>
+            <Text style={styles.review}>{`${item?.Percentage} %`}</Text>
           </LinearGradient>
           <View style={styles.km}>
             <Text style={styles.review}>{'1.2 km'}</Text>
@@ -65,8 +66,11 @@ const Restaurant = props => {
             styles.row,
             {justifyContent: 'space-between', marginTop: scale(8)},
           ]}>
-          <Label title="Speciltia Carne, Hamburguer" style={styles.details} />
-          <Label title="Orddine minimo 15€" style={styles.details} />
+          <Label title={item?.Tags} style={styles.details} />
+          <Label
+            title={`Orddine minimo ${item?.MinimumOrder}€`}
+            style={styles.details}
+          />
         </View>
       </View>
     </TouchableOpacity>
@@ -147,5 +151,6 @@ const styles = StyleSheet.create({
   details: {
     fontSize: scale(11),
     color: theme.colors.lightblue1,
+    width: '65%',
   },
 });

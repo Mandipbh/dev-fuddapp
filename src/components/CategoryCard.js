@@ -2,13 +2,17 @@ import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {scale, theme} from '../utils';
 import {Label} from './Label';
+import {APP_BASE_URL} from '../utils/ApiService';
 
 const CategoryCard = props => {
   const {item, index} = props;
   return (
     <View style={styles.itemView} key={index}>
       <TouchableOpacity style={[styles.categoryView, styles.shadow]}>
-        <Image source={{uri: item?.ImgFullPath}} style={styles.categoryIcon} />
+        <Image
+          source={{uri: APP_BASE_URL + item?.ImgFullPath}}
+          style={styles.categoryIcon}
+        />
       </TouchableOpacity>
       <Label title={item?.Nome} style={styles.categoryLabel} />
     </View>
@@ -29,11 +33,12 @@ const styles = StyleSheet.create({
     borderRadius: scale(15),
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
   },
   categoryIcon: {
-    height: scale(40),
-    width: scale(40),
-    resizeMode: 'contain',
+    height: scale(55),
+    width: scale(55),
+    resizeMode: 'cover',
   },
   categoryLabel: {
     fontSize: scale(12),

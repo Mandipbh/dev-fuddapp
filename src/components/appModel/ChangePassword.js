@@ -10,7 +10,6 @@ import {Title, Label} from '../Label';
 const ChangePassword = props => {
   const {isVisible, close, title, subTitle} = props;
   const [text, setText] = useState('');
-  console.log('State Update', text);
   return (
     <Modal
       transparent={true}

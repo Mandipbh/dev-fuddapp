@@ -17,9 +17,10 @@ export const userData = payload => {
 
 export const getAllAddress = id => {
   return (dispatch, getState) => {
-    console.log('getState >> ', getState().UserReducer);
     try {
-      ApiService.get(API.getAllAddress + id).then(res => {
+      ApiService.get(
+        API.getAllAddress + getState().UserReducer?.userDetails?.UserId,
+      ).then(res => {
         if (res) {
           dispatch({type: types.GETALLADDRESS, payload: res});
         }
