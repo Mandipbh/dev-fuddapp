@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   FlatList,
   Platform,
@@ -12,9 +13,9 @@ import Icon from 'react-native-vector-icons/Feather';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import DatePicker from 'react-native-date-picker';
 import {scale, theme} from '../utils';
-import {Label, Restaurant, TimePickerModel, Title} from '../components';
+import {Label, Loader, Restaurant, TimePickerModel, Title} from '../components';
 import {RestaurantsData} from '../utils/MockData';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import SliderModal from '../components/appModel/SliderModal';
 import {useDispatch, useSelector} from 'react-redux';
 import {useEffect} from 'react';
@@ -24,24 +25,34 @@ import {getpopularRestaurants} from '../redux/Actions/RestaurantAction';
 
 const RestaurantScreen = () => {
   const navigation = useNavigation();
+  const isFocuse = useIsFocused();
   const [selectedModal, setSelectedModal] = useState(false);
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
   const [timeModel, setTimeModel] = useState(false);
-  const [timeSloat, setTimeSlot] = useState([]);
+  const [timeSloat, setTimeSlot] = useState(null);
   const [restaurantsData, setRestaurantsData] = useState([]);
+  const [selCategory, setSelCategory] = useState('');
+
   const dispatch = useDispatch();
   useEffect(() => {
     const data = {
-      date: '01-12-2022',
-      timeSlot: '16:00TO16:30',
-      category: '',
+      date: moment(date).format('DD-MM-YYYY'),
+      timeSlot: `${moment(new Date()).format('HH:mm')}-${moment(new Date())
+        .add(30, 'minute')
+        .format('HH:mm')}`, //'16:00TO16:30',
+      category: selCategory,
       latitute: '',
       longitude: '',
     };
     dispatch(getpopularRestaurants(data));
     dispatch(getAllCategory());
-  }, []);
+    setTimeSlot(
+      `${moment(new Date()).format('HH:mm')} ${moment(new Date())
+        .add(30, 'minute')
+        .format('HH:mm')}`,
+    );
+  }, [isFocuse, selCategory, timeSloat, date]);
 
   const categoryData = useSelector(state => state.HomeReducers?.categoryList);
   const restaurantData = useSelector(
@@ -51,12 +62,14 @@ const RestaurantScreen = () => {
     setRestaurantsData(restaurantData?.Restaurants);
   }, [restaurantData]);
   const IconClosePicker = data => {
+    setSelCategory(data?.Nome);
     setSelectedModal(false);
   };
   const handleTimer = time => {
     setTimeModel(!timeModel);
     if (time !== null) {
-      setTimeSlot(time);
+      const timeslot = time.replace(' ', 'TO');
+      setTimeSlot(timeslot);
     }
   };
   const renderList = ({item, index}) => {
@@ -65,6 +78,7 @@ const RestaurantScreen = () => {
         item={item}
         index={index}
         onPress={() => {
+          console.log('itemitemitem>>>> ', item);
           navigation.navigate('Details');
         }}
       />
@@ -161,6 +175,7 @@ const RestaurantScreen = () => {
         }}
       />
       <TimePickerModel isVisible={timeModel} close={handleTimer} />
+      <Loader loading={false} />
     </SafeAreaView>
   );
 };

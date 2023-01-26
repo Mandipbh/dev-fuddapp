@@ -18,6 +18,9 @@ import {Button, CartModel, FullScreenImage, Label, Title} from '../components';
 import LinearGradient from 'react-native-linear-gradient';
 import {foodDetailsData, RestoInfo} from '../utils/MockData';
 import {useNavigation} from '@react-navigation/native';
+import {useDispatch} from 'react-redux';
+import {useEffect} from 'react';
+import {restaurantDetails} from '../redux/Actions/RestaurantAction';
 
 const RestaturantDetails = () => {
   const [selectedIndex, setSelIndex] = useState(0);
@@ -26,6 +29,10 @@ const RestaturantDetails = () => {
   const [searchtxt, setSearchTxt] = useState('');
   const [selectedItem, setSelectedItem] = useState(0);
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(restaurantDetails());
+  }, []);
   const renderMenus = ({item, index}) => {
     return (
       <View key={index} style={styles.menuView}>

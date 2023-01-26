@@ -2,8 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Modal, ActivityIndicator} from 'react-native';
 // import {LottieLoader} from 'lottie-loader-react-native';
 import LottieView from 'lottie-react-native';
-import {scale, theme} from '../../utils';
-import {Label} from './Label';
+import {scale, theme, loader} from '../../utils';
 
 const Loader = props => {
   const {loading, background} = props;
@@ -12,15 +11,15 @@ const Loader = props => {
       transparent={loading}
       animationType={'none'}
       visible={loading}
+      backdropOpacity={0.8}
       onRequestClose={() => {}}>
       <View style={[styles.modalBackground, background]}>
         <View style={styles.activityIndicatorWrapper}>
           <LottieView
-            source={{
-              uri: 'https://assets5.lottiefiles.com/packages/lf20_rxpugebj.json',
-            }}
+            source={loader}
             autoPlay
             loop
+            style={{height: scale(250)}}
           />
         </View>
       </View>
@@ -40,7 +39,7 @@ const styles = StyleSheet.create({
   },
   label: {textAlign: 'center', color: theme.colors.black},
   activityIndicatorWrapper: {
-    backgroundColor: theme.colors.white,
+    // backgroundColor: theme.colors.white,
     height: scale(100),
     width: scale(100),
     borderRadius: scale(10),

@@ -3,21 +3,36 @@ import React from 'react';
 import {scale, theme} from '../../utils';
 import Modal from 'react-native-modal';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/Feather';
+import {useNavigation} from '@react-navigation/core';
 
 const DrawerModal = props => {
   const {isVisible, close} = props;
+  const navigation = useNavigation();
   return (
-    <Modal visible={isVisible} style={{marginRight: scale(80), margin: 0}}>
+    <Modal
+      backdropOpacity={0.4}
+      visible={isVisible}
+      style={{marginRight: scale(80), margin: 0}}>
       <View style={styles.container}>
-        <TouchableOpacity style={{marginTop: 55}} onPress={() => close()}>
-          <Text>Close</Text>
-        </TouchableOpacity>
+        <Icon
+          name="x"
+          size={scale(22)}
+          color={theme.colors.black}
+          onPress={() => close()}
+          style={{marginTop: 55, alignSelf: 'flex-end'}}
+        />
         <View
           style={{
             marginLeft: scale(25),
             marginTop: scale(130),
           }}>
-          <TouchableOpacity style={styles.textButton}>
+          <TouchableOpacity
+            style={styles.textButton}
+            onPress={() => {
+              close();
+              navigation.navigate('ACCOUNT');
+            }}>
             <MaterialIcons
               name="account-circle"
               size={25}
@@ -25,7 +40,12 @@ const DrawerModal = props => {
             />
             <Text style={styles.btnText}>PROFILE</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.textButton}>
+          <TouchableOpacity
+            style={styles.textButton}
+            onPress={() => {
+              close();
+              navigation.navigate('ACCOUNT');
+            }}>
             <MaterialIcons
               name="location-on"
               size={25}

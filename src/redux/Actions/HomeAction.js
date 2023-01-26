@@ -29,16 +29,12 @@ export const getAllRestaurants = data => {
   return async dispatch => {
     try {
       const options = {payloads: data};
-      ApiService.post(API.getAllRestaurant, options)
-        .then(res => {
-          console.log('res >> ', res);
-          if (res) {
-            dispatch({type: GETALLRESTAURANTS, payload: res});
-          }
-        })
-        .catch(c => {
-          console.log('catch of restaurants >> ', c.response.data);
-        });
+      ApiService.get(API.GetAllExternalRestaurant).then(res => {
+        if (res) {
+          console.log('res ????  GetAllExternalRestaurant', res);
+          dispatch({type: GETALLRESTAURANTS, payload: res});
+        }
+      });
     } catch (error) {
       console.log('error in restaurants', error);
     }
@@ -54,15 +50,15 @@ export const getpopularRestaurants = frmdata => {
         longitude: '13.35856',
       };
       const options = {payloads: data};
-      ApiService.get(API.getpopularRestaurants, data)
+      ApiService.post(API.GetAllExclusivesRestaurant, options)
         .then(res => {
-          console.log('res >> ', res);
+          console.log('res >>GetAllExclusivesRestaurant ', res);
           if (res) {
-            // dispatch({type: GETALLEXTERNALRESTAURANT, payload: res});
+            dispatch({type: GETALLEXTERNALRESTAURANT, payload: res});
           }
         })
         .catch(c => {
-          console.log('catch of restaurants >> ', c.response.data);
+          console.log('catch of restaurants >> ', c.response);
         });
     } catch (error) {
       console.log('error in restaurants', error);

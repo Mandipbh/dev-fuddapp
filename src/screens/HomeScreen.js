@@ -60,14 +60,14 @@ const PopularRestaturants = ({ExternalRestaurantData}) => {
         horizontal>
         {ExternalRestaurantData &&
           ExternalRestaurantData?.map((item, index) => {
-            return <RestaurantsCard item={item} index={index} />;
+            return <RestaurantsCard item={item} index={index} Popular />;
           })}
       </ScrollView>
     </View>
   );
 };
 
-const Restaturants = () => {
+const Restaturants = ({restaurant}) => {
   return (
     <View style={styles.categoryContainer}>
       <View style={styles.popularView}>
@@ -79,13 +79,14 @@ const Restaturants = () => {
         contentContainerStyle={{paddingVertical: scale(15)}}
         showsHorizontalScrollIndicator={false}
         horizontal>
-        {popularRestaurants.reverse()?.map((item, index) => {
-          return (
-            <TouchableOpacity>
-              <RestaurantsCard item={item} index={index} />
-            </TouchableOpacity>
-          );
-        })}
+        {restaurant &&
+          restaurant.reverse()?.map((item, index) => {
+            return (
+              <TouchableOpacity>
+                <RestaurantsCard item={item} index={index} />
+              </TouchableOpacity>
+            );
+          })}
       </ScrollView>
     </View>
   );
@@ -96,7 +97,8 @@ const HomeScreen = () => {
   const [searchtxt, setSearchTxt] = useState('');
   const [selectedModal, setSelectedModal] = useState(false);
   const [categoryListData, setCategoryData] = useState([]);
-  const [ExternalRestaurantData, setExternalRestaurant] = useState([]);
+  const [restaurant, setExternalRestaurant] = useState([]);
+  const [popularRestaurants, setPopularRestaturants] = useState([]);
   const dispatch = useDispatch();
   const IconClosePicker = () => {
     setSelectedModal(false);
@@ -116,18 +118,25 @@ const HomeScreen = () => {
     dispatch(getpopularRestaurants());
   }, []);
 
-  useEffect(() => {});
   const categoryData = useSelector(state => state.HomeReducers?.categoryList);
   const ExternalRestaurant = useSelector(
-    state => state.HomeReducers.GetAllExternalRestaurant,
+    state => state.HomeReducers.allRestaurants,
   );
+  const popularRes = useSelector(
+    state => state.HomeReducers?.GetAllExternalRestaurant,
+  );
+  useEffect(() => {
+    console.log('popularRes >?? ', ExternalRestaurant);
+    setPopularRestaturants(popularRes?.Restaurants);
+  }, [popularRes]);
   useEffect(() => {
     setCategoryData(categoryData?.Categories);
   }, [categoryData]);
   useEffect(() => {
     setExternalRestaurant(ExternalRestaurant?.Restaurants);
   }, []);
-  const Food = categoryListData => {
+
+  const Food = () => {
     return (
       <>
         <FoodCard
@@ -199,10 +208,8 @@ const HomeScreen = () => {
           {categoryView && Food()}
 
           {!categoryView && <Category categoryListData={categoryListData} />}
-          <PopularRestaturants
-            ExternalRestaurantData={ExternalRestaurantData}
-          />
-          {!categoryView && Restaturants()}
+          <PopularRestaturants ExternalRestaurantData={popularRestaurants} />
+          {!categoryView && <Restaturants restaurant={restaurant} />}
         </ScrollView>
       </View>
     </SafeAreaView>

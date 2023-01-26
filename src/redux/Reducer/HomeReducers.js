@@ -4,6 +4,7 @@ const initialState = {
   categoryList: [],
   addressList: [],
   GetAllExternalRestaurant: [],
+  allRestaurants: [],
 };
 
 export default (state = initialState, action) => {
@@ -22,6 +23,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         GetAllExternalRestaurant: action.payload,
+      };
+    case types.GETALLRESTAURANTS:
+      return {
+        ...state,
+        allRestaurants: action.payload,
       };
     case types.LOGOUT:
       return {

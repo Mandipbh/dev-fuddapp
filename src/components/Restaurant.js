@@ -30,37 +30,63 @@ const Restaurant = props => {
         imageStyle={styles.image}>
         <View style={styles.statusView}>
           <TouchableOpacity style={styles.btn}>
-            <Label title="Aperto" style={styles.lbl} />
+            <Label
+              title={!item?.IsOnline ? 'Offline' : 'Aperto'}
+              style={[
+                styles.lbl,
+                {
+                  color: !item?.IsOnline
+                    ? theme.colors.red
+                    : theme.colors.green,
+                },
+              ]}
+            />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.btn}>
-            <Label title="21 minuti" style={styles.lbl} />
-          </TouchableOpacity>
+          {item?.OpeningTime !== '' && (
+            <TouchableOpacity style={styles.btn}>
+              <Label title={item?.OpeningTime} style={styles.lbl} />
+            </TouchableOpacity>
+          )}
         </View>
       </ImageBackground>
       <View style={styles.bttomCon}>
         <View style={[styles.row, {justifyContent: 'space-between'}]}>
-          <Title title={item.Name} style={styles.title} />
-          <LinearGradient
-            colors={[theme.colors.purpal1, theme.colors.orange]}
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 0}}
-            style={{
-              width: null,
-              flexDirection: 'row',
-              padding: scale(5),
-              borderRadius: scale(15),
-            }}>
-            <Icon1
-              name="thumbs-up"
-              color={theme.colors.white}
-              size={scale(12)}
+          <View>
+            <Title
+              title={item.Name}
+              style={[styles.title, {width: '100%'}]}
+              numberOfLines={1}
             />
-            <Text style={styles.review}>{`${item?.Percentage} %`}</Text>
-          </LinearGradient>
-          <View style={styles.km}>
-            <Text style={styles.review}>{'1.2 km'}</Text>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              width: '32%',
+              justifyContent: 'space-between',
+            }}>
+            <LinearGradient
+              colors={[theme.colors.purpal1, theme.colors.orange]}
+              start={{x: 0, y: 0}}
+              end={{x: 1, y: 0}}
+              style={{
+                width: null,
+                flexDirection: 'row',
+                padding: scale(5),
+                borderRadius: scale(15),
+              }}>
+              <Icon1
+                name="thumbs-up"
+                color={theme.colors.white}
+                size={scale(12)}
+              />
+              <Text style={styles.review}>{`${item?.Percentage} %`}</Text>
+            </LinearGradient>
+            <View style={styles.km}>
+              <Text style={styles.review}>{'1.2 km'}</Text>
+            </View>
           </View>
         </View>
+
         <View
           style={[
             styles.row,

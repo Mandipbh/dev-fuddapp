@@ -1,34 +1,47 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Image,
+  Linking,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon1 from 'react-native-vector-icons/Entypo';
 import {Label, Title} from './Label';
 import {scale, theme} from '../utils';
+import {APP_BASE_URL} from '../utils/ApiService';
+import {useNavigation} from '@react-navigation/core';
 
 const RestaurantsCard = props => {
-  const {item, index} = props;
+  const {item, index, Popular} = props;
+  const navigation = useNavigation();
   return (
     <View style={styles.itemView} key={index}>
-      <TouchableOpacity style={[styles.restaurantView, styles.shadow]}>
-        <Image source={{uri: item?.Canvas}} style={styles.categoryIcon} />
+      <TouchableOpacity
+        style={[styles.restaurantView, styles.shadow]}
+        onPress={() => {
+          Popular
+            ? navigation.navigate('RISTORANTI')
+            : Linking.openURL(item?.ExternalUrl);
+        }}>
+        <Image
+          source={{uri: Popular ? APP_BASE_URL + item?.Canvas : item?.Canvas}}
+          style={styles.categoryIcon}
+        />
       </TouchableOpacity>
       <Title title={item.Name} style={styles.resLabel} />
-      <Label title={item?.location} style={styles.location} />
+      <Label title={item?.Tags} style={styles.location} numberOfLines={1} />
       <View style={styles.row}>
         <LinearGradient
           colors={[theme.colors.purpal1, theme.colors.orange]}
           start={{x: 0, y: 0}}
           end={{x: 1, y: 0}}
-          style={{
-            width: null,
-            flexDirection: 'row',
-            padding: scale(3),
-            paddingHorizontal: scale(3),
-            borderRadius: scale(15),
-          }}>
+          style={styles.linBtn}>
           <Icon1 name="thumbs-up" color={theme.colors.white} size={scale(12)} />
-          <Text style={styles.review}>{'100%'}</Text>
+          <Text style={styles.review}>{`${item?.Percentage} %`}</Text>
         </LinearGradient>
         <View style={styles.iconView}>
           <Icon name="hamburger" color={theme.colors.purpal} size={scale(11)} />
@@ -54,9 +67,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   categoryIcon: {
-    height: scale(120),
+    height: scale(130),
     width: '100%',
-    resizeMode: 'contain',
+    resizeMode: 'cover',
     borderRadius: scale(10),
   },
   shadow: {
@@ -76,6 +89,7 @@ const styles = StyleSheet.create({
   location: {
     fontSize: scale(11),
     color: theme.colors.gray,
+    width: scale(120),
   },
   row: {
     flexDirection: 'row',
@@ -94,5 +108,12 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.gray,
     backgroundColor: theme.colors.gray1,
     marginLeft: scale(10),
+  },
+  linBtn: {
+    width: null,
+    flexDirection: 'row',
+    padding: scale(3),
+    paddingHorizontal: scale(3),
+    borderRadius: scale(15),
   },
 });
