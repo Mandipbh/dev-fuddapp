@@ -3,6 +3,7 @@ import * as types from '../Actions/ActionsTypes';
 const initialState = {
   restaurantList: [],
   restaurantDetails: [],
+  loadding: false,
 };
 
 export default (state = initialState, action) => {
@@ -16,6 +17,10 @@ export default (state = initialState, action) => {
       return {
         ...state,
         restaurantDetails: action.payload,
+      };
+    case types.LOADINGRESTORANTI:
+      return {
+        loadding: action.payload,
       };
     case types.LOGOUT:
       return {

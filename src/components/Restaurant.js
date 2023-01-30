@@ -12,11 +12,12 @@ import {Label, Title} from './Label';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon1 from 'react-native-vector-icons/Entypo';
 import {APP_BASE_URL} from '../utils/ApiService';
+import FastImage from 'react-native-fast-image';
 const Restaurant = props => {
   const {item, index, onPress} = props;
   return (
     <TouchableOpacity onPress={onPress} style={styles.cardView} key={index}>
-      <Image
+      <FastImage
         source={{
           uri: APP_BASE_URL + item?.Logo,
         }}

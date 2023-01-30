@@ -58,6 +58,7 @@ const RestaurantScreen = () => {
   const restaurantData = useSelector(
     state => state.RestaurantReducers?.restaurantList,
   );
+  // const loadding = useSelector(state => state.RestaurantReducers.loadding);
   useEffect(() => {
     setRestaurantsData(restaurantData?.Restaurants);
   }, [restaurantData]);
@@ -72,6 +73,7 @@ const RestaurantScreen = () => {
       setTimeSlot(timeslot);
     }
   };
+
   const renderList = ({item, index}) => {
     return (
       <Restaurant
@@ -193,7 +195,7 @@ const RestaurantScreen = () => {
         }}
       />
       <TimePickerModel isVisible={timeModel} close={handleTimer} />
-      <Loader loading={false} />
+      {<Loader loading={false} />}
     </SafeAreaView>
   );
 };

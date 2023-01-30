@@ -1,20 +1,29 @@
 import ApiService, {API} from '../../utils/ApiService';
-import {GETALLRISTORANTI, GETRESTAURANTDETAILS} from './ActionsTypes';
+import {
+  GETALLRISTORANTI,
+  GETRESTAURANTDETAILS,
+  LOADINGRESTORANTI,
+} from './ActionsTypes';
 
 export const getpopularRestaurants = data => {
   return async dispatch => {
+    dispatch({type: LOADINGRESTORANTI, payload: true});
     try {
       const options = {payloads: data};
       ApiService.post(API.getAllRestaurant, options)
         .then(res => {
+          console.log('res >>>>> ', res);
           if (res) {
             dispatch({type: GETALLRISTORANTI, payload: res});
+            // dispatch({type: LOADINGRESTORANTI, payload: false});
           }
         })
         .catch(c => {
+          // dispatch({type: LOADINGRESTORANTI, payload: false});
           console.log('catch of restaurants  ', c.response.data);
         });
     } catch (error) {
+      // dispatch({type: LOADINGRESTORANTI, payload: false});
       console.log('error in restaurants', error);
     }
   };

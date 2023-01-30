@@ -14,6 +14,7 @@ import {Label, Title} from './Label';
 import {scale, theme} from '../utils';
 import {APP_BASE_URL} from '../utils/ApiService';
 import {useNavigation} from '@react-navigation/core';
+import FastImage from 'react-native-fast-image';
 
 const RestaurantsCard = props => {
   const {item, index, Popular} = props;
@@ -27,7 +28,7 @@ const RestaurantsCard = props => {
             ? navigation.navigate('RISTORANTI')
             : Linking.openURL(item?.ExternalUrl);
         }}>
-        <Image
+        <FastImage
           source={{uri: Popular ? APP_BASE_URL + item?.Canvas : item?.Canvas}}
           style={styles.categoryIcon}
         />

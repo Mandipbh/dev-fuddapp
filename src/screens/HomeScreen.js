@@ -133,7 +133,7 @@ const HomeScreen = () => {
   }, [categoryData]);
   useEffect(() => {
     setExternalRestaurant(ExternalRestaurant?.Restaurants);
-  }, []);
+  }, [ExternalRestaurant]);
 
   const Food = () => {
     return (

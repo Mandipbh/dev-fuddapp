@@ -16,12 +16,12 @@ import Icon2 from 'react-native-vector-icons/Entypo';
 import {scale, theme} from '../utils';
 import {Button, CartModel, FullScreenImage, Label, Title} from '../components';
 import LinearGradient from 'react-native-linear-gradient';
-import {foodDetailsData} from '../utils/MockData';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useEffect} from 'react';
 import {restaurantDetails} from '../redux/Actions/RestaurantAction';
 import {APP_BASE_URL} from '../utils/ApiService';
+import {AddToCart} from '../redux/Actions/CartAction';
 
 const RestaturantDetails = () => {
   const [selectedIndex, setSelIndex] = useState(0);
@@ -34,17 +34,19 @@ const RestaturantDetails = () => {
   const [selItem, setSelItem] = useState('');
   const navigation = useNavigation();
   const dispatch = useDispatch();
+
   useEffect(() => {
     const data = {
       Latitute: '',
       Longitude: '',
       id: 3,
-      Date: '27-01-2023',
+      Date: '30-01-2023',
       TimeSlot: '20:00-20:30',
       Category: '',
     };
     dispatch(restaurantDetails(data));
   }, []);
+
   const restaurantData = useSelector(
     state => state.RestaurantReducers?.restaurantDetails,
   );
@@ -122,15 +124,7 @@ const RestaturantDetails = () => {
 
   const renderInfo = ({item, index}) => {
     return (
-      <View
-        style={[
-          styles.menuView,
-          {
-            flexDirection: 'row',
-            borderBottomWidth: 1,
-            borderColor: theme.colors.gray1,
-          },
-        ]}>
+      <View style={styles.menuViews}>
         <Text style={styles.infoText}>{item?.Day}</Text>
         <Text style={styles.infoText}>{item?.Time}</Text>
       </View>
@@ -143,20 +137,44 @@ const RestaturantDetails = () => {
     // navigation.navigate('Cart');
   };
 
-  const handleCartAddItem = item => {
-    console.log('handleCartAddItem >>> ', item?.lstIngredients?.length);
-    console.log('handleCartAddItem123 >>> ', item?.lstAddons?.length);
-    console.log('dfffddfdffd >>>> ', item?.lstMakeTypes?.length);
-    if (item?.lstIngredients?.length === 0 && item?.lstAddons?.length === 0) {
-      console.log('adddd >>>>>');
+  const cartData = useSelector(state => state?.CartReducer.cartData);
+  console.log(
+    'useSelector(state => state?.CartReducer.cartData) >> ',
+    cartData,
+  );
+  const handleCartAddItem = async item => {
+    // console.log('cart data >>> ', JSON.stringify(cartData, null, 4));
+    // console.log('restaurantData ??? ', JSON.stringify(item, null, 4));
+    let foodItem = [];
+    if (
+      item?.lstIngredients?.length === 0 &&
+      item?.lstAddons?.length === 0 &&
+      item?.lstAddons.length === 0
+    ) {
+      if (cartData.length === 0) {
+        foodItem = [item];
+      } else {
+        let isExist = await cartData.some(i => i.Name === item?.Name);
+        if (isExist) {
+          foodItem.Qty = foodItem.Qty + 1;
+        } else {
+          foodItem = {
+            ...cartData,
+          };
+          const i = {...item, Qty: 1};
+          foodItem.push(i);
+        }
+        console.log('isExist ?? ', foodItem);
+      }
+
+      dispatch(AddToCart(foodItem));
       setSelItem(item);
     } else {
       setSelItem(item);
       setCartModel(true);
-      console.log('something else ');
     }
   };
-
+  // console.log('cart item >>. ', JSON.stringify(cartData, null, 4));
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -190,23 +208,32 @@ const RestaturantDetails = () => {
               }}
             />
           </View>
-          <Icon1 name="bag" size={scale(25)} color={theme.colors.white} />
+
+          <TouchableOpacity
+            style={styles.cartBtn}
+            onPress={() => {
+              navigation.navigate('Cart');
+              // setCartModel(!cartModel);
+            }}>
+            <Icon1 name="bag" size={scale(25)} color={theme.colors.white} />
+            <Label title={cartData?.length} style={styles.Cartcount} />
+          </TouchableOpacity>
         </View>
-        <Title title="Zancos Steak House" style={styles.headerTitle} />
+        <Title title={restaurantData?.Name} style={styles.headerTitle} />
         <View style={styles.subtitleView}>
-          <Label title={restaurantData?.Addresses[0]} style={styles.subTitle} />
+          {restaurantData && (
+            <Label
+              title={restaurantData?.Addresses[0]}
+              style={styles.subTitle}
+            />
+          )}
         </View>
         <View style={styles.bottomView}>
           <LinearGradient
             colors={[theme.colors.purpal1, theme.colors.orange]}
             start={{x: 0, y: 0}}
             end={{x: 1, y: 0}}
-            style={{
-              width: null,
-              flexDirection: 'row',
-              padding: scale(5),
-              borderRadius: scale(15),
-            }}>
+            style={styles.linCon}>
             <Icon2
               name="thumbs-up"
               color={theme.colors.white}
@@ -249,22 +276,8 @@ const RestaturantDetails = () => {
       </View>
       <View style={styles.infoContainer}>
         <View style={styles.textView}>
-          <Text
-            style={{
-              color: theme.colors.gray,
-              fontSize: scale(16),
-              fontWeight: '800',
-            }}>
-            {restaurantData?.Name}
-          </Text>
-          <Text
-            style={{
-              color: theme.colors.gray,
-              fontSize: scale(14),
-              fontWeight: '500',
-            }}>
-            {restaurantData?.Addresses[0]}
-          </Text>
+          <Text style={styles.title}>{restaurantData?.Name}</Text>
+          <Text style={styles.addres}>{restaurantData?.Addresses[0]}</Text>
         </View>
         <Text style={styles.titleText}>Orari di apertura</Text>
         {selectedItem === 1 && (
@@ -342,6 +355,13 @@ const styles = StyleSheet.create({
     marginLeft: scale(10),
     fontWeight: '600',
   },
+  cartBtn: {justifyContent: 'center', alignItems: 'center'},
+  Cartcount: {
+    position: 'absolute',
+    fontWeight: '600',
+    color: theme.colors.white,
+    top: scale(7),
+  },
   headerTitle: {
     fontSize: scale(23),
     textAlign: 'center',
@@ -393,6 +413,12 @@ const styles = StyleSheet.create({
     margin: scale(10),
     marginHorizontal: theme.SCREENWIDTH * 0.25,
   },
+  linCon: {
+    width: null,
+    flexDirection: 'row',
+    padding: scale(5),
+    borderRadius: scale(15),
+  },
   filBtn: {
     width: scale(100),
     margin: 0,
@@ -406,6 +432,17 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.gray,
     marginHorizontal: scale(10),
   },
+  menuViews: {
+    padding: scale(10),
+    backgroundColor: theme.colors.white,
+    justifyContent: 'space-between',
+    paddingVertical: scale(5),
+    marginHorizontal: scale(10),
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderColor: theme.colors.gray1,
+  },
+
   colapseView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -438,6 +475,11 @@ const styles = StyleSheet.create({
   price: {
     fontSize: scale(12),
     color: theme.colors.gray,
+  },
+  title: {
+    color: theme.colors.gray,
+    fontSize: scale(16),
+    fontWeight: '800',
   },
   row: {
     flexDirection: 'row',

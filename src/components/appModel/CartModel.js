@@ -23,7 +23,6 @@ const CartModel = props => {
     setPrice(data?.Amount);
   }, [data]);
 
-  console.log('>>>>> ', rIds);
   return (
     <Modal
       style={styles.Maincontainer}
@@ -62,11 +61,12 @@ const CartModel = props => {
 
             <Title title="€ 12.00" style={{color: theme.colors.purpal}} />
           </View> */}
-          <View style={{width: '95%', height: '70%', marginTop: scale(10)}}>
-            <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.itemContainer}>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              nestedScrollEnabled>
               {data?.lstAddons?.length > 0 && (
                 <>
-                  {' '}
                   <TouchableOpacity style={styles.categoryTitle}>
                     <Title title={'Aggiungi ingredienti'} />
                     <Icon
@@ -75,20 +75,22 @@ const CartModel = props => {
                       color={theme.colors.gray}
                     />
                   </TouchableOpacity>
-                  <ScrollView style={{height: theme.SCREENHEIGHT * 0.2}}>
+                  <ScrollView
+                    style={{height: theme.SCREENHEIGHT * 0.2}}
+                    nestedScrollEnabled>
                     {data?.lstAddons?.length > 0 && (
                       <View style={styles.card}>
                         <View style={styles.subItem}>
                           {data?.lstAddons?.map((item, index) => {
                             return (
-                              <View style={styles.itemView}>
+                              <View style={styles.itemView} key={index}>
                                 <View>
                                   <Label
                                     title={item?.Descrizione}
                                     style={styles.name}
                                   />
                                   <Label
-                                    title={`${item?.Prezzo}€`}
+                                    title={`${item?.Prezzo?.toString()}€`}
                                     style={styles.itemprice}
                                   />
                                 </View>
@@ -100,16 +102,7 @@ const CartModel = props => {
                                       alignItems: 'center',
                                     },
                                   ]}>
-                                  <TouchableOpacity
-                                    style={[
-                                      styles.btn,
-                                      {
-                                        width: scale(23),
-                                        padding: scale(0),
-                                        height: scale(23),
-                                        justifyContent: 'center',
-                                      },
-                                    ]}>
+                                  <TouchableOpacity style={styles.btns}>
                                     <Icon
                                       size={scale(scale(13))}
                                       name="minus"
@@ -120,16 +113,7 @@ const CartModel = props => {
                                     title="0"
                                     style={{marginHorizontal: scale(8)}}
                                   />
-                                  <TouchableOpacity
-                                    style={[
-                                      styles.btn,
-                                      {
-                                        width: scale(23),
-                                        padding: scale(0),
-                                        height: scale(23),
-                                        justifyContent: 'center',
-                                      },
-                                    ]}>
+                                  <TouchableOpacity style={styles.btns}>
                                     <Icon
                                       size={scale(scale(13))}
                                       name="plus"
@@ -157,7 +141,9 @@ const CartModel = props => {
                       color={theme.colors.gray}
                     />
                   </TouchableOpacity>
-                  <ScrollView style={{height: theme.SCREENHEIGHT * 0.2}}>
+                  <ScrollView
+                    style={{height: theme.SCREENHEIGHT * 0.2}}
+                    nestedScrollEnabled>
                     {data?.lstIngredients?.length > 0 && (
                       <View style={styles.card}>
                         <View style={styles.subItem}>
@@ -200,14 +186,16 @@ const CartModel = props => {
               {data?.lstMakeTypes?.length > 0 && (
                 <>
                   <TouchableOpacity style={styles.categoryTitle}>
-                    <Title title={'Come desideri il prodotto?'} />
+                    <Title title={'Comeil prodotto?'} />
                     <Icon
                       name="chevron-down"
                       size={scale(22)}
                       color={theme.colors.gray}
                     />
                   </TouchableOpacity>
-                  <ScrollView style={{height: theme.SCREENHEIGHT * 0.25}}>
+                  <ScrollView
+                    style={{height: theme.SCREENHEIGHT * 0.25}}
+                    nestedScrollEnabled>
                     {data?.lstMakeTypes?.length > 0 && (
                       <View style={styles.card}>
                         <View style={styles.subItem}>
@@ -328,6 +316,17 @@ const styles = StyleSheet.create({
     padding: scale(3),
     alignItems: 'center',
   },
+  btns: {
+    borderWidth: scale(1.5),
+    borderColor: theme.colors.gray,
+    borderRadius: scale(12),
+    alignItems: 'center',
+    width: scale(23),
+    padding: scale(0),
+    height: scale(23),
+    justifyContent: 'center',
+  },
+
   priceDetails: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -391,6 +390,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.gray4,
     padding: scale(8),
   },
+  itemContainer: {width: '95%', height: '70%', marginTop: scale(10)},
 });
 
 export default CartModel;

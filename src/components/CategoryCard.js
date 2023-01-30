@@ -1,15 +1,16 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {scale, theme} from '../utils';
 import {Label} from './Label';
 import {APP_BASE_URL} from '../utils/ApiService';
+import FastImage from 'react-native-fast-image';
 
 const CategoryCard = props => {
   const {item, index} = props;
   return (
     <View style={styles.itemView} key={index}>
       <TouchableOpacity style={[styles.categoryView, styles.shadow]}>
-        <Image
+        <FastImage
           source={{uri: APP_BASE_URL + item?.ImgFullPath}}
           style={styles.categoryIcon}
         />

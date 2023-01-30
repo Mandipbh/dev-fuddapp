@@ -52,7 +52,7 @@ export const getpopularRestaurants = frmdata => {
       const options = {payloads: data};
       ApiService.post(API.GetAllExclusivesRestaurant, options)
         .then(res => {
-          console.log('res >>GetAllExclusivesRestaurant ', res);
+          // console.log('res >>GetAllExclusivesRestaurant ', res);
           if (res) {
             dispatch({type: GETALLEXTERNALRESTAURANT, payload: res});
           }

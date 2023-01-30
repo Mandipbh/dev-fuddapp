@@ -8,7 +8,7 @@ export default (state = initialState, action) => {
   switch (action.type) {
     case types.ADDTOCART:
       return {
-        ...state,
+        ...state.cartData,
         cartData: action.payload,
       };
 

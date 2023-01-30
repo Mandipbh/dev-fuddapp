@@ -1,11 +1,11 @@
 import React from 'react';
 import {StyleSheet, View, Modal, ActivityIndicator, Image} from 'react-native';
+import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Feather';
 import {scale, theme} from '../../utils';
 
 const FullScreenImage = props => {
   const {isVisible, close, image} = props;
-  console.log('mage >>> ', image);
   return (
     <Modal
       transparent={true}
@@ -18,10 +18,10 @@ const FullScreenImage = props => {
           onPress={close}
           size={scale(30)}
           color={theme.colors.white}
-          style={{alignSelf: 'flex-end', marginRight: scale(20)}}
+          style={styles.close}
         />
         <View style={styles.activityIndicatorWrapper}>
-          <Image
+          <FastImage
             source={{
               uri: image,
             }}
@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
     width: '100%',
     resizeMode: 'contain',
   },
+  close: {alignSelf: 'flex-end', marginRight: scale(20)},
 });
 
 export default FullScreenImage;
