@@ -14,7 +14,6 @@ import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
 import DatePicker from 'react-native-date-picker';
 import {scale, theme} from '../utils';
 import {Label, Loader, Restaurant, TimePickerModel, Title} from '../components';
-import {RestaurantsData} from '../utils/MockData';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import SliderModal from '../components/appModel/SliderModal';
 import {useDispatch, useSelector} from 'react-redux';
@@ -33,6 +32,7 @@ const RestaurantScreen = () => {
   const [timeSloat, setTimeSlot] = useState(null);
   const [restaurantsData, setRestaurantsData] = useState([]);
   const [selCategory, setSelCategory] = useState('');
+  const [search, setSearch] = useState();
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -83,6 +83,20 @@ const RestaurantScreen = () => {
         }}
       />
     );
+  };
+  const handleSearch = text => {
+    if (text) {
+      const newData = restaurantData?.Restaurants.filter(function (item) {
+        const itemData = item.Name ? item.Name.toUpperCase() : ''.toUpperCase();
+        const textData = text.toUpperCase();
+        return itemData.indexOf(textData) > -1;
+      });
+      setRestaurantsData(newData);
+      setSearch(text);
+    } else {
+      setRestaurantsData(restaurantData?.Restaurants);
+      setSearch(text);
+    }
   };
   return (
     <SafeAreaView style={styles.container}>
@@ -146,6 +160,10 @@ const RestaurantScreen = () => {
             placeholder="Piatti, ristoranti o tipi di cucina"
             style={styles.searchbox}
             placeholderTextColor={theme.colors.placeholder}
+            value={search}
+            onChangeText={txt => {
+              handleSearch(txt);
+            }}
           />
         </View>
 

@@ -126,7 +126,6 @@ const HomeScreen = () => {
     state => state.HomeReducers?.GetAllExternalRestaurant,
   );
   useEffect(() => {
-    console.log('popularRes >?? ', ExternalRestaurant);
     setPopularRestaturants(popularRes?.Restaurants);
   }, [popularRes]);
   useEffect(() => {

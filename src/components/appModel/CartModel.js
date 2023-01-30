@@ -5,23 +5,31 @@ import {scale, theme} from '../../utils';
 import Modal from 'react-native-modal';
 import {Label, Title} from '../Label';
 import Button from '../Button';
-import {cartData} from '../../utils/MockData';
 import {useState} from 'react';
 import AddCardModal from './AddCardModal';
+import {useEffect} from 'react';
 
 const CartModel = props => {
-  const {isVisible, close} = props;
+  const {isVisible, close, data} = props;
   const [cartModel, setCartModel] = useState(false);
+  const [totalPrice, setPrice] = useState(0);
+  const [wantProduct, setWantProduct] = useState(null);
+  const [rIds, setRIds] = useState([]);
+  // const [rIdData, setRIds] = useState([]);
   const closeModal = () => {
     setCartModel(false);
   };
+  useEffect(() => {
+    setPrice(data?.Amount);
+  }, [data]);
 
+  console.log('>>>>> ', rIds);
   return (
     <Modal
       style={styles.Maincontainer}
       visible={isVisible}
       backdropColor={theme.colors.black}
-      backdropOpacity={0.5}>
+      backdropOpacity={0.2}>
       <View style={styles.container}>
         <Icon
           name="x"
@@ -31,12 +39,9 @@ const CartModel = props => {
           onPress={close}
         />
         <View style={styles.subView}>
-          <Title title="Zancos Burger" style={styles.title} />
-          <Label
-            title="180g meat, tomatoes, onion, lettuce, sauce"
-            style={styles.subTitle}
-          />
-          <View style={styles.priceDetails}>
+          <Title title={data?.Name} style={styles.title} />
+          <Label title={data?.Description} style={styles.subTitle} />
+          {/* <View style={styles.priceDetails}>
             <View
               style={[
                 styles.row,
@@ -56,111 +61,206 @@ const CartModel = props => {
             </View>
 
             <Title title="€ 12.00" style={{color: theme.colors.purpal}} />
-          </View>
-          <View style={{width: '95%', marginTop: scale(10)}}>
-            <ScrollView>
-              {cartData.map((item, index) => {
-                return (
-                  <View style={styles.card}>
-                    <TouchableOpacity style={styles.categoryTitle}>
-                      <Title title={item.title} />
-                      <Icon
-                        name="chevron-down"
-                        size={scale(22)}
-                        color={theme.colors.gray}
-                      />
-                    </TouchableOpacity>
-                    <View style={styles.subItem}>
-                      {!item.isCheck &&
-                        item.items.map((subItem, i) => {
-                          return (
-                            <View style={styles.itemView}>
-                              <View>
-                                <Label
-                                  title={subItem.title}
-                                  style={styles.name}
-                                />
-                                <Label
-                                  title={subItem.price}
-                                  style={styles.itemprice}
-                                />
-                              </View>
-                              <View
-                                style={[
-                                  styles.row,
-                                  {
-                                    justifyContent: 'space-around',
-                                    alignItems: 'center',
-                                  },
-                                ]}>
-                                <TouchableOpacity
+          </View> */}
+          <View style={{width: '95%', height: '70%', marginTop: scale(10)}}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              {data?.lstAddons?.length > 0 && (
+                <>
+                  {' '}
+                  <TouchableOpacity style={styles.categoryTitle}>
+                    <Title title={'Aggiungi ingredienti'} />
+                    <Icon
+                      name="chevron-down"
+                      size={scale(22)}
+                      color={theme.colors.gray}
+                    />
+                  </TouchableOpacity>
+                  <ScrollView style={{height: theme.SCREENHEIGHT * 0.2}}>
+                    {data?.lstAddons?.length > 0 && (
+                      <View style={styles.card}>
+                        <View style={styles.subItem}>
+                          {data?.lstAddons?.map((item, index) => {
+                            return (
+                              <View style={styles.itemView}>
+                                <View>
+                                  <Label
+                                    title={item?.Descrizione}
+                                    style={styles.name}
+                                  />
+                                  <Label
+                                    title={`${item?.Prezzo}€`}
+                                    style={styles.itemprice}
+                                  />
+                                </View>
+                                <View
                                   style={[
-                                    styles.btn,
+                                    styles.row,
                                     {
-                                      width: scale(23),
-                                      padding: scale(0),
-                                      height: scale(23),
-                                      justifyContent: 'center',
+                                      justifyContent: 'space-around',
+                                      alignItems: 'center',
                                     },
                                   ]}>
-                                  <Icon
-                                    size={scale(scale(13))}
-                                    name="minus"
-                                    color={theme.colors.gray}
+                                  <TouchableOpacity
+                                    style={[
+                                      styles.btn,
+                                      {
+                                        width: scale(23),
+                                        padding: scale(0),
+                                        height: scale(23),
+                                        justifyContent: 'center',
+                                      },
+                                    ]}>
+                                    <Icon
+                                      size={scale(scale(13))}
+                                      name="minus"
+                                      color={theme.colors.gray}
+                                    />
+                                  </TouchableOpacity>
+                                  <Label
+                                    title="0"
+                                    style={{marginHorizontal: scale(8)}}
                                   />
-                                </TouchableOpacity>
-                                <Label
-                                  title="1"
-                                  style={{marginHorizontal: scale(8)}}
-                                />
-                                <TouchableOpacity
-                                  style={[
-                                    styles.btn,
-                                    {
-                                      width: scale(23),
-                                      padding: scale(0),
-                                      height: scale(23),
-                                      justifyContent: 'center',
-                                    },
-                                  ]}>
-                                  <Icon
-                                    size={scale(scale(13))}
-                                    name="plus"
-                                    color={theme.colors.gray}
-                                  />
-                                </TouchableOpacity>
+                                  <TouchableOpacity
+                                    style={[
+                                      styles.btn,
+                                      {
+                                        width: scale(23),
+                                        padding: scale(0),
+                                        height: scale(23),
+                                        justifyContent: 'center',
+                                      },
+                                    ]}>
+                                    <Icon
+                                      size={scale(scale(13))}
+                                      name="plus"
+                                      color={theme.colors.gray}
+                                    />
+                                  </TouchableOpacity>
+                                </View>
                               </View>
-                            </View>
-                          );
-                        })}
-                      {item.isCheck &&
-                        item.items.map((subItem, i) => {
-                          return (
-                            <View style={styles.itemView}>
-                              <Label title={subItem.name} style={styles.name} />
-                              <Icon
-                                name="check-square"
-                                size={scale(20)}
-                                color={theme.colors.primary}
-                              />
-                            </View>
-                          );
-                        })}
-                    </View>
-                  </View>
-                );
-              })}
+                            );
+                          })}
+                        </View>
+                      </View>
+                    )}
+                  </ScrollView>
+                </>
+              )}
+
+              {data?.lstIngredients?.length > 0 && (
+                <>
+                  <TouchableOpacity style={styles.categoryTitle}>
+                    <Title title={'Rimuovi Ingredienti'} />
+                    <Icon
+                      name="chevron-down"
+                      size={scale(22)}
+                      color={theme.colors.gray}
+                    />
+                  </TouchableOpacity>
+                  <ScrollView style={{height: theme.SCREENHEIGHT * 0.2}}>
+                    {data?.lstIngredients?.length > 0 && (
+                      <View style={styles.card}>
+                        <View style={styles.subItem}>
+                          {data?.lstIngredients?.map((item, index) => {
+                            return (
+                              <View style={styles.itemView} key={index}>
+                                <View>
+                                  <Label
+                                    title={item?.Descrizione}
+                                    style={styles.name}
+                                  />
+                                  <Label
+                                    title={`${item?.Prezzo}€`}
+                                    style={styles.itemprice}
+                                  />
+                                </View>
+                                <Icon
+                                  name={
+                                    rIds.includes(item?.IDRiga)
+                                      ? 'check-square'
+                                      : 'square'
+                                  } //circle
+                                  size={scale(20)}
+                                  color={theme.colors.primary}
+                                  onPress={() => {
+                                    rIds.push(item?.IDRiga);
+                                    setRIds(rIds);
+                                  }}
+                                />
+                              </View>
+                            );
+                          })}
+                        </View>
+                      </View>
+                    )}
+                  </ScrollView>
+                </>
+              )}
+
+              {data?.lstMakeTypes?.length > 0 && (
+                <>
+                  <TouchableOpacity style={styles.categoryTitle}>
+                    <Title title={'Come desideri il prodotto?'} />
+                    <Icon
+                      name="chevron-down"
+                      size={scale(22)}
+                      color={theme.colors.gray}
+                    />
+                  </TouchableOpacity>
+                  <ScrollView style={{height: theme.SCREENHEIGHT * 0.25}}>
+                    {data?.lstMakeTypes?.length > 0 && (
+                      <View style={styles.card}>
+                        <View style={styles.subItem}>
+                          {data?.lstMakeTypes?.map((item, index) => {
+                            return (
+                              <View style={styles.itemView}>
+                                <View>
+                                  <Label
+                                    title={item?.Prodo}
+                                    style={styles.name}
+                                  />
+                                  <Label
+                                    title={`${item?.ImportoUnitario}€`}
+                                    style={styles.itemprice}
+                                  />
+                                </View>
+
+                                <Icon
+                                  name={
+                                    item?.Id === wantProduct?.Id
+                                      ? 'check-circle'
+                                      : 'circle'
+                                  } //circle
+                                  size={scale(20)}
+                                  color={
+                                    item?.Id !== wantProduct?.Id
+                                      ? theme.colors.gray
+                                      : theme.colors.primary
+                                  }
+                                  onPress={() => {
+                                    setWantProduct(item);
+                                  }}
+                                />
+                              </View>
+                            );
+                          })}
+                        </View>
+                      </View>
+                    )}
+                  </ScrollView>
+                </>
+              )}
             </ScrollView>
           </View>
         </View>
         <View style={styles.bottomView}>
           <Button
-            onPress={() => setCartModel(true)}
+            onPress={() => close(true)}
             title="Aggiungi al carrello"
             style={styles.button}
             titleStyle={styles.btntxt}
           />
-          <Title title="€ 12.00" style={styles.price} />
+          <Title title={`€ ${totalPrice}`} style={styles.price} />
         </View>
         <AddCardModal isVisible={cartModel} close={closeModal} />
       </View>
@@ -218,7 +318,7 @@ const styles = StyleSheet.create({
   },
   subTitle: {
     color: theme.colors.gray,
-    fontSize: scale(13),
+    fontSize: scale(11),
   },
   btn: {
     borderWidth: scale(1.5),

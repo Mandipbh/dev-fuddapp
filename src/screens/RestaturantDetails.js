@@ -16,23 +16,43 @@ import Icon2 from 'react-native-vector-icons/Entypo';
 import {scale, theme} from '../utils';
 import {Button, CartModel, FullScreenImage, Label, Title} from '../components';
 import LinearGradient from 'react-native-linear-gradient';
-import {foodDetailsData, RestoInfo} from '../utils/MockData';
+import {foodDetailsData} from '../utils/MockData';
 import {useNavigation} from '@react-navigation/native';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {useEffect} from 'react';
 import {restaurantDetails} from '../redux/Actions/RestaurantAction';
+import {APP_BASE_URL} from '../utils/ApiService';
 
 const RestaturantDetails = () => {
   const [selectedIndex, setSelIndex] = useState(0);
   const [viewImg, setViewImg] = useState(false);
+  const [imgPath, setImgPath] = useState(null);
   const [cartModel, setCartModel] = useState(false);
   const [searchtxt, setSearchTxt] = useState('');
   const [selectedItem, setSelectedItem] = useState(0);
+  const [details, setDetails] = useState();
+  const [selItem, setSelItem] = useState('');
   const navigation = useNavigation();
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(restaurantDetails());
+    const data = {
+      Latitute: '',
+      Longitude: '',
+      id: 3,
+      Date: '27-01-2023',
+      TimeSlot: '20:00-20:30',
+      Category: '',
+    };
+    dispatch(restaurantDetails(data));
   }, []);
+  const restaurantData = useSelector(
+    state => state.RestaurantReducers?.restaurantDetails,
+  );
+
+  useEffect(() => {
+    setDetails(restaurantData);
+  }, [restaurantData]);
+
   const renderMenus = ({item, index}) => {
     return (
       <View key={index} style={styles.menuView}>
@@ -41,7 +61,7 @@ const RestaturantDetails = () => {
           onPress={() => {
             index == selectedIndex ? setSelIndex(null) : setSelIndex(index);
           }}>
-          <Title title={item.title} />
+          <Title title={`${item?.Name} (${item?.Products?.length})`} />
           <Icon
             name={index == selectedIndex ? 'chevron-up' : 'chevron-down'}
             size={scale(25)}
@@ -49,8 +69,8 @@ const RestaturantDetails = () => {
           />
         </TouchableOpacity>
         {index == selectedIndex &&
-          item?.items &&
-          item?.items.map((m, i) => {
+          item?.Products &&
+          item?.Products.map((m, i) => {
             return (
               <>
                 <View style={styles.itemView} key={i}>
@@ -58,18 +78,24 @@ const RestaturantDetails = () => {
                     <TouchableOpacity
                       onPress={() => {
                         setViewImg(!viewImg);
+                        setImgPath(
+                          details?.Menu?.ProductsImagePrefix + m?.Image,
+                        );
                       }}>
                       <Image
                         source={{
-                          uri: 'https://img.freepik.com/free-photo/side-view-shawarma-with-fried-potatoes-board-cookware_176474-3215.jpg?size=338&ext=jpg&ga=GA1.2.1181264738.1665484240&semt=sph',
+                          uri: details?.Menu?.ProductsImagePrefix + m?.Image,
                         }}
                         style={styles.productImage}
                       />
                     </TouchableOpacity>
 
                     <View style={{marginLeft: scale(10)}}>
-                      <Label title={m?.title} style={styles.productname} />
-                      <Label title={m?.price} style={styles.price} />
+                      <Label title={m?.Name} style={styles.productname} />
+                      <Label
+                        title={m?.Amount?.toFixed(2) + ' €'}
+                        style={styles.price}
+                      />
                     </View>
                   </View>
                   <Icon
@@ -78,7 +104,8 @@ const RestaturantDetails = () => {
                     color={theme.colors.purpal}
                     style={{marginRight: scale(6)}}
                     onPress={() => {
-                      setCartModel(!cartModel);
+                      handleCartAddItem(m);
+                      // setCartModel(!cartModel);
                     }}
                   />
                 </View>
@@ -86,7 +113,7 @@ const RestaturantDetails = () => {
               </>
             );
           })}
-        {foodDetailsData?.length !== index + 1 && (
+        {details?.Menu?.Categories?.length !== index + 1 && (
           <View style={styles.divider} />
         )}
       </View>
@@ -104,20 +131,37 @@ const RestaturantDetails = () => {
             borderColor: theme.colors.gray1,
           },
         ]}>
-        <Text style={styles.infoText}>{item.title}</Text>
-        <Text style={styles.infoText}>{item.time}</Text>
+        <Text style={styles.infoText}>{item?.Day}</Text>
+        <Text style={styles.infoText}>{item?.Time}</Text>
       </View>
     );
   };
   const handleModel = () => {
+    // setCartModel(true);
     setCartModel(!cartModel);
-    navigation.navigate('Cart');
+    // setCartModel(!cartModel);
+    // navigation.navigate('Cart');
   };
+
+  const handleCartAddItem = item => {
+    console.log('handleCartAddItem >>> ', item?.lstIngredients?.length);
+    console.log('handleCartAddItem123 >>> ', item?.lstAddons?.length);
+    console.log('dfffddfdffd >>>> ', item?.lstMakeTypes?.length);
+    if (item?.lstIngredients?.length === 0 && item?.lstAddons?.length === 0) {
+      console.log('adddd >>>>>');
+      setSelItem(item);
+    } else {
+      setSelItem(item);
+      setCartModel(true);
+      console.log('something else ');
+    }
+  };
+
   return (
     <View style={styles.container}>
       <ImageBackground
         source={{
-          uri: 'https://img.freepik.com/premium-photo/delicious-grilled-burgers_62847-14.jpg?size=626&ext=jpg&ga=GA1.2.1181264738.1665484240&semt=sph',
+          uri: APP_BASE_URL + restaurantData?.Canvas,
         }}
         style={styles.backImage}
         imageStyle={styles.image}>
@@ -150,7 +194,7 @@ const RestaturantDetails = () => {
         </View>
         <Title title="Zancos Steak House" style={styles.headerTitle} />
         <View style={styles.subtitleView}>
-          <Label title="Specialitia Carne, Hamburger" style={styles.subTitle} />
+          <Label title={restaurantData?.Addresses[0]} style={styles.subTitle} />
         </View>
         <View style={styles.bottomView}>
           <LinearGradient
@@ -195,7 +239,7 @@ const RestaturantDetails = () => {
       <View>
         {selectedItem === 0 && (
           <FlatList
-            data={foodDetailsData}
+            data={details?.Menu?.Categories}
             renderItem={renderMenus}
             showsVerticalScrollIndicator={false}
             style={[styles.menusView, styles.shadow]}
@@ -211,7 +255,7 @@ const RestaturantDetails = () => {
               fontSize: scale(16),
               fontWeight: '800',
             }}>
-            Zancos Steak House
+            {restaurantData?.Name}
           </Text>
           <Text
             style={{
@@ -219,12 +263,15 @@ const RestaturantDetails = () => {
               fontSize: scale(14),
               fontWeight: '500',
             }}>
-            Via dalle palle, 88, 90146 Palermo PA, Italia
+            {restaurantData?.Addresses[0]}
           </Text>
         </View>
         <Text style={styles.titleText}>Orari di apertura</Text>
         {selectedItem === 1 && (
-          <FlatList data={RestoInfo} renderItem={renderInfo} />
+          <FlatList
+            data={restaurantData?.OpeningTimes}
+            renderItem={renderInfo}
+          />
         )}
       </View>
       <FullScreenImage
@@ -232,8 +279,9 @@ const RestaturantDetails = () => {
         close={() => {
           setViewImg(!viewImg);
         }}
+        image={imgPath}
       />
-      <CartModel isVisible={cartModel} close={handleModel} />
+      <CartModel data={selItem} isVisible={cartModel} close={handleModel} />
     </View>
   );
 };

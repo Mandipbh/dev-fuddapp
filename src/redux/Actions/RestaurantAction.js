@@ -7,7 +7,6 @@ export const getpopularRestaurants = data => {
       const options = {payloads: data};
       ApiService.post(API.getAllRestaurant, options)
         .then(res => {
-          console.log('res ??? ', res);
           if (res) {
             dispatch({type: GETALLRISTORANTI, payload: res});
           }
@@ -27,9 +26,11 @@ export const restaurantDetails = data => {
       const options = {payloads: data};
       ApiService.post(API.getPerticularRestaurant, options)
         .then(res => {
-          console.log('restaurantDetails >>. ', res);
           if (res) {
-            // dispatch({type: GETRESTAURANTDETAILS, payload: res});
+            dispatch({
+              type: GETRESTAURANTDETAILS,
+              payload: res?.RestaurantDetail,
+            });
           }
         })
         .catch(c => {

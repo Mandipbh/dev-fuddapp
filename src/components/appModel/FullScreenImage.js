@@ -4,7 +4,8 @@ import Icon from 'react-native-vector-icons/Feather';
 import {scale, theme} from '../../utils';
 
 const FullScreenImage = props => {
-  const {isVisible, close, title, subTitle} = props;
+  const {isVisible, close, image} = props;
+  console.log('mage >>> ', image);
   return (
     <Modal
       transparent={true}
@@ -22,7 +23,7 @@ const FullScreenImage = props => {
         <View style={styles.activityIndicatorWrapper}>
           <Image
             source={{
-              uri: 'https://t3.ftcdn.net/jpg/02/19/27/26/360_F_219272634_wPHgMm8oGm0YVcY5zJt1OfoB9iG3hJwU.jpg',
+              uri: image,
             }}
             style={styles.foodImg}
           />
