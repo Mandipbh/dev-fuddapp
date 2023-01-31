@@ -14,10 +14,13 @@ import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
 import {scale, theme} from '../utils';
 import {Button, Label, Title} from '../components';
 import {useNavigation} from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
 
 const CartScreen = () => {
   const navigation = useNavigation();
-
+  const cartData = useSelector(state => state?.CartReducer.cartData);
+  const dispatch = useDispatch();
+  const incrimentCart = () => {};
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerView}>
@@ -33,15 +36,14 @@ const CartScreen = () => {
       </View>
       <ScrollView style={styles.mainContainer}>
         <ScrollView style={styles.productView} nestedScrollEnabled={true}>
-          {Array(3)
-            .fill(null)
-            .map((i, index) => {
+          {cartData &&
+            cartData.map((i, index) => {
               return (
                 <View
                   style={{
                     borderBottomColor: theme.colors.gray1,
                     borderBottomWidth:
-                      Array(3).length === index + 1 ? 0 : scale(1),
+                      cartData?.length === index + 1 ? 0 : scale(1),
                     paddingBottom: scale(10),
                   }}>
                   <View style={styles.items}>
@@ -52,11 +54,8 @@ const CartScreen = () => {
                       style={styles.productImg}
                     />
                     <View style={styles.detailsView}>
-                      <Title title="Arizona Burger" />
-                      <Label
-                        title="180g meat, tomatoes, onion, lettuce, sauce"
-                        style={styles.desc}
-                      />
+                      <Title title={i?.Name} />
+                      <Label title={i?.Description} style={styles.desc} />
                     </View>
                   </View>
                   <View style={[styles.row, {justifyContent: 'space-evenly'}]}>
@@ -68,8 +67,12 @@ const CartScreen = () => {
                           color={theme.colors.gray}
                         />
                       </TouchableOpacity>
-                      <Title title={'1'} style={styles.number} />
-                      <TouchableOpacity style={styles.btn}>
+                      <Title title={i?.Qty} style={styles.number} />
+                      <TouchableOpacity
+                        style={styles.btn}
+                        onPress={() => {
+                          incrimentCart(i, index);
+                        }}>
                         <Icon
                           name="plus"
                           size={scale(16)}

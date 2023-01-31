@@ -138,36 +138,30 @@ const RestaturantDetails = () => {
   };
 
   const cartData = useSelector(state => state?.CartReducer.cartData);
-  console.log(
-    'useSelector(state => state?.CartReducer.cartData) >> ',
-    cartData,
-  );
+  // console.log(
+  //   'useSelector(state => state?.CartReducer.cartData) >> ',
+  //   JSON.stringify(cartData, null, 4),
+  // );
   const handleCartAddItem = async item => {
-    // console.log('cart data >>> ', JSON.stringify(cartData, null, 4));
-    // console.log('restaurantData ??? ', JSON.stringify(item, null, 4));
-    let foodItem = [];
+    const tmpArr = [...cartData];
+    console.log('tmpArr ??? ', tmpArr?.length);
+    // tmpArr.push(item);
+
+    dispatch(AddToCart(tmpArr));
     if (
       item?.lstIngredients?.length === 0 &&
       item?.lstAddons?.length === 0 &&
       item?.lstAddons.length === 0
     ) {
-      if (cartData.length === 0) {
-        foodItem = [item];
-      } else {
-        let isExist = await cartData.some(i => i.Name === item?.Name);
-        if (isExist) {
-          foodItem.Qty = foodItem.Qty + 1;
-        } else {
-          foodItem = {
-            ...cartData,
-          };
-          const i = {...item, Qty: 1};
-          foodItem.push(i);
-        }
-        console.log('isExist ?? ', foodItem);
-      }
+      var matchingObj = await cartData.find(o => o.Name === item.Name);
 
-      dispatch(AddToCart(foodItem));
+      if (matchingObj) {
+        matchingObj.Qty++;
+      } else {
+        let itemQtyhandle = {...item};
+        itemQtyhandle.Qty = 1;
+        tmpArr.push(itemQtyhandle);
+      }
       setSelItem(item);
     } else {
       setSelItem(item);
@@ -222,10 +216,7 @@ const RestaturantDetails = () => {
         <Title title={restaurantData?.Name} style={styles.headerTitle} />
         <View style={styles.subtitleView}>
           {restaurantData && (
-            <Label
-              title={restaurantData?.Addresses[0]}
-              style={styles.subTitle}
-            />
+            <Label title={restaurantData?.Tags} style={styles.subTitle} />
           )}
         </View>
         <View style={styles.bottomView}>

@@ -22,7 +22,13 @@ const CartModel = props => {
   useEffect(() => {
     setPrice(data?.Amount);
   }, [data]);
-
+  // useEffect(() => {
+  //   setPrice(
+  //     data?.Amount + wantProduct?.ImportoUnitario == undefined
+  //       ? 0
+  //       : wantProduct?.ImportoUnitario,
+  //   );
+  // }, [wantProduct]);
   return (
     <Modal
       style={styles.Maincontainer}
@@ -90,7 +96,9 @@ const CartModel = props => {
                                     style={styles.name}
                                   />
                                   <Label
-                                    title={`${item?.Prezzo?.toString()}€`}
+                                    title={`${item?.Prezzo.toFixed(
+                                      2,
+                                    )?.toString()}€`}
                                     style={styles.itemprice}
                                   />
                                 </View>
@@ -113,7 +121,11 @@ const CartModel = props => {
                                     title="0"
                                     style={{marginHorizontal: scale(8)}}
                                   />
-                                  <TouchableOpacity style={styles.btns}>
+                                  <TouchableOpacity
+                                    style={styles.btns}
+                                    onPress={() => {
+                                      console.log('lstAddons >', item);
+                                    }}>
                                     <Icon
                                       size={scale(scale(13))}
                                       name="plus"
@@ -156,7 +168,7 @@ const CartModel = props => {
                                     style={styles.name}
                                   />
                                   <Label
-                                    title={`${item?.Prezzo}€`}
+                                    title={`${item?.Prezzo?.toFixed(2)}€`}
                                     style={styles.itemprice}
                                   />
                                 </View>
@@ -208,7 +220,9 @@ const CartModel = props => {
                                     style={styles.name}
                                   />
                                   <Label
-                                    title={`${item?.ImportoUnitario}€`}
+                                    title={`${item?.ImportoUnitario.toFixed(
+                                      2,
+                                    )}€`}
                                     style={styles.itemprice}
                                   />
                                 </View>
@@ -248,7 +262,7 @@ const CartModel = props => {
             style={styles.button}
             titleStyle={styles.btntxt}
           />
-          <Title title={`€ ${totalPrice}`} style={styles.price} />
+          <Title title={`€ ${totalPrice?.toFixed(2)}`} style={styles.price} />
         </View>
         <AddCardModal isVisible={cartModel} close={closeModal} />
       </View>
