@@ -26,6 +26,7 @@ const theme = {
     lightBlue: '#DCEDFB',
     placeholder: '#b6bed4',
     green: '#4cd964',
+    linkColor: '#808080',
   },
   SCREENWIDTH: width,
   SCREENHEIGHT: height,

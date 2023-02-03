@@ -18,6 +18,7 @@ const InputBox = props => {
     maxLength,
     onFocus,
     onBlur,
+    onTouchStart,
     fildIcon,
     // passwordType,
     // passwordRegex,
@@ -83,6 +84,7 @@ const InputBox = props => {
         textContentType={'oneTimeCode'}
         onFocus={onFocus}
         onBlur={onBlur}
+        onTouchStart={onTouchStart}
       />
       {/* {Img ? (
         <Icon

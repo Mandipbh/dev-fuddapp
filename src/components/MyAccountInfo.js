@@ -33,7 +33,9 @@ const MyAccountInfo = ({user}) => {
         <View style={styles.inputView}>
           <Label title="EMAIL" style={styles.inputTitle} />
           <InputBox
-            placeholder="johndoe@mail.com"
+            placeholder={
+              user?.UserInfo?.EMail ? user?.UserInfo?.EMail : 'email'
+            }
             style={styles.input}
             editable={false}
             inputStyle={styles.inputInner}
@@ -42,7 +44,11 @@ const MyAccountInfo = ({user}) => {
         <View style={styles.inputView}>
           <Label title="Phone" style={styles.inputTitle} />
           <InputBox
-            placeholder="0123456789"
+            placeholder={
+              user?.UserInfo?.Telefono1
+                ? user?.UserInfo?.Telefono1
+                : '0123456789'
+            }
             style={styles.input}
             editable={false}
             inputStyle={styles.inputInner}
@@ -59,6 +65,9 @@ const MyAccountInfo = ({user}) => {
             style={styles.input}
             editable={false}
             inputStyle={styles.inputInner}
+            onTouchStart={() => {
+              setModel(!passwordModel);
+            }}
           />
         </TouchableOpacity>
       </ScrollView>

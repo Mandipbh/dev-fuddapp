@@ -22,23 +22,28 @@ import {
   Title,
 } from '../components';
 import {profileData} from '../utils/MockData';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {useIsFocused, useNavigation} from '@react-navigation/core';
+import {isLogin, logout} from '../redux/Actions/UserActions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 
 const AccountScreen = () => {
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [showImg, setImg] = useState(true);
   const [text, setText] = useState('');
-  const isLogin = useSelector(state => state.UserReducer?.login);
+  const isLoginUser = useSelector(state => state.UserReducer?.login);
+  const dispatch = useDispatch();
   const user = useSelector(state => state.UserReducer?.userDetails);
-  console.log('State Update', user);
-
+  const navigation = useNavigation();
+  const isFoucse = useIsFocused();
   useEffect(() => {
-    if (!isLogin) {
+    if (!isLoginUser) {
       setSelectedMenu(4);
     } else {
-      setSelectedMenu(1);
+      setSelectedMenu(11);
     }
-  }, []);
+  }, [isFoucse]);
 
   useEffect(() => {
     if (
@@ -52,18 +57,33 @@ const AccountScreen = () => {
       setImg(false);
     }
   }, [selectedMenu]);
+  const handleClick = (id, index) => {
+    if (id === 4) {
+      handleLogout();
+    } else {
+      index === 3 ? null : setSelectedMenu(id);
+    }
+  };
+  const handleLogout = () => {
+    dispatch(logout());
+    AsyncStorage.clear();
+    dispatch(isLogin(false));
+    navigation.replace('Tab');
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.Subcontainer}>
         <View style={styles.headerView}>
-          <Icon
-            name="left"
-            color={theme.colors.black}
-            size={scale(22)}
-            onPress={() => {
-              setSelectedMenu(null);
-            }}
-          />
+          {isLoginUser && (
+            <Icon
+              name="left"
+              color={theme.colors.black}
+              size={scale(22)}
+              onPress={() => {
+                setSelectedMenu(null);
+              }}
+            />
+          )}
           <Title title="Account" style={styles.title} />
         </View>
         {selectedMenu == null && (
@@ -75,13 +95,10 @@ const AccountScreen = () => {
 
         {selectedMenu === 11 && (
           <>
-            <Title
-              title={'Aggiungi indirizzo'}
-              style={{fontSize: scale(18), alignSelf: 'center'}}
-            />
+            <Title title={'Aggiungi indirizzo'} style={styles.headerTitle} />
 
-            <View style={[styles.textinputContainer, styles.shadow]}>
-              <TextInput
+            {/* <View style={[styles.textinputContainer, styles.shadow]}> */}
+            {/* <TextInput
                 placeholder={'Cerca indirizzo'}
                 style={styles.searchbox}
                 placeholderTextColor={theme.colors.placeholder}
@@ -89,37 +106,29 @@ const AccountScreen = () => {
                 onChangeText={txt => {
                   setText(txt);
                 }}
-              />
-              <Icon1
+              /> */}
+
+            {/* <Icon1
                 name="search"
                 size={scale(22)}
                 color={theme.colors.placeholder}
               />
-            </View>
+            </View> */}
           </>
         )}
         {selectedMenu === 2 && (
           <>
-            <Title
-              title={'I miei indirizzi'}
-              style={{fontSize: scale(18), alignSelf: 'center'}}
-            />
+            <Title title={'I miei indirizzi'} style={styles.headerTitle} />
           </>
         )}
         {selectedMenu === 0 && (
           <>
-            <Title
-              title={'I miei Ordini'}
-              style={{fontSize: scale(18), alignSelf: 'center'}}
-            />
+            <Title title={'I miei Ordini'} style={styles.headerTitle} />
           </>
         )}
         {selectedMenu === 1 && (
           <>
-            <Title
-              title={'Il mio account '}
-              style={{fontSize: scale(18), alignSelf: 'center'}}
-            />
+            <Title title={'Il mio account '} style={styles.headerTitle} />
           </>
         )}
         <View style={styles.detailsContainer}>
@@ -139,6 +148,9 @@ const AccountScreen = () => {
               onPress={() => {
                 setSelectedMenu(1);
               }}
+              onPressRegister={() => {
+                setSelectedMenu(5);
+              }}
             />
           )}
           {selectedMenu === 5 && (
@@ -155,7 +167,8 @@ const AccountScreen = () => {
                   key={index}
                   style={styles.option}
                   onPress={() => {
-                    index === 3 ? null : setSelectedMenu(item.id);
+                    console.log('select >>>> ', item.id);
+                    handleClick(item.id, index);
                   }}>
                   <Label title={item.title} />
                   <View
@@ -297,5 +310,8 @@ const styles = StyleSheet.create({
     color: theme.colors.placeholder,
     marginLeft: scale(10),
     fontWeight: '600',
+  },
+  headerTitle: {
+    textAlign: 'center',
   },
 });

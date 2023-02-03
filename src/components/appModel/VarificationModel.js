@@ -1,78 +1,55 @@
-import React from 'react';
-import {useState} from 'react';
-import {StyleSheet, View, Modal, ActivityIndicator} from 'react-native';
+import React, {useEffect} from 'react';
+import {useState, useRef} from 'react';
+import {StyleSheet, View, Modal, Alert} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import {scale, theme} from '../../utils';
-import ApiService, {API} from '../../utils/ApiService';
+import OTPTextView from 'react-native-otp-textinput';
 import Button from '../Button';
 import InputBox from '../InputBox';
 import {Title, Label, Error} from '../Label';
+import ApiService, {API} from '../../utils/ApiService';
 
-const ChangePassword = props => {
-  const {isVisible, close, title, subTitle} = props;
-  const [oldPassword, setOldPassword] = useState('');
-  const [NewPassword, setNewPassword] = useState('');
-  const [ConPassword, setConPassword] = useState('');
+const VarificationModel = props => {
+  const {isVisible, closeVarification, title, signUpData, close} = props;
+  const [email, setemail] = useState('');
+  const [number, setnumber] = useState('');
+  const [otp, setotp] = useState('');
   const [passwordErr, setpasswordErr] = useState('');
   const [nPasswordErr, setNpasswordErr] = useState('');
   const [cpasswordErr, setCpasswordErr] = useState('');
-
-  let error = false;
-  const handleValidation = () => {
-    if (oldPassword?.trim() === '') {
-      error = true;
-      setpasswordErr('Please enter password');
-    } else {
-      setpasswordErr('');
-    }
-    if (NewPassword?.trim() === '') {
-      error = true;
-      setNpasswordErr('Please enter new password');
-    } else if (ConPassword?.trim() === '') {
-      error = true;
-      setCpasswordErr('Please enter confrim password');
-    } else if (NewPassword !== ConPassword) {
-      error = true;
-      setCpasswordErr('Both password are not match');
-    } else {
-      error = false;
-      setNpasswordErr('');
-      setpasswordErr('');
-      setCpasswordErr('');
-    }
-    return error;
-  };
-
-  const handleForgotPassword = () => {
-    if (!handleValidation()) {
-      clearFilds();
-      close();
-      // try {
-      //   const folderFrm = {
-      //     oldPassword: oldPassword,
-      //     newPassword: NewPassword,
-      //   };
-      //   const options = {payloads: folderFrm};
-      //   ApiService.post(API.updatePassword, options)
-      //     .then(res => {
-      //       if (res.Status === 'Success') {
-      //         console.log('res of login >> ', res);
-      //         close();
-      //       }
-      //     })
-      //     .catch(e => {
-      //       alert(e.response?.data?.Errors[0]);
-      //       // console.log('error in login> ', e.response?.data?.Errors[0]);
-      //     });
-      // } catch (error) {
-      //   console.log('error in login ', error);
-      // }
+  console.log('signUpData >>> ', signUpData);
+  console.log('email >> ', signUpData?.email);
+  const handleVarification = () => {
+    try {
+      const folderFrm = {
+        email: email,
+        telephone: number,
+        VerificationNumber: otp,
+      };
+      const options = {payloads: folderFrm};
+      ApiService.post(API.varifyUser, options)
+        .then(res => {
+          console.log('res of varifiy >> ', res);
+          if (res.Status === 'Success') {
+            clearFilds();
+            closeVarification();
+          }
+        })
+        .catch(e => {
+          Alert.alert(e.response?.data?.Errors[0]);
+        });
+    } catch (error) {
+      console.log('error in login ', error);
     }
   };
+  useEffect(() => {
+    setemail(signUpData?.email);
+    setnumber(signUpData?.telephone);
+  }, [signUpData]);
   const clearFilds = () => {
-    setOldPassword('');
-    setNewPassword('');
-    setConPassword('');
+    setemail('');
+    setnumber('');
+    setotp('');
     setNpasswordErr('');
     setpasswordErr('');
     setCpasswordErr('');
@@ -100,37 +77,42 @@ const ChangePassword = props => {
           <View style={styles.divider} />
           <View style={styles.subTitleView}>
             <InputBox
-              placeholder="Password attuale"
+              placeholder="Email"
               style={styles.input}
               inputStyle={styles.inputInner}
-              value={oldPassword}
+              value={email}
               onChangeText={txt => {
-                setOldPassword(txt);
+                setemail(txt);
               }}
-              secureTextEntry
+              editable={false}
             />
             {passwordErr && <Error error={passwordErr} />}
             <InputBox
-              placeholder="Nuova password"
+              placeholder="Telefono"
               style={styles.input}
               inputStyle={styles.inputInner}
-              value={NewPassword}
+              value={number}
               onChangeText={txt => {
-                setNewPassword(txt);
+                setnumber(txt);
               }}
-              secureTextEntry
+              editable={false}
             />
             {nPasswordErr && <Error error={nPasswordErr} />}
-            <InputBox
-              placeholder="Conferma password"
-              style={styles.input}
-              inputStyle={styles.inputInner}
-              value={ConPassword}
-              onChangeText={txt => {
-                setConPassword(txt);
-              }}
-              secureTextEntry
+            <Label
+              title="Inserisci il codice di verifica ricevuto per SMS"
+              style={styles.otptxt}
             />
+            <OTPTextView
+              handleTextChange={e => {
+                setotp(e);
+              }}
+              containerStyle={styles.textInputContainer}
+              textInputStyle={styles.roundedTextInput}
+              defaultValue=""
+              inputCount={6}
+              tintColor={theme.colors.primary}
+            />
+
             {cpasswordErr && <Error error={cpasswordErr} />}
             <Button
               title="Salva"
@@ -139,7 +121,7 @@ const ChangePassword = props => {
                 marginTop: scale(15),
               }}
               titleStyle={{color: theme.colors.white, fontWeight: '600'}}
-              onPress={() => handleForgotPassword()}
+              onPress={() => handleVarification()}
             />
           </View>
         </View>
@@ -189,6 +171,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
     color: theme.colors.black,
   },
+  textInputContainer: {
+    marginBottom: 5,
+    fontStyle: scale(14),
+  },
+  roundedTextInput: {
+    borderRadius: 10,
+    borderWidth: 4,
+  },
+  otptxt: {textAlign: 'center', marginVertical: scale(8)},
 });
 
-export default ChangePassword;
+export default VarificationModel;

@@ -22,3 +22,5 @@ export {default as ChangePassword} from './appModel/ChangePassword';
 export {default as FullScreenImage} from './appModel/FullScreenImage';
 export {default as CartModel} from './appModel/CartModel';
 export {default as TimePickerModel} from './appModel/TimePickerModel';
+export {default as ForgotPassword} from './appModel/ForgotPassword';
+export {default as VarificationModel} from './appModel/VarificationModel';

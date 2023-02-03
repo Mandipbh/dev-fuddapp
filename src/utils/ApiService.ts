@@ -1,8 +1,8 @@
 import axios from 'axios';
 // import { BASE_URL } from '../constants';
 
-const APP_API_URL = 'https://9600-43-228-229-22.in.ngrok.io/api/';
-export const APP_BASE_URL = 'https://9600-43-228-229-22.in.ngrok.io/';
+const APP_API_URL = 'https://33c2-43-228-229-22.in.ngrok.io/api/';
+export const APP_BASE_URL = 'https://33c2-43-228-229-22.in.ngrok.io/';
 axios.interceptors.request.use(config => config);
 
 const execute = async (
@@ -66,6 +66,9 @@ export const API = {
   getRestoranti: 'Ristoranti/FilterRestaurants',
   deleteAddress: 'Users/DeleteUserAddressById?addressId=',
   getPerticularRestaurant: 'Restaurant/GetRestaurantDetailsById',
+  updatePassword:'Users/Updatepassword',
+  recoveryPassword:'Users/RecoveryPassword?email=',
+  varifyUser:'Users/VerifyUser'
 };
 
 export default {

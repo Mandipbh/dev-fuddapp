@@ -30,3 +30,9 @@ export const getAllAddress = id => {
     }
   };
 };
+
+export const logout = () => {
+  return {
+    type: types.LOGOUT,
+  };
+};

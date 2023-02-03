@@ -1,10 +1,19 @@
-import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import React from 'react';
 import {scale, theme} from '../utils';
 import InputBox from './InputBox';
 import {Error, Label} from './Label';
 import Button from './Button';
 import {useState} from 'react';
+import VarificationModel from './appModel/VarificationModel';
+import ApiService, {API} from '../utils/ApiService';
 
 const Signup = props => {
   const {onPress} = props;
@@ -14,6 +23,9 @@ const Signup = props => {
   const [mobile, setMobile] = useState('');
   const [password, setPassword] = useState('');
   const [CPasseword, setCPasseword] = useState('');
+  const [signupRes, setSignupRes] = useState('');
+  const [varification, setVarification] = useState(false);
+  const [load, setLoad] = useState(false);
   const [errrMsg, setErrorMsg] = useState({
     nameErr: '',
     sureNameErr: '',
@@ -76,10 +88,41 @@ const Signup = props => {
     setErrorMsg(errr);
     return error;
   };
-
+  const handleClose = () => {
+    setVarification(false);
+    onPress();
+  };
   const handleSignup = () => {
     if (!handleValidation()) {
-      onPress();
+      try {
+        setLoad(true);
+        const folderFrm = {
+          email: email,
+          password: password,
+          firstName: name,
+          lastName: sureName,
+          telephone: mobile,
+          NewsLetterCheck: false,
+        };
+        const options = {payloads: folderFrm};
+        ApiService.post(API.signUp, options)
+          .then(res => {
+            console.log('res of varifiy >> ', res);
+            if (res.Status === 'Success') {
+              setSignupRes(folderFrm);
+              setVarification(true);
+              setLoad(false);
+            }
+          })
+          .catch(e => {
+            setLoad(false);
+            Alert.alert(e.response?.data?.Errors[0]);
+            // console.log('error in login> ', e.response?.data?.Errors[0]);
+          });
+      } catch (e) {
+        setLoad(false);
+        console.log('error in login ', e);
+      }
     }
   };
 
@@ -131,6 +174,7 @@ const Signup = props => {
         }}
         placeholder="Password"
         style={styles.input}
+        secureTextEntry
       />
       {errrMsg.passwordErr && <Error error={errrMsg.passwordErr} />}
       <InputBox
@@ -140,22 +184,34 @@ const Signup = props => {
         }}
         placeholder="Conferma password"
         style={styles.input}
+        secureTextEntry
       />
       {errrMsg.CPassewordErr && <Error error={errrMsg.CPassewordErr} />}
-      <Button
-        title="Registrati"
-        style={styles.loginButton}
-        titleStyle={[styles.buttonLabel, {color: theme.colors.white}]}
-        onPress={() => {
-          handleSignup();
-        }}
-      />
+      {load ? (
+        <ActivityIndicator size={scale(40)} color={theme.colors.primary} />
+      ) : (
+        <Button
+          title="Registrati"
+          style={styles.loginButton}
+          titleStyle={[styles.buttonLabel, {color: theme.colors.white}]}
+          onPress={() => {
+            handleSignup();
+          }}
+        />
+      )}
 
       <View style={styles.appTextView}>
         <Text style={styles.text}>
           Fudd<Text style={styles.text1}>app</Text>
         </Text>
       </View>
+      <VarificationModel
+        signUpData={signupRes}
+        isVisible={varification}
+        title="Attivazione Account"
+        close={handleClose}
+        closeVarification={handleClose}
+      />
     </View>
   );
 };

@@ -1,19 +1,36 @@
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Linking, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {scale, theme} from '../../utils';
 import Modal from 'react-native-modal';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/core';
+import {useDispatch, useSelector} from 'react-redux';
+import {isLogin, logout} from '../../redux/Actions/UserActions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Label} from '../Label';
 
 const DrawerModal = props => {
   const {isVisible, close} = props;
   const navigation = useNavigation();
+  const isLoginUser = useSelector(state => state.UserReducer?.login);
+  const dispatch = useDispatch();
+  const handleLogout = () => {
+    dispatch(logout());
+    AsyncStorage.clear();
+    dispatch(isLogin(false));
+    close();
+    navigation.navigate('home');
+  };
   return (
     <Modal
       backdropOpacity={0.4}
       visible={isVisible}
-      style={{marginRight: scale(80), margin: 0}}>
+      onRequestClose
+      animationIn="slideOutLeft"
+      animationOut="slideInLeft"
+      animationInTiming={0.5}
+      style={{width: '60%', margin: 0}}>
       <View style={styles.container}>
         <Icon
           name="x"
@@ -27,64 +44,82 @@ const DrawerModal = props => {
             marginLeft: scale(25),
             marginTop: scale(130),
           }}>
-          <TouchableOpacity
-            style={styles.textButton}
-            onPress={() => {
-              close();
-              navigation.navigate('ACCOUNT');
-            }}>
-            <MaterialIcons
-              name="account-circle"
-              size={25}
-              color={theme.colors.purpal}
-            />
-            <Text style={styles.btnText}>PROFILE</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.textButton}
-            onPress={() => {
-              close();
-              navigation.navigate('ACCOUNT');
-            }}>
-            <MaterialIcons
-              name="location-on"
-              size={25}
-              color={theme.colors.purpal}
-            />
-            <Text style={styles.btnText}>MY ADDRESSES</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.textButton}>
-            <MaterialIcons
-              name="payment"
-              size={25}
-              color={theme.colors.purpal}
-            />
-            <Text style={styles.btnText}>PAYMENT METHODS</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.textButton}>
-            <MaterialIcons
-              name="event-note"
-              size={25}
-              color={theme.colors.purpal}
-            />
-            <Text style={styles.btnText}>MY ORDERS</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.textButton}>
-            <MaterialIcons
-              name="mode-comment"
-              size={25}
-              color={theme.colors.purpal}
-            />
-            <Text style={styles.btnText}>CONTACT</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.textButton}>
-            <MaterialIcons
-              name="logout"
-              size={25}
-              color={theme.colors.purpal}
-            />
-            <Text style={styles.btnText}>LOGOUT</Text>
-          </TouchableOpacity>
+          {isLoginUser ? (
+            <>
+              <TouchableOpacity
+                style={styles.textButton}
+                onPress={() => {
+                  close();
+                  navigation.navigate('ACCOUNT');
+                }}>
+                <Icon name="user" size={25} color={theme.colors.purpal} />
+                <Text style={styles.btnText}>PROFILE</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.textButton}
+                onPress={() => {
+                  close();
+                  navigation.navigate('ACCOUNT');
+                }}>
+                <Icon name="map-pin" size={25} color={theme.colors.purpal} />
+                <Text style={styles.btnText}>MY ADDRESSES</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.textButton}>
+                <Icon
+                  name="credit-card"
+                  size={25}
+                  color={theme.colors.purpal}
+                />
+                <Text style={styles.btnText}>PAYMENT METHODS</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.textButton}>
+                <Icon name="clipboard" size={25} color={theme.colors.purpal} />
+                <Text style={styles.btnText}>MY ORDERS</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.textButton}>
+                <Icon
+                  name="message-square"
+                  size={25}
+                  color={theme.colors.purpal}
+                />
+                <Text style={styles.btnText}>CONTACT</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.textButton}
+                onPress={() => {
+                  handleLogout();
+                }}>
+                <MaterialIcons
+                  name="logout"
+                  size={25}
+                  color={theme.colors.purpal}
+                />
+                <Text style={styles.btnText}>LOGOUT</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  Linking.openURL('https://www.fuddapp.com/privacy');
+                }}>
+                <Label title="Privacy Policy" style={styles.link} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  Linking.openURL('https://www.fuddapp.com/faq');
+                }}>
+                <Label title="Support & FAQs" style={styles.link} />
+              </TouchableOpacity>
+            </>
+          ) : (
+            <TouchableOpacity
+              style={styles.textButton}
+              onPress={() => {
+                close();
+                navigation.navigate('ACCOUNT');
+              }}>
+              <Icon name="user" size={25} color={theme.colors.purpal} />
+              <Text style={styles.btnText}>Login</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </Modal>
@@ -97,10 +132,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: scale(5),
-    borderWidth: 1,
+    // borderWidth: 1,
     backgroundColor: theme.colors.white,
-    borderTopRightRadius: 20,
-    borderBottomRightRadius: 20,
+    borderTopRightRadius: scale(25),
+    borderBottomRightRadius: scale(25),
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+
+    elevation: 3,
   },
   textButton: {
     flexDirection: 'row',
@@ -108,4 +152,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   btnText: {marginLeft: scale(10), fontWeight: '600'},
+  link: {
+    marginVertical: scale(5),
+    color: theme.colors.linkColor,
+  },
 });

@@ -15,12 +15,29 @@ import {scale, theme} from '../utils';
 import {Button, Label, Title} from '../components';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
+import {AddToCart} from '../redux/Actions/CartAction';
 
 const CartScreen = () => {
   const navigation = useNavigation();
   const cartData = useSelector(state => state?.CartReducer.cartData);
   const dispatch = useDispatch();
-  const incrimentCart = () => {};
+
+  const incrimentCart = (selitm, idx) => {
+    const tmparr = [...cartData];
+    tmparr[idx].Qty = tmparr[idx].Qty + 1;
+    dispatch(AddToCart(tmparr));
+  };
+
+  const decrimentCart = (selitm, idx) => {
+    const tmparr = [...cartData];
+    if (tmparr[idx].Qty <= 1) {
+      tmparr.splice(idx, 1);
+    } else {
+      tmparr[idx].Qty = tmparr[idx].Qty - 1;
+    }
+    dispatch(AddToCart(tmparr));
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerView}>
@@ -49,18 +66,22 @@ const CartScreen = () => {
                   <View style={styles.items}>
                     <Image
                       source={{
-                        uri: 'https://t3.ftcdn.net/jpg/02/19/27/26/360_F_219272634_wPHgMm8oGm0YVcY5zJt1OfoB9iG3hJwU.jpg',
+                        uri: i?.Image,
                       }}
                       style={styles.productImg}
                     />
                     <View style={styles.detailsView}>
                       <Title title={i?.Name} />
-                      <Label title={i?.Description} style={styles.desc} />
+                      <Label title={i?.Code} style={styles.desc} />
                     </View>
                   </View>
                   <View style={[styles.row, {justifyContent: 'space-evenly'}]}>
                     <View style={[styles.row]}>
-                      <TouchableOpacity style={styles.btn}>
+                      <TouchableOpacity
+                        style={styles.btn}
+                        onPress={() => {
+                          decrimentCart(i, index);
+                        }}>
                         <Icon1
                           name="delete"
                           size={scale(16)}
@@ -80,7 +101,10 @@ const CartScreen = () => {
                         />
                       </TouchableOpacity>
                     </View>
-                    <Title title="€ 12.00" style={styles.price} />
+                    <Title
+                      title={`€ ${(i?.Amount * i?.Qty)?.toFixed(2)}`}
+                      style={styles.price}
+                    />
                   </View>
                 </View>
               );
@@ -187,6 +211,7 @@ const styles = StyleSheet.create({
   productImg: {
     height: scale(35),
     width: scale(35),
+    borderRadius: scale(17),
   },
   btn: {
     borderWidth: scale(1),

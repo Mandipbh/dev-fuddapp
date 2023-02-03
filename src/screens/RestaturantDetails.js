@@ -32,6 +32,7 @@ const RestaturantDetails = () => {
   const [selectedItem, setSelectedItem] = useState(0);
   const [details, setDetails] = useState();
   const [selItem, setSelItem] = useState('');
+  const [filterData, setFilterData] = useState([]);
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
@@ -54,6 +55,53 @@ const RestaturantDetails = () => {
   useEffect(() => {
     setDetails(restaurantData);
   }, [restaurantData]);
+
+  function getNameData(d, searchKey) {
+    let returnData = [];
+
+    const recursion = rcData => {
+      if (rcData?.Name && rcData?.Code) {
+        if (rcData.Name.includes(searchKey)) {
+          returnData.push(rcData);
+        }
+        return;
+      }
+      if (Array.isArray(rcData) || rcData instanceof Object) {
+        for (const key in rcData) {
+          recursion(rcData[key]);
+        }
+      }
+    };
+    recursion(d);
+    return returnData;
+  }
+  useEffect(() => {
+    let data = getNameData(details, searchtxt);
+    setFilterData(data);
+    console.log('search result >> ', data);
+    // const findCategoryId = data?.map(i => {
+    //   return i?.MasterId;
+    // });
+    // const s = details?.Menu.Categories.filter(e => {
+    //   const ss = findCategoryId.includes(e?.ID);
+    //   if (ss && ss !== false) {
+    //     console.log('data ??? ', typeof ss);
+    //     if (e.Name && e.Name !== undefined) {
+    //       console.log('e.Name ?? ', e.Name);
+    //       return {Id: e.ID, name: e.Name};
+    //     }
+    //   }
+    // });
+    // const tmp
+    // s.map((f)=>{
+    //   f.Products?.map((fi)=>{
+
+    //   })
+    // })
+    // console.log('findCategoryId >> ', s);
+  }, [searchtxt]);
+
+  // const finalData = getNameData(data, 'Bufalina');
 
   const renderMenus = ({item, index}) => {
     return (
@@ -160,6 +208,7 @@ const RestaturantDetails = () => {
       } else {
         let itemQtyhandle = {...item};
         itemQtyhandle.Qty = 1;
+        itemQtyhandle.Image = details?.Menu?.ProductsImagePrefix + item?.Image;
         tmpArr.push(itemQtyhandle);
       }
       setSelItem(item);
@@ -255,7 +304,7 @@ const RestaturantDetails = () => {
         />
       </View>
       <View>
-        {selectedItem === 0 && (
+        {selectedItem === 0 && searchtxt === '' ? (
           <FlatList
             data={details?.Menu?.Categories}
             renderItem={renderMenus}
@@ -263,21 +312,72 @@ const RestaturantDetails = () => {
             style={[styles.menusView, styles.shadow]}
             contentContainerStyle={{paddingBottom: scale(30)}}
           />
+        ) : (
+          <>
+            <View style={styles.menuView}>
+              {filterData?.map((m, i) => {
+                return (
+                  <>
+                    <View style={styles.itemView} key={i}>
+                      <View style={styles.row}>
+                        <TouchableOpacity
+                          onPress={() => {
+                            setViewImg(!viewImg);
+                            setImgPath(
+                              details?.Menu?.ProductsImagePrefix + m?.Image,
+                            );
+                          }}>
+                          <Image
+                            source={{
+                              uri:
+                                details?.Menu?.ProductsImagePrefix + m?.Image,
+                            }}
+                            style={styles.productImage}
+                          />
+                        </TouchableOpacity>
+
+                        <View style={{marginLeft: scale(10)}}>
+                          <Label title={m?.Name} style={styles.productname} />
+                          <Label
+                            title={m?.Amount?.toFixed(2) + ' €'}
+                            style={styles.price}
+                          />
+                        </View>
+                      </View>
+                      <Icon
+                        name="plus"
+                        size={scale(22)}
+                        color={theme.colors.purpal}
+                        style={{marginRight: scale(6)}}
+                        onPress={() => {
+                          handleCartAddItem(m);
+                          // setCartModel(!cartModel);
+                        }}
+                      />
+                    </View>
+                    <View style={styles.divider} />
+                  </>
+                );
+              })}
+            </View>
+          </>
         )}
       </View>
-      <View style={styles.infoContainer}>
-        <View style={styles.textView}>
-          <Text style={styles.title}>{restaurantData?.Name}</Text>
-          <Text style={styles.addres}>{restaurantData?.Addresses[0]}</Text>
+      {selectedItem === 1 && (
+        <View style={styles.infoContainer}>
+          <View style={styles.textView}>
+            <Text style={styles.title}>{restaurantData?.Name}</Text>
+            <Text style={styles.addres}>{restaurantData?.Addresses[0]}</Text>
+          </View>
+          <Text style={styles.titleText}>Orari di apertura</Text>
+          {selectedItem === 1 && (
+            <FlatList
+              data={restaurantData?.OpeningTimes}
+              renderItem={renderInfo}
+            />
+          )}
         </View>
-        <Text style={styles.titleText}>Orari di apertura</Text>
-        {selectedItem === 1 && (
-          <FlatList
-            data={restaurantData?.OpeningTimes}
-            renderItem={renderInfo}
-          />
-        )}
-      </View>
+      )}
       <FullScreenImage
         isVisible={viewImg}
         close={() => {

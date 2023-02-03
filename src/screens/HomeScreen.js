@@ -28,6 +28,7 @@ import {
   getAllRestaurants,
   getpopularRestaurants,
 } from '../redux/Actions/HomeAction';
+import {useIsFocused} from '@react-navigation/core';
 
 const Category = ({categoryListData}) => {
   return (
@@ -99,6 +100,7 @@ const HomeScreen = () => {
   const [categoryListData, setCategoryData] = useState([]);
   const [restaurant, setExternalRestaurant] = useState([]);
   const [popularRestaurants, setPopularRestaturants] = useState([]);
+  const isFocuse = useIsFocused();
   const dispatch = useDispatch();
   const IconClosePicker = () => {
     setSelectedModal(false);
@@ -116,7 +118,7 @@ const HomeScreen = () => {
     };
     dispatch(getAllRestaurants(obj));
     dispatch(getpopularRestaurants());
-  }, []);
+  }, [isFocuse, selectedModal]);
 
   const categoryData = useSelector(state => state.HomeReducers?.categoryList);
   const ExternalRestaurant = useSelector(
