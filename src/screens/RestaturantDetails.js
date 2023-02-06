@@ -191,7 +191,7 @@ const RestaturantDetails = () => {
   //   JSON.stringify(cartData, null, 4),
   // );
   const handleCartAddItem = async item => {
-    const tmpArr = [...cartData];
+    const tmpArr = cartData === undefined ? [] : [...cartData];
     console.log('tmpArr ??? ', tmpArr?.length);
     // tmpArr.push(item);
 
@@ -314,56 +314,58 @@ const RestaturantDetails = () => {
           />
         ) : (
           <>
-            <View style={styles.menuView}>
-              {filterData?.map((m, i) => {
-                return (
-                  <>
-                    <View style={styles.itemView} key={i}>
-                      <View style={styles.row}>
-                        <TouchableOpacity
-                          onPress={() => {
-                            setViewImg(!viewImg);
-                            setImgPath(
-                              details?.Menu?.ProductsImagePrefix + m?.Image,
-                            );
-                          }}>
-                          <Image
-                            source={{
-                              uri:
+            {selectedItem === 0 && (
+              <View style={styles.menuView}>
+                {filterData?.map((m, i) => {
+                  return (
+                    <>
+                      <View style={styles.itemView} key={i}>
+                        <View style={styles.row}>
+                          <TouchableOpacity
+                            onPress={() => {
+                              setViewImg(!viewImg);
+                              setImgPath(
                                 details?.Menu?.ProductsImagePrefix + m?.Image,
-                            }}
-                            style={styles.productImage}
-                          />
-                        </TouchableOpacity>
+                              );
+                            }}>
+                            <Image
+                              source={{
+                                uri:
+                                  details?.Menu?.ProductsImagePrefix + m?.Image,
+                              }}
+                              style={styles.productImage}
+                            />
+                          </TouchableOpacity>
 
-                        <View style={{marginLeft: scale(10)}}>
-                          <Label title={m?.Name} style={styles.productname} />
-                          <Label
-                            title={m?.Amount?.toFixed(2) + ' €'}
-                            style={styles.price}
-                          />
+                          <View style={{marginLeft: scale(10)}}>
+                            <Label title={m?.Name} style={styles.productname} />
+                            <Label
+                              title={m?.Amount?.toFixed(2) + ' €'}
+                              style={styles.price}
+                            />
+                          </View>
                         </View>
+                        <Icon
+                          name="plus"
+                          size={scale(22)}
+                          color={theme.colors.purpal}
+                          style={{marginRight: scale(6)}}
+                          onPress={() => {
+                            handleCartAddItem(m);
+                            // setCartModel(!cartModel);
+                          }}
+                        />
                       </View>
-                      <Icon
-                        name="plus"
-                        size={scale(22)}
-                        color={theme.colors.purpal}
-                        style={{marginRight: scale(6)}}
-                        onPress={() => {
-                          handleCartAddItem(m);
-                          // setCartModel(!cartModel);
-                        }}
-                      />
-                    </View>
-                    <View style={styles.divider} />
-                  </>
-                );
-              })}
-            </View>
+                      <View style={styles.divider} />
+                    </>
+                  );
+                })}
+              </View>
+            )}
           </>
         )}
       </View>
-      {selectedItem === 1 && (
+      {selectedItem === 1 && searchtxt !== '' && (
         <View style={styles.infoContainer}>
           <View style={styles.textView}>
             <Text style={styles.title}>{restaurantData?.Name}</Text>

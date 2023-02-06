@@ -66,7 +66,7 @@ export const API = {
   getRestoranti: 'Ristoranti/FilterRestaurants',
   deleteAddress: 'Users/DeleteUserAddressById?addressId=',
   getPerticularRestaurant: 'Restaurant/GetRestaurantDetailsById',
-  updatePassword:'Users/Updatepassword',
+  updatePassword:'Users/ChangeUserPassword',
   recoveryPassword:'Users/RecoveryPassword?email=',
   varifyUser:'Users/VerifyUser'
 };

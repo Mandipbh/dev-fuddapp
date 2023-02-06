@@ -29,6 +29,7 @@ import {
   getpopularRestaurants,
 } from '../redux/Actions/HomeAction';
 import {useIsFocused} from '@react-navigation/core';
+import SetLocationModel from '../components/appModel/SetLocationModel';
 
 const Category = ({categoryListData}) => {
   return (
@@ -213,6 +214,7 @@ const HomeScreen = () => {
           {!categoryView && <Restaturants restaurant={restaurant} />}
         </ScrollView>
       </View>
+      {/* <SetLocationModel isShow={true} /> */}
     </SafeAreaView>
   );
 };

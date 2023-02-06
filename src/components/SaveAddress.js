@@ -1,4 +1,11 @@
-import {Image, ScrollView, StyleSheet, View} from 'react-native';
+import {
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import React from 'react';
 import {images, scale, theme} from '../utils';
 import InputBox from './InputBox';
@@ -16,7 +23,7 @@ const SaveAddress = ({back}) => {
   const [address, setAddress] = useState('');
   const userData = useSelector(state => state?.UserReducer?.userDetails);
   const dispatch = useDispatch();
-  console.log('user details > ', userData?.UserId);
+
   const handleSave = () => {
     try {
       const frmData = {
@@ -57,10 +64,12 @@ const SaveAddress = ({back}) => {
     for (let z = 0; z < t.length; ++z) if (t[z] == s) return true;
     return false;
   };
-  const handlePlaceChanged = async data => {
+  const handlePlaceChanged = async (data, addData) => {
+    const zipCode = data?.address_components.find(addressComponent =>
+      addressComponent.types.includes('postal_code'),
+    )?.short_name;
     const place = data;
-    // let userInfo = this.props.route.params?.data;
-    //console.log(" from google auto complete place===>",place);
+
     let latt,
       lngg,
       addrSel,
@@ -73,7 +82,6 @@ const SaveAddress = ({back}) => {
       const plcGeom = place.geometry;
       if (plcGeom.location !== undefined) {
         const {lat, lng} = place?.geometry?.location;
-
         latt = lat;
         lngg = lng;
       }
@@ -132,83 +140,104 @@ const SaveAddress = ({back}) => {
       country: country,
       textboxtext: nameData,
     };
-
-    console.log('stateRespstateRespstateResp ', stateResp);
+    const frmData = {
+      Latitute: latt,
+      Longitude: lngg,
+      UserId: userData?.UserId,
+      AddressId: 0,
+      StreetNo: 'string',
+      Address: address,
+      City: city,
+      Postcode: zipCode,
+      FullAddress: addrSel,
+      Firstname: firstName,
+      Lastname: lastName,
+      Description: addData?.description,
+      Phone: mobile,
+    };
+    console.log('stateRespstateRespstateResp ', frmData);
   };
 
   return (
     <View>
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={{
-          width: '100%',
-          shadowColor: '#000',
-          shadowOffset: {
-            width: 0,
-            height: 1,
-          },
-          shadowOpacity: 0.2,
-          shadowRadius: 1.41,
-          elevation: 2,
-        }}
-        nestedScrollEnabled={true}
-        showsVerticalScrollIndicator={false}>
-        <GooglePlacesAutocomplete
-          placeholder="Inserisci indirizzo"
-          disableScroll={false}
-          keepResultsAfterBlur={true}
-          onPress={(data, details = null) => {
-            console.log('datadatadata >> ', data);
-            console.log('detailsdetails >> ', details);
-            handlePlaceChanged(details);
-            const {lat, lng} = details?.geometry?.location;
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={[styles.container, {paddingHorizontal: 0}]}>
+        <ScrollView
+          style={styles.container}
+          contentContainerStyle={{
+            width: '100%',
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 1,
+            },
+            shadowOpacity: 0.2,
+            shadowRadius: 1.41,
+            elevation: 2,
+            // flexGrow: 1,
           }}
-          fetchDetails={true}
-          query={{
-            key: 'AIzaSyDxUeU36VnWRBXAok6txlBCV2rq9UhHWT4',
-            // language: 'en',
-            // types: '(cities)',
-            // components: 'country:IT',
-            language: 'en',
-            components: 'country:IT',
-            sessiontoken: 'sessionToken',
-            type: 'address',
-          }}
-        />
-        <InputBox
-          value={firstName}
-          onChangeText={txt => {
-            setFirstName(txt);
-          }}
-          placeholder="first name"
-          style={{marginBottom: scale(3), width: '95%'}}
-        />
-        <InputBox
-          value={lastName}
-          onChangeText={txt => {
-            setLastname(txt);
-          }}
-          placeholder="last name"
-          keyboardType="numeric"
-          style={{marginBottom: scale(3)}}
-        />
-        <InputBox
-          value={address}
-          onChangeText={txt => {
-            setAddress(txt);
-          }}
-          placeholder="Intercom at, staircase, floor"
-          style={{marginBottom: scale(3)}}
-        />
-        <InputBox
-          value={mobile}
-          onChangeText={txt => {
-            setMobile(txt);
-          }}
-          placeholder="Telephone"
-          style={{marginBottom: scale(3)}}
-        />
-      </ScrollView>
+          nestedScrollEnabled={true}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}>
+          <GooglePlacesAutocomplete
+            placeholder="Inserisci indirizzo"
+            // disableScroll={true}
+            keepResultsAfterBlur={true}
+            onPress={(data, details = null) => {
+              console.log('datadatadata >> ', data);
+              // console.log('detailsdetails >> ', details);
+              handlePlaceChanged(details, data);
+              const {lat, lng} = details?.geometry?.location;
+            }}
+            // debounce={200}
+            fetchDetails={true}
+            query={{
+              key: 'AIzaSyDxUeU36VnWRBXAok6txlBCV2rq9UhHWT4',
+              // language: 'en',
+              // types: '(cities)',
+              // components: 'country:IT',
+              language: 'en',
+              components: 'country:IT',
+              sessiontoken: 'sessionToken',
+              type: Array[('address', 'postal_code')],
+            }}
+          />
+          <InputBox
+            value={firstName}
+            onChangeText={txt => {
+              setFirstName(txt);
+            }}
+            placeholder="first name"
+            style={{marginBottom: scale(3), width: '95%'}}
+          />
+          <InputBox
+            value={lastName}
+            onChangeText={txt => {
+              setLastname(txt);
+            }}
+            placeholder="last name"
+            keyboardType="numeric"
+            style={{marginBottom: scale(3)}}
+          />
+          <InputBox
+            value={address}
+            onChangeText={txt => {
+              setAddress(txt);
+            }}
+            placeholder="Intercom at, staircase, floor"
+            style={{marginBottom: scale(3)}}
+          />
+          <InputBox
+            value={mobile}
+            onChangeText={txt => {
+              setMobile(txt);
+            }}
+            placeholder="Telephone"
+            style={{marginBottom: scale(3)}}
+          />
+        </ScrollView>
+      </KeyboardAvoidingView>
       <Image source={images.appIcon} style={styles.appIcon} />
       <Button
         title="Salva indirinzo"

@@ -8,10 +8,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/Feather';
+import LottieView from 'lottie-react-native';
 import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
-import {scale, theme} from '../utils';
+import {Emptycart, scale, theme} from '../utils';
 import {Button, Label, Title} from '../components';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
@@ -21,6 +22,7 @@ const CartScreen = () => {
   const navigation = useNavigation();
   const cartData = useSelector(state => state?.CartReducer.cartData);
   const dispatch = useDispatch();
+  const [pTotal, setPTotal] = useState(0);
 
   const incrimentCart = (selitm, idx) => {
     const tmparr = [...cartData];
@@ -38,6 +40,21 @@ const CartScreen = () => {
     dispatch(AddToCart(tmparr));
   };
 
+  const calculatePrice = () => {
+    const tmparr = [...cartData];
+    const initialValue = 0;
+    const total = tmparr.reduce(
+      (accumulator, current) => accumulator + current.Amount * current.Qty,
+      initialValue,
+    );
+    setPTotal(total);
+  };
+
+  useEffect(() => {
+    console.log('cartData >>> ', cartData);
+    calculatePrice();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cartData]);
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerView}>
@@ -53,7 +70,7 @@ const CartScreen = () => {
       </View>
       <ScrollView style={styles.mainContainer}>
         <ScrollView style={styles.productView} nestedScrollEnabled={true}>
-          {cartData &&
+          {cartData?.length > 0 ? (
             cartData.map((i, index) => {
               return (
                 <View
@@ -108,40 +125,63 @@ const CartScreen = () => {
                   </View>
                 </View>
               );
-            })}
+            })
+          ) : (
+            <>
+              <View style={styles.noDataCon}>
+                <LottieView
+                  source={Emptycart}
+                  autoPlay
+                  loop
+                  style={{height: scale(250)}}
+                />
+                <Title title="Carrello vuoto" />
+              </View>
+            </>
+          )}
         </ScrollView>
-        <View style={styles.PriceView}>
-          <View style={styles.priceingView}>
-            <Title title="Totale Prodotti" />
-            <Title title="€ 36.00" style={styles.number} />
-          </View>
-          <View style={styles.priceingView}>
-            <Title title="Spese di consegna" />
-            <Title title="€ 2.90" style={styles.number} />
-          </View>
+        {cartData?.length > 0 && (
+          <View style={styles.PriceView}>
+            <View style={styles.priceingView}>
+              <Title title="Totale Prodotti" />
+              <Title title={`€ ${pTotal}`} style={styles.number} />
+            </View>
+            <View style={styles.priceingView}>
+              <Title title="Spese di consegna" />
+              <Title
+                title={`€ ${pTotal === 0 ? 0 : 2.9}`}
+                style={styles.number}
+              />
+            </View>
 
-          <View
-            style={[
-              styles.priceingView,
-              {
-                borderTopWidth: scale(1),
-                borderTopColor: theme.colors.gray,
-                paddingTop: scale(10),
-              },
-            ]}>
-            <Title title="Totale Finale" />
-            <Title title="€ 38.90" style={styles.number} />
+            <View
+              style={[
+                styles.priceingView,
+                {
+                  borderTopWidth: scale(1),
+                  borderTopColor: theme.colors.gray,
+                  paddingTop: scale(10),
+                },
+              ]}>
+              <Title title="Totale Finale" />
+              <Title
+                title={`€ ${pTotal + (pTotal === 0 ? 0 : 2.9)}`}
+                style={styles.number}
+              />
+            </View>
           </View>
-        </View>
+        )}
       </ScrollView>
-      <Button
-        title="Procedi al CheckOut"
-        style={styles.submitBtn}
-        titleStyle={styles.btnTxt}
-        onPress={() => {
-          navigation.navigate('Checkout');
-        }}
-      />
+      {cartData?.length > 0 && (
+        <Button
+          title="Procedi al CheckOut"
+          style={styles.submitBtn}
+          titleStyle={styles.btnTxt}
+          onPress={() => {
+            navigation.navigate('Checkout');
+          }}
+        />
+      )}
     </SafeAreaView>
   );
 };
@@ -230,5 +270,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginVertical: scale(4),
+  },
+  noDataCon: {
+    // height: scale(200),
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

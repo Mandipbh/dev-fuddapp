@@ -2,6 +2,7 @@ import React from 'react';
 import {useState} from 'react';
 import {StyleSheet, View, Modal, ActivityIndicator} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import {useSelector} from 'react-redux';
 import {scale, theme} from '../../utils';
 import ApiService, {API} from '../../utils/ApiService';
 import Button from '../Button';
@@ -16,7 +17,9 @@ const ChangePassword = props => {
   const [passwordErr, setpasswordErr] = useState('');
   const [nPasswordErr, setNpasswordErr] = useState('');
   const [cpasswordErr, setCpasswordErr] = useState('');
-
+  const user = useSelector(state => state.UserReducer?.userDetails);
+  const [load, setLoad] = useState(false);
+  console.log('user ??? ', user?.UserId);
   let error = false;
   const handleValidation = () => {
     if (oldPassword?.trim() === '') {
@@ -47,26 +50,30 @@ const ChangePassword = props => {
     if (!handleValidation()) {
       clearFilds();
       close();
-      // try {
-      //   const folderFrm = {
-      //     oldPassword: oldPassword,
-      //     newPassword: NewPassword,
-      //   };
-      //   const options = {payloads: folderFrm};
-      //   ApiService.post(API.updatePassword, options)
-      //     .then(res => {
-      //       if (res.Status === 'Success') {
-      //         console.log('res of login >> ', res);
-      //         close();
-      //       }
-      //     })
-      //     .catch(e => {
-      //       alert(e.response?.data?.Errors[0]);
-      //       // console.log('error in login> ', e.response?.data?.Errors[0]);
-      //     });
-      // } catch (error) {
-      //   console.log('error in login ', error);
-      // }
+      try {
+        setLoad(true);
+        const folderFrm = {
+          UserId: user?.UserId,
+          OldPassword: oldPassword,
+          NewPassword: NewPassword,
+        };
+        const options = {payloads: folderFrm};
+        ApiService.post(API.updatePassword, options)
+          .then(res => {
+            setLoad(false);
+            if (res.Status === 'Success') {
+              console.log('res of login >> ', res);
+              close();
+            }
+          })
+          .catch(e => {
+            setLoad(false);
+            alert(e.response?.data?.Errors[0]);
+            // console.log('error in login> ', e.response?.data?.Errors[0]);
+          });
+      } catch (error) {
+        console.log('error in login ', error);
+      }
     }
   };
   const clearFilds = () => {
@@ -132,15 +139,22 @@ const ChangePassword = props => {
               secureTextEntry
             />
             {cpasswordErr && <Error error={cpasswordErr} />}
-            <Button
-              title="Salva"
-              style={{
-                backgroundColor: theme.colors.primary,
-                marginTop: scale(15),
-              }}
-              titleStyle={{color: theme.colors.white, fontWeight: '600'}}
-              onPress={() => handleForgotPassword()}
-            />
+            {load ? (
+              <ActivityIndicator
+                size={scale(40)}
+                color={theme.colors.primary}
+              />
+            ) : (
+              <Button
+                title="Salva"
+                style={{
+                  backgroundColor: theme.colors.primary,
+                  marginTop: scale(15),
+                }}
+                titleStyle={{color: theme.colors.white, fontWeight: '600'}}
+                onPress={() => handleForgotPassword()}
+              />
+            )}
           </View>
         </View>
       </View>

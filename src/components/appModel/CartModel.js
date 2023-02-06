@@ -12,6 +12,7 @@ import {useEffect} from 'react';
 const CartModel = props => {
   const {isVisible, close, data} = props;
   const [cartModel, setCartModel] = useState(false);
+  const [productDetails, setProductDetails] = useState([]);
   const [totalPrice, setPrice] = useState(0);
   const [wantProduct, setWantProduct] = useState(null);
   const [rIds, setRIds] = useState([]);
@@ -21,6 +22,7 @@ const CartModel = props => {
   };
   useEffect(() => {
     setPrice(data?.Amount);
+    setProductDetails(data);
   }, [data]);
   // useEffect(() => {
   //   setPrice(
@@ -29,6 +31,16 @@ const CartModel = props => {
   //       : wantProduct?.ImportoUnitario,
   //   );
   // }, [wantProduct]);
+  console.log('wantProduct >>> ', wantProduct);
+  console.log('rrrrr >> ', rIds);
+  const handleAggiungi = (item, index) => {
+    let tmpData = [...productDetails?.lstAddons];
+    //lstAddons
+    tmpData[index].Qty = 1;
+    console.log('lstAddonslstAddons >> ', tmpData);
+
+    // console.log('lstAddons >', item);
+  };
   return (
     <Modal
       style={styles.Maincontainer}
@@ -71,7 +83,7 @@ const CartModel = props => {
             <ScrollView
               showsVerticalScrollIndicator={false}
               nestedScrollEnabled>
-              {data?.lstAddons?.length > 0 && (
+              {productDetails?.lstAddons?.length > 0 && (
                 <>
                   <TouchableOpacity style={styles.categoryTitle}>
                     <Title title={'Aggiungi ingredienti'} />
@@ -84,10 +96,10 @@ const CartModel = props => {
                   <ScrollView
                     style={{height: theme.SCREENHEIGHT * 0.2}}
                     nestedScrollEnabled>
-                    {data?.lstAddons?.length > 0 && (
+                    {productDetails?.lstAddons?.length > 0 && (
                       <View style={styles.card}>
                         <View style={styles.subItem}>
-                          {data?.lstAddons?.map((item, index) => {
+                          {productDetails?.lstAddons?.map((item, index) => {
                             return (
                               <View style={styles.itemView} key={index}>
                                 <View>
@@ -112,7 +124,7 @@ const CartModel = props => {
                                   ]}>
                                   <TouchableOpacity style={styles.btns}>
                                     <Icon
-                                      size={scale(scale(13))}
+                                      size={scale(13)}
                                       name="minus"
                                       color={theme.colors.gray}
                                     />
@@ -124,7 +136,7 @@ const CartModel = props => {
                                   <TouchableOpacity
                                     style={styles.btns}
                                     onPress={() => {
-                                      console.log('lstAddons >', item);
+                                      handleAggiungi(item, index);
                                     }}>
                                     <Icon
                                       size={scale(scale(13))}
@@ -143,7 +155,7 @@ const CartModel = props => {
                 </>
               )}
 
-              {data?.lstIngredients?.length > 0 && (
+              {productDetails?.lstIngredients?.length > 0 && (
                 <>
                   <TouchableOpacity style={styles.categoryTitle}>
                     <Title title={'Rimuovi Ingredienti'} />
@@ -156,38 +168,44 @@ const CartModel = props => {
                   <ScrollView
                     style={{height: theme.SCREENHEIGHT * 0.2}}
                     nestedScrollEnabled>
-                    {data?.lstIngredients?.length > 0 && (
+                    {productDetails?.lstIngredients?.length > 0 && (
                       <View style={styles.card}>
                         <View style={styles.subItem}>
-                          {data?.lstIngredients?.map((item, index) => {
-                            return (
-                              <View style={styles.itemView} key={index}>
-                                <View>
-                                  <Label
-                                    title={item?.Descrizione}
-                                    style={styles.name}
-                                  />
-                                  <Label
-                                    title={`${item?.Prezzo?.toFixed(2)}€`}
-                                    style={styles.itemprice}
+                          {productDetails?.lstIngredients?.map(
+                            (item, index) => {
+                              return (
+                                <View style={styles.itemView} key={index}>
+                                  <View>
+                                    <Label
+                                      title={item?.Descrizione}
+                                      style={styles.name}
+                                    />
+                                    <Label
+                                      title={`${item?.Prezzo?.toFixed(2)}€`}
+                                      style={styles.itemprice}
+                                    />
+                                  </View>
+                                  <Icon
+                                    name={
+                                      rIds.includes(item?.IDRiga)
+                                        ? 'check-square'
+                                        : 'square'
+                                    } //circle
+                                    size={scale(20)}
+                                    color={theme.colors.primary}
+                                    onPress={() => {
+                                      console.log(
+                                        'item?.IDRiga >> ',
+                                        item?.IDRiga,
+                                      );
+                                      // rIds.push(item?.IDRiga);
+                                      // setRIds(rIds);
+                                    }}
                                   />
                                 </View>
-                                <Icon
-                                  name={
-                                    rIds.includes(item?.IDRiga)
-                                      ? 'check-square'
-                                      : 'square'
-                                  } //circle
-                                  size={scale(20)}
-                                  color={theme.colors.primary}
-                                  onPress={() => {
-                                    rIds.push(item?.IDRiga);
-                                    setRIds(rIds);
-                                  }}
-                                />
-                              </View>
-                            );
-                          })}
+                              );
+                            },
+                          )}
                         </View>
                       </View>
                     )}
@@ -195,7 +213,7 @@ const CartModel = props => {
                 </>
               )}
 
-              {data?.lstMakeTypes?.length > 0 && (
+              {productDetails?.lstMakeTypes?.length > 0 && (
                 <>
                   <TouchableOpacity style={styles.categoryTitle}>
                     <Title title={'Comeil prodotto?'} />
@@ -208,10 +226,10 @@ const CartModel = props => {
                   <ScrollView
                     style={{height: theme.SCREENHEIGHT * 0.25}}
                     nestedScrollEnabled>
-                    {data?.lstMakeTypes?.length > 0 && (
+                    {productDetails?.lstMakeTypes?.length > 0 && (
                       <View style={styles.card}>
                         <View style={styles.subItem}>
-                          {data?.lstMakeTypes?.map((item, index) => {
+                          {productDetails?.lstMakeTypes?.map((item, index) => {
                             return (
                               <View style={styles.itemView}>
                                 <View>
