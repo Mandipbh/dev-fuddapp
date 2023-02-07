@@ -41,7 +41,7 @@ const AccountScreen = () => {
     if (!isLoginUser) {
       setSelectedMenu(4);
     } else {
-      setSelectedMenu(11);
+      setSelectedMenu(1);
     }
   }, [isFoucse]);
 
