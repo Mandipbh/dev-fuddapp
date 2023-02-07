@@ -19,7 +19,8 @@ import {KeyboardAvoidingView} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 const SetLocationModel = props => {
   const {isShow, close} = props;
-
+  const addressList = useSelector(state => state.HomeReducers.addressList);
+  console.log('address list >>> ', addressList);
   const dispatch = useDispatch();
   // const userInfo = useSelector(state => state.AppReducer.userDetails);
   // console.log('user info >>>> ', userInfo?.uuid);

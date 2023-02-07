@@ -21,39 +21,41 @@ const SaveAddress = ({back}) => {
   const [lastName, setLastname] = useState(null);
   const [mobile, setMobile] = useState('');
   const [address, setAddress] = useState('');
+  const [addressData, setAddressData] = useState('');
   const userData = useSelector(state => state?.UserReducer?.userDetails);
   const dispatch = useDispatch();
 
   const handleSave = () => {
     try {
-      const frmData = {
-        Latitute: '654',
-        Longitude: '213',
-        UserId: userData?.UserId,
-        StreetNo: '15',
-        Address: address,
-        City: 'test',
-        Postcode: '380059',
-        FullAddress: address,
-        Firstname: firstName,
-        Lastname: lastName,
-        Description: 'test',
-        Phone: mobile,
-      };
-      const options = {payloads: frmData};
-      ApiService.post('Users/SaveUserAddress', options)
-        .then(res => {
-          console.log('res address', res?.Status);
-          if (res?.Status == 'Success') {
-            back();
-            dispatch(getAllAddress());
-          }
-        })
-        .catch(error => {
-          console.log('error catch ', error.response);
-          back();
-          dispatch(getAllAddress());
-        });
+      console.log('addressData >> ', addressData);
+      // const frmData = {
+      //   Latitute: '654',
+      //   Longitude: '213',
+      //   UserId: userData?.UserId,
+      //   StreetNo: '15',
+      //   Address: address,
+      //   City: 'test',
+      //   Postcode: '380059',
+      //   FullAddress: address,
+      //   Firstname: firstName,
+      //   Lastname: lastName,
+      //   Description: 'test',
+      //   Phone: mobile,
+      // };
+      // const options = {payloads: frmData};
+      // ApiService.post('Users/SaveUserAddress', options)
+      //   .then(res => {
+      //     console.log('res address', res?.Status);
+      //     if (res?.Status == 'Success') {
+      //       back();
+      //       dispatch(getAllAddress());
+      //     }
+      //   })
+      //   .catch(error => {
+      //     console.log('error catch ', error.response);
+      //     back();
+      //     dispatch(getAllAddress());
+      //   });
     } catch (error) {
       console.log('eror save address ', error);
       back();
@@ -139,6 +141,7 @@ const SaveAddress = ({back}) => {
       state: state,
       country: country,
       textboxtext: nameData,
+      Description: addData?.description,
     };
     const frmData = {
       Latitute: latt,
@@ -155,7 +158,11 @@ const SaveAddress = ({back}) => {
       Description: addData?.description,
       Phone: mobile,
     };
-    console.log('stateRespstateRespstateResp ', frmData);
+    setAddressData(frmData);
+    console.log(
+      'stateRespstateRespstateResp  is this ',
+      JSON.stringify(frmData, null, 4),
+    );
   };
 
   return (
@@ -185,7 +192,9 @@ const SaveAddress = ({back}) => {
             // disableScroll={true}
             keepResultsAfterBlur={true}
             onPress={(data, details = null) => {
-              console.log('datadatadata >> ', data);
+              console.log('this is data ', data);
+              console.log('this is details ', details);
+
               // console.log('detailsdetails >> ', details);
               handlePlaceChanged(details, data);
               const {lat, lng} = details?.geometry?.location;
@@ -200,7 +209,7 @@ const SaveAddress = ({back}) => {
               language: 'en',
               components: 'country:IT',
               sessiontoken: 'sessionToken',
-              type: Array[('address', 'postal_code')],
+              type: Array[('address', 'postal_code', 'street_number')],
             }}
           />
           <InputBox

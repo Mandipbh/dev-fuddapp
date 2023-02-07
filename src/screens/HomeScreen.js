@@ -101,6 +101,7 @@ const HomeScreen = () => {
   const [categoryListData, setCategoryData] = useState([]);
   const [restaurant, setExternalRestaurant] = useState([]);
   const [popularRestaurants, setPopularRestaturants] = useState([]);
+  const [locationModel, setLocationModel] = useState(false);
   const isFocuse = useIsFocused();
   const dispatch = useDispatch();
   const IconClosePicker = () => {
@@ -195,9 +196,9 @@ const HomeScreen = () => {
         {!categoryView ? (
           <Button
             onPress={() => {
-              setCategoryView(true);
+              setLocationModel(true);
             }}
-            title={'Trova ristoranti'}
+            title={'Scegli tra i tuoi indirizzi'}
             style={styles.ristroBtn}
             titleStyle={styles.btnText}
           />
@@ -214,7 +215,7 @@ const HomeScreen = () => {
           {!categoryView && <Restaturants restaurant={restaurant} />}
         </ScrollView>
       </View>
-      {/* <SetLocationModel isShow={true} /> */}
+      <SetLocationModel isShow={locationModel} />
     </SafeAreaView>
   );
 };
