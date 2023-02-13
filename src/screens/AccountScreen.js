@@ -167,7 +167,6 @@ const AccountScreen = () => {
                   key={index}
                   style={styles.option}
                   onPress={() => {
-                    console.log('select >>>> ', item.id);
                     handleClick(item.id, index);
                   }}>
                   <Label title={item.title} />

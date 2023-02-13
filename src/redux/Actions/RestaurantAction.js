@@ -12,7 +12,7 @@ export const getpopularRestaurants = data => {
       const options = {payloads: data};
       ApiService.post(API.getAllRestaurant, options)
         .then(res => {
-          console.log('res >>>>> ', res);
+          // console.log('res >>>>> ', res);
           if (res) {
             dispatch({type: GETALLRISTORANTI, payload: res});
             // dispatch({type: LOADINGRESTORANTI, payload: false});

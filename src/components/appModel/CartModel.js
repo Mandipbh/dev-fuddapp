@@ -1,21 +1,38 @@
 import React from 'react';
-import {StyleSheet, View, TouchableOpacity, ScrollView} from 'react-native';
+import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import {scale, theme} from '../../utils';
+import { scale, theme } from '../../utils';
 import Modal from 'react-native-modal';
-import {Label, Title} from '../Label';
+import { Label, Title } from '../Label';
 import Button from '../Button';
-import {useState} from 'react';
+import { useState } from 'react';
 import AddCardModal from './AddCardModal';
-import {useEffect} from 'react';
+import { useEffect } from 'react';
+import { all } from 'axios';
 
 const CartModel = props => {
-  const {isVisible, close, data} = props;
+  const { isVisible, close, data } = props;
   const [cartModel, setCartModel] = useState(false);
   const [productDetails, setProductDetails] = useState([]);
   const [totalPrice, setPrice] = useState(0);
   const [wantProduct, setWantProduct] = useState(null);
   const [rIds, setRIds] = useState([]);
+  const [checkbox, setCheckBox] = useState(0)
+  const [count, setCount] = useState(0);
+  let [addonData, setAddonData] = useState([]);
+  const [pTotal, setPTotal] = useState(0);
+  const [show, setShow] = useState(false);
+  const tmpDataForCircle = wantProduct?.ImportoUnitario
+  // const popItem = ({ item }) => {
+  //   rIds.includes(item?.IDRiga) ? setCheckBox(!checkbox) : null
+  // }
+  const dataObject = {
+    productName: productDetails.Name,
+    productAmount: productDetails.Amount,
+    productQuantity: productDetails.Qty,
+    productImage: productDetails.Image,
+    productPrice: productDetails.lstAddons,
+  }
   // const [rIdData, setRIds] = useState([]);
   const closeModal = () => {
     setCartModel(false);
@@ -23,27 +40,94 @@ const CartModel = props => {
   useEffect(() => {
     setPrice(data?.Amount);
     setProductDetails(data);
-  }, [data]);
-  // useEffect(() => {
-  //   setPrice(
-  //     data?.Amount + wantProduct?.ImportoUnitario == undefined
-  //       ? 0
-  //       : wantProduct?.ImportoUnitario,
-  //   );
-  // }, [wantProduct]);
-  console.log('wantProduct >>> ', wantProduct);
-  console.log('rrrrr >> ', rIds);
+    productDetails?.lstAddons?.length > 0 && setAddonData(productDetails?.lstAddons)
+    calculatePrice();
+  }, [data, productDetails.lstAddons, wantProduct, addonData]);
+
   const handleAggiungi = (item, index) => {
     let tmpData = [...productDetails?.lstAddons];
     //lstAddons
-    tmpData[index].Qty = 1;
-    console.log('lstAddonslstAddons >> ', tmpData);
-
-    // console.log('lstAddons >', item);
+    // tmpData[index].Qty = 1;
+    tmpData.Qty = tmpData.Qty + 1;
+    setCount(tmpData.includes)
   };
+  const handleCartAddItem = async item => {
+    const tmpArr = cartData === undefined ? [] : [...cartData];
+    // tmpArr.push(item);
+
+    dispatch(AddToCart(tmpArr));
+    if (
+      item?.lstIngredients?.length === 0 &&
+      item?.lstAddons?.length === 0 &&
+      item?.lstAddons.length === 0
+    ) {
+      var matchingObj = await cartData.find(o => o.Name === item.Name);
+
+      if (matchingObj) {
+        matchingObj.Qty++;
+      } else {
+        let itemQtyhandle = { ...item };
+        itemQtyhandle.Qty = 1;
+        itemQtyhandle.Image = details?.Menu?.ProductsImagePrefix + item?.Image;
+        tmpArr.push(itemQtyhandle);
+      }
+      setSelItem(item);
+    } else {
+      setSelItem(item);
+      setCartModel(true);
+    }
+  };
+  const handleIncriment = (item, idx) => {
+    let tmpArr = [...addonData]
+    tmpArr[idx].Qty = tmpArr[idx].Qty + 1
+    setAddonData(tmpArr)
+  }
+  const handleDecriment = (item, idx) => {
+    let tempArray = [...addonData]
+    tempArray[idx].Qty != 0 ? tempArray[idx].Qty = tempArray[idx].Qty - 1 : null
+    setAddonData(tempArray)
+  }
+  function clearify() {
+    setProductDetails([])
+    setCartModel(false);
+    // emptyQty()
+    close()
+    // let tmpArr = [...addonData]
+    // tmpArr.Qty == 0
+    // setAddonData(tmpArr)
+
+  }
+
+  const changeShow = (props) => {
+    setShow(!show)
+    props.onSubmit(show)
+  }
+
+  // const emptyQty = () => {
+  //   let tmp = [...addonData]
+  //   tmp[idx].Qty != 0 ? tmp[idx].Qty = 0 : null
+  //   setAddonData(tmp)
+  // }
+  const calculatePrice = () => {
+    const tmparr = [...addonData];
+    const initialValue = 0;
+    const total = tmparr.reduce(
+      (accumulator, current) => accumulator + current.Prezzo * current.Qty,
+      initialValue,
+    );
+    // let total = tmparr[idx]
+
+    const totalValue = total + tmpDataForCircle || total;
+
+    setPTotal(totalValue);
+  };
+
+
+
   return (
     <Modal
       style={styles.Maincontainer}
+
       visible={isVisible}
       backdropColor={theme.colors.black}
       backdropOpacity={0.2}>
@@ -53,7 +137,9 @@ const CartModel = props => {
           size={scale(30)}
           color={theme.colors.white}
           style={styles.closeIcon}
-          onPress={close}
+          onPress={() => {
+            clearify()
+          }}
         />
         <View style={styles.subView}>
           <Title title={data?.Name} style={styles.title} />
@@ -83,8 +169,10 @@ const CartModel = props => {
             <ScrollView
               showsVerticalScrollIndicator={false}
               nestedScrollEnabled>
-              {productDetails?.lstAddons?.length > 0 && (
+              {addonData?.length > 0 && (
+
                 <>
+
                   <TouchableOpacity style={styles.categoryTitle}>
                     <Title title={'Aggiungi ingredienti'} />
                     <Icon
@@ -94,23 +182,23 @@ const CartModel = props => {
                     />
                   </TouchableOpacity>
                   <ScrollView
-                    style={{height: theme.SCREENHEIGHT * 0.2}}
+                    style={{ height: theme.SCREENHEIGHT * 0.2 }}
                     nestedScrollEnabled>
-                    {productDetails?.lstAddons?.length > 0 && (
+                    {addonData?.length > 0 && (
+
                       <View style={styles.card}>
                         <View style={styles.subItem}>
-                          {productDetails?.lstAddons?.map((item, index) => {
+                          {productDetails?.lstAddons?.map((item, idx) => {
                             return (
-                              <View style={styles.itemView} key={index}>
+                              <View style={styles.itemView} key={idx}>
+
                                 <View>
                                   <Label
                                     title={item?.Descrizione}
                                     style={styles.name}
                                   />
                                   <Label
-                                    title={`${item?.Prezzo.toFixed(
-                                      2,
-                                    )?.toString()}€`}
+                                    title={`${item?.Prezzo.toFixed(2,)?.toString()}€`}
                                     style={styles.itemprice}
                                   />
                                 </View>
@@ -122,28 +210,46 @@ const CartModel = props => {
                                       alignItems: 'center',
                                     },
                                   ]}>
-                                  <TouchableOpacity style={styles.btns}>
-                                    <Icon
-                                      size={scale(13)}
-                                      name="minus"
-                                      color={theme.colors.gray}
-                                    />
-                                  </TouchableOpacity>
-                                  <Label
-                                    title="0"
-                                    style={{marginHorizontal: scale(8)}}
-                                  />
-                                  <TouchableOpacity
-                                    style={styles.btns}
+                                  {/* <Icon
+                                    name="x"
+                                    size={scale(30)}
+                                    color={theme.colors.red}
+                                    style={styles.closeIcon}
                                     onPress={() => {
-                                      handleAggiungi(item, index);
-                                    }}>
-                                    <Icon
-                                      size={scale(scale(13))}
-                                      name="plus"
-                                      color={theme.colors.gray}
+                                      clearify(item, idx)
+                                    }}
+                                  /> */}
+                                  <View style={[
+                                    styles.row,
+                                    {
+                                      justifyContent: 'space-around',
+                                      alignItems: 'center',
+                                    },
+                                  ]}>
+                                    <TouchableOpacity style={styles.btns}
+                                      onPress={() => { handleDecriment(item, idx) }}>
+                                      <Icon
+                                        size={scale(13)}
+                                        name="minus"
+                                        color={theme.colors.gray}
+                                      />
+                                    </TouchableOpacity>
+                                    <Label
+                                      title={item?.Qty}
+                                      style={{ marginHorizontal: scale(8) }}
                                     />
-                                  </TouchableOpacity>
+
+                                    <TouchableOpacity
+                                      style={styles.btns}
+                                      // onPress={() => indexInc()}>
+                                      onPress={() => handleIncriment(item, idx)}>
+                                      <Icon
+                                        size={scale(scale(13))}
+                                        name="plus"
+                                        color={theme.colors.gray}
+                                      />
+                                    </TouchableOpacity>
+                                  </View>
                                 </View>
                               </View>
                             );
@@ -166,7 +272,7 @@ const CartModel = props => {
                     />
                   </TouchableOpacity>
                   <ScrollView
-                    style={{height: theme.SCREENHEIGHT * 0.2}}
+                    style={{ height: theme.SCREENHEIGHT * 0.2 }}
                     nestedScrollEnabled>
                     {productDetails?.lstIngredients?.length > 0 && (
                       <View style={styles.card}>
@@ -185,7 +291,7 @@ const CartModel = props => {
                                       style={styles.itemprice}
                                     />
                                   </View>
-                                  <Icon
+                                  {/* <Icon
                                     name={
                                       rIds.includes(item?.IDRiga)
                                         ? 'check-square'
@@ -194,14 +300,29 @@ const CartModel = props => {
                                     size={scale(20)}
                                     color={theme.colors.primary}
                                     onPress={() => {
-                                      console.log(
-                                        'item?.IDRiga >> ',
-                                        item?.IDRiga,
-                                      );
-                                      // rIds.push(item?.IDRiga);
-                                      // setRIds(rIds);
+                                       rIds.push(item?.IDRiga);
+                                       setRIds(rIds);
+
                                     }}
-                                  />
+                                  /> */}
+
+                                  <TouchableOpacity
+                                    onPress={() => {
+                                      rIds.includes(item?.IDRiga) ? rIds.splice(rIds.indexOf(0), 1) : rIds.push(item?.IDRiga);
+                                      setRIds(rIds);
+                                      setWantProduct(item);
+                                      setCheckBox(!checkbox)
+                                      // popItem({item});
+                                      // rIds.includes(item?.IDRiga) ?  rIds.splice(0,-1) : null
+                                    }}
+                                  >
+                                    {/* {rIds.includes(item?.IDRiga) ? ( */}
+                                    {rIds.includes(item?.IDRiga) ? (
+                                      <Icon name='check-square' size={scale(20)}
+                                        color={theme.colors.primary} />
+                                    ) : <Icon name='square' size={scale(20)}
+                                      color={theme.colors.primary} />}
+                                  </TouchableOpacity>
                                 </View>
                               );
                             },
@@ -224,7 +345,7 @@ const CartModel = props => {
                     />
                   </TouchableOpacity>
                   <ScrollView
-                    style={{height: theme.SCREENHEIGHT * 0.25}}
+                    style={{ height: theme.SCREENHEIGHT * 0.25 }}
                     nestedScrollEnabled>
                     {productDetails?.lstMakeTypes?.length > 0 && (
                       <View style={styles.card}>
@@ -275,12 +396,14 @@ const CartModel = props => {
         </View>
         <View style={styles.bottomView}>
           <Button
-            onPress={() => close(true)}
+            onPress={() => close(true) && changeShow}
             title="Aggiungi al carrello"
             style={styles.button}
             titleStyle={styles.btntxt}
           />
-          <Title title={`€ ${totalPrice?.toFixed(2)}`} style={styles.price} />
+          {/* <Title title={`€ ${totalPrice?.toFixed(2)}`} style={styles.price} /> */}
+          <Title title={`€ ${data?.Amount + pTotal + (pTotal === 0 ? 0 : 0)}`} style={styles.price} />
+
         </View>
         <AddCardModal isVisible={cartModel} close={closeModal} />
       </View>
@@ -422,7 +545,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.gray4,
     padding: scale(8),
   },
-  itemContainer: {width: '95%', height: '70%', marginTop: scale(10)},
+  itemContainer: { width: '95%', height: '70%', marginTop: scale(10) },
 });
 
 export default CartModel;

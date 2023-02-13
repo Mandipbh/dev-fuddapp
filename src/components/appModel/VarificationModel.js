@@ -18,7 +18,9 @@ const VarificationModel = props => {
   const [passwordErr, setpasswordErr] = useState('');
   const [nPasswordErr, setNpasswordErr] = useState('');
   const [cpasswordErr, setCpasswordErr] = useState('');
+
   const dispatch = useState();
+
   const handleVarification = () => {
     try {
       const folderFrm = {
@@ -29,7 +31,6 @@ const VarificationModel = props => {
       const options = {payloads: folderFrm};
       ApiService.post(API.varifyUser, options)
         .then(res => {
-          // console.log('res of varifiy >> ', res);
           if (res.Status === 'Success') {
             dispatch(userData(res));
             dispatch(isLogin(true));

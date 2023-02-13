@@ -51,7 +51,6 @@ const CartScreen = () => {
   };
 
   useEffect(() => {
-    console.log('cartData >>> ', cartData);
     calculatePrice();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cartData]);

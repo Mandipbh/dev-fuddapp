@@ -22,17 +22,14 @@ const Address = () => {
   }, []);
   const [addressData, setAddressData] = useState([]);
   const addressList = useSelector(state => state.HomeReducers.addressList);
-  console.log('addressList ?? ', addressList);
   useEffect(() => {
     setAddressData(addressList?.UserAddresses);
   }, [addressList]);
   const handleDeleteAddress = item => {
-    console.log('item >> ', item?.Id);
     try {
       ApiService.get(API.deleteAddress + item?.Id)
         .then(res => {
           dispatch(getAllAddress());
-          console.log('response <<<>> ', res);
         })
         .catch(error => {
           console.log('error catch ', error);
