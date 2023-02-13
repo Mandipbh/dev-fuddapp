@@ -21,13 +21,22 @@ export const getAllAddress = id => {
       ApiService.get(
         API.getAllAddress + getState().UserReducer?.userDetails?.UserId,
       ).then(res => {
+        console.log('>>> ', res);
         if (res) {
           dispatch({type: types.GETALLADDRESS, payload: res});
         }
       });
     } catch (error) {
-      console.log('error in Address', error);
+      console.log('error in Address', error.response);
     }
+  };
+};
+
+//selected address by user
+export const selectedAddress = payload => {
+  return {
+    type: types.SELECTEDADDRESS,
+    payload,
   };
 };
 

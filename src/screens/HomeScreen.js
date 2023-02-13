@@ -107,7 +107,9 @@ const HomeScreen = () => {
   const IconClosePicker = () => {
     setSelectedModal(false);
   };
-
+  const seladdress = useSelector(state => state.UserReducer.selAddress);
+  console.log('seladdress ??? 0', seladdress?.Lon);
+  console.log('seladdress ??? 1', seladdress?.Lat);
   useEffect(() => {
     dispatch(getAllCategory());
     let obj = {
@@ -215,7 +217,12 @@ const HomeScreen = () => {
           {!categoryView && <Restaturants restaurant={restaurant} />}
         </ScrollView>
       </View>
-      <SetLocationModel isShow={locationModel} />
+      <SetLocationModel
+        isShow={locationModel}
+        close={() => {
+          setLocationModel(!locationModel);
+        }}
+      />
     </SafeAreaView>
   );
 };

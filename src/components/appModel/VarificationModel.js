@@ -8,6 +8,7 @@ import Button from '../Button';
 import InputBox from '../InputBox';
 import {Title, Label, Error} from '../Label';
 import ApiService, {API} from '../../utils/ApiService';
+import {isLogin, userData} from '../../redux/Actions/UserActions';
 
 const VarificationModel = props => {
   const {isVisible, closeVarification, title, signUpData, close} = props;
@@ -17,6 +18,9 @@ const VarificationModel = props => {
   const [passwordErr, setpasswordErr] = useState('');
   const [nPasswordErr, setNpasswordErr] = useState('');
   const [cpasswordErr, setCpasswordErr] = useState('');
+
+  const dispatch = useState();
+
   const handleVarification = () => {
     try {
       const folderFrm = {
@@ -28,6 +32,8 @@ const VarificationModel = props => {
       ApiService.post(API.varifyUser, options)
         .then(res => {
           if (res.Status === 'Success') {
+            dispatch(userData(res));
+            dispatch(isLogin(true));
             clearFilds();
             closeVarification();
           }

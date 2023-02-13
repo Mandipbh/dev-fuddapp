@@ -3,7 +3,7 @@ export const LOGOUT = 'LOGOUT';
 export const USER_DETAILS = 'USER_DETAILS';
 
 export const GETAllCATEGORY = 'GETAllCATEGORY';
-
+export const SELECTEDADDRESS = 'SELECTEDADDRESS';
 export const GETALLADDRESS = 'GETALLADDRESS';
 export const GETALLRESTAURANTS = 'GETALLRESTAURANTS';
 //GetAllExternalRestaurant

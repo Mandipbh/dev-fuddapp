@@ -28,7 +28,6 @@ export const getAllCategory = () => {
 export const getAllRestaurants = data => {
   return async dispatch => {
     try {
-      const options = {payloads: data};
       ApiService.get(API.GetAllExternalRestaurant).then(res => {
         if (res) {
           console.log('res ????  GetAllExternalRestaurant', res);
