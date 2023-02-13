@@ -19,7 +19,6 @@ const ChangePassword = props => {
   const [cpasswordErr, setCpasswordErr] = useState('');
   const user = useSelector(state => state.UserReducer?.userDetails);
   const [load, setLoad] = useState(false);
-  console.log('user ??? ', user?.UserId);
   let error = false;
   const handleValidation = () => {
     if (oldPassword?.trim() === '') {

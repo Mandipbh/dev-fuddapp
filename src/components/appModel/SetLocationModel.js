@@ -20,10 +20,8 @@ import {useDispatch, useSelector} from 'react-redux';
 const SetLocationModel = props => {
   const {isShow, close} = props;
   const addressList = useSelector(state => state.HomeReducers.addressList);
-  console.log('address list >>> ', addressList);
   const dispatch = useDispatch();
   // const userInfo = useSelector(state => state.AppReducer.userDetails);
-  // console.log('user info >>>> ', userInfo?.uuid);
 
   const compIsType = (t, s) => {
     for (let z = 0; z < t.length; ++z) if (t[z] == s) return true;
@@ -33,7 +31,6 @@ const SetLocationModel = props => {
   const handlePlaceChanged = async data => {
     const place = data;
     // let userInfo = this.props.route.params?.data;
-    //console.log(" from google auto complete place===>",place);
     let latt,
       lngg,
       addrSel,
@@ -56,7 +53,6 @@ const SetLocationModel = props => {
       place.formatted_address !== undefined ? place.formatted_address : '';
     placeName = place.name !== undefined ? place.name : '';
     placeId = place.place_id !== undefined ? place.place_id : '';
-    // console.log('place >>> ', place);
     if (place.address_components !== undefined) {
       let addrComp = place.address_components;
       for (let i = 0; i < addrComp.length; ++i) {
@@ -105,8 +101,6 @@ const SetLocationModel = props => {
       country: country,
       textboxtext: nameData,
     };
-
-    console.log('stateRespstateRespstateResp ', stateResp);
   };
 
   return (
@@ -146,8 +140,6 @@ const SetLocationModel = props => {
               disableScroll={false}
               keepResultsAfterBlur={true}
               onPress={(data, details = null) => {
-                console.log('datadatadata >> ', data);
-                console.log('detailsdetails >> ', details);
                 handlePlaceChanged(details);
                 const {lat, lng} = details?.geometry?.location;
               }}

@@ -22,14 +22,10 @@ const CartModel = props => {
   let [addonData, setAddonData] = useState([]);
   const [pTotal, setPTotal] = useState(0);
   const [show, setShow] = useState(false);
-  console.log('data >>>12346789 ', wantProduct?.ImportoUnitario)
   const tmpDataForCircle = wantProduct?.ImportoUnitario
   // const popItem = ({ item }) => {
-  //   console.log(item?.IDRiga)
   //   rIds.includes(item?.IDRiga) ? setCheckBox(!checkbox) : null
   // }
-  console.log("productDetails==", productDetails)
-
   const dataObject = {
     productName: productDetails.Name,
     productAmount: productDetails.Amount,
@@ -37,8 +33,6 @@ const CartModel = props => {
     productImage: productDetails.Image,
     productPrice: productDetails.lstAddons,
   }
-
-  console.log("dataObject==", dataObject)
   // const [rIdData, setRIds] = useState([]);
   const closeModal = () => {
     setCartModel(false);
@@ -55,13 +49,10 @@ const CartModel = props => {
     //lstAddons
     // tmpData[index].Qty = 1;
     tmpData.Qty = tmpData.Qty + 1;
-    console.log('lstAddonslstAddons >> ', tmpData);
     setCount(tmpData.includes)
-    // console.log('lstAddons >', item);
   };
   const handleCartAddItem = async item => {
     const tmpArr = cartData === undefined ? [] : [...cartData];
-    console.log('tmpArr ??? ', tmpArr?.length);
     // tmpArr.push(item);
 
     dispatch(AddToCart(tmpArr));
@@ -90,7 +81,6 @@ const CartModel = props => {
     let tmpArr = [...addonData]
     tmpArr[idx].Qty = tmpArr[idx].Qty + 1
     setAddonData(tmpArr)
-    console.log("}}}}}}}}}}}}}}}}}++@#############", tmpArr)
   }
   const handleDecriment = (item, idx) => {
     let tempArray = [...addonData]
@@ -111,7 +101,6 @@ const CartModel = props => {
   const changeShow = (props) => {
     setShow(!show)
     props.onSubmit(show)
-    console.log("show", show)
   }
 
   // const emptyQty = () => {
@@ -121,9 +110,6 @@ const CartModel = props => {
   // }
   const calculatePrice = () => {
     const tmparr = [...addonData];
-    // const tmp = [...productDetails]
-
-    console.log("W@@@@@@@@@@@@@@@@@@@@@@", tmparr)
     const initialValue = 0;
     const total = tmparr.reduce(
       (accumulator, current) => accumulator + current.Prezzo * current.Qty,
@@ -257,8 +243,6 @@ const CartModel = props => {
                                       style={styles.btns}
                                       // onPress={() => indexInc()}>
                                       onPress={() => handleIncriment(item, idx)}>
-                                      {/* {console.log("@@@@@@@", cart.Qty)} */}
-                                      {/* { console.log("productDetails?.lstAddons+++++@@@@@@))", cart) } */}
                                       <Icon
                                         size={scale(scale(13))}
                                         name="plus"
@@ -316,10 +300,6 @@ const CartModel = props => {
                                     size={scale(20)}
                                     color={theme.colors.primary}
                                     onPress={() => {
-                                      console.log(
-                                        'item?.IDRiga >> ',
-                                        item?.IDRiga,
-                                      );
                                        rIds.push(item?.IDRiga);
                                        setRIds(rIds);
 
@@ -328,12 +308,7 @@ const CartModel = props => {
 
                                   <TouchableOpacity
                                     onPress={() => {
-                                      console.log(
-                                        'item?.IDRiga >> ',
-                                        item?.IDRiga,
-                                      );
                                       rIds.includes(item?.IDRiga) ? rIds.splice(rIds.indexOf(0), 1) : rIds.push(item?.IDRiga);
-                                      console.log(rIds)
                                       setRIds(rIds);
                                       setWantProduct(item);
                                       setCheckBox(!checkbox)

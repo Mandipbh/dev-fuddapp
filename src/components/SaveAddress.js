@@ -27,7 +27,6 @@ const SaveAddress = ({back}) => {
 
   const handleSave = () => {
     try {
-      console.log('addressData >> ', addressData);
       // const frmData = {
       //   Latitute: '654',
       //   Longitude: '213',
@@ -93,7 +92,6 @@ const SaveAddress = ({back}) => {
       place.formatted_address !== undefined ? place.formatted_address : '';
     placeName = place.name !== undefined ? place.name : '';
     placeId = place.place_id !== undefined ? place.place_id : '';
-    // console.log('place >>> ', place);
     if (place.address_components !== undefined) {
       let addrComp = place.address_components;
       for (let i = 0; i < addrComp.length; ++i) {
@@ -192,10 +190,6 @@ const SaveAddress = ({back}) => {
             // disableScroll={true}
             keepResultsAfterBlur={true}
             onPress={(data, details = null) => {
-              console.log('this is data ', data);
-              console.log('this is details ', details);
-
-              // console.log('detailsdetails >> ', details);
               handlePlaceChanged(details, data);
               const {lat, lng} = details?.geometry?.location;
             }}

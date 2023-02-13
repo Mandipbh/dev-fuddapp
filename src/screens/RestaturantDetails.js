@@ -78,16 +78,13 @@ const RestaturantDetails = () => {
   useEffect(() => {
     let data = getNameData(details, searchtxt);
     setFilterData(data);
-    console.log('search result >> ', data);
     // const findCategoryId = data?.map(i => {
     //   return i?.MasterId;
     // });
     // const s = details?.Menu.Categories.filter(e => {
     //   const ss = findCategoryId.includes(e?.ID);
     //   if (ss && ss !== false) {
-    //     console.log('data ??? ', typeof ss);
     //     if (e.Name && e.Name !== undefined) {
-    //       console.log('e.Name ?? ', e.Name);
     //       return {Id: e.ID, name: e.Name};
     //     }
     //   }
@@ -98,10 +95,8 @@ const RestaturantDetails = () => {
 
     //   })
     // })
-    // console.log('findCategoryId >> ', s);
   }, [searchtxt]);
 
-  // const finalData = getNameData(data, 'Bufalina');
 
   const renderMenus = ({ item, index }) => {
     return (
@@ -187,13 +182,9 @@ const RestaturantDetails = () => {
   };
 
   const cartData = useSelector(state => state?.CartReducer.cartData);
-  // console.log(
-  //   'useSelector(state => state?.CartReducer.cartData) >> ',
-  //   JSON.stringify(cartData, null, 4),
-  // );
+
   const handleCartAddItem = async item => {
     const tmpArr = cartData === undefined ? [] : [...cartData];
-    console.log('tmpArr ??? ', tmpArr?.length);
     // tmpArr.push(item);
 
     dispatch(AddToCart(tmpArr));
@@ -222,7 +213,6 @@ const RestaturantDetails = () => {
       // show?  null : tmpArr.push(itemQtyhandle) : null
     }
   };
-  // console.log('cart item >>. ', JSON.stringify(cartData, null, 4));
   return (
     <View style={styles.container}>
       <ImageBackground

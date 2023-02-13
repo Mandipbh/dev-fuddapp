@@ -88,7 +88,6 @@ const RestaurantScreen = () => {
         item={item}
         index={index}
         onPress={() => {
-          console.log('itemitemitem>>>> ', item);
           navigation.navigate('Details');
         }}
       />
@@ -153,7 +152,6 @@ const RestaurantScreen = () => {
         {/* <GooglePlacesAutocomplete
           placeholder="Inserisci indirizzo"
           onPress={(data, details = null) => {
-            console.log(data, details);
           }}
           query={{
             key: 'AIzaSyDxUeU36VnWRBXAok6txlBCV2rq9UhHWT4',
