@@ -9,19 +9,19 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon1 from 'react-native-vector-icons/SimpleLineIcons';
 import Icon2 from 'react-native-vector-icons/Entypo';
-import {scale, theme} from '../utils';
-import {Button, CartModel, FullScreenImage, Label, Title} from '../components';
+import { scale, theme } from '../utils';
+import { Button, CartModel, FullScreenImage, Label, Title } from '../components';
 import LinearGradient from 'react-native-linear-gradient';
-import {useNavigation} from '@react-navigation/native';
-import {useDispatch, useSelector} from 'react-redux';
-import {useEffect} from 'react';
-import {restaurantDetails} from '../redux/Actions/RestaurantAction';
-import {APP_BASE_URL} from '../utils/ApiService';
-import {AddToCart} from '../redux/Actions/CartAction';
+import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { restaurantDetails } from '../redux/Actions/RestaurantAction';
+import { APP_BASE_URL } from '../utils/ApiService';
+import { AddToCart } from '../redux/Actions/CartAction';
 
 const RestaturantDetails = () => {
   const [selectedIndex, setSelIndex] = useState(0);
@@ -103,7 +103,7 @@ const RestaturantDetails = () => {
 
   // const finalData = getNameData(data, 'Bufalina');
 
-  const renderMenus = ({item, index}) => {
+  const renderMenus = ({ item, index }) => {
     return (
       <View key={index} style={styles.menuView}>
         <TouchableOpacity
@@ -140,7 +140,7 @@ const RestaturantDetails = () => {
                       />
                     </TouchableOpacity>
 
-                    <View style={{marginLeft: scale(10)}}>
+                    <View style={{ marginLeft: scale(10) }}>
                       <Label title={m?.Name} style={styles.productname} />
                       <Label
                         title={m?.Amount?.toFixed(2) + ' €'}
@@ -152,7 +152,7 @@ const RestaturantDetails = () => {
                     name="plus"
                     size={scale(22)}
                     color={theme.colors.purpal}
-                    style={{marginRight: scale(6)}}
+                    style={{ marginRight: scale(6) }}
                     onPress={() => {
                       handleCartAddItem(m);
                       // setCartModel(!cartModel);
@@ -170,7 +170,7 @@ const RestaturantDetails = () => {
     );
   };
 
-  const renderInfo = ({item, index}) => {
+  const renderInfo = ({ item, index }) => {
     return (
       <View style={styles.menuViews}>
         <Text style={styles.infoText}>{item?.Day}</Text>
@@ -180,6 +180,7 @@ const RestaturantDetails = () => {
   };
   const handleModel = () => {
     // setCartModel(true);
+    setSelItem([])
     setCartModel(!cartModel);
     // setCartModel(!cartModel);
     // navigation.navigate('Cart');
@@ -206,7 +207,7 @@ const RestaturantDetails = () => {
       if (matchingObj) {
         matchingObj.Qty++;
       } else {
-        let itemQtyhandle = {...item};
+        let itemQtyhandle = { ...item };
         itemQtyhandle.Qty = 1;
         itemQtyhandle.Image = details?.Menu?.ProductsImagePrefix + item?.Image;
         tmpArr.push(itemQtyhandle);
@@ -215,6 +216,10 @@ const RestaturantDetails = () => {
     } else {
       setSelItem(item);
       setCartModel(true);
+      let itemQtyhandle = { ...item };
+      itemQtyhandle.Qty = 1;
+      itemQtyhandle.Image = details?.Menu?.ProductsImagePrefix + item?.Image;
+      // show?  null : tmpArr.push(itemQtyhandle) : null
     }
   };
   // console.log('cart item >>. ', JSON.stringify(cartData, null, 4));
@@ -271,8 +276,8 @@ const RestaturantDetails = () => {
         <View style={styles.bottomView}>
           <LinearGradient
             colors={[theme.colors.purpal1, theme.colors.orange]}
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 0}}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
             style={styles.linCon}>
             <Icon2
               name="thumbs-up"
@@ -290,14 +295,14 @@ const RestaturantDetails = () => {
       <View style={styles.options}>
         <Button
           title="Menu"
-          style={[styles.filBtn, styles.shadow, {shadowRadius: scale(10)}]}
+          style={[styles.filBtn, styles.shadow, { shadowRadius: scale(10) }]}
           onPress={() => {
             setSelectedItem(0);
           }}
         />
         <Button
           title="Intormazioni"
-          style={[styles.filBtn, styles.shadow, {shadowRadius: scale(10)}]}
+          style={[styles.filBtn, styles.shadow, { shadowRadius: scale(10) }]}
           onPress={() => {
             setSelectedItem(1);
           }}
@@ -310,7 +315,7 @@ const RestaturantDetails = () => {
             renderItem={renderMenus}
             showsVerticalScrollIndicator={false}
             style={[styles.menusView, styles.shadow]}
-            contentContainerStyle={{paddingBottom: scale(30)}}
+            contentContainerStyle={{ paddingBottom: scale(30) }}
           />
         ) : (
           <>
@@ -337,7 +342,7 @@ const RestaturantDetails = () => {
                             />
                           </TouchableOpacity>
 
-                          <View style={{marginLeft: scale(10)}}>
+                          <View style={{ marginLeft: scale(10) }}>
                             <Label title={m?.Name} style={styles.productname} />
                             <Label
                               title={m?.Amount?.toFixed(2) + ' €'}
@@ -349,7 +354,7 @@ const RestaturantDetails = () => {
                           name="plus"
                           size={scale(22)}
                           color={theme.colors.purpal}
-                          style={{marginRight: scale(6)}}
+                          style={{ marginRight: scale(6) }}
                           onPress={() => {
                             handleCartAddItem(m);
                             // setCartModel(!cartModel);
@@ -448,7 +453,7 @@ const styles = StyleSheet.create({
     marginLeft: scale(10),
     fontWeight: '600',
   },
-  cartBtn: {justifyContent: 'center', alignItems: 'center'},
+  cartBtn: { justifyContent: 'center', alignItems: 'center' },
   Cartcount: {
     position: 'absolute',
     fontWeight: '600',
@@ -591,7 +596,7 @@ const styles = StyleSheet.create({
     marginHorizontal: scale(10),
     borderRadius: 15,
   },
-  infoText: {color: theme.colors.gray, fontWeight: '700'},
+  infoText: { color: theme.colors.gray, fontWeight: '700' },
   textView: {
     marginHorizontal: scale(20),
     borderBottomWidth: 1,
