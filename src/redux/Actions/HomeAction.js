@@ -30,7 +30,7 @@ export const getAllRestaurants = data => {
     try {
       ApiService.get(API.GetAllExternalRestaurant).then(res => {
         if (res) {
-          console.log('res ????  GetAllExternalRestaurant', res);
+          // console.log('res ????  GetAllExternalRestaurant', res);
           dispatch({type: GETALLRESTAURANTS, payload: res});
         }
       });

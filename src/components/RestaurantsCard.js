@@ -25,7 +25,7 @@ const RestaurantsCard = props => {
         style={[styles.restaurantView, styles.shadow]}
         onPress={() => {
           Popular
-            ? navigation.navigate('RISTORANTI')
+            ? navigation.navigate('RISTORANTI', {category: item})
             : Linking.openURL(item?.ExternalUrl);
         }}>
         <FastImage

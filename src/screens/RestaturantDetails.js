@@ -41,7 +41,7 @@ const RestaturantDetails = () => {
       Latitute: '',
       Longitude: '',
       id: 3,
-      Date: '30-01-2023',
+      Date: '10-02-2023',
       TimeSlot: '20:00-20:30',
       Category: '',
     };

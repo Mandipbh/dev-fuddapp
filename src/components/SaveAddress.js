@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -22,40 +23,41 @@ const SaveAddress = ({back}) => {
   const [mobile, setMobile] = useState('');
   const [address, setAddress] = useState('');
   const [addressData, setAddressData] = useState('');
+  const [load, setLoad] = useState(false);
   const userData = useSelector(state => state?.UserReducer?.userDetails);
   const dispatch = useDispatch();
 
   const handleSave = () => {
     try {
-      // const frmData = {
-      //   Latitute: '654',
-      //   Longitude: '213',
-      //   UserId: userData?.UserId,
-      //   StreetNo: '15',
-      //   Address: address,
-      //   City: 'test',
-      //   Postcode: '380059',
-      //   FullAddress: address,
-      //   Firstname: firstName,
-      //   Lastname: lastName,
-      //   Description: 'test',
-      //   Phone: mobile,
-      // };
-      // const options = {payloads: frmData};
-      // ApiService.post('Users/SaveUserAddress', options)
-      //   .then(res => {
-      //     console.log('res address', res?.Status);
-      //     if (res?.Status == 'Success') {
-      //       back();
-      //       dispatch(getAllAddress());
-      //     }
-      //   })
-      //   .catch(error => {
-      //     console.log('error catch ', error.response);
-      //     back();
-      //     dispatch(getAllAddress());
-      //   });
+      setLoad(true);
+      console.log('dasddsdasdasdd>>> ', addressData);
+      // console.log('addressData >> ', addressData);
+      const frmData = {
+        ...addressData,
+        Firstname: firstName,
+        Lastname: lastName,
+        Description: address,
+        Phone: mobile,
+      };
+      const options = {payloads: frmData};
+      console.log('options >>> ', frmData);
+      ApiService.post('Users/SaveUserAddress', options)
+        .then(res => {
+          setLoad(false);
+          console.log('res address', res?.Status);
+          if (res?.Status == 'Success') {
+            back();
+            dispatch(getAllAddress());
+          }
+        })
+        .catch(error => {
+          setLoad(false);
+          console.log('error catch ', error.response);
+          back();
+          dispatch(getAllAddress());
+        });
     } catch (error) {
+      setLoad(false);
       console.log('eror save address ', error);
       back();
       dispatch(getAllAddress());
@@ -70,7 +72,6 @@ const SaveAddress = ({back}) => {
       addressComponent.types.includes('postal_code'),
     )?.short_name;
     const place = data;
-
     let latt,
       lngg,
       addrSel,
@@ -142,12 +143,12 @@ const SaveAddress = ({back}) => {
       Description: addData?.description,
     };
     const frmData = {
-      Latitute: latt,
-      Longitude: lngg,
+      Latitute: latt?.toString(),
+      Longitude: lngg.toString(),
       UserId: userData?.UserId,
       AddressId: 0,
-      StreetNo: 'string',
-      Address: address,
+      StreetNo: data?.address_components[0]?.long_name,
+
       City: city,
       Postcode: zipCode,
       FullAddress: addrSel,
@@ -155,6 +156,7 @@ const SaveAddress = ({back}) => {
       Lastname: lastName,
       Description: addData?.description,
       Phone: mobile,
+      Address: placeName,
     };
     setAddressData(frmData);
     console.log(
@@ -170,18 +172,7 @@ const SaveAddress = ({back}) => {
         style={[styles.container, {paddingHorizontal: 0}]}>
         <ScrollView
           style={styles.container}
-          contentContainerStyle={{
-            width: '100%',
-            shadowColor: '#000',
-            shadowOffset: {
-              width: 0,
-              height: 1,
-            },
-            shadowOpacity: 0.2,
-            shadowRadius: 1.41,
-            elevation: 2,
-            // flexGrow: 1,
-          }}
+          contentContainerStyle={styles.view}
           nestedScrollEnabled={true}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
@@ -203,7 +194,9 @@ const SaveAddress = ({back}) => {
               language: 'en',
               components: 'country:IT',
               sessiontoken: 'sessionToken',
-              type: Array[('address', 'postal_code', 'street_number')],
+              type: Array[
+                ('address', 'postal_code', 'street_number', 'street_address')
+              ],
             }}
           />
           <InputBox
@@ -242,14 +235,18 @@ const SaveAddress = ({back}) => {
         </ScrollView>
       </KeyboardAvoidingView>
       <Image source={images.appIcon} style={styles.appIcon} />
-      <Button
-        title="Salva indirinzo"
-        titleStyle={styles.btntxt}
-        style={styles.btn}
-        onPress={() => {
-          handleSave();
-        }}
-      />
+      {load ? (
+        <ActivityIndicator size="small" color={theme.colors.primary} />
+      ) : (
+        <Button
+          title="Salva indirinzo"
+          titleStyle={styles.btntxt}
+          style={styles.btn}
+          onPress={() => {
+            handleSave();
+          }}
+        />
+      )}
     </View>
   );
 };
@@ -276,6 +273,18 @@ const styles = StyleSheet.create({
     borderRadius: scale(20),
     // marginHorizontal: scale(20),
     width: '100%',
+  },
+  view: {
+    width: '100%',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
+    // flexGrow: 1,
   },
   container: {height: theme.SCREENHEIGHT * 0.38, width: '100%'},
 });

@@ -24,6 +24,7 @@ import {getpopularRestaurants} from '../redux/Actions/RestaurantAction';
 
 const RestaurantScreen = () => {
   const navigation = useNavigation();
+
   const isFocuse = useIsFocused();
   const [selectedModal, setSelectedModal] = useState(false);
   const [date, setDate] = useState(new Date());
@@ -33,9 +34,20 @@ const RestaurantScreen = () => {
   const [restaurantsData, setRestaurantsData] = useState([]);
   const [selCategory, setSelCategory] = useState('');
   const [search, setSearch] = useState();
+  const [loadding, setLoadding] = useState(false);
 
   const dispatch = useDispatch();
+  const seladdress = useSelector(state => state.UserReducer.selAddress);
+  const selectedCat = useSelector(
+    state => state?.RestaurantReducers?.selCategory,
+  );
+  console.log('seladdress ??? 0', selCategory);
+  // console.log('seladdress ??? 1', seladdress?.Lat);
   useEffect(() => {
+    setLoadding(true);
+    if (selectedCat !== null) {
+      setSelCategory(selectedCat?.Nome);
+    }
     const data = {
       id: 0,
       date: '01-12-2022',
@@ -44,14 +56,14 @@ const RestaurantScreen = () => {
       latitute: '',
       longitude: '',
     };
-    //  {
+    // {
     //   date: moment(date).format('DD-MM-YYYY'),
     //   timeSlot: `${moment(new Date()).format('HH:mm')}-${moment(new Date())
     //     .add(30, 'minute')
     //     .format('HH:mm')}`, //'16:00TO16:30',
     //   category: selCategory,
-    //   latitute: '',
-    //   longitude: '',
+    //   latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
+    //   longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
     // };
     dispatch(getpopularRestaurants(data));
     dispatch(getAllCategory());
@@ -67,13 +79,16 @@ const RestaurantScreen = () => {
     state => state.RestaurantReducers?.restaurantList,
   );
   // const loadding = useSelector(state => state.RestaurantReducers.loadding);
+
   useEffect(() => {
     setRestaurantsData(restaurantData?.Restaurants);
+    setLoadding(false);
   }, [restaurantData]);
   const IconClosePicker = data => {
     setSelCategory(data?.Nome);
     setSelectedModal(false);
   };
+
   const handleTimer = time => {
     setTimeModel(!timeModel);
     if (time !== null) {
@@ -180,6 +195,15 @@ const RestaurantScreen = () => {
           data={restaurantsData}
           renderItem={renderList}
           showsVerticalScrollIndicator={false}
+          ListEmptyComponent={() => {
+            return (
+              restaurantsData?.length === 0 && (
+                <View style={styles.noDataCon}>
+                  <Title title="Nessun ristorante" />
+                </View>
+              )
+            );
+          }}
         />
       </View>
       <SliderModal
@@ -201,7 +225,7 @@ const RestaurantScreen = () => {
         }}
       />
       <TimePickerModel isVisible={timeModel} close={handleTimer} />
-      {<Loader loading={false} />}
+      {Platform.OS !== 'ios' && loadding && <Loader loading={loadding} />}
     </SafeAreaView>
   );
 };
@@ -275,5 +299,11 @@ const styles = StyleSheet.create({
     marginLeft: scale(10),
     fontWeight: '600',
     width: '100%',
+  },
+  noDataCon: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+    height: theme.SCREENHEIGHT / 2,
   },
 });

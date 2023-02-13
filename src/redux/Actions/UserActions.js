@@ -21,7 +21,6 @@ export const getAllAddress = id => {
       ApiService.get(
         API.getAllAddress + getState().UserReducer?.userDetails?.UserId,
       ).then(res => {
-        console.log('>>> ', res);
         if (res) {
           dispatch({type: types.GETALLADDRESS, payload: res});
         }

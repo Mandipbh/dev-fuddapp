@@ -4,12 +4,23 @@ import {scale, theme} from '../utils';
 import {Label} from './Label';
 import {APP_BASE_URL} from '../utils/ApiService';
 import FastImage from 'react-native-fast-image';
+import {useNavigation} from '@react-navigation/core';
+import {useDispatch, useSelector} from 'react-redux';
+import {setCategory} from '../redux/Actions/RestaurantAction';
 
 const CategoryCard = props => {
   const {item, index} = props;
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+
   return (
     <View style={styles.itemView} key={index}>
-      <TouchableOpacity style={[styles.categoryView, styles.shadow]}>
+      <TouchableOpacity
+        style={[styles.categoryView, styles.shadow]}
+        onPress={async () => {
+          await dispatch(setCategory(item));
+          navigation.navigate('RISTORANTI');
+        }}>
         <FastImage
           source={{uri: APP_BASE_URL + item?.ImgFullPath}}
           style={styles.categoryIcon}

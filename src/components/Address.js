@@ -14,6 +14,7 @@ import {useEffect} from 'react';
 import {getAllAddress} from '../redux/Actions/UserActions';
 import {useState} from 'react';
 import ApiService, {API} from '../utils/ApiService';
+import {EditAddress} from '.';
 
 const Address = () => {
   const dispatch = useDispatch();
@@ -22,6 +23,8 @@ const Address = () => {
   }, []);
   const [addressData, setAddressData] = useState([]);
   const addressList = useSelector(state => state.HomeReducers.addressList);
+  const [editModel, setEditModel] = useState(false);
+  const [selData, setSelData] = useState(null);
   useEffect(() => {
     setAddressData(addressList?.UserAddresses);
   }, [addressList]);
@@ -62,7 +65,12 @@ const Address = () => {
                     title={`${item.Name} ${item?.LastName}`}
                     style={{fontWeight: '600'}}
                   />
-                  <TouchableOpacity style={styles.btn}>
+                  <TouchableOpacity
+                    style={styles.btn}
+                    onPress={() => {
+                      setSelData(item);
+                      setEditModel(true);
+                    }}>
                     <Label title="Modifica" style={styles.lbl} />
                   </TouchableOpacity>
                 </View>
@@ -85,6 +93,11 @@ const Address = () => {
             );
           })}
       </ScrollView>
+      <EditAddress
+        isVisible={editModel}
+        editData={selData}
+        close={() => setEditModel(false)}
+      />
     </View>
   );
 };
@@ -110,6 +123,7 @@ const styles = StyleSheet.create({
   addresstxt: {
     fontSize: scale(12),
     marginTop: scale(10),
+    width: '90%',
   },
   email: {
     fontSize: scale(10),

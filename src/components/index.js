@@ -24,3 +24,4 @@ export {default as CartModel} from './appModel/CartModel';
 export {default as TimePickerModel} from './appModel/TimePickerModel';
 export {default as ForgotPassword} from './appModel/ForgotPassword';
 export {default as VarificationModel} from './appModel/VarificationModel';
+export {default as EditAddress} from './appModel/EditAddress';

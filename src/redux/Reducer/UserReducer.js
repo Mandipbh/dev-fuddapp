@@ -5,7 +5,7 @@ const initialState = {
   onBoarding: false,
   userDetails: '',
   address: [],
-  selAddress: '',
+  selAddress: null,
 };
 
 export default (state = initialState, action) => {
@@ -22,6 +22,7 @@ export default (state = initialState, action) => {
       };
     }
     case types.SELECTEDADDRESS:
+      console.log('first >>> ', action.payload);
       return {
         ...state,
         selAddress: action.payload,

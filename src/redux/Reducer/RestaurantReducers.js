@@ -4,6 +4,7 @@ const initialState = {
   restaurantList: [],
   restaurantDetails: [],
   loadding: false,
+  selCategory: null,
 };
 
 export default (state = initialState, action) => {
@@ -20,7 +21,12 @@ export default (state = initialState, action) => {
       };
     case types.LOADINGRESTORANTI:
       return {
+        ...state,
         loadding: action.payload,
+      };
+    case types.SETCATEGORY:
+      return {
+        selCategory: action.payload,
       };
     case types.LOGOUT:
       return {

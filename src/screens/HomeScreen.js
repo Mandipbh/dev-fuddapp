@@ -19,7 +19,7 @@ import {
   CategoryCard,
   FoodCard,
 } from '../components';
-import {foodCategory, foodData, popularRestaurants} from '../utils/MockData';
+import {foodData} from '../utils/MockData';
 import DrawerModal from '../components/appModel/DrawerModal';
 import {useDispatch, useSelector} from 'react-redux';
 import {useEffect} from 'react';
@@ -30,6 +30,8 @@ import {
 } from '../redux/Actions/HomeAction';
 import {useIsFocused} from '@react-navigation/core';
 import SetLocationModel from '../components/appModel/SetLocationModel';
+import moment from 'moment';
+import {setCategory} from '../redux/Actions/RestaurantAction';
 
 const Category = ({categoryListData}) => {
   return (
@@ -53,7 +55,9 @@ const PopularRestaturants = ({ExternalRestaurantData}) => {
     <View style={styles.categoryContainer}>
       <View style={styles.popularView}>
         <Title title="Popular Restaurants" style={styles.title} />
-        <Label title="SEE ALL" style={styles.seeAll} />
+        <TouchableOpacity>
+          <Label title="SEE ALL" style={styles.seeAll} />
+        </TouchableOpacity>
       </View>
 
       <ScrollView
@@ -74,7 +78,7 @@ const Restaturants = ({restaurant}) => {
     <View style={styles.categoryContainer}>
       <View style={styles.popularView}>
         <Title title="Restaurants" style={styles.title} />
-        <Label title="SEE ALL" style={styles.seeAll} />
+        {/* <Label title="SEE ALL" style={styles.seeAll} /> */}
       </View>
 
       <ScrollView
@@ -107,22 +111,24 @@ const HomeScreen = () => {
   const IconClosePicker = () => {
     setSelectedModal(false);
   };
+  const isLoginUser = useSelector(state => state.UserReducer?.login);
   const seladdress = useSelector(state => state.UserReducer.selAddress);
-  console.log('seladdress ??? 0', seladdress?.Lon);
-  console.log('seladdress ??? 1', seladdress?.Lat);
+
   useEffect(() => {
     dispatch(getAllCategory());
     let obj = {
       id: 0,
-      date: '23-01-2023',
+      date: moment().format('DD-MM-YYYY'),
       timeSlot: '16:00TO16:30',
       category: '',
-      latitute: '',
-      longitude: '',
+      longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
+      latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
     };
     dispatch(getAllRestaurants(obj));
     dispatch(getpopularRestaurants());
-  }, [isFocuse, selectedModal]);
+    dispatch(setCategory(null));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFocuse, selectedModal, seladdress]);
 
   const categoryData = useSelector(state => state.HomeReducers?.categoryList);
   const ExternalRestaurant = useSelector(
@@ -195,7 +201,7 @@ const HomeScreen = () => {
             placeholderTextColor={theme.colors.placeholder}
           />
         </View>
-        {!categoryView ? (
+        {isLoginUser && (
           <Button
             onPress={() => {
               setLocationModel(true);
@@ -204,8 +210,6 @@ const HomeScreen = () => {
             style={styles.ristroBtn}
             titleStyle={styles.btnText}
           />
-        ) : (
-          <View style={{marginVertical: scale(20)}} />
         )}
         <ScrollView
           style={styles.scrollView}
@@ -276,7 +280,7 @@ const styles = StyleSheet.create({
     color: theme.colors.white,
   },
   scrollView: {
-    height: '67%',
+    height: '73%',
   },
 
   categoryContainer: {

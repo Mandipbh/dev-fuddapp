@@ -1,6 +1,6 @@
 import React from 'react';
 import {useState} from 'react';
-import {StyleSheet, View, Modal, Alert} from 'react-native';
+import {StyleSheet, View, Modal, Alert, ActivityIndicator} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 // import Toast from 'react-native-simple-toast';
 import {scale, theme} from '../../utils';
@@ -13,6 +13,7 @@ const ForgotPassword = props => {
   const {isVisible, close, title} = props;
   const [email, setEmail] = useState('');
   const [emailErr, setEmailErr] = useState('');
+  const [load, setLoad] = useState(false);
 
   let error = false;
   const handleValidation = () => {
@@ -30,23 +31,26 @@ const ForgotPassword = props => {
   const handleForgotPassword = () => {
     if (!handleValidation()) {
       try {
+        setLoad(true);
         ApiService.get(API.recoveryPassword + email)
           .then(res => {
             console.log('res >>> ', res);
             if (res.Status === 'Success') {
-              //La password è condivisa. Si prega di controllare la posta.
+              setLoad(false);
               // Toast.show(
               //   'La password è condivisa. Si prega di controllare la posta.',
               //   Toast.SHORT,
-              // );
+            // );
               close();
               clearFilds();
             }
           })
           .catch(e => {
+            setLoad(false);
             Alert.alert(e.response?.data?.Errors[0]);
           });
       } catch (e) {
+        setLoad(false);
         console.log('error in login ', e);
       }
     }
@@ -88,15 +92,19 @@ const ForgotPassword = props => {
             />
             {emailErr && <Error error={emailErr} />}
 
-            <Button
-              title="Invia"
-              style={{
-                backgroundColor: theme.colors.primary,
-                marginTop: scale(15),
-              }}
-              titleStyle={styles.txt}
-              onPress={() => handleForgotPassword()}
-            />
+            {load ? (
+              <ActivityIndicator size="large" color={theme.colors.primary} />
+            ) : (
+              <Button
+                title="Invia"
+                style={{
+                  backgroundColor: theme.colors.primary,
+                  marginTop: scale(15),
+                }}
+                titleStyle={styles.txt}
+                onPress={() => handleForgotPassword()}
+              />
+            )}
           </View>
         </View>
       </View>

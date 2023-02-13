@@ -11,25 +11,34 @@ import {
 import Modal from 'react-native-modal';
 import {scale, theme} from '../../utils';
 import Icon from 'react-native-vector-icons/Feather';
+// import Toast from 'react-native-simple-toast';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 
 import {Label, Title} from '../Label';
+import {Button} from '../index';
 import {KeyboardAvoidingView} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {getAllAddress, selectedAddress} from '../../redux/Actions/UserActions';
 const SetLocationModel = props => {
   const {isShow, close} = props;
   const [selAdd, setSelAdd] = useState(null);
+  const [saveAddress, setSaveAddress] = useState([]);
+
   const addressList = useSelector(state => state.HomeReducers.addressList);
+  const seladdress = useSelector(state => state.UserReducer.selAddress);
   const dispatch = useDispatch();
 
   // const userInfo = useSelector(state => state.AppReducer.userDetails);
 
   useEffect(() => {
-    if (addressList?.UserAddresses?.length < 0 || addressList === undefined) {
-      dispatch(getAllAddress());
+    dispatch(getAllAddress());
+  }, [isShow]);
+  useEffect(() => {
+    setSaveAddress(addressList?.UserAddresses);
+    if (seladdress !== undefined) {
+      setSelAdd(seladdress);
     }
-  }, []);
+  }, [addressList, isShow]);
 
 
   const compIsType = (t, s) => {
@@ -115,6 +124,14 @@ const SetLocationModel = props => {
     setSelAdd(item);
     dispatch(selectedAddress(item));
   };
+  const handleLocationSet = () => {
+    if (selAdd === null) {
+      alert('Seleziona un indirizzo');
+      // Toast.show('Seleziona un indirizzo', Toast.show);
+    } else {
+      close();
+    }
+  };
   return (
     <Modal
       isVisible={isShow}
@@ -164,8 +181,8 @@ const SetLocationModel = props => {
             /> */}
             <View style={styles.addressCon}>
               <ScrollView>
-                {addressList &&
-                  addressList?.UserAddresses?.map((item, index) => {
+                {saveAddress &&
+                  saveAddress?.map((item, index) => {
                     return (
                       <View style={styles.viewCon} key={index}>
                         <TouchableOpacity
@@ -199,6 +216,14 @@ const SetLocationModel = props => {
                   })}
               </ScrollView>
             </View>
+            <Button
+              title="Imposta"
+              style={{backgroundColor: theme.colors.primary}}
+              titleStyle={{color: theme.colors.white}}
+              onPress={() => {
+                handleLocationSet();
+              }}
+            />
           </KeyboardAvoidingView>
         </View>
       </View>
