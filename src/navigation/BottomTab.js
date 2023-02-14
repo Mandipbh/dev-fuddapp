@@ -14,21 +14,13 @@ import {
 import {scale, theme} from '../utils';
 import {Platform, Text, View} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Label} from '../components';
+import {AboutUs, Label} from '../components';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 const Comman = () => {
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: theme.colors.white,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}>
-      <Label title="Comeing soon...." />
-    </View>
+   <AboutUs />
   );
 };
 

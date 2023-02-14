@@ -9,11 +9,15 @@ import {useDispatch, useSelector} from 'react-redux';
 import {isLogin, logout} from '../../redux/Actions/UserActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Label} from '../Label';
+import ContactModal from './ContactModal';
+import { useState } from 'react';
 
 const DrawerModal = props => {
-  const {isVisible, close} = props;
+  const {isVisible, close,handlePayment,handleContact} = props;
   const navigation = useNavigation();
   const isLoginUser = useSelector(state => state.UserReducer?.login);
+  const [modalVisible, setModalVisible] = useState(false);
+  console.log("Modal Visible ======",modalVisible)
   const dispatch = useDispatch();
   const handleLogout = () => {
     dispatch(logout());
@@ -21,6 +25,12 @@ const DrawerModal = props => {
     dispatch(isLogin(false));
     close();
     navigation.navigate('home');
+  };
+  const handleModal = () => {
+    // setCartModel(true);
+    setModalVisible(!modalVisible);
+    // setCartModel(!cartModel);
+    // navigation.navigate('Cart');
   };
   return (
     <Modal
@@ -64,7 +74,7 @@ const DrawerModal = props => {
                 <Icon name="map-pin" size={25} color={theme.colors.purpal} />
                 <Text style={styles.btnText}>MY ADDRESSES</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.textButton}>
+              <TouchableOpacity style={styles.textButton} onPress={handlePayment}>
                 <Icon
                   name="credit-card"
                   size={25}
@@ -76,7 +86,7 @@ const DrawerModal = props => {
                 <Icon name="clipboard" size={25} color={theme.colors.purpal} />
                 <Text style={styles.btnText}>MY ORDERS</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.textButton}>
+              <TouchableOpacity style={styles.textButton} onPress={handleContact}  >
                 <Icon
                   name="message-square"
                   size={25}
@@ -98,12 +108,14 @@ const DrawerModal = props => {
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
+                  close();
                   Linking.openURL('https://www.fuddapp.com/privacy');
                 }}>
                 <Label title="Privacy Policy" style={styles.link} />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
+                  close();
                   Linking.openURL('https://www.fuddapp.com/faq');
                 }}>
                 <Label title="Support & FAQs" style={styles.link} />
@@ -121,6 +133,7 @@ const DrawerModal = props => {
             </TouchableOpacity>
           )}
         </View>
+        <ContactModal isVisible={modalVisible} close={handleModal}  />
       </View>
     </Modal>
   );

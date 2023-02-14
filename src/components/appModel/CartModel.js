@@ -22,16 +22,19 @@ const CartModel = props => {
   let [addonData, setAddonData] = useState([]);
   const [pTotal, setPTotal] = useState(0);
   const [show, setShow] = useState(false);
+  const [selIndex,setIdx]=useState(0)
   const tmpDataForCircle = wantProduct?.ImportoUnitario
   // const popItem = ({ item }) => {
   //   rIds.includes(item?.IDRiga) ? setCheckBox(!checkbox) : null
   // }
   const dataObject = {
-    productName: productDetails.Name,
-    productAmount: productDetails.Amount,
-    productQuantity: productDetails.Qty,
-    productImage: productDetails.Image,
-    productPrice: productDetails.lstAddons,
+    Name: productDetails.Name,
+    Amount: productDetails.Amount,
+    productQuantity: 1,
+    Image: productDetails.Image,
+    lstAddons: addonData,
+    lstMakeTypes:wantProduct,
+    lstIngredients:rIds
   }
   // const [rIdData, setRIds] = useState([]);
   const closeModal = () => {
@@ -121,9 +124,6 @@ const CartModel = props => {
 
     setPTotal(totalValue);
   };
-
-
-
   return (
     <Modal
       style={styles.Maincontainer}
@@ -170,19 +170,17 @@ const CartModel = props => {
               showsVerticalScrollIndicator={false}
               nestedScrollEnabled>
               {addonData?.length > 0 && (
-
                 <>
-
-                  <TouchableOpacity style={styles.categoryTitle}>
+                  <TouchableOpacity style={styles.categoryTitle} onPress={()=>{setIdx(0)}}>
                     <Title title={'Aggiungi ingredienti'} />
                     <Icon
-                      name="chevron-down"
+                      name={selIndex===0?'chevron-up':"chevron-down"}
                       size={scale(22)}
                       color={theme.colors.gray}
                     />
                   </TouchableOpacity>
-                  <ScrollView
-                    style={{ height: theme.SCREENHEIGHT * 0.2 }}
+                 {selIndex===0&& <ScrollView
+                    style={{ height: null,maxHeight:theme.SCREENHEIGHT*0.4 }}
                     nestedScrollEnabled>
                     {addonData?.length > 0 && (
 
@@ -257,22 +255,22 @@ const CartModel = props => {
                         </View>
                       </View>
                     )}
-                  </ScrollView>
+                  </ScrollView>}
                 </>
               )}
 
               {productDetails?.lstIngredients?.length > 0 && (
                 <>
-                  <TouchableOpacity style={styles.categoryTitle}>
+                  <TouchableOpacity style={styles.categoryTitle} onPress={()=>{setIdx(1)}}>
                     <Title title={'Rimuovi Ingredienti'} />
                     <Icon
-                      name="chevron-down"
+                      name={selIndex===1?'chevron-up':"chevron-down"}
                       size={scale(22)}
                       color={theme.colors.gray}
                     />
                   </TouchableOpacity>
-                  <ScrollView
-                    style={{ height: theme.SCREENHEIGHT * 0.2 }}
+                { selIndex===1&& <ScrollView
+                    style={{ height: null,maxHeight:theme.SCREENHEIGHT*0.4 }}
                     nestedScrollEnabled>
                     {productDetails?.lstIngredients?.length > 0 && (
                       <View style={styles.card}>
@@ -330,22 +328,22 @@ const CartModel = props => {
                         </View>
                       </View>
                     )}
-                  </ScrollView>
+                  </ScrollView>}
                 </>
               )}
 
               {productDetails?.lstMakeTypes?.length > 0 && (
                 <>
-                  <TouchableOpacity style={styles.categoryTitle}>
+                  <TouchableOpacity style={styles.categoryTitle}onPress={()=>{setIdx(2)}}>
                     <Title title={'Comeil prodotto?'} />
                     <Icon
-                      name="chevron-down"
+                      name={selIndex===2?'chevron-up':"chevron-down"}
                       size={scale(22)}
                       color={theme.colors.gray}
                     />
                   </TouchableOpacity>
-                  <ScrollView
-                    style={{ height: theme.SCREENHEIGHT * 0.25 }}
+                 {selIndex===2&& <ScrollView
+                    style={{ height: null,maxHeight:theme.SCREENHEIGHT*0.4}}
                     nestedScrollEnabled>
                     {productDetails?.lstMakeTypes?.length > 0 && (
                       <View style={styles.card}>
@@ -388,7 +386,7 @@ const CartModel = props => {
                         </View>
                       </View>
                     )}
-                  </ScrollView>
+                  </ScrollView>}
                 </>
               )}
             </ScrollView>
