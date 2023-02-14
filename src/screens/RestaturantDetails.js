@@ -285,10 +285,11 @@ const RestaturantDetails = () => {
       <View style={styles.options}>
         <Button
           title="Menu"
-          style={[styles.filBtn, styles.shadow, { shadowRadius: scale(10) }]}
+          style={[styles.filBtn, styles.shadow, { shadowRadius: scale(10),} ]}
           onPress={() => {
             setSelectedItem(0);
           }}
+          titleStyle={{color:selectedItem===0?theme.colors.black:theme.colors.gray}}
         />
         <Button
           title="Intormazioni"
@@ -296,6 +297,7 @@ const RestaturantDetails = () => {
           onPress={() => {
             setSelectedItem(1);
           }}
+          titleStyle={{color:selectedItem===1?theme.colors.black:theme.colors.gray}}
         />
       </View>
       <View>

@@ -1,5 +1,6 @@
 import {
   FlatList,
+  Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -18,6 +19,8 @@ import {
   RestaurantsCard,
   CategoryCard,
   FoodCard,
+  PaymentMethod,
+  ContactModal,
 } from '../components';
 import {foodData} from '../utils/MockData';
 import DrawerModal from '../components/appModel/DrawerModal';
@@ -106,6 +109,8 @@ const HomeScreen = () => {
   const [restaurant, setExternalRestaurant] = useState([]);
   const [popularRestaurants, setPopularRestaturants] = useState([]);
   const [locationModel, setLocationModel] = useState(false);
+  const [contactModal,setContact]=useState(false)
+  const [paymentModel,setPayModel]=useState(false)
   const isFocuse = useIsFocused();
   const dispatch = useDispatch();
   const IconClosePicker = () => {
@@ -179,7 +184,7 @@ const HomeScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Header onPressMenu={() => setSelectedModal(true)} />
-      <DrawerModal isVisible={selectedModal} close={IconClosePicker} />
+      <DrawerModal isVisible={selectedModal} close={IconClosePicker} handlePayment={ ()=>{setPayModel(true);setSelectedModal(false)}} handleContact={()=>{setContact(true); setSelectedModal(false)}}  />
       <View style={styles.mainContainer}>
         <View style={[styles.textinputContainer, styles.shadow]}>
           <Icon
@@ -227,6 +232,8 @@ const HomeScreen = () => {
           setLocationModel(!locationModel);
         }}
       />
+    <PaymentMethod isVisible={paymentModel} close={()=>{setPayModel(false)}}  />
+    <ContactModal  isVisible={contactModal} close={()=>setContact(false)} />
     </SafeAreaView>
   );
 };
@@ -280,7 +287,7 @@ const styles = StyleSheet.create({
     color: theme.colors.white,
   },
   scrollView: {
-    height: '73%',
+    height: Platform.OS==='android'?'73%':'60%',
   },
 
   categoryContainer: {
