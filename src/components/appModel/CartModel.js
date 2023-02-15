@@ -1,29 +1,30 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-undef */
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
+import {StyleSheet, View, TouchableOpacity, ScrollView} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import { scale, theme } from '../../utils';
+import {scale, theme} from '../../utils';
 import Modal from 'react-native-modal';
-import { Label, Title } from '../Label';
+import {Label, Title} from '../Label';
 import Button from '../Button';
-import { useState } from 'react';
+import {useState} from 'react';
 import AddCardModal from './AddCardModal';
-import { useEffect } from 'react';
-import { all } from 'axios';
+import {useEffect} from 'react';
 
 const CartModel = props => {
-  const { isVisible, close, data } = props;
+  const {isVisible, close, data} = props;
   const [cartModel, setCartModel] = useState(false);
   const [productDetails, setProductDetails] = useState([]);
   const [totalPrice, setPrice] = useState(0);
   const [wantProduct, setWantProduct] = useState(null);
   const [rIds, setRIds] = useState([]);
-  const [checkbox, setCheckBox] = useState(0)
+  const [checkbox, setCheckBox] = useState(0);
   const [count, setCount] = useState(0);
   let [addonData, setAddonData] = useState([]);
   const [pTotal, setPTotal] = useState(0);
   const [show, setShow] = useState(false);
-  const [selIndex,setIdx]=useState(0)
-  const tmpDataForCircle = wantProduct?.ImportoUnitario
+  const [selIndex, setIdx] = useState(0);
+  const tmpDataForCircle = wantProduct?.ImportoUnitario;
   // const popItem = ({ item }) => {
   //   rIds.includes(item?.IDRiga) ? setCheckBox(!checkbox) : null
   // }
@@ -33,9 +34,9 @@ const CartModel = props => {
     productQuantity: 1,
     Image: productDetails.Image,
     lstAddons: addonData,
-    lstMakeTypes:wantProduct,
-    lstIngredients:rIds
-  }
+    lstMakeTypes: wantProduct,
+    lstIngredients: rIds,
+  };
   // const [rIdData, setRIds] = useState([]);
   const closeModal = () => {
     setCartModel(false);
@@ -43,7 +44,8 @@ const CartModel = props => {
   useEffect(() => {
     setPrice(data?.Amount);
     setProductDetails(data);
-    productDetails?.lstAddons?.length > 0 && setAddonData(productDetails?.lstAddons)
+    productDetails?.lstAddons?.length > 0 &&
+      setAddonData(productDetails?.lstAddons);
     calculatePrice();
   }, [data, productDetails.lstAddons, wantProduct, addonData]);
 
@@ -52,7 +54,7 @@ const CartModel = props => {
     //lstAddons
     // tmpData[index].Qty = 1;
     tmpData.Qty = tmpData.Qty + 1;
-    setCount(tmpData.includes)
+    setCount(tmpData.includes);
   };
   const handleCartAddItem = async item => {
     const tmpArr = cartData === undefined ? [] : [...cartData];
@@ -69,7 +71,7 @@ const CartModel = props => {
       if (matchingObj) {
         matchingObj.Qty++;
       } else {
-        let itemQtyhandle = { ...item };
+        let itemQtyhandle = {...item};
         itemQtyhandle.Qty = 1;
         itemQtyhandle.Image = details?.Menu?.ProductsImagePrefix + item?.Image;
         tmpArr.push(itemQtyhandle);
@@ -81,30 +83,31 @@ const CartModel = props => {
     }
   };
   const handleIncriment = (item, idx) => {
-    let tmpArr = [...addonData]
-    tmpArr[idx].Qty = tmpArr[idx].Qty + 1
-    setAddonData(tmpArr)
-  }
+    let tmpArr = [...addonData];
+    tmpArr[idx].Qty = tmpArr[idx].Qty + 1;
+    setAddonData(tmpArr);
+  };
   const handleDecriment = (item, idx) => {
-    let tempArray = [...addonData]
-    tempArray[idx].Qty != 0 ? tempArray[idx].Qty = tempArray[idx].Qty - 1 : null
-    setAddonData(tempArray)
-  }
+    let tempArray = [...addonData];
+    tempArray[idx].Qty != 0
+      ? (tempArray[idx].Qty = tempArray[idx].Qty - 1)
+      : null;
+    setAddonData(tempArray);
+  };
   function clearify() {
-    setProductDetails([])
+    setProductDetails([]);
     setCartModel(false);
     // emptyQty()
-    close()
+    close();
     // let tmpArr = [...addonData]
     // tmpArr.Qty == 0
     // setAddonData(tmpArr)
-
   }
 
-  const changeShow = (props) => {
-    setShow(!show)
-    props.onSubmit(show)
-  }
+  const changeShow = props => {
+    setShow(!show);
+    props.onSubmit(show);
+  };
 
   // const emptyQty = () => {
   //   let tmp = [...addonData]
@@ -127,7 +130,6 @@ const CartModel = props => {
   return (
     <Modal
       style={styles.Maincontainer}
-
       visible={isVisible}
       backdropColor={theme.colors.black}
       backdropOpacity={0.2}>
@@ -138,7 +140,7 @@ const CartModel = props => {
           color={theme.colors.white}
           style={styles.closeIcon}
           onPress={() => {
-            clearify()
+            clearify();
           }}
         />
         <View style={styles.subView}>
@@ -171,44 +173,52 @@ const CartModel = props => {
               nestedScrollEnabled>
               {addonData?.length > 0 && (
                 <>
-                  <TouchableOpacity style={styles.categoryTitle} onPress={()=>{setIdx(0)}}>
+                  <TouchableOpacity
+                    style={styles.categoryTitle}
+                    onPress={() => {
+                      setIdx(0);
+                    }}>
                     <Title title={'Aggiungi ingredienti'} />
                     <Icon
-                      name={selIndex===0?'chevron-up':"chevron-down"}
+                      name={selIndex === 0 ? 'chevron-up' : 'chevron-down'}
                       size={scale(22)}
                       color={theme.colors.gray}
                     />
                   </TouchableOpacity>
-                 {selIndex===0&& <ScrollView
-                    style={{ height: null,maxHeight:theme.SCREENHEIGHT*0.4 }}
-                    nestedScrollEnabled>
-                    {addonData?.length > 0 && (
-
-                      <View style={styles.card}>
-                        <View style={styles.subItem}>
-                          {productDetails?.lstAddons?.map((item, idx) => {
-                            return (
-                              <View style={styles.itemView} key={idx}>
-
-                                <View>
-                                  <Label
-                                    title={item?.Descrizione}
-                                    style={styles.name}
-                                  />
-                                  <Label
-                                    title={`${item?.Prezzo.toFixed(2,)?.toString()}€`}
-                                    style={styles.itemprice}
-                                  />
-                                </View>
-                                <View
-                                  style={[
-                                    styles.row,
-                                    {
-                                      justifyContent: 'space-around',
-                                      alignItems: 'center',
-                                    },
-                                  ]}>
-                                  {/* <Icon
+                  {selIndex === 0 && (
+                    <ScrollView
+                      style={{
+                        height: null,
+                        maxHeight: theme.SCREENHEIGHT * 0.4,
+                      }}
+                      nestedScrollEnabled>
+                      {addonData?.length > 0 && (
+                        <View style={styles.card}>
+                          <View style={styles.subItem}>
+                            {productDetails?.lstAddons?.map((item, idx) => {
+                              return (
+                                <View style={styles.itemView} key={idx}>
+                                  <View>
+                                    <Label
+                                      title={item?.Descrizione}
+                                      style={styles.name}
+                                    />
+                                    <Label
+                                      title={`${item?.Prezzo.toFixed(
+                                        2,
+                                      )?.toString()}€`}
+                                      style={styles.itemprice}
+                                    />
+                                  </View>
+                                  <View
+                                    style={[
+                                      styles.row,
+                                      {
+                                        justifyContent: 'space-around',
+                                        alignItems: 'center',
+                                      },
+                                    ]}>
+                                    {/* <Icon
                                     name="x"
                                     size={scale(30)}
                                     color={theme.colors.red}
@@ -217,79 +227,94 @@ const CartModel = props => {
                                       clearify(item, idx)
                                     }}
                                   /> */}
-                                  <View style={[
-                                    styles.row,
-                                    {
-                                      justifyContent: 'space-around',
-                                      alignItems: 'center',
-                                    },
-                                  ]}>
-                                    <TouchableOpacity style={styles.btns}
-                                      onPress={() => { handleDecriment(item, idx) }}>
-                                      <Icon
-                                        size={scale(13)}
-                                        name="minus"
-                                        color={theme.colors.gray}
+                                    <View
+                                      style={[
+                                        styles.row,
+                                        {
+                                          justifyContent: 'space-around',
+                                          alignItems: 'center',
+                                        },
+                                      ]}>
+                                      <TouchableOpacity
+                                        style={styles.btns}
+                                        onPress={() => {
+                                          handleDecriment(item, idx);
+                                        }}>
+                                        <Icon
+                                          size={scale(13)}
+                                          name="minus"
+                                          color={theme.colors.gray}
+                                        />
+                                      </TouchableOpacity>
+                                      <Label
+                                        title={item?.Qty}
+                                        style={{marginHorizontal: scale(8)}}
                                       />
-                                    </TouchableOpacity>
-                                    <Label
-                                      title={item?.Qty}
-                                      style={{ marginHorizontal: scale(8) }}
-                                    />
 
-                                    <TouchableOpacity
-                                      style={styles.btns}
-                                      // onPress={() => indexInc()}>
-                                      onPress={() => handleIncriment(item, idx)}>
-                                      <Icon
-                                        size={scale(scale(13))}
-                                        name="plus"
-                                        color={theme.colors.gray}
-                                      />
-                                    </TouchableOpacity>
+                                      <TouchableOpacity
+                                        style={styles.btns}
+                                        // onPress={() => indexInc()}>
+                                        onPress={() =>
+                                          handleIncriment(item, idx)
+                                        }>
+                                        <Icon
+                                          size={scale(scale(13))}
+                                          name="plus"
+                                          color={theme.colors.gray}
+                                        />
+                                      </TouchableOpacity>
+                                    </View>
                                   </View>
                                 </View>
-                              </View>
-                            );
-                          })}
+                              );
+                            })}
+                          </View>
                         </View>
-                      </View>
-                    )}
-                  </ScrollView>}
+                      )}
+                    </ScrollView>
+                  )}
                 </>
               )}
 
               {productDetails?.lstIngredients?.length > 0 && (
                 <>
-                  <TouchableOpacity style={styles.categoryTitle} onPress={()=>{setIdx(1)}}>
+                  <TouchableOpacity
+                    style={styles.categoryTitle}
+                    onPress={() => {
+                      setIdx(1);
+                    }}>
                     <Title title={'Rimuovi Ingredienti'} />
                     <Icon
-                      name={selIndex===1?'chevron-up':"chevron-down"}
+                      name={selIndex === 1 ? 'chevron-up' : 'chevron-down'}
                       size={scale(22)}
                       color={theme.colors.gray}
                     />
                   </TouchableOpacity>
-                { selIndex===1&& <ScrollView
-                    style={{ height: null,maxHeight:theme.SCREENHEIGHT*0.4 }}
-                    nestedScrollEnabled>
-                    {productDetails?.lstIngredients?.length > 0 && (
-                      <View style={styles.card}>
-                        <View style={styles.subItem}>
-                          {productDetails?.lstIngredients?.map(
-                            (item, index) => {
-                              return (
-                                <View style={styles.itemView} key={index}>
-                                  <View>
-                                    <Label
-                                      title={item?.Descrizione}
-                                      style={styles.name}
-                                    />
-                                    <Label
-                                      title={`${item?.Prezzo?.toFixed(2)}€`}
-                                      style={styles.itemprice}
-                                    />
-                                  </View>
-                                  {/* <Icon
+                  {selIndex === 1 && (
+                    <ScrollView
+                      style={{
+                        height: null,
+                        maxHeight: theme.SCREENHEIGHT * 0.4,
+                      }}
+                      nestedScrollEnabled>
+                      {productDetails?.lstIngredients?.length > 0 && (
+                        <View style={styles.card}>
+                          <View style={styles.subItem}>
+                            {productDetails?.lstIngredients?.map(
+                              (item, index) => {
+                                return (
+                                  <View style={styles.itemView} key={index}>
+                                    <View>
+                                      <Label
+                                        title={item?.Descrizione}
+                                        style={styles.name}
+                                      />
+                                      <Label
+                                        title={`${item?.Prezzo?.toFixed(2)}€`}
+                                        style={styles.itemprice}
+                                      />
+                                    </View>
+                                    {/* <Icon
                                     name={
                                       rIds.includes(item?.IDRiga)
                                         ? 'check-square'
@@ -304,89 +329,110 @@ const CartModel = props => {
                                     }}
                                   /> */}
 
-                                  <TouchableOpacity
-                                    onPress={() => {
-                                      rIds.includes(item?.IDRiga) ? rIds.splice(rIds.indexOf(0), 1) : rIds.push(item?.IDRiga);
-                                      setRIds(rIds);
-                                      setWantProduct(item);
-                                      setCheckBox(!checkbox)
-                                      // popItem({item});
-                                      // rIds.includes(item?.IDRiga) ?  rIds.splice(0,-1) : null
-                                    }}
-                                  >
-                                    {/* {rIds.includes(item?.IDRiga) ? ( */}
-                                    {rIds.includes(item?.IDRiga) ? (
-                                      <Icon name='check-square' size={scale(20)}
-                                        color={theme.colors.primary} />
-                                    ) : <Icon name='square' size={scale(20)}
-                                      color={theme.colors.primary} />}
-                                  </TouchableOpacity>
-                                </View>
-                              );
-                            },
-                          )}
+                                    <TouchableOpacity
+                                      onPress={() => {
+                                        rIds.includes(item?.IDRiga)
+                                          ? rIds.splice(rIds.indexOf(0), 1)
+                                          : rIds.push(item?.IDRiga);
+                                        setRIds(rIds);
+                                        setWantProduct(item);
+                                        setCheckBox(!checkbox);
+                                        // popItem({item});
+                                        // rIds.includes(item?.IDRiga) ?  rIds.splice(0,-1) : null
+                                      }}>
+                                      {/* {rIds.includes(item?.IDRiga) ? ( */}
+                                      {rIds.includes(item?.IDRiga) ? (
+                                        <Icon
+                                          name="check-square"
+                                          size={scale(20)}
+                                          color={theme.colors.primary}
+                                        />
+                                      ) : (
+                                        <Icon
+                                          name="square"
+                                          size={scale(20)}
+                                          color={theme.colors.primary}
+                                        />
+                                      )}
+                                    </TouchableOpacity>
+                                  </View>
+                                );
+                              },
+                            )}
+                          </View>
                         </View>
-                      </View>
-                    )}
-                  </ScrollView>}
+                      )}
+                    </ScrollView>
+                  )}
                 </>
               )}
 
               {productDetails?.lstMakeTypes?.length > 0 && (
                 <>
-                  <TouchableOpacity style={styles.categoryTitle}onPress={()=>{setIdx(2)}}>
+                  <TouchableOpacity
+                    style={styles.categoryTitle}
+                    onPress={() => {
+                      setIdx(2);
+                    }}>
                     <Title title={'Comeil prodotto?'} />
                     <Icon
-                      name={selIndex===2?'chevron-up':"chevron-down"}
+                      name={selIndex === 2 ? 'chevron-up' : 'chevron-down'}
                       size={scale(22)}
                       color={theme.colors.gray}
                     />
                   </TouchableOpacity>
-                 {selIndex===2&& <ScrollView
-                    style={{ height: null,maxHeight:theme.SCREENHEIGHT*0.4}}
-                    nestedScrollEnabled>
-                    {productDetails?.lstMakeTypes?.length > 0 && (
-                      <View style={styles.card}>
-                        <View style={styles.subItem}>
-                          {productDetails?.lstMakeTypes?.map((item, index) => {
-                            return (
-                              <View style={styles.itemView}>
-                                <View>
-                                  <Label
-                                    title={item?.Prodo}
-                                    style={styles.name}
-                                  />
-                                  <Label
-                                    title={`${item?.ImportoUnitario.toFixed(
-                                      2,
-                                    )}€`}
-                                    style={styles.itemprice}
-                                  />
-                                </View>
+                  {selIndex === 2 && (
+                    <ScrollView
+                      style={{
+                        height: null,
+                        maxHeight: theme.SCREENHEIGHT * 0.4,
+                      }}
+                      nestedScrollEnabled>
+                      {productDetails?.lstMakeTypes?.length > 0 && (
+                        <View style={styles.card}>
+                          <View style={styles.subItem}>
+                            {productDetails?.lstMakeTypes?.map(
+                              (item, index) => {
+                                return (
+                                  <View style={styles.itemView}>
+                                    <View>
+                                      <Label
+                                        title={item?.Prodo}
+                                        style={styles.name}
+                                      />
+                                      <Label
+                                        title={`${item?.ImportoUnitario.toFixed(
+                                          2,
+                                        )}€`}
+                                        style={styles.itemprice}
+                                      />
+                                    </View>
 
-                                <Icon
-                                  name={
-                                    item?.Id === wantProduct?.Id
-                                      ? 'check-circle'
-                                      : 'circle'
-                                  } //circle
-                                  size={scale(20)}
-                                  color={
-                                    item?.Id !== wantProduct?.Id
-                                      ? theme.colors.gray
-                                      : theme.colors.primary
-                                  }
-                                  onPress={() => {
-                                    setWantProduct(item);
-                                  }}
-                                />
-                              </View>
-                            );
-                          })}
+                                    <Icon
+                                      name={
+                                        item?.Id === wantProduct?.Id
+                                          ? 'check-circle'
+                                          : 'circle'
+                                      } //circle
+                                      size={scale(20)}
+                                      color={
+                                        item?.Id !== wantProduct?.Id
+                                          ? theme.colors.gray
+                                          : theme.colors.primary
+                                      }
+                                      onPress={() => {
+                                        setWantProduct(item);
+                                      }}
+                                    />
+                                  </View>
+                                );
+                              },
+                            )}
+                          </View>
                         </View>
-                      </View>
-                    )}
-                  </ScrollView>}
+                      )}
+                    </ScrollView>
+                  )}
                 </>
               )}
             </ScrollView>
@@ -400,8 +446,10 @@ const CartModel = props => {
             titleStyle={styles.btntxt}
           />
           {/* <Title title={`€ ${totalPrice?.toFixed(2)}`} style={styles.price} /> */}
-          <Title title={`€ ${data?.Amount + pTotal + (pTotal === 0 ? 0 : 0)}`} style={styles.price} />
-
+          <Title
+            title={`€ ${data?.Amount + pTotal + (pTotal === 0 ? 0 : 0)}`}
+            style={styles.price}
+          />
         </View>
         <AddCardModal isVisible={cartModel} close={closeModal} />
       </View>
@@ -543,7 +591,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.gray4,
     padding: scale(8),
   },
-  itemContainer: { width: '95%', height: '70%', marginTop: scale(10) },
+  itemContainer: {width: '95%', height: '70%', marginTop: scale(10)},
 });
 
 export default CartModel;
