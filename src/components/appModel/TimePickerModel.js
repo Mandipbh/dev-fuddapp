@@ -13,6 +13,7 @@ import {Label, Title} from '../Label';
 import {useState} from 'react';
 import moment from 'moment';
 import {useEffect} from 'react';
+import {BlurView} from '@react-native-community/blur';
 
 const TimePickerModel = props => {
   const {isVisible, close} = props;
@@ -49,6 +50,13 @@ const TimePickerModel = props => {
   }, []);
   return (
     <Modal visible={isVisible} style={styles.modelStyle}>
+      <BlurView
+        style={styles.blurView}
+        blurType="dark" // Values = dark, light, xlight .
+        blurAmount={2}
+        // viewRef={this.state.viewRef}
+        reducedTransparencyFallbackColor="white"
+      />
       <View style={styles.container}>
         <View style={styles.header}>
           <Title title="Select Time " />
@@ -120,5 +128,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderBottomWidth: scale(0.3),
     paddingBottom: scale(3),
+  },
+  blurView: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
   },
 });

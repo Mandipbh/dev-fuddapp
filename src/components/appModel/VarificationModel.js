@@ -9,6 +9,7 @@ import InputBox from '../InputBox';
 import {Title, Label, Error} from '../Label';
 import ApiService, {API} from '../../utils/ApiService';
 import {isLogin, userData} from '../../redux/Actions/UserActions';
+import {BlurView} from '@react-native-community/blur';
 
 const VarificationModel = props => {
   const {isVisible, closeVarification, title, signUpData, close} = props;
@@ -128,12 +129,26 @@ const VarificationModel = props => {
             />
           </View>
         </View>
+        <BlurView
+          style={styles.blurView}
+          blurType="dark" // Values = dark, light, xlight .
+          blurAmount={2}
+          // viewRef={this.state.viewRef}
+          reducedTransparencyFallbackColor="white"
+        />
       </View>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
+  blurView: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+  },
   modalBackground: {
     flex: 1,
     alignItems: 'center',

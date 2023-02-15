@@ -10,6 +10,7 @@ import Button from '../Button';
 import {useState} from 'react';
 import AddCardModal from './AddCardModal';
 import {useEffect} from 'react';
+import {BlurView} from '@react-native-community/blur';
 
 const CartModel = props => {
   const {isVisible, close, data} = props;
@@ -133,6 +134,13 @@ const CartModel = props => {
       visible={isVisible}
       backdropColor={theme.colors.black}
       backdropOpacity={0.2}>
+      <BlurView
+        style={styles.blurView}
+        blurType="xlight" // Values = dark, light, xlight .
+        blurAmount={2}
+        // viewRef={this.state.viewRef}
+        reducedTransparencyFallbackColor="white"
+      />
       <View style={styles.container}>
         <Icon
           name="x"
@@ -451,6 +459,7 @@ const CartModel = props => {
             style={styles.price}
           />
         </View>
+
         <AddCardModal isVisible={cartModel} close={closeModal} />
       </View>
     </Modal>
@@ -592,6 +601,13 @@ const styles = StyleSheet.create({
     padding: scale(8),
   },
   itemContainer: {width: '95%', height: '70%', marginTop: scale(10)},
+  blurView: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+  },
 });
 
 export default CartModel;

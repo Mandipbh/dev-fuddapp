@@ -109,8 +109,8 @@ const HomeScreen = () => {
   const [restaurant, setExternalRestaurant] = useState([]);
   const [popularRestaurants, setPopularRestaturants] = useState([]);
   const [locationModel, setLocationModel] = useState(false);
-  const [contactModal,setContact]=useState(false)
-  const [paymentModel,setPayModel]=useState(false)
+  const [contactModal, setContact] = useState(false);
+  const [paymentModel, setPayModel] = useState(false);
   const isFocuse = useIsFocused();
   const dispatch = useDispatch();
   const IconClosePicker = () => {
@@ -184,7 +184,18 @@ const HomeScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Header onPressMenu={() => setSelectedModal(true)} />
-      <DrawerModal isVisible={selectedModal} close={IconClosePicker} handlePayment={ ()=>{setPayModel(true);setSelectedModal(false)}} handleContact={()=>{setContact(true); setSelectedModal(false)}}  />
+      <DrawerModal
+        isVisible={selectedModal}
+        close={IconClosePicker}
+        handlePayment={() => {
+          setPayModel(true);
+          setSelectedModal(false);
+        }}
+        handleContact={() => {
+          setContact(true);
+          setSelectedModal(false);
+        }}
+      />
       <View style={styles.mainContainer}>
         <View style={[styles.textinputContainer, styles.shadow]}>
           <Icon
@@ -232,8 +243,13 @@ const HomeScreen = () => {
           setLocationModel(!locationModel);
         }}
       />
-    <PaymentMethod isVisible={paymentModel} close={()=>{setPayModel(false)}}  />
-    <ContactModal  isVisible={contactModal} close={()=>setContact(false)} />
+      <PaymentMethod
+        isVisible={paymentModel}
+        close={() => {
+          setPayModel(false);
+        }}
+      />
+      <ContactModal isVisible={contactModal} close={() => setContact(false)} />
     </SafeAreaView>
   );
 };
@@ -287,7 +303,7 @@ const styles = StyleSheet.create({
     color: theme.colors.white,
   },
   scrollView: {
-    height: Platform.OS==='android'?'73%':'60%',
+    height: Platform.OS === 'android' ? '75%' : '63%',
   },
 
   categoryContainer: {

@@ -10,14 +10,15 @@ import {isLogin, logout} from '../../redux/Actions/UserActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Label} from '../Label';
 import ContactModal from './ContactModal';
-import { useState } from 'react';
+import {useState} from 'react';
+import {BlurView} from '@react-native-community/blur';
 
 const DrawerModal = props => {
-  const {isVisible, close,handlePayment,handleContact} = props;
+  const {isVisible, close, handlePayment, handleContact} = props;
   const navigation = useNavigation();
   const isLoginUser = useSelector(state => state.UserReducer?.login);
   const [modalVisible, setModalVisible] = useState(false);
-  console.log("Modal Visible ======",modalVisible)
+  console.log('Modal Visible ======', modalVisible);
   const dispatch = useDispatch();
   const handleLogout = () => {
     dispatch(logout());
@@ -41,6 +42,13 @@ const DrawerModal = props => {
       animationOut="slideInLeft"
       animationInTiming={0.5}
       style={{width: '60%', margin: 0}}>
+      <BlurView
+        style={styles.blurView}
+        blurType="dark" // Values = dark, light, xlight .
+        blurAmount={2}
+        // viewRef={this.state.viewRef}
+        reducedTransparencyFallbackColor={theme.colors.black}
+      />
       <View style={styles.container}>
         <Icon
           name="x"
@@ -74,7 +82,9 @@ const DrawerModal = props => {
                 <Icon name="map-pin" size={25} color={theme.colors.purpal} />
                 <Text style={styles.btnText}>MY ADDRESSES</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.textButton} onPress={handlePayment}>
+              <TouchableOpacity
+                style={styles.textButton}
+                onPress={handlePayment}>
                 <Icon
                   name="credit-card"
                   size={25}
@@ -86,7 +96,9 @@ const DrawerModal = props => {
                 <Icon name="clipboard" size={25} color={theme.colors.purpal} />
                 <Text style={styles.btnText}>MY ORDERS</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.textButton} onPress={handleContact}  >
+              <TouchableOpacity
+                style={styles.textButton}
+                onPress={handleContact}>
                 <Icon
                   name="message-square"
                   size={25}
@@ -133,7 +145,7 @@ const DrawerModal = props => {
             </TouchableOpacity>
           )}
         </View>
-        <ContactModal isVisible={modalVisible} close={handleModal}  />
+        <ContactModal isVisible={modalVisible} close={handleModal} />
       </View>
     </Modal>
   );
@@ -168,5 +180,12 @@ const styles = StyleSheet.create({
   link: {
     marginVertical: scale(5),
     color: theme.colors.linkColor,
+  },
+  blurView: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
   },
 });

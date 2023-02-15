@@ -1,7 +1,7 @@
-import { BlurView } from '@react-native-community/blur';
+import {BlurView} from '@react-native-community/blur';
 import React from 'react';
 import {useState} from 'react';
-import {StyleSheet, View,  ActivityIndicator, Modal} from 'react-native';
+import {StyleSheet, View, ActivityIndicator, Modal} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon1 from 'react-native-vector-icons/FontAwesome';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -48,58 +48,61 @@ const ContactModal = props => {
             />
             <View style={{marginTop: scale(10)}}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Icon
-                  name="phone"
-                  color={theme.colors.gray}
-                  size={scale(20)}
+                <Icon name="phone" color={theme.colors.gray} size={scale(20)} />
+                <Label
+                  title={user?.UserInfo?.Telefono1}
+                  style={[styles.label, {marginLeft: scale(5)}]}
                 />
-                  <Label title={user?.UserInfo?.Telefono1} style={[styles.label,{marginLeft:scale(5)}]} />
               </View>
-              <View style={{flexDirection: 'row', alignItems: 'center',marginTop:scale(10)}}>
-                <Icon
-                  name="mail"
-                  color={theme.colors.gray}
-                  size={scale(20)}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginTop: scale(10),
+                }}>
+                <Icon name="mail" color={theme.colors.gray} size={scale(20)} />
+                <Label
+                  title={user?.UserInfo?.EMail}
+                  style={[styles.label, {marginLeft: scale(5)}]}
                 />
-                  <Label title={user?.UserInfo?.EMail} style={[styles.label,{marginLeft:scale(5)}]} />
               </View>
             </View>
           </View>
         </View>
         <BlurView
-        style={styles.blurView}
-        blurType="light"  // Values = dark, light, xlight .
-        blurAmount={2}
-       // viewRef={this.state.viewRef}
-        reducedTransparencyFallbackColor="white"
-      />
+          style={styles.blurView}
+          blurType="dark" // Values = dark, light, xlight .
+          blurAmount={2}
+          // viewRef={this.state.viewRef}
+          reducedTransparencyFallbackColor="white"
+        />
       </View>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-    modalBackground: {
-        flex: 1,
-        alignItems: 'center',
-        flexDirection: 'column',
-        justifyContent: 'space-around',
-        paddingVertical: scale(20),
-        backgroundColor: 'rgba(0,0,0,0.7)',
-        zIndex: 111,
-      },
-      label: {color: theme.colors.black,fontSize:scale(14),fontWeight:'500'},
-      activityIndicatorWrapper: {
-        backgroundColor: theme.colors.white,
-        // height: theme.SCREENHEIGHT * 0.2,
-        width: theme.SCREENWIDTH * 0.92,
-        borderRadius: scale(10),
-        // paddingVertical:scale(20),
-        padding: scale(10),
-        zIndex: 111,
-        marginTop: -theme.SCREENHEIGHT * 0.01,
-      },
-  
+  modalBackground: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    paddingVertical: scale(20),
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    zIndex: 111,
+  },
+  label: {color: theme.colors.black, fontSize: scale(14), fontWeight: '500'},
+  activityIndicatorWrapper: {
+    backgroundColor: theme.colors.white,
+    // height: theme.SCREENHEIGHT * 0.2,
+    width: theme.SCREENWIDTH * 0.92,
+    borderRadius: scale(10),
+    // paddingVertical:scale(20),
+    padding: scale(10),
+    zIndex: 111,
+    marginTop: -theme.SCREENHEIGHT * 0.01,
+  },
+
   headerView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -123,7 +126,7 @@ const styles = StyleSheet.create({
     paddingVertical: scale(10),
   },
   blurView: {
-    position: "absolute",
+    position: 'absolute',
     top: 0,
     left: 0,
     bottom: 0,

@@ -1,3 +1,4 @@
+import {BlurView} from '@react-native-community/blur';
 import React from 'react';
 import {useState} from 'react';
 import {StyleSheet, View, Modal, Alert, ActivityIndicator} from 'react-native';
@@ -40,7 +41,7 @@ const ForgotPassword = props => {
               // Toast.show(
               //   'La password è condivisa. Si prega di controllare la posta.',
               //   Toast.SHORT,
-            // );
+              // );
               close();
               clearFilds();
             }
@@ -107,6 +108,13 @@ const ForgotPassword = props => {
             )}
           </View>
         </View>
+        <BlurView
+          style={styles.blurView}
+          blurType="dark" // Values = dark, light, xlight .
+          blurAmount={2}
+          // viewRef={this.state.viewRef}
+          reducedTransparencyFallbackColor="white"
+        />
       </View>
     </Modal>
   );
@@ -155,6 +163,13 @@ const styles = StyleSheet.create({
     fontSize: scale(11),
   },
   txt: {color: theme.colors.white, fontWeight: '600'},
+  blurView: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+  },
 });
 
 export default ForgotPassword;

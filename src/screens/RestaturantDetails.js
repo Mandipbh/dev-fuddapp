@@ -172,7 +172,7 @@ const RestaturantDetails = () => {
       </View>
     );
   };
-  const handleModel = () => {
+  const handleModel = data => {
     // setCartModel(true);
     setSelItem([]);
     setCartModel(!cartModel);
@@ -258,7 +258,7 @@ const RestaturantDetails = () => {
         </View>
         <Title title={restaurantData?.Name} style={styles.headerTitle} />
         <View style={styles.subtitleView}>
-          {restaurantData && (
+          {restaurantData?.Tags !== '' && (
             <Label title={restaurantData?.Tags} style={styles.subTitle} />
           )}
         </View>

@@ -10,12 +10,20 @@ import Icon from 'react-native-vector-icons/Feather';
 import {scale, theme} from '../../utils';
 import Modal from 'react-native-modal';
 import {useState} from 'react';
+import {BlurView} from '@react-native-community/blur';
 
 const SliderModal = props => {
   const {isVisible, close, data} = props;
   const [selCategory, setSelCategory] = useState(null);
   return (
     <Modal animationType="fade" visible={isVisible} style={styles.modalCon}>
+      <BlurView
+        style={styles.blurView}
+        blurType="dark" // Values = dark, light, xlight .
+        blurAmount={2}
+        // viewRef={this.state.viewRef}
+        reducedTransparencyFallbackColor={theme.colors.black}
+      />
       <View style={styles.container}>
         <TouchableOpacity
           style={{top: 40, alignSelf: 'flex-end'}}
@@ -123,5 +131,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginHorizontal: scale(8),
+  },
+  blurView: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
   },
 });
