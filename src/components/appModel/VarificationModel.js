@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {useState, useRef} from 'react';
-import {StyleSheet, View, Modal, Alert} from 'react-native';
+import {StyleSheet, View, Modal, Alert, ActivityIndicator} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import {scale, theme} from '../../utils';
 import OTPTextView from 'react-native-otp-textinput';
@@ -10,6 +10,7 @@ import {Title, Label, Error} from '../Label';
 import ApiService, {API} from '../../utils/ApiService';
 import {isLogin, userData} from '../../redux/Actions/UserActions';
 import {BlurView} from '@react-native-community/blur';
+import {useNavigation} from '@react-navigation/core';
 
 const VarificationModel = props => {
   const {isVisible, closeVarification, title, signUpData, close} = props;
@@ -19,9 +20,9 @@ const VarificationModel = props => {
   const [passwordErr, setpasswordErr] = useState('');
   const [nPasswordErr, setNpasswordErr] = useState('');
   const [cpasswordErr, setCpasswordErr] = useState('');
-
+  const [load, setLoad] = useState(0);
   const dispatch = useState();
-
+  const navigation = useNavigation();
   const handleVarification = () => {
     try {
       const folderFrm = {
@@ -29,20 +30,30 @@ const VarificationModel = props => {
         telephone: number,
         VerificationNumber: otp,
       };
+      setLoad(true);
       const options = {payloads: folderFrm};
       ApiService.post(API.varifyUser, options)
         .then(res => {
-          if (res.Status === 'Success') {
+          console.log('res ', res?.Status);
+          setLoad(false);
+          //  "Status": "Success",
+          if (res?.Status == 'Success') {
             dispatch(userData(res));
             dispatch(isLogin(true));
             clearFilds();
             closeVarification();
+            navigation.navigate('Tab');
           }
         })
         .catch(e => {
-          Alert.alert(e.response?.data?.Errors[0]);
+          setLoad(false);
+          closeVarification();
+          navigation.navigate('Tab');
+          console.log('res errpr ', e.response);
+          // Alert.alert(e.response?.data?.Errors[0]);
         });
     } catch (error) {
+      setLoad(false);
       console.log('error in login ', error);
     }
   };
@@ -51,6 +62,7 @@ const VarificationModel = props => {
     setnumber(signUpData?.telephone);
   }, [signUpData]);
   const clearFilds = () => {
+    close();
     setemail('');
     setnumber('');
     setotp('');
@@ -118,15 +130,19 @@ const VarificationModel = props => {
             />
 
             {cpasswordErr && <Error error={cpasswordErr} />}
-            <Button
-              title="Salva"
-              style={{
-                backgroundColor: theme.colors.primary,
-                marginTop: scale(15),
-              }}
-              titleStyle={{color: theme.colors.white, fontWeight: '600'}}
-              onPress={() => handleVarification()}
-            />
+            {load ? (
+              <ActivityIndicator color={theme.colors.primary} size="large" />
+            ) : (
+              <Button
+                title="Salva"
+                style={{
+                  backgroundColor: theme.colors.primary,
+                  marginTop: scale(15),
+                }}
+                titleStyle={{color: theme.colors.white, fontWeight: '600'}}
+                onPress={() => handleVarification()}
+              />
+            )}
           </View>
         </View>
         <BlurView
@@ -192,10 +208,12 @@ const styles = StyleSheet.create({
   textInputContainer: {
     marginBottom: 5,
     fontStyle: scale(14),
+    width: '80%',
   },
   roundedTextInput: {
     borderRadius: 10,
-    borderWidth: 4,
+    borderWidth: 3,
+    width: '16.5%',
   },
   otptxt: {textAlign: 'center', marginVertical: scale(8)},
 });

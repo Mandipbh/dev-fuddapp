@@ -14,7 +14,7 @@ export {default as Address} from './Address';
 export {default as SaveAddress} from './SaveAddress';
 export {default as MyOrders} from './MyOrders';
 export {default as MyAccountInfo} from './MyAccountInfo';
-export {default as AboutUs } from './AboutUs'
+export {default as AboutUs} from './AboutUs';
 //models
 export {default as Loader} from './appModel/Loader';
 export {default as AlertModel} from './appModel/AlertModel';
@@ -25,5 +25,6 @@ export {default as TimePickerModel} from './appModel/TimePickerModel';
 export {default as ForgotPassword} from './appModel/ForgotPassword';
 export {default as VarificationModel} from './appModel/VarificationModel';
 export {default as EditAddress} from './appModel/EditAddress';
-export {default as PaymentMethod } from './appModel/PaymentMethod'
-export {default as ContactModal} from './appModel/ContactModal'
+export {default as PaymentMethod} from './appModel/PaymentMethod';
+export {default as ContactModal} from './appModel/ContactModal';
+export {default as OrderPaymentMethod} from './appModel/OrderPaymentMethod';

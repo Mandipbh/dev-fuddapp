@@ -1,3 +1,4 @@
+import {BlurView} from '@react-native-community/blur';
 import React from 'react';
 import {useState} from 'react';
 import {StyleSheet, View, Modal, ActivityIndicator} from 'react-native';
@@ -89,6 +90,13 @@ const ChangePassword = props => {
       animationType={'none'}
       visible={isVisible}
       onRequestClose={() => {}}>
+      <BlurView
+        style={styles.blurView}
+        blurType="dark" // Values = dark, light, xlight .
+        blurAmount={2}
+        // viewRef={this.state.viewRef}
+        reducedTransparencyFallbackColor="white"
+      />
       <View style={styles.modalBackground}>
         <View style={styles.activityIndicatorWrapper}>
           <View style={styles.headerView}>
@@ -201,6 +209,13 @@ const styles = StyleSheet.create({
   inputInner: {
     paddingHorizontal: 0,
     color: theme.colors.black,
+  },
+  blurView: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
   },
 });
 

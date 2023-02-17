@@ -49,7 +49,7 @@ const CartScreen = () => {
     );
     setPTotal(total);
   };
-
+  console.log('cartData ?>> ', cartData);
   useEffect(() => {
     calculatePrice();
     // eslint-disable-next-line react-hooks/exhaustive-deps

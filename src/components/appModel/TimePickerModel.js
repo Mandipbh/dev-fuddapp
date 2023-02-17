@@ -49,7 +49,7 @@ const TimePickerModel = props => {
     setTimeSlot(allTimes);
   }, []);
   return (
-    <Modal visible={isVisible} style={styles.modelStyle}>
+    <Modal style={{margin: 0}} visible={isVisible}>
       <BlurView
         style={styles.blurView}
         blurType="dark" // Values = dark, light, xlight .
@@ -101,12 +101,16 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   container: {
-    flex: 1,
+    // flex: 1,
+    height: '35%',
+    position: 'absolute',
+    bottom: 0,
     borderWidth: 1,
     backgroundColor: theme.colors.white,
     borderRadius: scale(20),
     padding: scale(5),
     alignItems: 'center',
+    width: '100%',
   },
   textButton: {
     flexDirection: 'row',

@@ -15,12 +15,20 @@ import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
 import {images, scale, theme} from '../utils';
-import {Button, InputBox, Label, TimePickerModel, Title} from '../components';
+import {
+  Button,
+  InputBox,
+  Label,
+  OrderPaymentMethod,
+  TimePickerModel,
+  Title,
+} from '../components';
 import {useNavigation} from '@react-navigation/native';
 import SetLocationModel from '../components/appModel/SetLocationModel';
 import {useSelector} from 'react-redux';
 import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
+import ApiService, {API} from '../utils/ApiService';
 const keyboardVerticalOffset = Platform.OS === 'ios' ? scale(40) : 0;
 const startOfMonth = moment().format('YYYY-MM-DD');
 const endOfMonth = moment().endOf('month').format('YYYY-MM-DD');
@@ -28,18 +36,51 @@ const CheckoutScreen = () => {
   const navigation = useNavigation();
   const [process, setProcesss] = useState(false);
   const [locationModel, setLocationModel] = useState(false);
+  const [] = useState(false);
   const [timeModel, setTimeModel] = useState(false);
   const [timeSloat, setTimeSlot] = useState(null);
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
+  const [copanCode, setCopanCode] = useState(null);
+  const [paymentModel, setPayment] = useState(false);
+  const user = useSelector(state => state.UserReducer?.userDetails);
   const selAddress = useSelector(state => state.UserReducer.selAddress);
-  console.log('selAddress ?>? ', endOfMonth);
   const handleTimer = time => {
     setTimeModel(!timeModel);
     if (time !== null) {
       const timeslot = time.replace(' ', 'TO');
       setTimeSlot(timeslot);
     }
+  };
+  console.log('user ??/ ', user?.UserInfo);
+  const handleCoupen = () => {
+    const userData = user?.UserInfo;
+    try {
+      const folderFrm = {
+        UserId: userData?.Id,
+        RestaurantId: 3,
+        RiderId: 0,
+        OrderId: 0,
+        Date: date,
+        DiscountCode: copanCode,
+        Email: userData?.EMail,
+        ItemTotalCharge: 25.0,
+      };
+      console.log('handleCoupen ', folderFrm);
+      const options = {payloads: folderFrm};
+      // ApiService.post(API.coupenCode, options)
+      //         .then(res => {
+      //     console.log('response >> ', res);
+      //   })
+      //   .catch(c => {
+      //     console.log('error catch', c);
+      //   });
+    } catch (error) {
+      console.log('error of try ', error);
+    }
+  };
+  const handlePaymentMethod = data => {
+    setPayment(false);
   };
   return (
     <SafeAreaView style={styles.container}>
@@ -88,26 +129,25 @@ const CheckoutScreen = () => {
                     ]}>
                     <View>
                       <Title title="Orario di consegna" />
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                        }}>
+                      <View style={styles.dataview}>
                         <TouchableOpacity
                           onPress={() => {
                             setOpen(!open);
                           }}>
                           <Label
-                            title="Date"
+                            title={moment().format('DD-MM-YYYY')}
                             style={{marginTop: scale(5), fontSize: scale(12)}}
                           />
                         </TouchableOpacity>
                         <TouchableOpacity
                           onPress={() => setTimeModel(!timeModel)}>
                           <Label
-                            title="Time"
-                            style={{marginTop: scale(5), fontSize: scale(12)}}
+                            title={timeSloat === null ? 'Time' : timeSloat}
+                            style={{
+                              marginTop: scale(5),
+                              fontSize: scale(12),
+                              marginLeft: scale(10),
+                            }}
                           />
                         </TouchableOpacity>
                       </View>
@@ -158,7 +198,7 @@ const CheckoutScreen = () => {
                         style={{color: theme.colors.gray}}
                       />
                       <Label
-                        title="Mastercard - 6293 23******* 7563"
+                        title=""
                         style={{
                           marginTop: scale(5),
                           fontSize: scale(12),
@@ -166,7 +206,11 @@ const CheckoutScreen = () => {
                         }}
                       />
                     </View>
-                    <TouchableOpacity style={styles.btn}>
+                    <TouchableOpacity
+                      style={styles.btn}
+                      onPress={() => {
+                        setPayment(true);
+                      }}>
                       <Label title="Cambia" />
                     </TouchableOpacity>
                   </View>
@@ -186,19 +230,20 @@ const CheckoutScreen = () => {
                       />
                     </View>
                   </View>
-                  <View
-                    style={[
-                      styles.productView1,
-                      // styles.row,
-                      // {justifyContent: 'space-between'},
-                    ]}>
+                  <View style={styles.productView1}>
                     <Title title="Hai un codice sconto?" />
                     <View style={styles.viewData}>
                       <TextInput
                         style={styles.copun}
                         placeholder="Codice sconto"
+                        value={copanCode}
+                        onChangeText={txt => {
+                          setCopanCode(txt);
+                        }}
                       />
-                      <TouchableOpacity style={styles.applyBtn}>
+                      <TouchableOpacity
+                        style={styles.applyBtn}
+                        onPress={() => handleCoupen()}>
                         <Text style={styles.applyTxt}>Applica</Text>
                       </TouchableOpacity>
                     </View>
@@ -230,7 +275,7 @@ const CheckoutScreen = () => {
         onCancel={() => {
           setOpen(false);
         }}
-        maximumDate={new Date(endOfMonth)}
+        // maximumDate={new Date(endOfMonth)}
         minimumDate={new Date(startOfMonth)}
       />
       <TimePickerModel isVisible={timeModel} close={handleTimer} />
@@ -239,6 +284,10 @@ const CheckoutScreen = () => {
         close={() => {
           setLocationModel(!locationModel);
         }}
+      />
+      <OrderPaymentMethod
+        isVisible={paymentModel}
+        close={handlePaymentMethod}
       />
     </SafeAreaView>
   );
@@ -356,6 +405,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginVertical: scale(4),
+  },
+  dataview: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   checkImg: {
     height: theme.SCREENHEIGHT * 0.3,

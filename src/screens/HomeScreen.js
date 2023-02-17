@@ -21,6 +21,7 @@ import {
   FoodCard,
   PaymentMethod,
   ContactModal,
+  OrderPaymentMethod,
 } from '../components';
 import {foodData} from '../utils/MockData';
 import DrawerModal from '../components/appModel/DrawerModal';
@@ -229,7 +230,8 @@ const HomeScreen = () => {
         )}
         <ScrollView
           style={styles.scrollView}
-          showsVerticalScrollIndicator={false}>
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{paddingBottom: theme.SCREENHEIGHT * 0.05}}>
           {categoryView && Food()}
 
           {!categoryView && <Category categoryListData={categoryListData} />}
@@ -303,7 +305,7 @@ const styles = StyleSheet.create({
     color: theme.colors.white,
   },
   scrollView: {
-    height: Platform.OS === 'android' ? '75%' : '63%',
+    height: Platform.OS === 'android' ? '70%' : '75%',
   },
 
   categoryContainer: {

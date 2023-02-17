@@ -42,31 +42,30 @@ const RestaurantScreen = () => {
   const selectedCat = useSelector(
     state => state?.RestaurantReducers?.selCategory,
   );
-  console.log('seladdress ??? 0', selCategory);
+  console.log('selectedCat >> ', selectedCat);
   // console.log('seladdress ??? 1', seladdress?.Lat);
   useEffect(() => {
     setLoadding(true);
     if (selectedCat !== null) {
       setSelCategory(selectedCat?.Nome);
     }
-    const data =
-      // {
-      //   id: 0,
-      //   date: '01-12-2022',
-      //   timeSlot: '16:00TO16:30',
-      //   category: '',
-      //   latitute: '',
-      //   longitude: '',
-      // };
-      {
-        date: moment(date).format('DD-MM-YYYY'),
-        timeSlot: `${moment(new Date()).format('HH:mm')}-${moment(new Date())
-          .add(30, 'minute')
-          .format('HH:mm')}`, //'16:00TO16:30',
-        category: selCategory,
-        latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
-        longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
-      };
+    const data = {
+      id: 0,
+      date: '01-12-2022',
+      timeSlot: '16:00TO16:30',
+      category: '',
+      latitute: '',
+      longitude: '',
+    };
+    // {
+    //   date: moment(date).format('DD-MM-YYYY'),
+    //   timeSlot: `${moment(new Date()).format('HH:mm')}-${moment(new Date())
+    //     .add(30, 'minute')
+    //     .format('HH:mm')}`, //'16:00TO16:30',
+    //   category: selCategory,
+    //   latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
+    //   longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
+    // };
     dispatch(getpopularRestaurants(data));
     dispatch(getAllCategory());
     setTimeSlot(

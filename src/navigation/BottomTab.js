@@ -19,9 +19,7 @@ import {AboutUs, Label} from '../components';
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 const Comman = () => {
-  return (
-   <AboutUs />
-  );
+  return <AboutUs />;
 };
 
 const Restaturant = () => {

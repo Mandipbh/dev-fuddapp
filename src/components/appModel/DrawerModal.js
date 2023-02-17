@@ -42,13 +42,6 @@ const DrawerModal = props => {
       animationOut="slideInLeft"
       animationInTiming={0.5}
       style={{width: '60%', margin: 0}}>
-      <BlurView
-        style={styles.blurView}
-        blurType="dark" // Values = dark, light, xlight .
-        blurAmount={2}
-        // viewRef={this.state.viewRef}
-        reducedTransparencyFallbackColor={theme.colors.black}
-      />
       <View style={styles.container}>
         <Icon
           name="x"
