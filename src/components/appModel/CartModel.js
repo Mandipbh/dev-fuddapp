@@ -45,8 +45,9 @@ const CartModel = props => {
   useEffect(() => {
     setPrice(data?.Amount);
     setProductDetails(data);
-    productDetails?.lstAddons?.length > 0 &&
-      setAddonData(productDetails?.lstAddons);
+    console.log('data ?? ', data?.lstAddons);
+    data?.lstAddons?.length > 0 && setAddonData(data?.lstAddons);
+    // data?.lstAddons?.length === 0 && setAddonData([]);
     calculatePrice();
   }, [data, productDetails.lstAddons, wantProduct, addonData]);
 
@@ -107,6 +108,7 @@ const CartModel = props => {
 
   const changeShow = props => {
     setShow(!show);
+    setAddonData([]);
     props.onSubmit(show);
   };
 
@@ -152,6 +154,15 @@ const CartModel = props => {
           }}
         />
         <View style={styles.subView}>
+          <Icon
+            name="x"
+            size={scale(30)}
+            color={theme.colors.bla}
+            style={styles.closeIcon}
+            onPress={() => {
+              clearify();
+            }}
+          />
           <Title title={data?.Name} style={styles.title} />
           <Label title={data?.Description} style={styles.subTitle} />
           {/* <View style={styles.priceDetails}>
@@ -175,11 +186,13 @@ const CartModel = props => {
 
             <Title title="€ 12.00" style={{color: theme.colors.purpal}} />
           </View> */}
+
           <View style={styles.itemContainer}>
             <ScrollView
+              contentContainerStyle={{paddingBottom: theme.SCREENHEIGHT * 0.1}}
               showsVerticalScrollIndicator={false}
               nestedScrollEnabled>
-              {addonData?.length > 0 && (
+              {data?.lstAddons?.length > 0 && (
                 <>
                   <TouchableOpacity
                     style={styles.categoryTitle}
@@ -197,7 +210,7 @@ const CartModel = props => {
                     <ScrollView
                       style={{
                         height: null,
-                        maxHeight: theme.SCREENHEIGHT * 0.4,
+                        maxHeight: theme.SCREENHEIGHT * 0.68,
                       }}
                       nestedScrollEnabled>
                       {addonData?.length > 0 && (
@@ -226,15 +239,6 @@ const CartModel = props => {
                                         alignItems: 'center',
                                       },
                                     ]}>
-                                    {/* <Icon
-                                    name="x"
-                                    size={scale(30)}
-                                    color={theme.colors.red}
-                                    style={styles.closeIcon}
-                                    onPress={() => {
-                                      clearify(item, idx)
-                                    }}
-                                  /> */}
                                     <View
                                       style={[
                                         styles.row,
@@ -302,7 +306,7 @@ const CartModel = props => {
                     <ScrollView
                       style={{
                         height: null,
-                        maxHeight: theme.SCREENHEIGHT * 0.4,
+                        maxHeight: theme.SCREENHEIGHT * 0.68,
                       }}
                       nestedScrollEnabled>
                       {productDetails?.lstIngredients?.length > 0 && (
@@ -393,7 +397,7 @@ const CartModel = props => {
                     <ScrollView
                       style={{
                         height: null,
-                        maxHeight: theme.SCREENHEIGHT * 0.4,
+                        maxHeight: theme.SCREENHEIGHT * 0.68,
                       }}
                       nestedScrollEnabled>
                       {productDetails?.lstMakeTypes?.length > 0 && (
@@ -476,29 +480,33 @@ const styles = StyleSheet.create({
   closeIcon: {
     alignSelf: 'flex-end',
     marginRight: scale(10),
-    marginBottom: scale(10),
+    // marginBottom: scale(10),
   },
   categoryTitle: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: scale(5),
+    marginVertical: scale(5),
+    backgroundColor: theme.colors.gray3,
+    padding: scale(5),
+    borderRadius: scale(8),
   },
   container: {
     alignSelf: 'center',
-    height: theme.SCREENHEIGHT * 0.8,
+    // height: theme.SCREENHEIGHT * 0.8,
     // backgroundColor: theme.colors.white,
     position: 'absolute',
     bottom: 0,
     width: theme.SCREENWIDTH,
-    borderTopLeftRadius: scale(25),
-    borderTopRightRadius: scale(25),
+    // borderTopLeftRadius: scale(25),
+    // borderTopRightRadius: scale(25),
   },
   subView: {
-    // flex: 1,
+    flex: 1,
     // justifyContent: 'center',
     alignItems: 'center',
-    height: theme.SCREENHEIGHT * 0.75,
+    height: theme.SCREENHEIGHT,
     backgroundColor: theme.colors.white,
     position: 'absolute',
     bottom: 0,
@@ -506,6 +514,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: scale(25),
     borderTopRightRadius: scale(25),
     padding: scale(13),
+    paddingTop: scale(25),
   },
   card: {
     marginVertical: scale(6),
@@ -569,6 +578,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 0,
     width: theme.SCREENWIDTH * 0.55,
     marginTop: scale(10),
+    borderWidth: 1,
   },
   btntxt: {
     color: theme.colors.white,
@@ -600,7 +610,12 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.gray4,
     padding: scale(8),
   },
-  itemContainer: {width: '95%', height: '70%', marginTop: scale(10)},
+  itemContainer: {
+    width: '95%',
+    height: '95%',
+    marginTop: scale(10),
+    paddingBottom: scale(100),
+  },
   blurView: {
     position: 'absolute',
     top: 0,

@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     width: '100%',
     resizeMode: 'contain',
   },
-  close: {alignSelf: 'flex-end', marginRight: scale(20)},
+  close: {alignSelf: 'flex-end', marginRight: scale(5)},
 });
 
 export default FullScreenImage;

@@ -14,7 +14,14 @@ import Icon from 'react-native-vector-icons/Feather';
 import Icon1 from 'react-native-vector-icons/SimpleLineIcons';
 import Icon2 from 'react-native-vector-icons/Entypo';
 import {scale, theme} from '../utils';
-import {Button, CartModel, FullScreenImage, Label, Title} from '../components';
+import {
+  Button,
+  CartModel,
+  FullScreenImage,
+  Label,
+  Loader,
+  Title,
+} from '../components';
 import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
@@ -33,6 +40,7 @@ const RestaturantDetails = () => {
   const [details, setDetails] = useState();
   const [selItem, setSelItem] = useState('');
   const [filterData, setFilterData] = useState([]);
+  const [load, setLoad] = useState(false);
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
@@ -45,6 +53,7 @@ const RestaturantDetails = () => {
       TimeSlot: '20:00-20:30',
       Category: '',
     };
+    setLoad(true);
     dispatch(restaurantDetails(data));
   }, []);
 
@@ -53,6 +62,7 @@ const RestaturantDetails = () => {
   );
 
   useEffect(() => {
+    setLoad(false);
     setDetails(restaurantData);
   }, [restaurantData]);
 
@@ -258,7 +268,7 @@ const RestaturantDetails = () => {
         </View>
         <Title title={restaurantData?.Name} style={styles.headerTitle} />
         <View style={styles.subtitleView}>
-          {restaurantData?.Tags !== '' && (
+          {restaurantData?.Tags !== undefined && !load && (
             <Label title={restaurantData?.Tags} style={styles.subTitle} />
           )}
         </View>
@@ -387,6 +397,8 @@ const RestaturantDetails = () => {
         }}
         image={imgPath}
       />
+      {console.log('load >>> ', load)}
+      {load && <Loader loading={load} />}
       <CartModel data={selItem} isVisible={cartModel} close={handleModel} />
     </View>
   );

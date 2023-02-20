@@ -40,7 +40,6 @@ const SetLocationModel = props => {
     }
   }, [addressList, isShow]);
 
-
   const compIsType = (t, s) => {
     for (let z = 0; z < t.length; ++z) if (t[z] == s) return true;
     return false;
@@ -207,7 +206,7 @@ const SetLocationModel = props => {
                                 name="phone"
                                 style={{marginLeft: scale(8)}}
                               />
-                              <Label title={`${item?.Telephone}`} />
+                              <Label title={` ${item?.Telephone}`} />
                             </View>
                           </View>
                         </TouchableOpacity>
@@ -290,24 +289,26 @@ const styles = StyleSheet.create({
     // height: scale(20),
   },
   btnTxt: {
-    // width: '95%',
+    width: '80%',
     marginVertical: scale(4),
-    fontSize: scale(12),
+    fontSize: scale(14),
     // paddingHorizontal: scale(2),
   },
   viewCon: {
     flexDirection: 'row',
     width: '100%',
     alignItems: 'center',
+    marginVertical: scale(5),
   },
   devider: {
-    borderWidth: scale(0.7),
+    borderWidth: scale(1),
     borderStyle: 'dotted',
     width: theme.SCREENWIDTH,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginTop: scale(3),
   },
 });
 
