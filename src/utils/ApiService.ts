@@ -69,7 +69,8 @@ export const API = {
   updatePassword:'Users/ChangeUserPassword',
   recoveryPassword:'Users/RecoveryPassword?email=',
   varifyUser:'Users/VerifyUser',
-  coupenCode:'Order/ApplyCoupenCode'
+  coupenCode:'Order/ApplyCoupenCode',
+  getAllOrders: 'Users/GetUserOrder?userId=18340' 
 };
 
 export default {

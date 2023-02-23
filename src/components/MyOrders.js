@@ -1,12 +1,65 @@
 import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {scale, theme} from '../utils';
 import Icon from 'react-native-vector-icons/Feather';
 import {Label} from './Label';
 import {orderData} from '../utils/MockData';
+import ApiService, {API} from '../utils/ApiService';
+import {ALLORDERS} from '../redux/Actions/ActionsTypes';
+import {useDispatch, useSelector} from 'react-redux';
+
+// export const getAllOrders = () => {
+//   return async dispatch => {
+//     try {
+//       ApiService.get(API.getAllOrders).then(res => {
+//         if (res) {
+//           console.log('getAllOrders', JSON.stringify(res, null, 4));
+//           dispatch({type: ORDERS, payload: res});
+//         }
+//       });
+//     } catch (error) {
+//       console.log('error in Orders', error);
+//     }
+//   };
+// };
+
+export const getAllOrders = () => {
+  return async dispatch => {
+    try {
+      ApiService.get(API.getAllOrders)
+        .then(res => {
+          if (res) {
+            dispatch({type: ALLORDERS, payload: res});
+          }
+          // console.log('this is res', JSON.stringify(res, null, 4));
+        })
+        .catch(c => {
+          console.log('catch of category >> ', c);
+        });
+    } catch (error) {
+      console.log('error in category', error);
+    }
+  };
+};
 
 const MyOrders = () => {
   const [selIndex, setIindex] = useState(0);
+
+  const dispatch = useDispatch();
+  const [getAllOrder, setgetAllOrder] = useState(allOrders);
+
+  const allOrders = useSelector(state => state.HomeReducers.allOrders);
+
+  useEffect(() => {
+    dispatch(getAllOrders());
+  }, []);
+
+  useEffect(() => {
+    setgetAllOrder(allOrders);
+  }, [allOrders]);
+
+  console.log('Data of Orders', JSON.stringify(getAllOrder, null, 4));
+
   return (
     <View>
       <ScrollView

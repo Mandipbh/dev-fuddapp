@@ -3,6 +3,7 @@ import {
   GETAllCATEGORY,
   GETALLEXTERNALRESTAURANT,
   GETALLRESTAURANTS,
+  ORDERS,
 } from './ActionsTypes';
 
 //get all catregegorys

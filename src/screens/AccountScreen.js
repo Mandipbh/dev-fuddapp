@@ -13,6 +13,7 @@ import Icon2 from 'react-native-vector-icons/Fontisto';
 import {images, scale, theme} from '../utils';
 import {
   Address,
+  ContactModal,
   Label,
   Login,
   MyAccountInfo,
@@ -32,6 +33,8 @@ const AccountScreen = () => {
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [showImg, setImg] = useState(true);
   const [text, setText] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+
   const isLoginUser = useSelector(state => state.UserReducer?.login);
   const dispatch = useDispatch();
   const user = useSelector(state => state.UserReducer?.userDetails);
@@ -63,6 +66,18 @@ const AccountScreen = () => {
     } else {
       index === 3 ? null : setSelectedMenu(id);
     }
+  };
+
+  const handlePress = (id, index) => {
+    if (id === 3) {
+      setModalVisible(true);
+    } else {
+      index === 3 ? null : setSelectedMenu(id);
+    }
+  };
+
+  const handleClose = () => {
+    setModalVisible(false);
   };
   const handleLogout = () => {
     dispatch(logout());
@@ -168,6 +183,8 @@ const AccountScreen = () => {
                   style={styles.option}
                   onPress={() => {
                     handleClick(item.id, index);
+                    handlePress(item.id, index);
+                    // alert(`${item.id}`);
                   }}>
                   <Label title={item.title} />
                   <View
@@ -210,6 +227,7 @@ const AccountScreen = () => {
           />
         )}
       </View>
+      <ContactModal isVisible={modalVisible} close={handleClose} />
     </SafeAreaView>
   );
 };

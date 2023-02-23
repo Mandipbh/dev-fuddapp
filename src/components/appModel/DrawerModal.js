@@ -12,12 +12,15 @@ import {Label} from '../Label';
 import ContactModal from './ContactModal';
 import {useState} from 'react';
 import {BlurView} from '@react-native-community/blur';
+import OrderModal from './OrderModal';
 
 const DrawerModal = props => {
-  const {isVisible, close, handlePayment, handleContact} = props;
+  const {isVisible, close, handlePayment, handleContact, handleMyOrder} = props;
   const navigation = useNavigation();
   const isLoginUser = useSelector(state => state.UserReducer?.login);
   const [modalVisible, setModalVisible] = useState(false);
+  const [orderModalVisible, setOrderModalVisible] = useState(false);
+
   console.log('Modal Visible ======', modalVisible);
   const dispatch = useDispatch();
   const handleLogout = () => {
@@ -28,11 +31,9 @@ const DrawerModal = props => {
     navigation.navigate('home');
   };
   const handleModal = () => {
-    // setCartModel(true);
     setModalVisible(!modalVisible);
-    // setCartModel(!cartModel);
-    // navigation.navigate('Cart');
   };
+
   return (
     <Modal
       backdropOpacity={0.4}
@@ -85,7 +86,12 @@ const DrawerModal = props => {
                 />
                 <Text style={styles.btnText}>PAYMENT METHODS</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.textButton}>
+              <TouchableOpacity
+                onPress={() => {
+                  close();
+                  handleMyOrder();
+                }}
+                style={styles.textButton}>
                 <Icon name="clipboard" size={25} color={theme.colors.purpal} />
                 <Text style={styles.btnText}>MY ORDERS</Text>
               </TouchableOpacity>

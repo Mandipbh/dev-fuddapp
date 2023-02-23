@@ -17,3 +17,7 @@ export const SETCATEGORY = 'SETCATEGORY';
 
 // cart actions
 export const ADDTOCART = 'ADDTOCART';
+
+// Orders
+
+export const ALLORDERS = 'ALLORDERS';

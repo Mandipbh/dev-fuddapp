@@ -36,6 +36,7 @@ import {useIsFocused} from '@react-navigation/core';
 import SetLocationModel from '../components/appModel/SetLocationModel';
 import moment from 'moment';
 import {setCategory} from '../redux/Actions/RestaurantAction';
+import OrderModal from '../components/appModel/OrderModal';
 
 const Category = ({categoryListData}) => {
   return (
@@ -112,6 +113,7 @@ const HomeScreen = () => {
   const [locationModel, setLocationModel] = useState(false);
   const [contactModal, setContact] = useState(false);
   const [paymentModel, setPayModel] = useState(false);
+  const [orderModalVisible, setOrderModalVisible] = useState(false);
   const isFocuse = useIsFocused();
   const dispatch = useDispatch();
   const IconClosePicker = () => {
@@ -119,7 +121,9 @@ const HomeScreen = () => {
   };
   const isLoginUser = useSelector(state => state.UserReducer?.login);
   const seladdress = useSelector(state => state.UserReducer.selAddress);
-
+  const handleCloseModal = () => {
+    setOrderModalVisible(!orderModalVisible);
+  };
   useEffect(() => {
     dispatch(getAllCategory());
     let obj = {
@@ -196,6 +200,9 @@ const HomeScreen = () => {
           setContact(true);
           setSelectedModal(false);
         }}
+        handleMyOrder={() => {
+          setOrderModalVisible(true);
+        }}
       />
       <View style={styles.mainContainer}>
         <View style={[styles.textinputContainer, styles.shadow]}>
@@ -252,6 +259,7 @@ const HomeScreen = () => {
         }}
       />
       <ContactModal isVisible={contactModal} close={() => setContact(false)} />
+      <OrderModal isVisible={orderModalVisible} close={handleCloseModal} />
     </SafeAreaView>
   );
 };

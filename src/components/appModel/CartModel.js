@@ -110,14 +110,13 @@ const CartModel = props => {
   }
 
   const deleteByIndexProduct = index => {
-    console.log('clicked position',index);
-    const tmpArr = [...rIds]
-     const x = tmpArr.splice(index, 1);
-     setRIds(x);
-     
-    // rIds.filter((item, itemIndex) => itemIndex != index)
+    console.log('clicked position', index);
+    const tmpArr = [...rIds];
+    const x = tmpArr.splice(index, 1);
+    setRIds(x);
 
-  }
+    // rIds.filter((item, itemIndex) => itemIndex != index)
+  };
 
   const changeShow = props => {
     setShow(!show);
@@ -141,7 +140,21 @@ const CartModel = props => {
 
     const totalValue = total + tmpDataForCircle || total;
     setPTotal(totalValue);
+  };
 
+  const handleIngredienti = (item, index) => {
+    const lstIngredients = [...productDetails.lstIngredients];
+    if (lstIngredients[index]?.IsChecked) {
+      lstIngredients[index].IsChecked = false; // lstIngredients[index]?.IsChecked = false
+    } else {
+      lstIngredients[index].IsChecked = true;
+    }
+    const tmpdata = {
+      ...productDetails,
+      lstIngredients,
+    };
+
+    setProductDetails(tmpdata);
   };
   return (
     <Modal
@@ -210,7 +223,7 @@ const CartModel = props => {
                   <TouchableOpacity
                     style={styles.categoryTitle}
                     onPress={() => {
-                      setIdx(0);
+                      selIndex === 0 ? setIdx(null) : setIdx(0);
                     }}>
                     <Title title={'Aggiungi ingredienti'} />
                     <Icon
@@ -306,7 +319,7 @@ const CartModel = props => {
                   <TouchableOpacity
                     style={styles.categoryTitle}
                     onPress={() => {
-                      setIdx(1);
+                      selIndex === 1 ? setIdx(null) : setIdx(1);
                     }}>
                     <Title title={'Rimuovi Ingredienti'} />
                     <Icon
@@ -339,74 +352,11 @@ const CartModel = props => {
                                         style={styles.itemprice}
                                       />
                                     </View>
-                                    {/* <Icon
-                                    name={
-                                      rIds.includes(item?.IDRiga)
-                                        ? 'check-square'
-                                        : 'square'
-                                    } //circle
-                                    size={scale(20)}
-                                    color={theme.colors.primary}
-                                    onPress={() => {
-                                       rIds.push(item?.IDRiga);
-                                       setRIds(rIds);
-
-                                    }}
-                                  /> */}
-
                                     <TouchableOpacity
-                                      onPress={async() => {
-                                        
-                                        // rIds.includes(item?.IDRiga)
-                                        //   ? rIds.splice(rIds.indexOf(0), 1)
-                                        //   : rIds.push(item?.IDRiga);
-                                        
-                                        // setCheckBox(!checkbox);
-
-                                        console.log('item >> ',item.IsChecked);
-                                        //item?.IsChecked = !item?.IsChecked;
-                                        if(item?.IsChecked === false){
-                                          //  item?.IsChecked = true;
-
-                                        }else{
-                                           item?.IsChecked=false;
-                                        }
-
-                                         
-
-                                        if(rIds.includes(item?.IDRiga)){
-                                          deleteByIndexProduct(index) 
-                                          console.log('item delete >> ',item.IDRiga)              
-                                        }else{
-                                          // setWantProduct(item);
-                                          const tmpArr = [...rIds]
-                                          tmpArr.push(item?.IDRiga);
-                                          console.log('item ADD >> ',item.IDRiga) 
-                                          setRIds(tmpArr);
-                                        }
-
-                                   
-                                                                                
-                                        // popItem({item});
-                                        // rIds.includes(item?.IDRiga) ?  rIds.splice(0,-1) : null
+                                      onPress={() => {
+                                        handleIngredienti(item, index);
                                       }}>
-                                      {/* {rIds.includes(item?.IDRiga) ? ( */}
-                                     
-                                      {/* {rIds.includes(item?.IDRiga) ? (
-                                        <Icon
-                                          name="check-square"
-                                          size={scale(20)}
-                                          color={theme.colors.primary}
-                                        />
-                                      ) : (
-                                        <Icon
-                                          name="square"
-                                          size={scale(20)}
-                                          color={theme.colors.primary}
-                                        />
-                                      )} */}
-
-                                      {item?.IsChecked==true ? (
+                                      {item?.IsChecked ? (
                                         <Icon
                                           name="check-square"
                                           size={scale(20)}
@@ -419,8 +369,6 @@ const CartModel = props => {
                                           color={theme.colors.primary}
                                         />
                                       )}
-
-
                                     </TouchableOpacity>
                                   </View>
                                 );
@@ -439,7 +387,7 @@ const CartModel = props => {
                   <TouchableOpacity
                     style={styles.categoryTitle}
                     onPress={() => {
-                      setIdx(2);
+                      selIndex === 2 ? setIdx(null) : setIdx(2);
                     }}>
                     <Title title={'Comeil prodotto?'} />
                     <Icon
@@ -519,7 +467,7 @@ const CartModel = props => {
           />
         </View>
 
-        <AddCardModal isVisible={cartModel} close={closeModal}  />
+        <AddCardModal isVisible={cartModel} close={closeModal} />
       </View>
     </Modal>
   );
