@@ -84,11 +84,13 @@ const CartModel = props => {
       setCartModel(true);
     }
   };
+
   const handleIncriment = (item, idx) => {
     let tmpArr = [...addonData];
     tmpArr[idx].Qty = tmpArr[idx].Qty + 1;
     setAddonData(tmpArr);
   };
+
   const handleDecriment = (item, idx) => {
     let tempArray = [...addonData];
     tempArray[idx].Qty != 0
@@ -96,6 +98,7 @@ const CartModel = props => {
       : null;
     setAddonData(tempArray);
   };
+
   function clearify() {
     setProductDetails([]);
     setCartModel(false);
@@ -104,6 +107,16 @@ const CartModel = props => {
     // let tmpArr = [...addonData]
     // tmpArr.Qty == 0
     // setAddonData(tmpArr)
+  }
+
+  const deleteByIndexProduct = index => {
+    console.log('clicked position',index);
+    const tmpArr = [...rIds]
+     const x = tmpArr.splice(index, 1);
+     setRIds(x);
+     
+    // rIds.filter((item, itemIndex) => itemIndex != index)
+
   }
 
   const changeShow = props => {
@@ -127,8 +140,8 @@ const CartModel = props => {
     // let total = tmparr[idx]
 
     const totalValue = total + tmpDataForCircle || total;
-
     setPTotal(totalValue);
+
   };
   return (
     <Modal
@@ -342,18 +355,58 @@ const CartModel = props => {
                                   /> */}
 
                                     <TouchableOpacity
-                                      onPress={() => {
-                                        rIds.includes(item?.IDRiga)
-                                          ? rIds.splice(rIds.indexOf(0), 1)
-                                          : rIds.push(item?.IDRiga);
-                                        setRIds(rIds);
-                                        setWantProduct(item);
-                                        setCheckBox(!checkbox);
+                                      onPress={async() => {
+                                        
+                                        // rIds.includes(item?.IDRiga)
+                                        //   ? rIds.splice(rIds.indexOf(0), 1)
+                                        //   : rIds.push(item?.IDRiga);
+                                        
+                                        // setCheckBox(!checkbox);
+
+                                        console.log('item >> ',item.IsChecked);
+                                        //item?.IsChecked = !item?.IsChecked;
+                                        if(item?.IsChecked === false){
+                                          //  item?.IsChecked = true;
+
+                                        }else{
+                                           item?.IsChecked=false;
+                                        }
+
+                                         
+
+                                        if(rIds.includes(item?.IDRiga)){
+                                          deleteByIndexProduct(index) 
+                                          console.log('item delete >> ',item.IDRiga)              
+                                        }else{
+                                          // setWantProduct(item);
+                                          const tmpArr = [...rIds]
+                                          tmpArr.push(item?.IDRiga);
+                                          console.log('item ADD >> ',item.IDRiga) 
+                                          setRIds(tmpArr);
+                                        }
+
+                                   
+                                                                                
                                         // popItem({item});
                                         // rIds.includes(item?.IDRiga) ?  rIds.splice(0,-1) : null
                                       }}>
                                       {/* {rIds.includes(item?.IDRiga) ? ( */}
-                                      {rIds.includes(item?.IDRiga) ? (
+                                     
+                                      {/* {rIds.includes(item?.IDRiga) ? (
+                                        <Icon
+                                          name="check-square"
+                                          size={scale(20)}
+                                          color={theme.colors.primary}
+                                        />
+                                      ) : (
+                                        <Icon
+                                          name="square"
+                                          size={scale(20)}
+                                          color={theme.colors.primary}
+                                        />
+                                      )} */}
+
+                                      {item?.IsChecked==true ? (
                                         <Icon
                                           name="check-square"
                                           size={scale(20)}
@@ -366,6 +419,8 @@ const CartModel = props => {
                                           color={theme.colors.primary}
                                         />
                                       )}
+
+
                                     </TouchableOpacity>
                                   </View>
                                 );
@@ -452,7 +507,7 @@ const CartModel = props => {
         </View>
         <View style={styles.bottomView}>
           <Button
-            onPress={() => close(true) && changeShow}
+            onPress={() => close(true) && changeShow && handleAggiungi}
             title="Aggiungi al carrello"
             style={styles.button}
             titleStyle={styles.btntxt}
@@ -464,7 +519,7 @@ const CartModel = props => {
           />
         </View>
 
-        <AddCardModal isVisible={cartModel} close={closeModal} />
+        <AddCardModal isVisible={cartModel} close={closeModal}  />
       </View>
     </Modal>
   );

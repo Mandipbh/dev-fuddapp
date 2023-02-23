@@ -21,8 +21,79 @@ import {AddToCart} from '../redux/Actions/CartAction';
 const CartScreen = () => {
   const navigation = useNavigation();
   const cartData = useSelector(state => state?.CartReducer.cartData);
+  const user = useSelector(state => state.UserReducer?.userDetails);
+  
+  console.log('user details >> ',user.UserName)
+  
   const dispatch = useDispatch();
   const [pTotal, setPTotal] = useState(0);
+  
+  var itemList=[];
+  var removeIngredientsList=[];
+  var addOnsList=[];
+  var maketypeIds=[];
+  var removeIngredientIds=[];
+  var makeTypeIds=[];
+
+  var paymentrequestData={
+    "PayType":1,
+    "PaymentMethodID":"",
+    "Notes":"tesdtsf",
+    "sCardName":"",
+    "sCardNumber":"",
+    "sCardExpMonth":"",
+    "sCardExpYear":"",
+    "sCardCvc":"",
+    "sCardPostcode":"",
+    "sCustomerEmail":"",
+    "nAmount":0
+};
+
+// removeIngredientIds.map((ingredientId)=>{
+//   removeIngredientIds.push(ingredientId);
+// });
+
+// makeTypeIds.map((typeId)=>{
+//   makeTypeIds.push(typeId);
+// });
+
+
+
+
+cartData.map((item) => {
+  itemList.push({
+     "ItemCode": item.Code,
+      "Quantity": 0,
+      "MakeId": 0, 
+      "AddOnsIds":item.lstAddons.map((addOnItem)=>{
+        addOnsList.push({
+            "AddOneId":0,
+            "Quantity":0
+        });
+      }),
+      "RemoveIngredientIds":removeIngredientIds,
+      "MakeTypeIds":item.lstMakeTypes.map((typeId)=>{
+        makeTypeIds.push(typeId);
+      }) 
+    });
+});
+
+  var cartDetailJson = {
+      "UserId":user.UserId,
+      "RestaurantId":0,
+      "RiderId":0,
+      "OrderId":0,
+      "SelectedAddressId":0,
+      "Date":"",
+      "TimeSlot":"",
+      "DiscountCode":"",
+      "ItemIds":itemList,
+      "PaymentRequest":paymentrequestData
+  };
+  
+
+  console.log('cartData>>',JSON.stringify(cartData,null,4));
+
 
   const incrimentCart = (selitm, idx) => {
     const tmparr = [...cartData];
@@ -49,7 +120,6 @@ const CartScreen = () => {
     );
     setPTotal(total);
   };
-  console.log('cartData ?>> ', cartData);
   useEffect(() => {
     calculatePrice();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -177,7 +247,8 @@ const CartScreen = () => {
           style={styles.submitBtn}
           titleStyle={styles.btnTxt}
           onPress={() => {
-            navigation.navigate('Checkout');
+            // navigation.navigate('Checkout');
+            console.log("button_clicked",JSON.stringify(cartDetailJson,null,4) );
           }}
         />
       )}

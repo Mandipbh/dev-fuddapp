@@ -107,7 +107,7 @@ const RestaturantDetails = () => {
     // })
   }, [searchtxt]);
 
-  const renderMenus = ({item, index}) => {
+    const renderMenus = ({item, index}) => {
     return (
       <View key={index} style={styles.menuView}>
         <TouchableOpacity
@@ -186,7 +186,7 @@ const RestaturantDetails = () => {
     // setCartModel(true);
     setSelItem([]);
     setCartModel(!cartModel);
-    // setCartModel(!cartModel);
+        // setCartModel(!cartModel);
     // navigation.navigate('Cart');
   };
 
