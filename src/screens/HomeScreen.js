@@ -121,6 +121,10 @@ const HomeScreen = () => {
   };
   const isLoginUser = useSelector(state => state.UserReducer?.login);
   const seladdress = useSelector(state => state.UserReducer.selAddress);
+  console.log('seladdress ?? ',{
+    longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
+    latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
+  })
   const handleCloseModal = () => {
     setOrderModalVisible(!orderModalVisible);
   };

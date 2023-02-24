@@ -11,6 +11,7 @@ import {useState} from 'react';
 import AddCardModal from './AddCardModal';
 import {useEffect} from 'react';
 import {BlurView} from '@react-native-community/blur';
+import { AddToCart } from '../../redux/Actions/CartAction';
 
 const CartModel = props => {
   const {isVisible, close, data} = props;
@@ -26,6 +27,8 @@ const CartModel = props => {
   const [show, setShow] = useState(false);
   const [selIndex, setIdx] = useState(0);
   const tmpDataForCircle = wantProduct?.ImportoUnitario;
+  
+
   // const popItem = ({ item }) => {
   //   rIds.includes(item?.IDRiga) ? setCheckBox(!checkbox) : null
   // }
@@ -45,45 +48,59 @@ const CartModel = props => {
   useEffect(() => {
     setPrice(data?.Amount);
     setProductDetails(data);
-    console.log('data ?? ', data?.lstAddons);
+    // console.log('data ?? ', data?.lstAddons);
     data?.lstAddons?.length > 0 && setAddonData(data?.lstAddons);
     // data?.lstAddons?.length === 0 && setAddonData([]);
     calculatePrice();
   }, [data, productDetails.lstAddons, wantProduct, addonData]);
 
-  const handleAggiungi = (item, index) => {
-    let tmpData = [...productDetails?.lstAddons];
-    //lstAddons
-    // tmpData[index].Qty = 1;
-    tmpData.Qty = tmpData.Qty + 1;
-    setCount(tmpData.includes);
-  };
-  const handleCartAddItem = async item => {
-    const tmpArr = cartData === undefined ? [] : [...cartData];
-    // tmpArr.push(item);
 
-    dispatch(AddToCart(tmpArr));
-    if (
-      item?.lstIngredients?.length === 0 &&
-      item?.lstAddons?.length === 0 &&
-      item?.lstAddons.length === 0
-    ) {
-      var matchingObj = await cartData.find(o => o.Name === item.Name);
+  const handleAggiungi =async ()=> {
+    const add1  =   addonData.filter(x=>x.Qty > 0)
+    const add2 =  productDetails.lstIngredients.filter(x=>x.IsChecked===true)
+    const add3 = wantProduct
 
-      if (matchingObj) {
-        matchingObj.Qty++;
-      } else {
-        let itemQtyhandle = {...item};
-        itemQtyhandle.Qty = 1;
-        itemQtyhandle.Image = details?.Menu?.ProductsImagePrefix + item?.Image;
-        tmpArr.push(itemQtyhandle);
-      }
-      setSelItem(item);
-    } else {
-      setSelItem(item);
-      setCartModel(true);
-    }
+    // console.log(' addonData.filter(x=>x.Qty > 0).map(selectedItem=>{ z ? ',add1)
+  //  await  addonData.filter(x=>x.Qty > 0).map(selectedItem=>{
+  //     const new_addOns = { ...productDetails, "lstAddons": selectedItem , "lstMakeTypes": wantProduct} 
+  //     console.log('new_lstAddons >> ',new_addOns)
+  //     setProductDetails(new_addOns)
+  //   })
+    const ProductData = { ...productDetails, "lstAddons": add1 ,lstIngredients:add2, "lstMakeTypes": wantProduct} 
+    console.log('product details >>  ',ProductData)
+  //   setProductDetails(productDetails);
+
+    close(ProductData)
+  //    console.log('tmpData',productDetails)
+
   };
+
+  // const handleCartAddItem = async item => {
+  //   const tmpArr = cartData === undefined ? [] : [...cartData];
+  //   // tmpArr.push(item);
+
+  //   dispatch(AddToCart(tmpArr));
+  //   if (
+  //     item?.lstIngredients?.length === 0 &&
+  //     item?.lstAddons?.length === 0 &&
+  //     item?.lstAddons.length === 0
+  //   ) {
+  //     var matchingObj = await cartData.find(o => o.Name === item.Name);
+
+  //     if (matchingObj) {
+  //       matchingObj.Qty++;
+  //     } else {
+  //       let itemQtyhandle = {...item};
+  //       itemQtyhandle.Qty = 1;
+  //       itemQtyhandle.Image = details?.Menu?.ProductsImagePrefix + item?.Image;
+  //       tmpArr.push(itemQtyhandle);
+  //     }
+  //     setSelItem(item);
+  //   } else {
+  //     setSelItem(item);
+  //     setCartModel(true);
+  //   }
+  // };
 
   const handleIncriment = (item, idx) => {
     let tmpArr = [...addonData];
@@ -155,6 +172,7 @@ const CartModel = props => {
     };
 
     setProductDetails(tmpdata);
+    
   };
   return (
     <Modal
@@ -354,7 +372,7 @@ const CartModel = props => {
                                     </View>
                                     <TouchableOpacity
                                       onPress={() => {
-                                        handleIngredienti(item, index);
+                                         handleIngredienti(item, index);
                                       }}>
                                       {item?.IsChecked ? (
                                         <Icon
@@ -381,7 +399,6 @@ const CartModel = props => {
                   )}
                 </>
               )}
-
               {productDetails?.lstMakeTypes?.length > 0 && (
                 <>
                   <TouchableOpacity
@@ -455,7 +472,10 @@ const CartModel = props => {
         </View>
         <View style={styles.bottomView}>
           <Button
-            onPress={() => close(true) && changeShow && handleAggiungi}
+            onPress={() => 
+              
+              handleAggiungi()
+            }
             title="Aggiungi al carrello"
             style={styles.button}
             titleStyle={styles.btntxt}

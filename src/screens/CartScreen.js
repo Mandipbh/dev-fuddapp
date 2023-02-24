@@ -13,87 +13,91 @@ import Icon from 'react-native-vector-icons/Feather';
 import LottieView from 'lottie-react-native';
 import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Emptycart, scale, theme} from '../utils';
-import {Button, Label, Title} from '../components';
+import {Button, Label, Title,Error} from '../components';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {AddToCart} from '../redux/Actions/CartAction';
+import ApiService, {API} from '../utils/ApiService';
+import Toast from 'react-native-simple-toast';
+import moment from 'moment';
 
 const CartScreen = () => {
   const navigation = useNavigation();
   const cartData = useSelector(state => state?.CartReducer.cartData);
   const user = useSelector(state => state.UserReducer?.userDetails);
-  
-  console.log('user details >> ',user.UserName)
-  
+  const selectedCat = useSelector( state => state?.RestaurantReducers?.selCategory);
+  const seladdress = useSelector(state => state.UserReducer.selAddress);
+  const [delMsg,setDelMsg]=useState('')
   const dispatch = useDispatch();
   const [pTotal, setPTotal] = useState(0);
+  const [load, setLoad] = useState(false);
+  const [date, setDate] = useState(new Date());
+
+  console.log('Selecte Address >> ',seladdress);
+
+//   var itemList=[];
   
-  var itemList=[];
-  var removeIngredientsList=[];
-  var addOnsList=[];
-  var maketypeIds=[];
-  var removeIngredientIds=[];
-  var makeTypeIds=[];
+//   var paymentrequestData={
+//     "PayType":1,
+//     "PaymentMethodID":"",
+//     "Notes":"tesdtsf",
+//     "sCardName":"",
+//     "sCardNumber":"",
+//     "sCardExpMonth":"",
+//     "sCardExpYear":"",
+//     "sCardCvc":"",
+//     "sCardPostcode":"",
+//     "sCustomerEmail":"",
+//     "nAmount":0
+// };
 
-  var paymentrequestData={
-    "PayType":1,
-    "PaymentMethodID":"",
-    "Notes":"tesdtsf",
-    "sCardName":"",
-    "sCardNumber":"",
-    "sCardExpMonth":"",
-    "sCardExpYear":"",
-    "sCardCvc":"",
-    "sCardPostcode":"",
-    "sCustomerEmail":"",
-    "nAmount":0
-};
+// console.log('cartData>>',JSON.stringify(cartData,null,4));
 
-// removeIngredientIds.map((ingredientId)=>{
-//   removeIngredientIds.push(ingredientId);
+// cartData.map((item) => {
+  
+//   var ingredientsList=[];
+//   var addOnsList=[];
+//   var makeTypeIds=[];
+      
+//       item.lstIngredients.map((ingredients) =>{
+//           ingredientsList.push(ingredients.IDRiga);
+//         });
+
+//       item.lstAddons.map((addOnItem)=>{   
+//         addOnsList.push({
+//               "AddOneId":addOnItem.IDRiga,
+//               "Quantity":addOnItem.Qty
+//           });
+//       });
+
+//       item.lstMakeTypes.Id == null ? makeTypeIds.push():makeTypeIds.push(item.lstMakeTypes.Id);;
+      
+//       itemList.push({
+//         "ItemCode": item.Code,
+//           "Quantity": 0,
+//           "MakeId": 0, 
+//           "AddOnsIds":addOnsList,
+//           "RemoveIngredientIds":ingredientsList,
+//           "MakeTypeIds": makeTypeIds //makeTypeIds.push([item.lstMakeTypes.Id]) 
+//       });
+
 // });
 
-// makeTypeIds.map((typeId)=>{
-//   makeTypeIds.push(typeId);
-// });
-
-
-
-
-cartData.map((item) => {
-  itemList.push({
-     "ItemCode": item.Code,
-      "Quantity": 0,
-      "MakeId": 0, 
-      "AddOnsIds":item.lstAddons.map((addOnItem)=>{
-        addOnsList.push({
-            "AddOneId":0,
-            "Quantity":0
-        });
-      }),
-      "RemoveIngredientIds":removeIngredientIds,
-      "MakeTypeIds":item.lstMakeTypes.map((typeId)=>{
-        makeTypeIds.push(typeId);
-      }) 
-    });
-});
-
-  var cartDetailJson = {
-      "UserId":user.UserId,
-      "RestaurantId":0,
-      "RiderId":0,
-      "OrderId":0,
-      "SelectedAddressId":0,
-      "Date":"",
-      "TimeSlot":"",
-      "DiscountCode":"",
-      "ItemIds":itemList,
-      "PaymentRequest":paymentrequestData
-  };
+//   var cartDetailJson = {
+//       "UserId":user.UserId,
+//       "RestaurantId":0,
+//       "RiderId":0,
+//       "OrderId":0,
+//       "SelectedAddressId":0,
+//       "Date":"",
+//       "TimeSlot":"",
+//       "DiscountCode":"",
+//       "ItemIds":itemList,
+//       "PaymentRequest":paymentrequestData
+//   };
   
-
-  console.log('cartData>>',JSON.stringify(cartData,null,4));
-
+//   console.log('cartDetailJson >>',JSON.stringify(cartDetailJson,null,4));
+  
 
   const incrimentCart = (selitm, idx) => {
     const tmparr = [...cartData];
@@ -124,6 +128,62 @@ cartData.map((item) => {
     calculatePrice();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cartData]);
+
+  console.log('cartData[0].restaurantId >> ',cartData[0].restaurantId);
+
+  const data=
+  
+      // {
+      //     "Latitute": seladdress?.Lat === undefined ? '' : seladdress?.Lat,
+      //     "Longitude": seladdress?.Lon === undefined ? '' : seladdress?.Lon,
+      //     "id":cartData[0].restaurantId,
+      //     "Date":moment(date).format('DD-MM-YYYY'),
+      //     "TimeSlot": `${moment(new Date()).format('HH:mm')}-${moment(new Date()).add(30, 'minute').format('HH:mm')}`,
+      //     "Category": selectedCat== null ?'':selectedCat
+      // };
+
+      {
+        "Latitute": "11.1569145",
+        "Longitude": "13.3312435",
+        "id": 3,
+        "Date": "24-02-2023",
+        "TimeSlot": "15:28-15:58",
+        "Category": ""
+      };
+
+
+  const handleRestaurantAvailability= () =>{
+    try {
+      setLoad(true);
+
+      console.log('payLoad >> ',data);
+
+      const options = {payloads: data};
+      ApiService.post(API.checkestaurantAvailability, options)
+        .then(res => {
+          if (res.Status === 'Success') {
+            console.log('res of RestaurantAvailability >> ', res);
+            setLoad(false);
+            setDelMsg('')
+            navigation.navigate('Checkout');
+          }
+        })
+        .catch(e => {
+          setLoad(false);
+          setDelMsg(`La consegna non è disponibile dal ristorante all'indirizzo selezionato.`)
+          console.log('error in RestaurantAvailability> ', e?.response.data?.Errors[0]);
+          //Alert.alert(e.response?.data?.Errors[0]);
+        });
+    } catch (e) {
+      console.log('e in RestaurantAvailability ', e);
+      setLoad(false);
+    }
+  }
+
+
+  
+  
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerView}>
@@ -137,8 +197,10 @@ cartData.map((item) => {
         />
         <Title title="Carrello" style={styles.title} />
       </View>
-      <ScrollView style={styles.mainContainer}>
-        <ScrollView style={styles.productView} nestedScrollEnabled={true}>
+      <ScrollView>
+<View style={styles.productView}>
+
+   <ScrollView  showsVerticalScrollIndicator={false}  nestedScrollEnabled={true}>
           {cartData?.length > 0 ? (
             cartData.map((i, index) => {
               return (
@@ -209,6 +271,8 @@ cartData.map((item) => {
             </>
           )}
         </ScrollView>
+</View>
+       
         {cartData?.length > 0 && (
           <View style={styles.PriceView}>
             <View style={styles.priceingView}>
@@ -240,18 +304,20 @@ cartData.map((item) => {
             </View>
           </View>
         )}
-      </ScrollView>
+    {
+      delMsg!== ''&&<Error error={delMsg} />
+    }
       {cartData?.length > 0 && (
         <Button
           title="Procedi al CheckOut"
           style={styles.submitBtn}
           titleStyle={styles.btnTxt}
           onPress={() => {
-            // navigation.navigate('Checkout');
-            console.log("button_clicked",JSON.stringify(cartDetailJson,null,4) );
+            handleRestaurantAvailability();  
           }}
         />
       )}
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -265,6 +331,7 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     paddingHorizontal: scale(12),
+  
   },
   submitBtn: {
     // backgroundColor: theme.colors.red,
@@ -288,8 +355,10 @@ const styles = StyleSheet.create({
     margin: scale(20),
   },
   PriceView: {
+    paddingHorizontal:scale(15),
     marginHorizontal: scale(5),
     marginTop: scale(10),
+    height:theme.SCREENHEIGHT*0.18
   },
   productView: {
     padding: scale(15),
@@ -302,7 +371,8 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.22,
     shadowRadius: scale(9),
-    marginVertical: scale(20),
+    margin: scale(15),
+   height:theme.SCREENHEIGHT*0.45,
   },
   row: {flexDirection: 'row', alignItems: 'center'},
   items: {

@@ -68,7 +68,6 @@ const RestaturantDetails = () => {
 
   function getNameData(d, searchKey) {
     let returnData = [];
-
     const recursion = rcData => {
       if (rcData?.Name && rcData?.Code) {
         if (rcData.Name.includes(searchKey)) {
@@ -85,6 +84,7 @@ const RestaturantDetails = () => {
     recursion(d);
     return returnData;
   }
+  
   useEffect(() => {
     let data = getNameData(details, searchtxt);
     setFilterData(data);
@@ -182,12 +182,31 @@ const RestaturantDetails = () => {
       </View>
     );
   };
-  const handleModel = data => {
-    // setCartModel(true);
-    setSelItem([]);
-    setCartModel(!cartModel);
-        // setCartModel(!cartModel);
-    // navigation.navigate('Cart');
+  const handleModel =async item => {
+    setCartModel(false);
+    setTimeout(async() => {
+      if(item!==undefined){
+         
+        const tmpArr = cartData === undefined ? [] : [...cartData];
+        // tmpArr.push(item);
+    
+        dispatch(AddToCart(tmpArr));
+       
+          var matchingObj = await cartData.find(o => o.Name === item.Name);
+    
+          if (matchingObj) {
+            matchingObj.Qty++;
+          } else {
+            let itemQtyhandle = {...item};
+            itemQtyhandle.Qty = 1;
+            itemQtyhandle.restaurantId=3
+            itemQtyhandle.Image = details?.Menu?.ProductsImagePrefix + item?.Image;
+            tmpArr.push(itemQtyhandle);
+          }
+          setSelItem(item);
+        } 
+    }, 1500);
+   
   };
 
   const cartData = useSelector(state => state?.CartReducer.cartData);

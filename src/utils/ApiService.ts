@@ -70,8 +70,11 @@ export const API = {
   recoveryPassword:'Users/RecoveryPassword?email=',
   varifyUser:'Users/VerifyUser',
   coupenCode:'Order/ApplyCoupenCode',
-  getAllOrders: 'Users/GetUserOrder?userId=18340' 
+  getAllOrders: 'Users/GetUserOrder?userId=18340',
+  placeOrder:'Order/PlaceOrder',
+  checkestaurantAvailability:'Restaurant/CheckRestaurantSlotAvailability'
 };
+
 
 export default {
   get: (path: string, options: any) => execute(path, 'GET', options),
