@@ -23,9 +23,7 @@ import moment from 'moment';
 import {getpopularRestaurants} from '../redux/Actions/RestaurantAction';
 import ApiService, {API} from '../utils/ApiService';
 
-
 const RestaurantScreen = () => {
-  
   const navigation = useNavigation();
   const isFocuse = useIsFocused();
   const [selectedModal, setSelectedModal] = useState(false);
@@ -43,7 +41,7 @@ const RestaurantScreen = () => {
   const seladdress = useSelector(state => state.UserReducer.selAddress);
   const [load, setLoad] = useState(false);
   const cartData = useSelector(state => state?.CartReducer.cartData);
-  
+
   const selectedCat = useSelector(
     state => state?.RestaurantReducers?.selCategory,
   );
@@ -54,24 +52,23 @@ const RestaurantScreen = () => {
     if (selectedCat !== null) {
       setSelCategory(selectedCat?.Nome);
     }
-    const data =
-      {
-        id: 0,
-        date: '01-12-2022',
-        timeSlot: '16:00TO16:30',
-        category: '',
-        latitute: '',
-        longitude: '',
-      };
-      // {
-      //   date: moment(date).format('DD-MM-YYYY'),
-      //   timeSlot: `${moment(new Date()).format('HH:mm')}-${moment(new Date())
-      //     .add(30, 'minute')
-      //     .format('HH:mm')}`, //'16:00TO16:30',
-      //   category: selCategory,
-      //   latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
-      //   longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
-      // };
+    const data = {
+      id: 0,
+      date: '01-12-2022',
+      timeSlot: '16:00TO16:30',
+      category: '',
+      latitute: '',
+      longitude: '',
+    };
+    // {
+    //   date: moment(date).format('DD-MM-YYYY'),
+    //   timeSlot: `${moment(new Date()).format('HH:mm')}-${moment(new Date())
+    //     .add(30, 'minute')
+    //     .format('HH:mm')}`, //'16:00TO16:30',
+    //   category: selCategory,
+    //   latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
+    //   longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
+    // };
     dispatch(getpopularRestaurants(data));
     dispatch(getAllCategory());
     setTimeSlot(
@@ -117,9 +114,6 @@ const RestaurantScreen = () => {
       />
     );
   };
-
-
- 
 
   const handleSearch = text => {
     if (text) {

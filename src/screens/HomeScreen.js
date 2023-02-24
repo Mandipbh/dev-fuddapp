@@ -32,7 +32,7 @@ import {
   getAllRestaurants,
   getpopularRestaurants,
 } from '../redux/Actions/HomeAction';
-import {useIsFocused} from '@react-navigation/core';
+import {useIsFocused, useNavigation} from '@react-navigation/core';
 import SetLocationModel from '../components/appModel/SetLocationModel';
 import moment from 'moment';
 import {setCategory} from '../redux/Actions/RestaurantAction';
@@ -55,13 +55,19 @@ const Category = ({categoryListData}) => {
   );
 };
 
-const PopularRestaturants = ({ExternalRestaurantData}) => {
+const PopularRestaturants = ({ExternalRestaurantData, navigation}) => {
   return (
     <View style={styles.categoryContainer}>
       <View style={styles.popularView}>
         <Title title="Popular Restaurants" style={styles.title} />
         <TouchableOpacity>
-          <Label title="SEE ALL" style={styles.seeAll} />
+          <Label
+            title="SEE ALL"
+            style={styles.seeAll}
+            onPress={() => {
+              navigation.navigate('AUITO');
+            }}
+          />
         </TouchableOpacity>
       </View>
 
@@ -115,6 +121,7 @@ const HomeScreen = () => {
   const [paymentModel, setPayModel] = useState(false);
   const [orderModalVisible, setOrderModalVisible] = useState(false);
   const isFocuse = useIsFocused();
+  const navigation = useNavigation();
   const dispatch = useDispatch();
   const IconClosePicker = () => {
     setSelectedModal(false);
@@ -151,12 +158,15 @@ const HomeScreen = () => {
   const popularRes = useSelector(
     state => state.HomeReducers?.GetAllExternalRestaurant,
   );
+
   useEffect(() => {
     setPopularRestaturants(popularRes?.Restaurants);
   }, [popularRes]);
+
   useEffect(() => {
     setCategoryData(categoryData?.Categories);
   }, [categoryData]);
+
   useEffect(() => {
     setExternalRestaurant(ExternalRestaurant?.Restaurants);
   }, [ExternalRestaurant]);
@@ -192,7 +202,10 @@ const HomeScreen = () => {
   };
   return (
     <SafeAreaView style={styles.container}>
-      <Header onPressMenu={() => setSelectedModal(true)} />
+      <Header
+        onPressMenu={() => setSelectedModal(true)}
+        onPressUser={() => navigation.navigate('ACCOUNT')}
+      />
       <DrawerModal
         isVisible={selectedModal}
         close={IconClosePicker}
@@ -246,7 +259,10 @@ const HomeScreen = () => {
           {categoryView && Food()}
 
           {!categoryView && <Category categoryListData={categoryListData} />}
-          <PopularRestaturants ExternalRestaurantData={popularRestaurants} />
+          <PopularRestaturants
+            ExternalRestaurantData={popularRestaurants}
+            navigation={navigation}
+          />
           {!categoryView && <Restaturants restaurant={restaurant} />}
         </ScrollView>
       </View>
@@ -281,7 +297,7 @@ const styles = StyleSheet.create({
   textinputContainer: {
     height: scale(40),
     backgroundColor: theme.colors.white,
-    borderWidth: scale(0.5),
+    borderWidth: Platform.OS === 'ios' ? scale(0.5) : scale(1),
     borderRadius: scale(20),
 
     flexDirection: 'row',

@@ -14,20 +14,27 @@ const CategoryCard = props => {
   const dispatch = useDispatch();
 
   return (
-    <View style={styles.itemView} key={index}>
-      <TouchableOpacity
-        style={[styles.categoryView, styles.shadow]}
-        onPress={async () => {
-          await dispatch(setCategory(item));
-          navigation.navigate('RISTORANTI');
-        }}>
-        <FastImage
-          source={{uri: APP_BASE_URL + item?.ImgFullPath}}
-          style={styles.categoryIcon}
+    <>
+      <View style={styles.itemView}>
+        <TouchableOpacity
+          style={[styles.categoryView, styles.shadow]}
+          onPress={async () => {
+            await dispatch(setCategory(item));
+            navigation.navigate('RISTORANTI');
+          }}>
+          <FastImage
+            source={{uri: APP_BASE_URL + item?.ImgFullPath}}
+            style={styles.categoryIcon}
+            resizeMode={FastImage.resizeMode.contain}
+          />
+        </TouchableOpacity>
+        <Label
+          title={item?.Nome}
+          style={styles.categoryLabel}
+          numberOfLines={2}
         />
-      </TouchableOpacity>
-      <Label title={item?.Nome} style={styles.categoryLabel} />
-    </View>
+      </View>
+    </>
   );
 };
 
@@ -35,8 +42,9 @@ export default CategoryCard;
 
 const styles = StyleSheet.create({
   itemView: {
-    marginHorizontal: scale(5),
+    marginHorizontal: scale(6),
     alignItems: 'center',
+    maxWidth: scale(60),
   },
   categoryView: {
     backgroundColor: theme.colors.white,
@@ -45,16 +53,18 @@ const styles = StyleSheet.create({
     borderRadius: scale(15),
     alignItems: 'center',
     justifyContent: 'center',
-    overflow: 'hidden',
+    // overflow: 'hidden',
   },
   categoryIcon: {
-    height: scale(55),
-    width: scale(55),
-    resizeMode: 'cover',
+    height: scale(40),
+    width: scale(40),
+    resizeMode: 'contain',
   },
   categoryLabel: {
-    fontSize: scale(12),
+    fontSize: scale(11),
     marginTop: scale(4),
+    // maxWidth: '50%',
+    // textAlign: 'center',
   },
   shadow: {
     shadowColor: theme.colors.black,

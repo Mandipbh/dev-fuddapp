@@ -1,4 +1,5 @@
 import {
+  Alert,
   FlatList,
   Image,
   KeyboardAvoidingView,
@@ -48,7 +49,6 @@ const CheckoutScreen = () => {
   const selAddress = useSelector(state => state.UserReducer.selAddress);
   const [load, setLoad] = useState(false);
 
-  
   const handleTimer = time => {
     setTimeModel(!timeModel);
     if (time !== null) {
@@ -83,81 +83,79 @@ const CheckoutScreen = () => {
       console.log('error of try ', error);
     }
   };
-  
-  
+
   const handlePaymentMethod = data => {
     setPayment(false);
   };
 
+  var itemList = [];
 
-  var itemList=[];
-  
-  var paymentrequestData={
-    "PayType":1,
-    "PaymentMethodID":"",
-    "Notes":"tesdtsf",
-    "sCardName":"",
-    "sCardNumber":"",
-    "sCardExpMonth":"",
-    "sCardExpYear":"",
-    "sCardCvc":"",
-    "sCardPostcode":"",
-    "sCustomerEmail":"",
-    "nAmount":0
-};
+  var paymentrequestData = {
+    PayType: 1,
+    PaymentMethodID: '',
+    Notes: 'tesdtsf',
+    sCardName: '',
+    sCardNumber: '',
+    sCardExpMonth: '',
+    sCardExpYear: '',
+    sCardCvc: '',
+    sCardPostcode: '',
+    sCustomerEmail: '',
+    nAmount: 0,
+  };
 
-console.log('cartData>>',JSON.stringify(cartData,null,4));
+  // console.log('cartData>>', JSON.stringify(cartData, null, 4));
 
-cartData.map((item) => {
-  
-  var ingredientsList=[];
-  var addOnsList=[];
-  var makeTypeIds=[];
-      
-      item.lstIngredients.map((ingredients) =>{
-          ingredientsList.push(ingredients.IDRiga);
-        });
+  // cartData.map(item => {
+  //   var ingredientsList = [];
+  //   var addOnsList = [];
+  //   var makeTypeIds = [];
 
-      item.lstAddons.map((addOnItem)=>{   
-        addOnsList.push({
-              "AddOneId":addOnItem.IDRiga,
-              "Quantity":addOnItem.Qty
-          });
-      });
+  //   item.lstIngredients.map(ingredients => {
+  //     ingredientsList.push(ingredients.IDRiga);
+  //   });
 
-      item.lstMakeTypes.Id == null ? makeTypeIds.push():makeTypeIds.push(item.lstMakeTypes.Id);;
-      
-      itemList.push({
-        "ItemCode": item.Code,
-          "Quantity": 0,
-          "MakeId": 0, 
-          "AddOnsIds":addOnsList,
-          "RemoveIngredientIds":ingredientsList,
-          "MakeTypeIds": makeTypeIds //makeTypeIds.push([item.lstMakeTypes.Id]) 
-      });
-});
+  //   item.lstAddons.map(addOnItem => {
+  //     addOnsList.push({
+  //       AddOneId: addOnItem.IDRiga,
+  //       Quantity: addOnItem.Qty,
+  //     });
+  //   });
+
+  //   item.lstMakeTypes.Id == null
+  //     ? makeTypeIds.push()
+  //     : makeTypeIds.push(item.lstMakeTypes.Id);
+
+  //   itemList.push({
+  //     ItemCode: item.Code,
+  //     Quantity: 0,
+  //     MakeId: 0,
+  //     AddOnsIds: addOnsList,
+  //     RemoveIngredientIds: ingredientsList,
+  //     MakeTypeIds: makeTypeIds, //makeTypeIds.push([item.lstMakeTypes.Id])
+  //   });
+  // });
 
   var cartDetailJson = {
-      "UserId":user.UserId,
-      "RestaurantId":0,
-      "RiderId":0,
-      "OrderId":0,
-      "SelectedAddressId":0,
-      "Date":"",
-      "TimeSlot":"",
-      "DiscountCode":"",
-      "ItemIds":itemList,
-      "PaymentRequest":paymentrequestData
+    UserId: user.UserId,
+    RestaurantId: 0,
+    RiderId: 0,
+    OrderId: 0,
+    SelectedAddressId: 0,
+    Date: '',
+    TimeSlot: '',
+    DiscountCode: '',
+    ItemIds: itemList,
+    PaymentRequest: paymentrequestData,
   };
-  
-  console.log('cartDetailJson >>',JSON.stringify(cartDetailJson,null,4));
-  
+
+  console.log('cartDetailJson >>', JSON.stringify(cartDetailJson, null, 4));
 
   const handlePlaceOrder = () => {
     try {
       setLoad(true);
       const options = {payloads: cartDetailJson};
-      console.log("button_clicked",JSON.stringify(cartDetailJson,null,4) );
+      console.log('button_clicked', JSON.stringify(cartDetailJson, null, 4));
       ApiService.post(API.placeOrder, options)
         .then(res => {
           if (res.Status === 'Success') {
@@ -174,9 +172,7 @@ cartData.map((item) => {
       console.log('e in placeOrder ', e);
       setLoad(false);
     }
-  
-};
-
+  };
 
   return (
     <SafeAreaView style={styles.container}>

@@ -7,6 +7,7 @@ import {orderData} from '../utils/MockData';
 import ApiService, {API} from '../utils/ApiService';
 import {ALLORDERS} from '../redux/Actions/ActionsTypes';
 import {useDispatch, useSelector} from 'react-redux';
+import {getAllOrders} from '../redux/Actions/OrderAction';
 
 // export const getAllOrders = () => {
 //   return async dispatch => {
@@ -22,26 +23,6 @@ import {useDispatch, useSelector} from 'react-redux';
 //     }
 //   };
 // };
-
-export const getAllOrders = () => {
-  return async dispatch => {
-    try {
-      ApiService.get(API.getAllOrders)
-        .then(res => {
-          if (res) {
-            dispatch({type: ALLORDERS, payload: res});
-          }
-          // console.log('this is res', JSON.stringify(res, null, 4));
-        })
-        .catch(c => {
-          console.log('catch of category >> ', c);
-        });
-    } catch (error) {
-      console.log('error in category', error);
-    }
-  };
-};
-
 
 const MyOrders = () => {
   const [selIndex, setIindex] = useState(0);

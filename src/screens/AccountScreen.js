@@ -89,7 +89,7 @@ const AccountScreen = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.Subcontainer}>
         <View style={styles.headerView}>
-          {isLoginUser && (
+          {isLoginUser && selectedMenu !== null && (
             <Icon
               name="left"
               color={theme.colors.black}
@@ -99,7 +99,18 @@ const AccountScreen = () => {
               }}
             />
           )}
-          <Title title="Account" style={styles.title} />
+          <Title
+            title="Account"
+            style={[
+              styles.title,
+              {
+                marginLeft:
+                  selectedMenu === null
+                    ? theme.SCREENWIDTH * 0.33
+                    : theme.SCREENWIDTH * 0.25,
+              },
+            ]}
+          />
         </View>
         {selectedMenu == null && (
           <View style={{alignItems: 'center'}}>

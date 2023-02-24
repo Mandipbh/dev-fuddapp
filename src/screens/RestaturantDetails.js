@@ -84,7 +84,7 @@ const RestaturantDetails = () => {
     recursion(d);
     return returnData;
   }
-  
+
   useEffect(() => {
     let data = getNameData(details, searchtxt);
     setFilterData(data);
@@ -107,7 +107,7 @@ const RestaturantDetails = () => {
     // })
   }, [searchtxt]);
 
-    const renderMenus = ({item, index}) => {
+  const renderMenus = ({item, index}) => {
     return (
       <View key={index} style={styles.menuView}>
         <TouchableOpacity
@@ -182,31 +182,30 @@ const RestaturantDetails = () => {
       </View>
     );
   };
-  const handleModel =async item => {
+  const handleModel = async item => {
     setCartModel(false);
-    setTimeout(async() => {
-      if(item!==undefined){
-         
+    setTimeout(async () => {
+      if (item !== undefined) {
         const tmpArr = cartData === undefined ? [] : [...cartData];
         // tmpArr.push(item);
-    
+
         dispatch(AddToCart(tmpArr));
-       
-          var matchingObj = await cartData.find(o => o.Name === item.Name);
-    
-          if (matchingObj) {
-            matchingObj.Qty++;
-          } else {
-            let itemQtyhandle = {...item};
-            itemQtyhandle.Qty = 1;
-            itemQtyhandle.restaurantId=3
-            itemQtyhandle.Image = details?.Menu?.ProductsImagePrefix + item?.Image;
-            tmpArr.push(itemQtyhandle);
-          }
-          setSelItem(item);
-        } 
+
+        var matchingObj = await cartData.find(o => o.Name === item.Name);
+
+        if (matchingObj) {
+          matchingObj.Qty++;
+        } else {
+          let itemQtyhandle = {...item};
+          itemQtyhandle.Qty = 1;
+          itemQtyhandle.restaurantId = 3;
+          itemQtyhandle.Image =
+            details?.Menu?.ProductsImagePrefix + item?.Image;
+          tmpArr.push(itemQtyhandle);
+        }
+        setSelItem(item);
+      }
     }, 1500);
-   
   };
 
   const cartData = useSelector(state => state?.CartReducer.cartData);
@@ -304,10 +303,15 @@ const RestaturantDetails = () => {
             />
             <Text style={styles.review}>{'100%'}</Text>
           </LinearGradient>
-          <View style={styles.timeCon}>
-            <Icon name="clock" size={scale(15)} color={theme.colors.gray} />
-            <Label title="45 Min." style={styles.titmeLbl} />
-          </View>
+          {restaurantData?.MinimumOrder && (
+            <View style={styles.timeCon}>
+              <Icon name="clock" size={scale(15)} color={theme.colors.gray} />
+              <Label
+                title={`${restaurantData?.MinimumOrder}Min.`}
+                style={styles.titmeLbl}
+              />
+            </View>
+          )}
         </View>
       </ImageBackground>
       <View style={styles.options}>
@@ -394,21 +398,21 @@ const RestaturantDetails = () => {
           </>
         )}
       </View>
-      {selectedItem === 1 && searchtxt !== '' && (
+      {selectedItem === 1 && (
         <View style={styles.infoContainer}>
           <View style={styles.textView}>
             <Text style={styles.title}>{restaurantData?.Name}</Text>
             <Text style={styles.addres}>{restaurantData?.Addresses[0]}</Text>
           </View>
           <Text style={styles.titleText}>Orari di apertura</Text>
-          {selectedItem === 1 && (
-            <FlatList
-              data={restaurantData?.OpeningTimes}
-              renderItem={renderInfo}
-            />
-          )}
+
+          <FlatList
+            data={restaurantData?.OpeningTimes}
+            renderItem={renderInfo}
+          />
         </View>
       )}
+
       <FullScreenImage
         isVisible={viewImg}
         close={() => {
@@ -416,7 +420,6 @@ const RestaturantDetails = () => {
         }}
         image={imgPath}
       />
-      {console.log('load >>> ', load)}
       {load && <Loader loading={load} />}
       <CartModel data={selItem} isVisible={cartModel} close={handleModel} />
     </View>
