@@ -264,6 +264,7 @@ const styles = StyleSheet.create({
     color: theme.colors.purpal,
     fontWeight: '700',
     opacity: 0.3,
+    fontFamily: theme.fonts.josefinSans,
   },
   text1: {
     fontSize: scale(44),

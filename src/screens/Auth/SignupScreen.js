@@ -121,6 +121,7 @@ const SignupScreen = () => {
           style={{
             fontWeight: '700',
             color: theme.colors.purpal,
+            fontFamily: theme.fonts.josefinSans,
           }}>
           Login
         </Text>

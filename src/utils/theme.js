@@ -3,7 +3,7 @@ const {width, height} = Dimensions.get('window');
 
 const theme = {
   fonts: {
-    josefinSans: 'JosefinSans',
+    josefinSans: 'JosefinSans-VariableFont_wght',
   },
   colors: {
     backgroundColor: '#f7f8fa',

@@ -554,6 +554,7 @@ const styles = StyleSheet.create({
     marginHorizontal: scale(5),
     color: theme.colors.white,
     fontWeight: '800',
+    fontFamily: theme.fonts.josefinSans,
   },
   timeCon: {
     flexDirection: 'row',
@@ -640,6 +641,7 @@ const styles = StyleSheet.create({
     color: theme.colors.gray,
     fontSize: scale(16),
     fontWeight: '800',
+    fontFamily: theme.fonts.josefinSans,
   },
   row: {
     flexDirection: 'row',
@@ -658,12 +660,18 @@ const styles = StyleSheet.create({
     marginHorizontal: scale(10),
     borderRadius: 15,
   },
-  infoText: {color: theme.colors.gray, fontWeight: '700'},
+  infoText: {
+    color: theme.colors.gray,
+    fontWeight: '700',
+    fontFamily: theme.fonts.josefinSans,
+  },
   textView: {
     marginHorizontal: scale(20),
     borderBottomWidth: 1,
     borderColor: theme.colors.gray1,
     paddingBottom: scale(10),
+    fontFamily: theme.fonts.josefinSans,
+    fontWeight: '400',
   },
   titleText: {
     color: theme.colors.gray,

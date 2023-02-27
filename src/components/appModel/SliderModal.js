@@ -109,6 +109,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     alignSelf: 'center',
     color: theme.colors.white,
+    fontFamily: theme.fonts.josefinSans,
   },
   textContainer: {
     marginHorizontal: scale(18),

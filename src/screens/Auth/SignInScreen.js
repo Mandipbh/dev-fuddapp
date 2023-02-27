@@ -181,5 +181,6 @@ const styles = StyleSheet.create({
     color: theme.colors.purpal,
     fontWeight: '700',
     padding: 10,
+    fontFamily: theme.fonts.josefinSans,
   },
 });

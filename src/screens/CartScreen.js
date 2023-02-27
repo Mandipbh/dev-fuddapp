@@ -132,22 +132,22 @@ const CartScreen = () => {
   // console.log('cartData[0].restaurantId >> ', cartData[0].restaurantId);
 
   const data =
-    // {
-    //     "Latitute": seladdress?.Lat === undefined ? '' : seladdress?.Lat,
-    //     "Longitude": seladdress?.Lon === undefined ? '' : seladdress?.Lon,
-    //     "id":cartData[0].restaurantId,
-    //     "Date":moment(date).format('DD-MM-YYYY'),
-    //     "TimeSlot": `${moment(new Date()).format('HH:mm')}-${moment(new Date()).add(30, 'minute').format('HH:mm')}`,
-    //     "Category": selectedCat== null ?'':selectedCat
-    // };
     {
-      Latitute: '11.1569145',
-      Longitude: '13.3312435',
-      id: 3,
-      Date: '24-02-2023',
-      TimeSlot: '15:28-15:58',
-      Category: '',
+        "Latitute": seladdress?.Lat === undefined ? '' : seladdress?.Lat,
+        "Longitude": seladdress?.Lon === undefined ? '' : seladdress?.Lon,
+        "id":cartData[0].restaurantId,
+        "Date":moment(date).format('DD-MM-YYYY'),
+        "TimeSlot": `${moment(new Date()).format('HH:mm')}-${moment(new Date()).add(30, 'minute').format('HH:mm')}`,
+        "Category": selectedCat== null ?'':selectedCat
     };
+    // {
+    //   Latitute: '11.1569145',
+    //   Longitude: '13.3312435',
+    //   id: 3,
+    //   Date: '24-02-2023',
+    //   TimeSlot: '15:28-15:58',
+    //   Category: '',
+    // };
 
   const handleRestaurantAvailability = () => {
     try {

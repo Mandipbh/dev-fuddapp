@@ -187,7 +187,12 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     padding: 18,
   },
-  closeTxt: {fontSize: 30, color: theme.colors.black},
+  closeTxt: {
+    fontSize: 30,
+    color: theme.colors.black,
+    fontFamily: theme.fonts.josefinSans,
+    fontWeight: '400',
+  },
   bottomView: {
     backgroundColor: theme.colors.white,
     height: scale(70),

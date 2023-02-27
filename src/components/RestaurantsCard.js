@@ -101,6 +101,7 @@ const styles = StyleSheet.create({
     marginHorizontal: scale(1),
     color: theme.colors.white,
     fontWeight: '600',
+    fontFamily: theme.fonts.josefinSans,
   },
   iconView: {
     padding: scale(4),

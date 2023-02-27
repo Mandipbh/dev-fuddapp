@@ -129,6 +129,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: scale(8),
     fontSize: scale(14),
     color: theme.colors.black,
+    fontFamily: theme.fonts.josefinSans,
+    fontWeight: '400',
   },
   regex: {
     top: scale(10),
