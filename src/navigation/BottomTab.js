@@ -64,7 +64,7 @@ const BottomTab = () => {
           height: Platform.OS === 'ios' ? scale(70) : scale(55),
           position: 'absolute',
           backgroundColor: theme.colors.white,
-          paddingTop: Platform.OS === 'ios' ? scale(5) : scale(3),
+          paddingTop: Platform.OS === 'ios' ? scale(5) : scale(0),
           borderTopLeftRadius: scale(25),
           borderTopRightRadius: scale(25),
           shadowColor: '#000',
@@ -79,7 +79,9 @@ const BottomTab = () => {
         },
         tabBarLabelStyle: {
           fontSize: scale(10),
-          // paddingBottom: scale(5),
+          fontFamily: theme.fonts.josefinSans,
+          fontWeight: '400',
+          paddingBottom: scale(5),
         },
       }}>
       <Tab.Screen

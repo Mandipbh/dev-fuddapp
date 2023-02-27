@@ -520,6 +520,7 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 16,
     fontWeight: '600',
+    fontFamily: theme.fonts.josefinSans,
   },
   copun: {
     borderWidth: scale(1),

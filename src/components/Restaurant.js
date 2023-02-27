@@ -164,6 +164,7 @@ const styles = StyleSheet.create({
     // marginHorizontal: scale(5),
     color: theme.colors.white,
     fontWeight: '600',
+    fontFamily: theme.fonts.josefinSans,
   },
   km: {
     padding: scale(4),

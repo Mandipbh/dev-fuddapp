@@ -55,7 +55,8 @@ const styles = StyleSheet.create({
   buttontxt: {
     fontSize: scale(13),
     color: theme.colors.black,
-    // fontFamily: theme.fonts.muktaSemiBold,
+    fontFamily: theme.fonts.josefinSans,
+    fontWeight: '400',
   },
   title: {color: theme.colors.blue, textAlign: 'center'},
   shadow: {

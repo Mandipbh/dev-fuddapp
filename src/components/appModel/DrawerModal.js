@@ -175,7 +175,11 @@ const styles = StyleSheet.create({
     marginVertical: scale(10),
     alignItems: 'center',
   },
-  btnText: {marginLeft: scale(10), fontWeight: '600'},
+  btnText: {
+    marginLeft: scale(10),
+    fontWeight: '600',
+    fontFamily: theme.fonts.josefinSans,
+  },
   link: {
     marginVertical: scale(5),
     color: theme.colors.linkColor,
