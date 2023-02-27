@@ -60,13 +60,13 @@ const PopularRestaturants = ({ExternalRestaurantData, navigation}) => {
     <View style={styles.categoryContainer}>
       <View style={styles.popularView}>
         <Title title="Popular Restaurants" style={styles.title} />
-        <TouchableOpacity>
+        <TouchableOpacity   onPress={() => {
+              navigation.navigate('RISTORANTI');
+            }}>
           <Label
             title="SEE ALL"
             style={styles.seeAll}
-            onPress={() => {
-              navigation.navigate('AUITO');
-            }}
+          
           />
         </TouchableOpacity>
       </View>

@@ -18,7 +18,6 @@ import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {AddToCart} from '../redux/Actions/CartAction';
 import ApiService, {API} from '../utils/ApiService';
-// import Toast from 'react-native-simple-toast';
 import moment from 'moment';
 
 const CartScreen = () => {
@@ -130,7 +129,7 @@ const CartScreen = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cartData]);
 
-  console.log('cartData[0].restaurantId >> ', cartData[0].restaurantId);
+  // console.log('cartData[0].restaurantId >> ', cartData[0].restaurantId);
 
   const data =
     // {
@@ -141,7 +140,6 @@ const CartScreen = () => {
     //     "TimeSlot": `${moment(new Date()).format('HH:mm')}-${moment(new Date()).add(30, 'minute').format('HH:mm')}`,
     //     "Category": selectedCat== null ?'':selectedCat
     // };
-
     {
       Latitute: '11.1569145',
       Longitude: '13.3312435',
@@ -197,7 +195,7 @@ const CartScreen = () => {
         />
         <Title title="Carrello" style={styles.title} />
       </View>
-      <ScrollView>
+      
         <View style={styles.productView}>
           <ScrollView
             showsVerticalScrollIndicator={false}
@@ -304,9 +302,13 @@ const CartScreen = () => {
                 style={styles.number}
               />
             </View>
+            {/* {delMsg !== '' && <Error error={delMsg} />}  */}
+            
           </View>
+          
         )}
-        {delMsg !== '' && <Error error={delMsg} />}
+       <View style={{position:'absolute',bottom:theme.SCREENHEIGHT*0.05,zIndex:111}}>
+        
         {cartData?.length > 0 && (
           <Button
             title="Procedi al CheckOut"
@@ -314,11 +316,13 @@ const CartScreen = () => {
             titleStyle={styles.btnTxt}
             onPress={() => {
               navigation.navigate('Checkout');
-              // handleRestaurantAvailability();
+              //  handleRestaurantAvailability();
             }}
           />
         )}
-      </ScrollView>
+       </View>
+    
+     
     </SafeAreaView>
   );
 };
@@ -344,7 +348,7 @@ const styles = StyleSheet.create({
   },
   headerView: {
     flexDirection: 'row',
-    paddingHorizontal: scale(3),
+    paddingHorizontal: scale(10),
     paddingVertical: scale(10),
   },
   title: {

@@ -121,6 +121,8 @@ const SetLocationModel = props => {
   };
   const handleAddress = item => {
     setSelAdd(item);
+    console.log('selected ADDress >> ', selAdd);
+   
     dispatch(selectedAddress(item));
   };
   const handleLocationSet = () => {

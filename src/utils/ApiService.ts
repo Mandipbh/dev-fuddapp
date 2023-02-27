@@ -1,8 +1,9 @@
 import axios from 'axios';
 // import { BASE_URL } from '../constants';
 
-const APP_API_URL = 'https://042b-43-228-229-22.in.ngrok.io/api/';
-export const APP_BASE_URL = 'https://042b-43-228-229-22.in.ngrok.io/';
+const APP_API_URL = 'https://8750-43-228-229-22.in.ngrok.io/api/';
+export const APP_BASE_URL = 'https://8750-43-228-229-22.in.ngrok.io/';
+
 axios.interceptors.request.use(config => config);
 
 const execute = async (
@@ -22,11 +23,9 @@ const execute = async (
   //   if (token && !fileUpload) {
   //     headers.Authorization = `Bearer ${token}`;
   //   }
-
   //   if (!headers['Content-Type'] && !fileUpload) {
   //     headers['Content-Type'] = 'application/json';
   //   }
-
   if (!headers.Accept && !fileUpload) {
     headers.Accept = 'application/json';
   }

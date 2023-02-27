@@ -29,8 +29,9 @@ import {useEffect} from 'react';
 import {restaurantDetails} from '../redux/Actions/RestaurantAction';
 import {APP_BASE_URL} from '../utils/ApiService';
 import {AddToCart} from '../redux/Actions/CartAction';
+import moment from 'moment';
 
-const RestaturantDetails = () => {
+const RestaturantDetails = ({ route, navigation }) => {
   const [selectedIndex, setSelIndex] = useState(0);
   const [viewImg, setViewImg] = useState(false);
   const [imgPath, setImgPath] = useState(null);
@@ -41,19 +42,32 @@ const RestaturantDetails = () => {
   const [selItem, setSelItem] = useState('');
   const [filterData, setFilterData] = useState([]);
   const [load, setLoad] = useState(false);
-  const navigation = useNavigation();
+  const [resId,setrid]=useState(null)
+  const [date, setDate] = useState(new Date());
+  const seladdress = useSelector(state => state.UserReducer.selAddress);
+  // const navigation = useNavigation();
   const dispatch = useDispatch();
-
+  
+console.log('object ',route?.params?.ID)
+  
+//get restaurant details & menus 
   useEffect(() => {
+    if(route?.params?.ID){
+      setrid(route?.params?.ID)
+    }
+    setLoad(true)
     const data = {
-      Latitute: '',
-      Longitude: '',
-      id: 3,
-      Date: '10-02-2023',
-      TimeSlot: '20:00-20:30',
+      latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
+      longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
+      id: route?.params?.ID,
+      date: moment(date).format('DD-MM-YYYY'),
+      timeSlot: `${moment(new Date()).format('HH:mm')}-${moment(new Date())
+        .add(30, 'minute')
+        .format('HH:mm')}`, 
       Category: '',
     };
-    setLoad(true);
+   
+    console.log('data >?> ',data)
     dispatch(restaurantDetails(data));
   }, []);
 
@@ -61,6 +75,7 @@ const RestaturantDetails = () => {
     state => state.RestaurantReducers?.restaurantDetails,
   );
 
+  //set details 
   useEffect(() => {
     setLoad(false);
     setDetails(restaurantData);
@@ -337,6 +352,9 @@ const RestaturantDetails = () => {
         />
       </View>
       <View>
+        {
+          console.log('details?.Menu?.Categories >?> ',details?.Menu?.Categories?.length)
+        }
         {selectedItem === 0 && searchtxt === '' ? (
           <FlatList
             data={details?.Menu?.Categories}
@@ -344,6 +362,15 @@ const RestaturantDetails = () => {
             showsVerticalScrollIndicator={false}
             style={[styles.menusView, styles.shadow]}
             contentContainerStyle={{paddingBottom: scale(30)}}
+            ListEmptyComponent={() => {
+              return (
+                details?.Menu?.Categories?.length === 0 && (
+                  <View style={styles.noDataCon}>
+                    <Title title="Nessun ristorante" />
+                  </View>
+                )
+              );
+            }}
           />
         ) : (
           <>
@@ -475,6 +502,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
     elevation: 3,
+  },
+  noDataCon: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+    height: theme.SCREENHEIGHT / 2,
   },
   searchbox: {
     fontSize: scale(13),

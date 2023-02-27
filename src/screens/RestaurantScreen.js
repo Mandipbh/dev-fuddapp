@@ -45,14 +45,15 @@ const RestaurantScreen = () => {
   const selectedCat = useSelector(
     state => state?.RestaurantReducers?.selCategory,
   );
-  console.log('selectedCat >> ', selectedCat);
+  
 
   useEffect(() => {
     setLoadding(true);
     if (selectedCat !== null) {
       setSelCategory(selectedCat?.Nome);
     }
-    const data = {
+    const data = 
+    {
       id: 0,
       date: '01-12-2022',
       timeSlot: '16:00TO16:30',
@@ -109,7 +110,7 @@ const RestaurantScreen = () => {
         item={item}
         index={index}
         onPress={() => {
-          navigation.navigate('Details');
+          navigation.navigate('Details',item);
         }}
       />
     );

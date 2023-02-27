@@ -293,11 +293,11 @@ const optionsData = [
     title: 'Contanti alla consegna',
   },
   {
-    id: 2,
+    id: 3,
     title: 'POS alla consegna',
   },
   {
-    id: 3,
+    id: 2,
     title: 'Carta di credito',
   },
 ];

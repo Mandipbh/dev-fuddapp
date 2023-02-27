@@ -25,6 +25,9 @@ const OrderPaymentMethod = props => {
   const [year, setYear] = useState(null);
   const [cvv, setCvv] = useState(null);
   const [zip, setZip] = useState(null);
+  const [paymentType, setpaymentType] = useState(null);
+
+
   const cardObject = {
     sCardName: cardHolderName,
     sCardNumber: cardNumber,
@@ -32,10 +35,12 @@ const OrderPaymentMethod = props => {
     sCardExpYear: year,
     sCardCvc: cvv,
     sCardPostcode: zip,
+    paymentType:paymentType
   };
   const handleCard = () => {
     if (option !== null) {
       close(cardObject);
+      console.log('cardObject',cardObject);
     } else {
       alert('Scegli il metodo di pagamento. ');
     }
@@ -76,6 +81,7 @@ const OrderPaymentMethod = props => {
                     style={styles.checkboxCon}
                     onPress={() => {
                       setOptions(item);
+                      setpaymentType(item.id);
                     }}>
                     {option?.id === item?.id && <View style={styles.check} />}
                   </TouchableOpacity>

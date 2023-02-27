@@ -30,6 +30,7 @@ import {useSelector} from 'react-redux';
 import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
 import ApiService, {API} from '../utils/ApiService';
+import { useEffect } from 'react';
 const keyboardVerticalOffset = Platform.OS === 'ios' ? scale(40) : 0;
 const startOfMonth = moment().format('YYYY-MM-DD');
 const endOfMonth = moment().endOf('month').format('YYYY-MM-DD');
@@ -44,13 +45,18 @@ const CheckoutScreen = () => {
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
   const [copanCode, setCopanCode] = useState(null);
+  const [notes, setNotes] = useState(null);
   const [paymentModel, setPayment] = useState(false);
   const user = useSelector(state => state.UserReducer?.userDetails);
   const selAddress = useSelector(state => state.UserReducer.selAddress);
   const [load, setLoad] = useState(false);
+  const cartData = useSelector(state => state?.CartReducer.cartData);
+  const [paymentData,setPaymentData]=useState(null);
+  const isLoginUser = useSelector(state => state.UserReducer?.login);
 
   const handleTimer = time => {
     setTimeModel(!timeModel);
+    console.log('TIME >> ',time);
     if (time !== null) {
       const timeslot = time.replace(' ', 'TO');
       setTimeSlot(timeslot);
@@ -61,106 +67,127 @@ const CheckoutScreen = () => {
     const userData = user?.UserInfo;
     try {
       const folderFrm = {
-        UserId: userData?.Id,
+        UserId: user?.UserInfo !==undefined && userData?.Id,
         RestaurantId: 3,
         RiderId: 0,
         OrderId: 0,
         Date: date,
         DiscountCode: copanCode,
-        Email: userData?.EMail,
+        Email: user?.UserInfo !==undefined && userData?.EMail,
         ItemTotalCharge: 25.0,
       };
       console.log('handleCoupen ', folderFrm);
       const options = {payloads: folderFrm};
-      // ApiService.post(API.coupenCode, options)
-      //         .then(res => {
-      //     console.log('response >> ', res);
-      //   })
-      //   .catch(c => {
-      //     console.log('error catch', c);
-      //   });
+      ApiService.post(API.coupenCode, options)
+              .then(res => {
+          console.log('response >> ', res);
+        })
+        .catch(c => {
+          console.log('error catch', c);
+        });
     } catch (error) {
       console.log('error of try ', error);
     }
   };
 
   const handlePaymentMethod = data => {
+    console.log("paymentdata",data);
+    setPaymentData(data);
     setPayment(false);
   };
 
   var itemList = [];
 
+
   var paymentrequestData = {
-    PayType: 1,
+    PayType: (paymentData !==null && paymentData!==undefined)  && paymentData.paymentType,
     PaymentMethodID: '',
-    Notes: 'tesdtsf',
-    sCardName: '',
-    sCardNumber: '',
-    sCardExpMonth: '',
-    sCardExpYear: '',
-    sCardCvc: '',
-    sCardPostcode: '',
-    sCustomerEmail: '',
+    Notes: notes,
+    sCardName:(paymentData !==null && paymentData!==undefined) && paymentData.paymentType===3?paymentData.sCardName:'',
+    sCardNumber: (paymentData !==null && paymentData!==undefined) && paymentData.paymentType===3?paymentData.sCardNumber:'',
+    sCardExpMonth:(paymentData !==null && paymentData!==undefined) && paymentData.paymentType===3?paymentData.sCardExpMonth:'',
+    sCardExpYear:(paymentData !==null && paymentData!==undefined) && paymentData.paymentType===3?paymentData.sCardExpYear:'',
+    sCardCvc:(paymentData !==null && paymentData!==undefined) && paymentData.paymentType===3?paymentData.sCardCvc:'',
+    sCardPostcode:(paymentData !==null && paymentData!==undefined) && paymentData.paymentType===3?paymentData.sCardPostcode:'',
+    sCustomerEmail: user!==undefined && user?.UserInfo?.EMail,
     nAmount: 0,
   };
 
-  // console.log('cartData>>', JSON.stringify(cartData, null, 4));
+  
 
-  // cartData.map(item => {
-  //   var ingredientsList = [];
-  //   var addOnsList = [];
-  //   var makeTypeIds = [];
+  cartData.map(item => {
+    var ingredientsList = [];
+    var addOnsList = [];
+    var makeTypeIds = [];
 
-  //   item.lstIngredients.map(ingredients => {
-  //     ingredientsList.push(ingredients.IDRiga);
-  //   });
+    item.lstIngredients.map(ingredients => {
+      ingredientsList.push(ingredients.IDRiga);
+    });
 
-  //   item.lstAddons.map(addOnItem => {
-  //     addOnsList.push({
-  //       AddOneId: addOnItem.IDRiga,
-  //       Quantity: addOnItem.Qty,
-  //     });
-  //   });
+    item.lstAddons.map(addOnItem => {
+      addOnsList.push({
+        AddOneId: addOnItem.IDRiga,
+        Quantity: addOnItem.Qty,
+      });
+    });
 
-  //   item.lstMakeTypes.Id == null
-  //     ? makeTypeIds.push()
-  //     : makeTypeIds.push(item.lstMakeTypes.Id);
+    item.lstMakeTypes.Id == null
+      ? makeTypeIds.push()
+      : makeTypeIds.push(item.lstMakeTypes.Id);
 
-  //   itemList.push({
-  //     ItemCode: item.Code,
-  //     Quantity: 0,
-  //     MakeId: 0,
-  //     AddOnsIds: addOnsList,
-  //     RemoveIngredientIds: ingredientsList,
-  //     MakeTypeIds: makeTypeIds, //makeTypeIds.push([item.lstMakeTypes.Id])
-  //   });
-  // });
+    itemList.push({
+      ItemCode: item.Code,
+      Quantity: item.Qty,
+      MakeId: 0,
+      AddOnsIds: addOnsList,
+      RemoveIngredientIds: ingredientsList,
+      MakeTypeIds: makeTypeIds, //makeTypeIds.push([item.lstMakeTypes.Id])
+    });
+  });
 
   var cartDetailJson = {
-    UserId: user.UserId,
-    RestaurantId: 0,
+    UserId: user?.UserInfo !==undefined && user?.UserInfo.Id,
+    RestaurantId: 3,
     RiderId: 0,
     OrderId: 0,
-    SelectedAddressId: 0,
-    Date: '',
-    TimeSlot: '',
+    SelectedAddressId: (selAddress!==null && selAddress !==undefined) &&  selAddress.Id,
+    Date: moment(date).utc().format('DD-MM-YYYY'),
+    TimeSlot: timeSloat===null?'':timeSloat,
     DiscountCode: '',
     ItemIds: itemList,
     PaymentRequest: paymentrequestData,
   };
 
-  console.log('cartDetailJson >>', JSON.stringify(cartDetailJson, null, 4));
+  console.log('cartDetailJson >>', JSON.stringify(user, null, 4));
 
   const handlePlaceOrder = () => {
-    try {
+
+    // console.log('user?.UserInfo.Id',user?.UserInfo.Id);
+
+     if( !isLoginUser){
+     Alert.alert("Please login into the App")
+     navigation.navigate('ACCOUNT')
+    }else if(date === null || date===undefined){
+     Alert.alert('Please select Date'); 
+    }else if(timeSloat === null || timeSloat===undefined){
+     Alert.alert('Please select time slot'); 
+    }else if(paymentData === null || paymentData===undefined){
+     Alert.alert('Please select atleast one payment option'); 
+    }else if(locationModel === undefined || locationModel === null){
+     Alert.alert('Please select address'); 
+    }else if(notes === undefined || notes === null){
+     Alert.alert('Please add notes'); 
+    } else{
+       try {
       setLoad(true);
       const options = {payloads: cartDetailJson};
-      console.log('button_clicked', JSON.stringify(cartDetailJson, null, 4));
+      console.log('payLoad', JSON.stringify(options, null, 4));
       ApiService.post(API.placeOrder, options)
         .then(res => {
           if (res.Status === 'Success') {
             console.log('res of placeOrder >> ', res);
             setLoad(false);
+            setProcesss(!process);
           }
         })
         .catch(e => {
@@ -172,7 +199,11 @@ const CheckoutScreen = () => {
       console.log('e in placeOrder ', e);
       setLoad(false);
     }
+    }
+
+
   };
+console.log('user ',isLoginUser)
 
   return (
     <SafeAreaView style={styles.container}>
@@ -227,7 +258,7 @@ const CheckoutScreen = () => {
                             setOpen(!open);
                           }}>
                           <Label
-                            title={moment().format('DD-MM-YYYY')}
+                            title={moment(date).utc().format('DD-MM-YYYY')}
                             style={{marginTop: scale(5), fontSize: scale(12)}}
                           />
                         </TouchableOpacity>
@@ -319,6 +350,10 @@ const CheckoutScreen = () => {
                         style={styles.inputBox}
                         placeholder="Note"
                         inputStyle={{fontSize: scale(12), marginLeft: -10}}
+                        onChangeText={txt => {
+                          setNotes(txt);
+                          console.log("notes >> ",txt);
+                        }}
                       />
                     </View>
                   </View>
@@ -347,7 +382,7 @@ const CheckoutScreen = () => {
                   style={styles.submitBtn}
                   titleStyle={styles.btnTxt}
                   onPress={() => {
-                    setProcesss(!process);
+                    handlePlaceOrder()
                   }}
                 />
               </ScrollView>
