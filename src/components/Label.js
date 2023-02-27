@@ -30,20 +30,20 @@ const styles = StyleSheet.create({
     fontSize: scale(13),
     color: theme.colors.black1,
     fontFamily: theme.fonts.josefinSans,
-    fontWeight: '400',
+    fontWeight: '700',
   },
   title: {
     color: theme.colors.black,
     fontSize: scale(15.5),
     fontFamily: theme.fonts.josefinSans,
-    fontWeight: '700',
+    fontWeight: 'bold',
   },
   error: {
     textAlign: 'center',
     color: theme.colors.red,
     fontSize: scale(12),
     fontFamily: theme.fonts.josefinSans,
-    fontWeight: '400',
+    fontWeight: '600',
   },
 });
 
