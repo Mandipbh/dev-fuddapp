@@ -60,14 +60,11 @@ const PopularRestaturants = ({ExternalRestaurantData, navigation}) => {
     <View style={styles.categoryContainer}>
       <View style={styles.popularView}>
         <Title title="Popular Restaurants" style={styles.title} />
-        <TouchableOpacity   onPress={() => {
-              navigation.navigate('RISTORANTI');
-            }}>
-          <Label
-            title="SEE ALL"
-            style={styles.seeAll}
-          
-          />
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('RISTORANTI');
+          }}>
+          <Label title="SEE ALL" style={styles.seeAll} />
         </TouchableOpacity>
       </View>
 
@@ -128,10 +125,10 @@ const HomeScreen = () => {
   };
   const isLoginUser = useSelector(state => state.UserReducer?.login);
   const seladdress = useSelector(state => state.UserReducer.selAddress);
-  console.log('seladdress ?? ',{
+  console.log('seladdress ?? ', {
     longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
     latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
-  })
+  });
   const handleCloseModal = () => {
     setOrderModalVisible(!orderModalVisible);
   };

@@ -1,10 +1,10 @@
 import ApiService, {API} from '../../utils/ApiService';
 import {ALLORDERS} from './ActionsTypes';
 
-export const getAllOrders = () => {
+export const getAllOrders = payload => {
   return async dispatch => {
     try {
-      ApiService.get(API.getAllOrders)
+      ApiService.get(API.getAllOrders + payload)
         .then(res => {
           if (res) {
             dispatch({type: ALLORDERS, payload: res});

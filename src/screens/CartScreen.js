@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Alert,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/Feather';
@@ -33,71 +34,7 @@ const CartScreen = () => {
   const [pTotal, setPTotal] = useState(0);
   const [load, setLoad] = useState(false);
   const [date, setDate] = useState(new Date());
-
-  console.log('Selecte Address >> ', seladdress);
-
-  //   var itemList=[];
-
-  //   var paymentrequestData={
-  //     "PayType":1,
-  //     "PaymentMethodID":"",
-  //     "Notes":"tesdtsf",
-  //     "sCardName":"",
-  //     "sCardNumber":"",
-  //     "sCardExpMonth":"",
-  //     "sCardExpYear":"",
-  //     "sCardCvc":"",
-  //     "sCardPostcode":"",
-  //     "sCustomerEmail":"",
-  //     "nAmount":0
-  // };
-
-  // console.log('cartData>>',JSON.stringify(cartData,null,4));
-
-  // cartData.map((item) => {
-
-  //   var ingredientsList=[];
-  //   var addOnsList=[];
-  //   var makeTypeIds=[];
-
-  //       item.lstIngredients.map((ingredients) =>{
-  //           ingredientsList.push(ingredients.IDRiga);
-  //         });
-
-  //       item.lstAddons.map((addOnItem)=>{
-  //         addOnsList.push({
-  //               "AddOneId":addOnItem.IDRiga,
-  //               "Quantity":addOnItem.Qty
-  //           });
-  //       });
-
-  //       item.lstMakeTypes.Id == null ? makeTypeIds.push():makeTypeIds.push(item.lstMakeTypes.Id);;
-
-  //       itemList.push({
-  //         "ItemCode": item.Code,
-  //           "Quantity": 0,
-  //           "MakeId": 0,
-  //           "AddOnsIds":addOnsList,
-  //           "RemoveIngredientIds":ingredientsList,
-  //           "MakeTypeIds": makeTypeIds //makeTypeIds.push([item.lstMakeTypes.Id])
-  //       });
-
-  // });
-
-  //   var cartDetailJson = {
-  //       "UserId":user.UserId,
-  //       "RestaurantId":0,
-  //       "RiderId":0,
-  //       "OrderId":0,
-  //       "SelectedAddressId":0,
-  //       "Date":"",
-  //       "TimeSlot":"",
-  //       "DiscountCode":"",
-  //       "ItemIds":itemList,
-  //       "PaymentRequest":paymentrequestData
-  //   };
-
-  //   console.log('cartDetailJson >>',JSON.stringify(cartDetailJson,null,4));
+  const [dPrice, setDPrice] = useState(0);
 
   const incrimentCart = (selitm, idx) => {
     const tmparr = [...cartData];
@@ -123,59 +60,100 @@ const CartScreen = () => {
       initialValue,
     );
     setPTotal(total);
+    getCalculateDeliveryPrice(total);
   };
+
   useEffect(() => {
     calculatePrice();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cartData]);
 
-  // console.log('cartData[0].restaurantId >> ', cartData[0].restaurantId);
+  console.log('cartData ', cartData);
 
-  const data =
-    {
-        "Latitute": seladdress?.Lat === undefined ? '' : seladdress?.Lat,
-        "Longitude": seladdress?.Lon === undefined ? '' : seladdress?.Lon,
-        "id":cartData[0].restaurantId,
-        "Date":moment(date).format('DD-MM-YYYY'),
-        "TimeSlot": `${moment(new Date()).format('HH:mm')}-${moment(new Date()).add(30, 'minute').format('HH:mm')}`,
-        "Category": selectedCat== null ?'':selectedCat
-    };
-    // {
-    //   Latitute: '11.1569145',
-    //   Longitude: '13.3312435',
-    //   id: 3,
-    //   Date: '24-02-2023',
-    //   TimeSlot: '15:28-15:58',
-    //   Category: '',
-    // };
+  const getCalculateDeliveryPrice = total => {
+    try {
+      if (cartData) {
+        const data = {
+          Latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
+          Longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
+          id: cartData[0].restaurantId,
+          OrderPrice: total,
+        };
+        setLoad(true);
+
+        const options = {payloads: data};
+        console.log('payloads>> ', data);
+
+        ApiService.post(API.CalculateDeliveryPrice, options)
+          .then(res => {
+            if (res.Status === 'Success') {
+              setDPrice(res.DeliveryPrice);
+              console.log('es.DeliveryPrice > ', res.DeliveryPrice);
+              console.log('calculate price of del;', res);
+              setLoad(false);
+            }
+          })
+          .catch(e => {
+            console.log('error response > . ', e.response);
+            setLoad(false);
+          });
+      }
+    } catch (e) {
+      console.log('e in CalculateDeliveryPrice ', e);
+      setLoad(false);
+    }
+  };
 
   const handleRestaurantAvailability = () => {
     try {
-      setLoad(true);
+      if (cartData) {
+        const data = {
+          Latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
+          Longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
+          id: cartData[0].restaurantId,
+          Date: moment(date).format('DD-MM-YYYY'),
+          TimeSlot: `${moment(new Date()).format('HH:mm')}-${moment(new Date())
+            .add(30, 'minute')
+            .format('HH:mm')}`,
+          Category: selectedCat == null ? '' : selectedCat,
+        };
 
-      console.log('payLoad >> ', data);
+        // {
+        //   Latitute: '11.1569145',
+        //   Longitude: '13.3312435',
+        //   id: 3,
+        //   Date: '24-02-2023',
+        //   TimeSlot: '15:28-15:58',
+        //   Category: '',
+        // };
 
-      const options = {payloads: data};
-      ApiService.post(API.checkestaurantAvailability, options)
-        .then(res => {
-          if (res.Status === 'Success') {
-            console.log('res of RestaurantAvailability >> ', res);
+        setLoad(true);
+
+        const options = {payloads: data};
+        ApiService.post(API.checkestaurantAvailability, options)
+          .then(res => {
+            if (res.Status === 'Success') {
+              console.log('res of RestaurantAvailability >> ', res);
+              setLoad(false);
+              setDelMsg('');
+              navigation.navigate('Checkout', {
+                total: pTotal + (pTotal === 0 ? 0 : dPrice),
+                pTotal: pTotal,
+              });
+            }
+          })
+          .catch(e => {
             setLoad(false);
-            setDelMsg('');
-            navigation.navigate('Checkout');
-          }
-        })
-        .catch(e => {
-          setLoad(false);
-          setDelMsg(
-            `La consegna non è disponibile dal ristorante all'indirizzo selezionato.`,
-          );
-          console.log(
-            'error in RestaurantAvailability> ',
-            e?.response.data?.Errors[0],
-          );
-          //Alert.alert(e.response?.data?.Errors[0]);
-        });
+            setDelMsg(
+              "La consegna non è disponibile dal ristorante all'indirizzo selezionato.",
+            );
+            console.log(
+              'error in RestaurantAvailability> ',
+              e?.response.data?.Errors[0],
+            );
+            //Alert.alert(e.response?.data?.Errors[0]);
+          });
+      }
     } catch (e) {
       console.log('e in RestaurantAvailability ', e);
       setLoad(false);
@@ -195,134 +173,140 @@ const CartScreen = () => {
         />
         <Title title="Carrello" style={styles.title} />
       </View>
-      
-        <View style={styles.productView}>
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            nestedScrollEnabled={true}>
-            {cartData?.length > 0 ? (
-              cartData.map((i, index) => {
-                return (
-                  <View
-                    style={{
-                      borderBottomColor: theme.colors.gray1,
-                      borderBottomWidth:
-                        cartData?.length === index + 1 ? 0 : scale(1),
-                      paddingBottom: scale(10),
-                    }}>
-                    <View style={styles.items}>
-                      <Image
-                        source={{
-                          uri: i?.Image,
-                        }}
-                        style={styles.productImg}
-                      />
-                      <View style={styles.detailsView}>
-                        <Title title={i?.Name} />
-                        <Label title={i?.Code} style={styles.desc} />
-                      </View>
-                    </View>
-                    <View
-                      style={[styles.row, {justifyContent: 'space-evenly'}]}>
-                      <View style={[styles.row]}>
-                        <TouchableOpacity
-                          style={styles.btn}
-                          onPress={() => {
-                            decrimentCart(i, index);
-                          }}>
-                          <Icon1
-                            name="delete"
-                            size={scale(16)}
-                            color={theme.colors.gray}
-                          />
-                        </TouchableOpacity>
-                        <Title title={i?.Qty} style={styles.number} />
-                        <TouchableOpacity
-                          style={styles.btn}
-                          onPress={() => {
-                            incrimentCart(i, index);
-                          }}>
-                          <Icon
-                            name="plus"
-                            size={scale(16)}
-                            color={theme.colors.gray}
-                          />
-                        </TouchableOpacity>
-                      </View>
-                      <Title
-                        title={`€ ${(i?.Amount * i?.Qty)?.toFixed(2)}`}
-                        style={styles.price}
-                      />
+
+      <View style={styles.productView}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          nestedScrollEnabled={true}>
+          {cartData?.length > 0 ? (
+            cartData.map((i, index) => {
+              return (
+                <View
+                  style={{
+                    borderBottomColor: theme.colors.gray1,
+                    borderBottomWidth:
+                      cartData?.length === index + 1 ? 0 : scale(1),
+                    paddingBottom: scale(10),
+                  }}>
+                  <View style={styles.items}>
+                    <Image
+                      source={{
+                        uri: i?.Image,
+                      }}
+                      style={styles.productImg}
+                    />
+                    <View style={styles.detailsView}>
+                      <Title title={i?.Name} />
+                      <Label title={i?.Code} style={styles.desc} />
                     </View>
                   </View>
-                );
-              })
-            ) : (
-              <>
-                <View style={styles.noDataCon}>
-                  <LottieView
-                    source={Emptycart}
-                    autoPlay
-                    loop
-                    style={{height: scale(250)}}
-                  />
-                  <Title title="Carrello vuoto" />
+                  <View style={[styles.row, {justifyContent: 'space-evenly'}]}>
+                    <View style={[styles.row]}>
+                      <TouchableOpacity
+                        style={styles.btn}
+                        onPress={() => {
+                          decrimentCart(i, index);
+                        }}>
+                        <Icon1
+                          name="delete"
+                          size={scale(16)}
+                          color={theme.colors.gray}
+                        />
+                      </TouchableOpacity>
+                      <Title title={i?.Qty} style={styles.number} />
+                      <TouchableOpacity
+                        style={styles.btn}
+                        onPress={() => {
+                          incrimentCart(i, index);
+                        }}>
+                        <Icon
+                          name="plus"
+                          size={scale(16)}
+                          color={theme.colors.gray}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                    <Title
+                      title={`€ ${(i?.Amount * i?.Qty)?.toFixed(2)}`}
+                      style={styles.price}
+                    />
+                  </View>
                 </View>
-              </>
-            )}
-          </ScrollView>
-        </View>
+              );
+            })
+          ) : (
+            <>
+              <View style={styles.noDataCon}>
+                <LottieView
+                  source={Emptycart}
+                  autoPlay
+                  loop
+                  style={{height: scale(240)}}
+                />
+                <Title title="Carrello vuoto" />
+              </View>
+            </>
+          )}
+        </ScrollView>
+      </View>
 
-        {cartData?.length > 0 && (
-          <View style={styles.PriceView}>
-            <View style={styles.priceingView}>
-              <Title title="Totale Prodotti" />
-              <Title title={`€ ${pTotal}`} style={styles.number} />
-            </View>
-            <View style={styles.priceingView}>
-              <Title title="Spese di consegna" />
-              <Title
-                title={`€ ${pTotal === 0 ? 0 : 2.9}`}
-                style={styles.number}
-              />
-            </View>
-
-            <View
-              style={[
-                styles.priceingView,
-                {
-                  borderTopWidth: scale(1),
-                  borderTopColor: theme.colors.gray,
-                  paddingTop: scale(10),
-                },
-              ]}>
-              <Title title="Totale Finale" />
-              <Title
-                title={`€ ${pTotal + (pTotal === 0 ? 0 : 2.9)}`}
-                style={styles.number}
-              />
-            </View>
-            {/* {delMsg !== '' && <Error error={delMsg} />}  */}
-            
+      {cartData?.length > 0 && (
+        <View style={styles.PriceView}>
+          <View style={styles.priceingView}>
+            <Title title="Totale Prodotti" />
+            <Title title={`€ ${pTotal}`} style={styles.number} />
           </View>
-          
-        )}
-       <View style={{position:'absolute',bottom:theme.SCREENHEIGHT*0.05,zIndex:111}}>
-        
+          <View style={styles.priceingView}>
+            <Title title="Sipplemento ordine inferiore a 15.00 €" />
+            <Title
+              title={`€ ${cartData[0].MinimumOrder}`}
+              style={styles.number}
+            />
+          </View>
+          <View style={styles.priceingView}>
+            <Title title="Spese di consegna" />
+            <Title title={`€ ${dPrice}`} style={styles.number} />
+          </View>
+
+          <View
+            style={[
+              styles.priceingView,
+              {
+                borderTopWidth: scale(1),
+                borderTopColor: theme.colors.gray,
+                paddingTop: scale(10),
+              },
+            ]}>
+            <Title title="Totale Finale" />
+            <Title
+              title={`€ ${pTotal + (dPrice !== 0 ? dPrice : 2.9)}`}
+              style={styles.number}
+            />
+          </View>
+          {/* {delMsg !== '' && <Error error={delMsg} />}  */}
+        </View>
+      )}
+      <View
+        style={{
+          position: 'absolute',
+          bottom: theme.SCREENHEIGHT * 0.05,
+          zIndex: 111,
+        }}>
         {cartData?.length > 0 && (
           <Button
             title="Procedi al CheckOut"
             style={styles.submitBtn}
             titleStyle={styles.btnTxt}
             onPress={() => {
-              navigation.navigate('Checkout');
-              //  handleRestaurantAvailability();
+              if (seladdress?.Lat === undefined || seladdress?.Lat === null) {
+                Alert.alert('Select the address');
+              } else {
+                handleRestaurantAvailability();
+              }
             }}
           />
         )}
-       </View>
-    
-     
+      </View>
     </SafeAreaView>
   );
 };
@@ -376,7 +360,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.22,
     shadowRadius: scale(9),
     margin: scale(15),
-    height: theme.SCREENHEIGHT * 0.45,
+    maxHeight: theme.SCREENHEIGHT * 0.45,
   },
   row: {flexDirection: 'row', alignItems: 'center'},
   items: {

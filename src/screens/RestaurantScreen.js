@@ -111,7 +111,10 @@ const RestaurantScreen = () => {
         item={item}
         index={index}
         onPress={() => {
-          navigation.navigate('Details',item);
+          navigation.navigate('Details', {
+            item: item,
+            restaurantsData: restaurantsData,
+          });
         }}
       />
     );

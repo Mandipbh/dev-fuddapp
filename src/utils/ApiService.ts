@@ -69,9 +69,10 @@ export const API = {
   recoveryPassword:'Users/RecoveryPassword?email=',
   varifyUser:'Users/VerifyUser',
   coupenCode:'Order/ApplyCoupenCode',
-  getAllOrders: 'Users/GetUserOrder?userId=18340',
+  getAllOrders: 'Users/GetUserOrder?userId=',
   placeOrder:'Order/PlaceOrder',
-  checkestaurantAvailability:'Restaurant/CheckRestaurantSlotAvailability'
+  checkestaurantAvailability:'Restaurant/CheckRestaurantSlotAvailability',
+  CalculateDeliveryPrice:'Restaurant/CalculateDeliveryPrice'
 };
 
 

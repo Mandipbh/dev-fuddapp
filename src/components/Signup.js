@@ -14,9 +14,10 @@ import Button from './Button';
 import {useState} from 'react';
 import VarificationModel from './appModel/VarificationModel';
 import ApiService, {API} from '../utils/ApiService';
+import {useEffect} from 'react';
 
 const Signup = props => {
-  const {onPress} = props;
+  const {onPress, isFocus} = props;
   const [name, setName] = useState('');
   const [sureName, setSureName] = useState('');
   const [email, setEmail] = useState('');
@@ -92,6 +93,12 @@ const Signup = props => {
     setVarification(false);
     onPress();
   };
+
+  // useEffect(() => {
+  //   setName('');
+  //   setPassword('');
+  // }, [isFocus]);
+
   const handleSignup = () => {
     if (!handleValidation()) {
       try {
