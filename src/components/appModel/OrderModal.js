@@ -13,11 +13,28 @@ import {useState} from 'react';
 import {orderData} from '../../utils/MockData';
 import Icon from 'react-native-vector-icons/Feather';
 import {BlurView} from '@react-native-community/blur';
+import moment from 'moment';
+import {useDispatch, useSelector} from 'react-redux';
+import {useEffect} from 'react';
+import {getAllOrders} from '../../redux/Actions/OrderAction';
 
 const OrderModal = props => {
   const {isVisible, close} = props;
 
   const [selIndex, setIindex] = useState(0);
+
+  const dispatch = useDispatch();
+  const [getAllOrder, setgetAllOrder] = useState(allOrders);
+
+  const allOrders = useSelector(state => state.HomeReducers.allOrders);
+  const user = useSelector(state => state.UserReducer?.userDetails);
+  useEffect(() => {
+    dispatch(getAllOrders(user?.UserId));
+  }, []);
+
+  useEffect(() => {
+    setgetAllOrder(allOrders?.OrderList);
+  }, [allOrders]);
 
   return (
     <Modal
@@ -43,60 +60,96 @@ const OrderModal = props => {
             <ScrollView
               style={{height: theme.SCREENHEIGHT * 0.4}}
               showsVerticalScrollIndicator={false}>
-              {orderData?.map((oI, index) => {
-                return (
-                  <View style={styles.mainCard} key={index}>
-                    <View style={[styles.row, {alignItems: 'center'}]}>
-                      <View style={{marginVertical: scale(8)}}>
-                        <Label title={oI.name} style={styles.prodTitle} />
-                        {selIndex === index ? (
+              {getAllOrder &&
+                getAllOrder?.map((oI, index) => {
+                  return (
+                    <View style={styles.mainCard} key={index}>
+                      <View style={[styles.row, {alignItems: 'center'}]}>
+                        <View style={{marginVertical: scale(8)}}>
                           <Label
-                            title={`${oI.price} - ${oI.date}`}
-                            style={styles.pd}
+                            title={oI.Restaurant}
+                            style={styles.prodTitle}
                           />
-                        ) : (
-                          <Label title={oI.date} style={styles.pd} />
-                        )}
-                      </View>
-                      <TouchableOpacity style={styles.btn}>
-                        <Label title="Riordina" style={styles.btntxt} />
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={[styles.row, {alignItems: 'center'}]}
-                        onPress={() => {
-                          setIindex(index);
-                        }}>
-                        <Label title="Dettagli " />
-                        <Icon
-                          name={
-                            selIndex === index ? 'chevron-up' : 'chevron-down'
-                          }
-                          size={scale(18)}
-                          color={theme.colors.gray}
-                        />
-                      </TouchableOpacity>
-                    </View>
-                    {selIndex === index && (
-                      <>
-                        <View style={styles.detailsView}>
-                          <Label title={oI.orderdetails} />
+                          {selIndex === index ? (
+                            <Label
+                              title={`€${oI.Total} - ${moment(oI.DeliveryDate)
+                                .utc()
+                                .format('DD/MM/YYYY')}`}
+                              style={styles.pd}
+                            />
+                          ) : (
+                            <Label
+                              title={`${moment(oI.DeliveryDate)
+                                .utc()
+                                .format('DD/MM/YYYY')}`}
+                              style={styles.pd}
+                            />
+                          )}
                         </View>
-                        <View
+                        <TouchableOpacity style={styles.btn}>
+                          <Label title="Riordina" style={styles.btntxt} />
+                        </TouchableOpacity>
+                        <TouchableOpacity
                           style={[
                             styles.row,
-                            {width: '65%', marginBottom: scale(8)},
-                          ]}>
+                            {alignItems: 'center', marginTop: scale(-10)},
+                          ]}
+                          onPress={() => {
+                            selIndex === index
+                              ? setIindex(null)
+                              : setIindex(index);
+                          }}>
                           <Label
-                            title="Total Amount"
-                            style={[styles.price, {fontWeight: '600'}]}
+                            title="Dettagli "
+                            style={{
+                              color: theme.colors.gray5,
+                              fontSize: scale(12),
+                            }}
                           />
-                          <Label title={oI.totalAmount} style={styles.price} />
-                        </View>
-                      </>
-                    )}
-                  </View>
-                );
-              })}
+                          <Icon
+                            name={
+                              selIndex === index ? 'chevron-up' : 'chevron-down'
+                            }
+                            size={scale(18)}
+                            color={theme.colors.gray}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                      {selIndex === index && (
+                        <>
+                          <View style={styles.detailsView}>
+                            {oI?.OrderRows &&
+                              oI?.OrderRows.map((product, index) => {
+                                return (
+                                  <View>
+                                    <Label
+                                      style={{color: theme.colors.gray5}}
+                                      title={`${product?.Qty}X ${product?.Product}`}
+                                    />
+                                  </View>
+                                );
+                              })}
+                            {/* <Label title={oI.orderdetails} /> */}
+                          </View>
+                          <View
+                            style={[
+                              styles.row,
+                              {width: '65%', marginBottom: scale(8)},
+                            ]}>
+                            <Label
+                              title="Total Amount"
+                              style={[styles.price, {fontWeight: '600'}]}
+                            />
+                            <Label
+                              title={`€${oI.Total}`}
+                              style={styles.price}
+                            />
+                          </View>
+                        </>
+                      )}
+                    </View>
+                  );
+                })}
             </ScrollView>
           </View>
         </View>

@@ -171,6 +171,7 @@ const AccountScreen = () => {
           )}
           {selectedMenu === 4 && (
             <Login
+              isFocus={isFoucse}
               onPress={() => {
                 setSelectedMenu(1);
               }}
@@ -181,6 +182,7 @@ const AccountScreen = () => {
           )}
           {selectedMenu === 5 && (
             <Signup
+              isFocus={isFoucse}
               onPress={() => {
                 setSelectedMenu(null);
               }}

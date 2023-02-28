@@ -28,6 +28,7 @@ const theme = {
     placeholder: '#b6bed4',
     green: '#4cd964',
     linkColor: '#808080',
+    gray5: '#A3A3A3',
   },
   SCREENWIDTH: width,
   SCREENHEIGHT: height,

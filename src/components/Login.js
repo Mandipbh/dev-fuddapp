@@ -10,8 +10,9 @@ import ApiService, {API} from '../utils/ApiService';
 import {useDispatch} from 'react-redux';
 import {isLogin, userData} from '../redux/Actions/UserActions';
 import ForgotPassword from './appModel/ForgotPassword';
+import {useEffect} from 'react';
 const Login = props => {
-  const {onPress, onPressRegister} = props;
+  const {onPress, onPressRegister, isFocus} = props;
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [nameErr, setNameErr] = useState('');
@@ -38,6 +39,10 @@ const Login = props => {
     }
     return error;
   };
+  useEffect(() => {
+    setName('');
+    setPassword('');
+  }, [isFocus]);
   const handleLogin = () => {
     if (!handleValidation()) {
       try {

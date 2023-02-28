@@ -27,7 +27,6 @@ const OrderPaymentMethod = props => {
   const [zip, setZip] = useState(null);
   const [paymentType, setpaymentType] = useState(null);
 
-
   const cardObject = {
     sCardName: cardHolderName,
     sCardNumber: cardNumber,
@@ -35,12 +34,13 @@ const OrderPaymentMethod = props => {
     sCardExpYear: year,
     sCardCvc: cvv,
     sCardPostcode: zip,
-    paymentType:paymentType
+    paymentType: paymentType,
+    title: option,
   };
   const handleCard = () => {
     if (option !== null) {
       close(cardObject);
-      console.log('cardObject',cardObject);
+      console.log('cardObject', cardObject);
     } else {
       alert('Scegli il metodo di pagamento. ');
     }
@@ -89,7 +89,7 @@ const OrderPaymentMethod = props => {
                 </View>
               );
             })}
-            {option?.id === 3 && (
+            {option?.id === 2 && (
               <View style={{marginTop: scale(10)}}>
                 <InputBox
                   placeholder="Intestatario carta di credito"

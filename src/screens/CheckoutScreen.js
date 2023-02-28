@@ -30,12 +30,12 @@ import {useSelector} from 'react-redux';
 import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
 import ApiService, {API} from '../utils/ApiService';
-import { useEffect } from 'react';
+import {useEffect} from 'react';
 const keyboardVerticalOffset = Platform.OS === 'ios' ? scale(40) : 0;
 const startOfMonth = moment().format('YYYY-MM-DD');
 const endOfMonth = moment().endOf('month').format('YYYY-MM-DD');
 
-const CheckoutScreen = () => {
+const CheckoutScreen = ({route}) => {
   const navigation = useNavigation();
   const [process, setProcesss] = useState(false);
   const [locationModel, setLocationModel] = useState(false);
@@ -44,76 +44,119 @@ const CheckoutScreen = () => {
   const [timeSloat, setTimeSlot] = useState(null);
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
-  const [copanCode, setCopanCode] = useState(null);
+  const [copanCode, setCopanCode] = useState('');
   const [notes, setNotes] = useState(null);
   const [paymentModel, setPayment] = useState(false);
   const user = useSelector(state => state.UserReducer?.userDetails);
   const selAddress = useSelector(state => state.UserReducer.selAddress);
   const [load, setLoad] = useState(false);
   const cartData = useSelector(state => state?.CartReducer.cartData);
-  const [paymentData,setPaymentData]=useState(null);
+  const [paymentData, setPaymentData] = useState(null);
   const isLoginUser = useSelector(state => state.UserReducer?.login);
+  const [grandTotal, setGrandTotal] = useState(0);
+  const [prdTotal, setProdTotal] = useState(0);
 
   const handleTimer = time => {
     setTimeModel(!timeModel);
-    console.log('TIME >> ',time);
+    // console.log('TIME >> ', time);
     if (time !== null) {
       const timeslot = time.replace(' ', 'TO');
       setTimeSlot(timeslot);
     }
   };
-  console.log('user ??/ ', user?.UserInfo);
+  // console.log('user ??/ ', user?.UserInfo);
+
+  useEffect(() => {
+    if (route.params) {
+      const {total, pTotal} = route.params;
+      setGrandTotal(total);
+      setProdTotal(pTotal);
+    }
+  }, []);
+
   const handleCoupen = () => {
     const userData = user?.UserInfo;
     try {
       const folderFrm = {
-        UserId: user?.UserInfo !==undefined && userData?.Id,
+        UserId: user?.UserInfo !== undefined && userData?.Id,
         RestaurantId: 3,
         RiderId: 0,
         OrderId: 0,
         Date: date,
         DiscountCode: copanCode,
-        Email: user?.UserInfo !==undefined && userData?.EMail,
-        ItemTotalCharge: 25.0,
+        Email: user?.UserInfo !== undefined && userData?.EMail,
+        ItemTotalCharge: prdTotal,
       };
-      console.log('handleCoupen ', folderFrm);
+      // console.log('handleCoupen ', folderFrm);
       const options = {payloads: folderFrm};
       ApiService.post(API.coupenCode, options)
-              .then(res => {
-          console.log('response >> ', res);
+        .then(res => {
+          //  console.log('response >> ', res);
         })
         .catch(c => {
-          console.log('error catch', c);
+          //  console.log('error catch', c);
         });
     } catch (error) {
-      console.log('error of try ', error);
+      // console.log('error of try ', error);
     }
   };
-
+  console.log('paymentData>> ', paymentData);
   const handlePaymentMethod = data => {
-    console.log("paymentdata",data);
     setPaymentData(data);
     setPayment(false);
   };
 
   var itemList = [];
 
-
   var paymentrequestData = {
-    PayType: (paymentData !==null && paymentData!==undefined)  && paymentData.paymentType,
-    PaymentMethodID: '',
+    PayType:
+      paymentData !== null &&
+      paymentData !== undefined &&
+      paymentData.paymentType,
+    PaymentMethodID:
+      paymentData !== null &&
+      paymentData !== undefined &&
+      paymentData.title?.title,
     Notes: notes,
-    sCardName:(paymentData !==null && paymentData!==undefined) && paymentData.paymentType===3?paymentData.sCardName:'',
-    sCardNumber: (paymentData !==null && paymentData!==undefined) && paymentData.paymentType===3?paymentData.sCardNumber:'',
-    sCardExpMonth:(paymentData !==null && paymentData!==undefined) && paymentData.paymentType===3?paymentData.sCardExpMonth:'',
-    sCardExpYear:(paymentData !==null && paymentData!==undefined) && paymentData.paymentType===3?paymentData.sCardExpYear:'',
-    sCardCvc:(paymentData !==null && paymentData!==undefined) && paymentData.paymentType===3?paymentData.sCardCvc:'',
-    sCardPostcode:(paymentData !==null && paymentData!==undefined) && paymentData.paymentType===3?paymentData.sCardPostcode:'',
-    sCustomerEmail: user!==undefined && user?.UserInfo?.EMail,
+    sCardName:
+      paymentData !== null &&
+      paymentData !== undefined &&
+      paymentData.paymentType === 3
+        ? paymentData.sCardName
+        : '',
+    sCardNumber:
+      paymentData !== null &&
+      paymentData !== undefined &&
+      paymentData.paymentType === 3
+        ? paymentData.sCardNumber
+        : '',
+    sCardExpMonth:
+      paymentData !== null &&
+      paymentData !== undefined &&
+      paymentData.paymentType === 3
+        ? paymentData.sCardExpMonth
+        : '',
+    sCardExpYear:
+      paymentData !== null &&
+      paymentData !== undefined &&
+      paymentData.paymentType === 3
+        ? paymentData.sCardExpYear
+        : '',
+    sCardCvc:
+      paymentData !== null &&
+      paymentData !== undefined &&
+      paymentData.paymentType === 3
+        ? paymentData.sCardCvc
+        : '',
+    sCardPostcode:
+      paymentData !== null &&
+      paymentData !== undefined &&
+      paymentData.paymentType === 3
+        ? paymentData.sCardPostcode
+        : '',
+    sCustomerEmail: user !== undefined && user?.UserInfo?.EMail,
     nAmount: 0,
   };
-
-  
 
   cartData.map(item => {
     var ingredientsList = [];
@@ -131,7 +174,7 @@ const CheckoutScreen = () => {
       });
     });
 
-    item.lstMakeTypes.Id == null
+    item.lstMakeTypes == null
       ? makeTypeIds.push()
       : makeTypeIds.push(item.lstMakeTypes.Id);
 
@@ -145,65 +188,65 @@ const CheckoutScreen = () => {
     });
   });
 
+  //console.log('itemList >> ', JSON.stringify(itemList, null, 4));
+
   var cartDetailJson = {
-    UserId: user?.UserInfo !==undefined && user?.UserInfo.Id,
+    UserId: user?.UserInfo !== undefined && user?.UserInfo.Id,
     RestaurantId: 3,
     RiderId: 0,
     OrderId: 0,
-    SelectedAddressId: (selAddress!==null && selAddress !==undefined) &&  selAddress.Id,
+    SelectedAddressId:
+      selAddress !== null && selAddress !== undefined && selAddress.Id,
     Date: moment(date).utc().format('DD-MM-YYYY'),
-    TimeSlot: timeSloat===null?'':timeSloat,
-    DiscountCode: '',
+    TimeSlot: timeSloat === null ? '' : timeSloat,
+    DiscountCode: copanCode,
     ItemIds: itemList,
     PaymentRequest: paymentrequestData,
   };
 
-  console.log('cartDetailJson >>', JSON.stringify(user, null, 4));
+  console.log('cartDetailJson >>', JSON.stringify(cartDetailJson, null, 4));
 
   const handlePlaceOrder = () => {
-
     // console.log('user?.UserInfo.Id',user?.UserInfo.Id);
 
-     if( !isLoginUser){
-     Alert.alert("Please login into the App")
-     navigation.navigate('ACCOUNT')
-    }else if(date === null || date===undefined){
-     Alert.alert('Please select Date'); 
-    }else if(timeSloat === null || timeSloat===undefined){
-     Alert.alert('Please select time slot'); 
-    }else if(paymentData === null || paymentData===undefined){
-     Alert.alert('Please select atleast one payment option'); 
-    }else if(locationModel === undefined || locationModel === null){
-     Alert.alert('Please select address'); 
-    }else if(notes === undefined || notes === null){
-     Alert.alert('Please add notes'); 
-    } else{
-       try {
-      setLoad(true);
-      const options = {payloads: cartDetailJson};
-      console.log('payLoad', JSON.stringify(options, null, 4));
-      ApiService.post(API.placeOrder, options)
-        .then(res => {
-          if (res.Status === 'Success') {
-            console.log('res of placeOrder >> ', res);
+    if (!isLoginUser) {
+      Alert.alert('Please login into the App');
+      navigation.navigate('ACCOUNT');
+    } else if (date === null || date === undefined) {
+      Alert.alert('Please select Date');
+    } else if (timeSloat === null || timeSloat === undefined) {
+      Alert.alert('Please select time slot');
+    } else if (paymentData === null || paymentData === undefined) {
+      Alert.alert('Please select atleast one payment option');
+    } else if (locationModel === undefined || locationModel === null) {
+      Alert.alert('Please select address');
+    } else if (notes === undefined || notes === null) {
+      Alert.alert('Please add notes');
+    } else {
+      try {
+        setLoad(true);
+        const options = {payloads: cartDetailJson};
+        console.log('payLoad', JSON.stringify(options, null, 4));
+        ApiService.post(API.placeOrder, options)
+          .then(res => {
+            if (res.Status === 'Success') {
+              console.log('res of placeOrder >> ', res);
+              setLoad(false);
+              setProcesss(!process);
+            }
+          })
+          .catch(e => {
             setLoad(false);
-            setProcesss(!process);
-          }
-        })
-        .catch(e => {
-          setLoad(false);
-          console.log('error in placeOrder> ', e.response?.data);
-          Alert.alert(e.response?.data?.Errors[0]);
-        });
-    } catch (e) {
-      console.log('e in placeOrder ', e);
-      setLoad(false);
+            console.log('error in placeOrder> ', e.response?.data);
+            Alert.alert(e.response?.data?.Errors[0]);
+          });
+      } catch (e) {
+        console.log('e in placeOrder ', e);
+        setLoad(false);
+      }
     }
-    }
-
-
   };
-console.log('user ',isLoginUser)
+  console.log('user ', isLoginUser);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -349,11 +392,17 @@ console.log('user ',isLoginUser)
                         multiline={true}
                         style={styles.inputBox}
                         placeholder="Note"
-                        inputStyle={{fontSize: scale(12), marginLeft: -10}}
+                        inputStyle={{
+                          textAlignVertical: 'top',
+                          paddingTop: 0,
+                          paddingBottom: 0,
+                          height: theme.SCREENHEIGHT * 0.13,
+                        }}
                         onChangeText={txt => {
                           setNotes(txt);
-                          console.log("notes >> ",txt);
+                          console.log('notes >> ', txt);
                         }}
+                        numberOfLines={4}
                       />
                     </View>
                   </View>
@@ -382,7 +431,7 @@ console.log('user ',isLoginUser)
                   style={styles.submitBtn}
                   titleStyle={styles.btnTxt}
                   onPress={() => {
-                    handlePlaceOrder()
+                    handlePlaceOrder();
                   }}
                 />
               </ScrollView>
@@ -447,11 +496,11 @@ const styles = StyleSheet.create({
   inputBox: {
     marginHorizontal: 0,
     borderBottomWidth: 0,
-    width: '55%',
+    width: theme.SCREENWIDTH * 0.85,
     borderColor: 'transprent',
     borderRadius: 20,
     paddingVertical: 5,
-    height: theme.SCREENHEIGHT * 0.04,
+    height: theme.SCREENHEIGHT * 0.15,
   },
   title: {
     fontSize: scale(22),

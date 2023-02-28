@@ -31,7 +31,7 @@ import {APP_BASE_URL} from '../utils/ApiService';
 import {AddToCart} from '../redux/Actions/CartAction';
 import moment from 'moment';
 
-const RestaturantDetails = ({ route, navigation }) => {
+const RestaturantDetails = ({route, navigation}) => {
   const [selectedIndex, setSelIndex] = useState(0);
   const [viewImg, setViewImg] = useState(false);
   const [imgPath, setImgPath] = useState(null);
@@ -42,32 +42,31 @@ const RestaturantDetails = ({ route, navigation }) => {
   const [selItem, setSelItem] = useState('');
   const [filterData, setFilterData] = useState([]);
   const [load, setLoad] = useState(false);
-  const [resId,setrid]=useState(null)
+  const [resId, setrid] = useState(null);
   const [date, setDate] = useState(new Date());
   const seladdress = useSelector(state => state.UserReducer.selAddress);
   // const navigation = useNavigation();
   const dispatch = useDispatch();
-  
-console.log('object ',route?.params?.ID)
-  
-//get restaurant details & menus 
+  console.log('restaurantsData ', route.params.restaurantsData);
+  console.log('MinimumOrderMinimumOrder >>> ', details?.MinimumOrder);
+  //get restaurant details & menus
   useEffect(() => {
-    if(route?.params?.ID){
-      setrid(route?.params?.ID)
+    if (route?.params?.item.ID) {
+      setrid(route?.params?.item.ID);
     }
-    setLoad(true)
+    setLoad(true);
     const data = {
       latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
       longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
-      id: route?.params?.ID,
+      id: route?.params?.item.ID,
       date: moment(date).format('DD-MM-YYYY'),
       timeSlot: `${moment(new Date()).format('HH:mm')}-${moment(new Date())
         .add(30, 'minute')
-        .format('HH:mm')}`, 
+        .format('HH:mm')}`,
       Category: '',
     };
-   
-    console.log('data >?> ',data)
+
+    console.log('data >?> ', data);
     dispatch(restaurantDetails(data));
   }, []);
 
@@ -75,7 +74,7 @@ console.log('object ',route?.params?.ID)
     state => state.RestaurantReducers?.restaurantDetails,
   );
 
-  //set details 
+  //set details
   useEffect(() => {
     setLoad(false);
     setDetails(restaurantData);
@@ -214,6 +213,7 @@ console.log('object ',route?.params?.ID)
           let itemQtyhandle = {...item};
           itemQtyhandle.Qty = 1;
           itemQtyhandle.restaurantId = 3;
+          itemQtyhandle.MinimumOrder = details?.MinimumOrder;
           itemQtyhandle.Image =
             details?.Menu?.ProductsImagePrefix + item?.Image;
           tmpArr.push(itemQtyhandle);
@@ -242,6 +242,8 @@ console.log('object ',route?.params?.ID)
       } else {
         let itemQtyhandle = {...item};
         itemQtyhandle.Qty = 1;
+        itemQtyhandle.restaurantId = 3;
+        itemQtyhandle.MinimumOrder = details?.MinimumOrder;
         itemQtyhandle.Image = details?.Menu?.ProductsImagePrefix + item?.Image;
         tmpArr.push(itemQtyhandle);
       }
@@ -251,6 +253,8 @@ console.log('object ',route?.params?.ID)
       setCartModel(true);
       let itemQtyhandle = {...item};
       itemQtyhandle.Qty = 1;
+      itemQtyhandle.restaurantId = 3;
+      itemQtyhandle.MinimumOrder = details?.MinimumOrder;
       itemQtyhandle.Image = details?.Menu?.ProductsImagePrefix + item?.Image;
       // show?  null : tmpArr.push(itemQtyhandle) : null
     }
@@ -352,9 +356,10 @@ console.log('object ',route?.params?.ID)
         />
       </View>
       <View>
-        {
-          console.log('details?.Menu?.Categories >?> ',details?.Menu?.Categories?.length)
-        }
+        {console.log(
+          'details?.Menu?.Categories >?> ',
+          details?.Menu?.Categories?.length,
+        )}
         {selectedItem === 0 && searchtxt === '' ? (
           <FlatList
             data={details?.Menu?.Categories}
@@ -412,6 +417,7 @@ console.log('object ',route?.params?.ID)
                           style={{marginRight: scale(6)}}
                           onPress={() => {
                             handleCartAddItem(m);
+                            console.log('route.m', m.MinimumOrder);
                             // setCartModel(!cartModel);
                           }}
                         />
