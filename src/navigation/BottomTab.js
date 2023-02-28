@@ -79,8 +79,8 @@ const BottomTab = () => {
         },
         tabBarLabelStyle: {
           fontSize: scale(10),
-          fontFamily: theme.fonts.josefinSans,
-          fontWeight: '700',
+          fontFamily: 'JosefinSans-SemiBold',
+          // fontWeight: '700',
           paddingBottom: scale(5),
         },
       }}>

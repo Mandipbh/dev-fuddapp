@@ -29,21 +29,21 @@ const styles = StyleSheet.create({
   text: {
     fontSize: scale(13),
     color: theme.colors.black1,
-    fontFamily: theme.fonts.josefinSans,
-    fontWeight: '600',
+    fontFamily: theme.fonts.semiBold,
+    // fontWeight: '600',
   },
   title: {
     color: theme.colors.black,
     fontSize: scale(15.5),
-    fontFamily: theme.fonts.josefinSans,
-    fontWeight: 'bold',
+    fontFamily: 'JosefinSans-Bold',
+    // fontWeight: '700',
   },
   error: {
     textAlign: 'center',
     color: theme.colors.red,
     fontSize: scale(12),
     fontFamily: theme.fonts.josefinSans,
-    fontWeight: '600',
+    // fontWeight: '600',
   },
 });
 
