@@ -82,14 +82,12 @@ const CartScreen = () => {
         setLoad(true);
 
         const options = {payloads: data};
-        console.log('payloads>> ', data);
 
         ApiService.post(API.CalculateDeliveryPrice, options)
           .then(res => {
             if (res.Status === 'Success') {
               setDPrice(res.DeliveryPrice);
-              console.log('es.DeliveryPrice > ', res.DeliveryPrice);
-              console.log('calculate price of del;', res);
+
               setLoad(false);
             }
           })
@@ -137,7 +135,10 @@ const CartScreen = () => {
               setLoad(false);
               setDelMsg('');
               navigation.navigate('Checkout', {
-                total: pTotal + (pTotal === 0 ? 0 : dPrice),
+                total:
+                  pTotal +
+                  (dPrice !== 0 ? dPrice : 2.9) +
+                  (pTotal < cartData[0].MinimumOrder ? 2 : 0),
                 pTotal: pTotal,
               });
             }
@@ -256,13 +257,15 @@ const CartScreen = () => {
             <Title title="Totale Prodotti" />
             <Title title={`€ ${pTotal}`} style={styles.number} />
           </View>
-          <View style={styles.priceingView}>
-            <Title title="Sipplemento ordine inferiore a 15.00 €" />
-            <Title
-              title={`€ ${cartData[0].MinimumOrder}`}
-              style={styles.number}
-            />
-          </View>
+          {pTotal < cartData[0].MinimumOrder && (
+            <View style={styles.priceingView}>
+              <Title
+                title={`Sipplemento ordine inferiore a €${cartData[0].MinimumOrder}`}
+                style={{width: '80%'}}
+              />
+              <Title title={`€ 2`} style={styles.number} />
+            </View>
+          )}
           <View style={styles.priceingView}>
             <Title title="Spese di consegna" />
             <Title title={`€ ${dPrice}`} style={styles.number} />
@@ -279,7 +282,11 @@ const CartScreen = () => {
             ]}>
             <Title title="Totale Finale" />
             <Title
-              title={`€ ${pTotal + (dPrice !== 0 ? dPrice : 2.9)}`}
+              title={`€ ${
+                pTotal +
+                (dPrice !== 0 ? dPrice : 2.9) +
+                (pTotal < cartData[0].MinimumOrder ? 2 : 0)
+              }`}
               style={styles.number}
             />
           </View>

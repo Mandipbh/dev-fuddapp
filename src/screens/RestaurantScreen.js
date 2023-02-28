@@ -45,12 +45,19 @@ const RestaurantScreen = () => {
   const selectedCat = useSelector(
     state => state?.RestaurantReducers?.selCategory,
   );
-
   useEffect(() => {
-    setLoadding(true);
     if (selectedCat !== null) {
       setSelCategory(selectedCat?.Nome);
     }
+    setTimeSlot(
+      `${moment(new Date()).format('HH:mm')} ${moment(new Date())
+        .add(30, 'minute')
+        .format('HH:mm')}`,
+    );
+  }, [isFocuse]);
+  useEffect(() => {
+    setLoadding(true);
+
     const data =
       // {
       //   id: 0,
@@ -63,21 +70,14 @@ const RestaurantScreen = () => {
 
       {
         date: moment(date).format('DD-MM-YYYY'),
-        timeSlot: `${moment(new Date()).format('HH:mm')}-${moment(new Date())
-          .add(30, 'minute')
-          .format('HH:mm')}`, //'16:00TO16:30',
+        timeSlot: timeSloat, //'16:00TO16:30',
         category: selCategory,
         latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
         longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
       };
-    console.log('data ??? ', data);
+    console.log('Payload of ??? ', data);
     dispatch(getpopularRestaurants(data));
     dispatch(getAllCategory());
-    setTimeSlot(
-      `${moment(new Date()).format('HH:mm')} ${moment(new Date())
-        .add(30, 'minute')
-        .format('HH:mm')}`,
-    );
   }, [isFocuse, selCategory, timeSloat, date]);
 
   const categoryData = useSelector(state => state.HomeReducers?.categoryList);
@@ -98,6 +98,7 @@ const RestaurantScreen = () => {
   };
 
   const handleTimer = time => {
+    console.log('time slo >> .', time);
     setTimeModel(!timeModel);
     if (time !== null) {
       const timeslot = time.replace(' ', 'TO');

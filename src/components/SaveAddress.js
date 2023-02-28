@@ -19,7 +19,7 @@ import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
 
 const SaveAddress = ({back}) => {
   const [firstName, setFirstName] = useState('');
-  const [lastName, setLastname] = useState(null);
+  const [lastName, setLastname] = useState('');
   const [mobile, setMobile] = useState('');
   const [address, setAddress] = useState('');
   const [addressData, setAddressData] = useState('');
@@ -27,11 +27,38 @@ const SaveAddress = ({back}) => {
   const userData = useSelector(state => state?.UserReducer?.userDetails);
   const dispatch = useDispatch();
 
+  const validation = () => {
+    let error = false;
+    if (firstName === '') {
+      alert('Inserisci nome e cognome');
+      error = true;
+    } else if (lastName === '') {
+      alert('Inserisci nome e cognome');
+      error = true;
+    } else if (address === '') {
+      alert('Inserisci nome e cognome');
+      error = true;
+    } else if (mobile === '') {
+      alert('Inserisci nome e cognome');
+      error = true;
+    } else if (
+      addressData?.StreetNo === undefined ||
+      addressData?.StreetNo === ''
+    ) {
+      alert(
+        `Inserisci un indirizzo preciso con numero civico. L' indirizzo selezionato è troppo vago.`,
+      );
+    } else {
+      error = false;
+    }
+    return error;
+  };
+
   const handleSave = () => {
+    console.log('validation ?? ', validation());
     try {
       setLoad(true);
       console.log('dasddsdasdasdd>>> ', addressData);
-      // console.log('addressData >> ', addressData);
       const frmData = {
         ...addressData,
         Firstname: firstName,
@@ -198,6 +225,24 @@ const SaveAddress = ({back}) => {
                 ('address', 'postal_code', 'street_number', 'street_address')
               ],
             }}
+            textInputProps={{
+              placeholderTextColor: theme.colors.gray,
+              returnKeyType: 'search',
+            }}
+            styles={{
+              description: {color: 'black'},
+
+              textInput: {
+                color: theme.colors.black,
+                marginHorizontal: scale(15),
+                borderBottomWidth: scale(1),
+                borderBottomColor: theme.colors.gray1,
+                fontSize: scale(14),
+                fontFamily: theme.fonts.semiBold,
+                marginLeft: scale(15),
+                paddingLeft: scale(10),
+              },
+            }}
           />
           <InputBox
             value={firstName}
@@ -205,7 +250,7 @@ const SaveAddress = ({back}) => {
               setFirstName(txt);
             }}
             placeholder="first name"
-            style={{marginBottom: scale(3), width: '95%'}}
+            style={{marginBottom: scale(3)}}
           />
           <InputBox
             value={lastName}
@@ -213,7 +258,6 @@ const SaveAddress = ({back}) => {
               setLastname(txt);
             }}
             placeholder="last name"
-            keyboardType="numeric"
             style={{marginBottom: scale(3)}}
           />
           <InputBox
@@ -231,6 +275,7 @@ const SaveAddress = ({back}) => {
             }}
             placeholder="Telephone"
             style={{marginBottom: scale(3)}}
+            keyboardType="numeric"
           />
         </ScrollView>
       </KeyboardAvoidingView>
