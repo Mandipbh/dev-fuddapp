@@ -1,4 +1,11 @@
-import {Linking, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Alert,
+  Linking,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React from 'react';
 import {scale, theme} from '../../utils';
 import Modal from 'react-native-modal';
@@ -28,11 +35,25 @@ const DrawerModal = props => {
     AsyncStorage.clear();
     dispatch(isLogin(false));
     close();
-    navigation.navigate('home');
+    navigation.navigate('ACCOUNT');
   };
   const handleModal = () => {
     setModalVisible(!modalVisible);
   };
+
+  const showAlert = () =>
+    Alert.alert('Sei sicuro di voler andare?', null, [
+      {
+        text: 'Cancel',
+        cancelable: true,
+      },
+      {
+        text: 'Yes',
+        onPress: () => {
+          handleLogout();
+        },
+      },
+    ]);
 
   return (
     <Modal
@@ -43,18 +64,29 @@ const DrawerModal = props => {
       animationOut="slideInLeft"
       animationInTiming={0.5}
       style={{width: '60%', margin: 0}}>
+      <BlurView
+        style={styles.blurView}
+        blurType="xlight" // Values = dark, light, xlight .
+        blurAmount={6}
+        // viewRef={this.state.viewRef}
+        reducedTransparencyFallbackColor="white"
+      />
       <View style={styles.container}>
         <Icon
           name="x"
           size={scale(22)}
           color={theme.colors.black}
           onPress={() => close()}
-          style={{marginTop: 55, alignSelf: 'flex-end'}}
+          style={{
+            marginTop: scale(20),
+            marginRight: scale(10),
+            alignSelf: 'flex-end',
+          }}
         />
         <View
           style={{
             marginLeft: scale(25),
-            marginTop: scale(130),
+            marginTop: scale(30),
           }}>
           {isLoginUser ? (
             <>
@@ -108,7 +140,8 @@ const DrawerModal = props => {
               <TouchableOpacity
                 style={styles.textButton}
                 onPress={() => {
-                  handleLogout();
+                  close();
+                  showAlert();
                 }}>
                 <MaterialIcons
                   name="logout"
@@ -118,6 +151,7 @@ const DrawerModal = props => {
                 <Text style={styles.btnText}>LOGOUT</Text>
               </TouchableOpacity>
               <TouchableOpacity
+                style={{marginTop: scale(15)}}
                 onPress={() => {
                   close();
                   Linking.openURL('https://www.fuddapp.com/privacy');
@@ -153,6 +187,26 @@ const DrawerModal = props => {
 export default DrawerModal;
 
 const styles = StyleSheet.create({
+  modalBackground: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    paddingVertical: scale(20),
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    zIndex: 111,
+  },
+  label: {color: theme.colors.black, fontSize: scale(14), fontWeight: '500'},
+  activityIndicatorWrapper: {
+    backgroundColor: theme.colors.white,
+    // height: theme.SCREENHEIGHT * 0.2,
+    width: theme.SCREENWIDTH * 0.92,
+    borderRadius: scale(10),
+    // paddingVertical:scale(20),
+    padding: scale(10),
+    zIndex: 111,
+    marginTop: -theme.SCREENHEIGHT * 0.01,
+  },
   container: {
     flex: 1,
     padding: scale(5),
@@ -179,9 +233,10 @@ const styles = StyleSheet.create({
     marginLeft: scale(10),
     fontWeight: '600',
     fontFamily: theme.fonts.josefinSans,
+    color: theme.colors.black,
   },
   link: {
-    marginVertical: scale(5),
+    marginVertical: scale(10),
     color: theme.colors.linkColor,
   },
   blurView: {

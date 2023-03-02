@@ -49,11 +49,68 @@ const RestaurantScreen = () => {
     if (selectedCat !== null) {
       setSelCategory(selectedCat?.Nome);
     }
-    setTimeSlot(
-      `${moment(new Date()).format('HH:mm')} ${moment(new Date())
-        .add(30, 'minute')
-        .format('HH:mm')}`,
-    );
+    const now = `${moment(new Date()).format('HH:mm')}`;
+    console.log('now >>', now); //18:33   19:03
+
+    const times = now.split(':');
+    let splitedHour = times[0];
+    let splitedMin = times[1];
+    let newHOur = 0;
+    let newMin = '00';
+    let newoundedTime = '';
+    let newtimeSlot = '';
+
+    if (splitedMin >= 15 && splitedMin <= 30) {
+      newHOur = parseInt(splitedHour, 10);
+      newMin = '30'; //19:00
+    } else if (splitedMin > 30 && splitedMin <= 45) {
+      newHOur = parseInt(splitedHour, 10);
+      newMin = '30';
+    } else if (splitedMin > 45) {
+      newHOur = parseInt(splitedHour, 10) + 1;
+      newMin = '00';
+    } else {
+      newHOur = parseInt(splitedHour, 10);
+      newMin = '00'; //18:00
+    }
+
+    newoundedTime = newHOur.toString().concat(':', newMin.toString());
+    console.log('newoundedTime', newoundedTime);
+
+    let newEndHour = 0;
+    let newEndMin = '00';
+    let newEndoundTime = '';
+
+    console.log('splitedHour', splitedHour);
+    console.log('newHOur', newHOur);
+
+    if (parseInt(splitedHour) !== parseInt(newHOur)) {
+      newEndMin = '30';
+      newEndHour = parseInt(newHOur, 10);
+    } else {
+      if (parseInt(newMin) === 30) {
+        newEndMin = '00';
+        newEndHour = parseInt(newHOur, 10) + 1;
+      } else {
+        newEndMin = '30';
+        newEndHour = parseInt(newHOur, 10);
+      }
+    }
+
+    newEndoundTime = newEndHour.toString().concat(':', newEndMin.toString());
+    newtimeSlot = newoundedTime
+      .toString()
+      .concat('TO', newEndoundTime.toString());
+
+    console.log('newtimeSlot', newtimeSlot);
+
+    // setTimeSlot(
+    //   `${moment(new Date()).format('HH:mm')} ${moment(new Date())
+    //     .add(30, 'minute')
+    //     .format('HH:mm')}`,
+    // );
+
+    setTimeSlot(newtimeSlot);
   }, [isFocuse]);
   useEffect(() => {
     setLoadding(true);

@@ -15,6 +15,8 @@ import {scale, theme} from '../utils';
 import {Platform, Text, View} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {AboutUs, Label} from '../components';
+import {useState} from 'react';
+import {useFocusEffect, useNavigation} from '@react-navigation/core';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -23,6 +25,9 @@ const Comman = () => {
 };
 
 const Restaturant = () => {
+  const [isFirstScreenShown, seisFirstScreenShown] = useState(false);
+  const navigation = useNavigation();
+
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen

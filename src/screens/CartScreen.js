@@ -20,6 +20,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import {AddToCart} from '../redux/Actions/CartAction';
 import ApiService, {API} from '../utils/ApiService';
 import moment from 'moment';
+import LoginModel from '../components/appModel/LoginModel';
+import SetLocationModel from '../components/appModel/SetLocationModel';
 
 const CartScreen = () => {
   const navigation = useNavigation();
@@ -35,7 +37,8 @@ const CartScreen = () => {
   const [load, setLoad] = useState(false);
   const [date, setDate] = useState(new Date());
   const [dPrice, setDPrice] = useState(0);
-
+  const [loginModel, setLoginModel] = useState(false);
+  const [locationModel, setLocationModel] = useState(false);
   const incrimentCart = (selitm, idx) => {
     const tmparr = [...cartData];
     tmparr[idx].Qty = tmparr[idx].Qty + 1;
@@ -62,13 +65,11 @@ const CartScreen = () => {
     setPTotal(total);
     getCalculateDeliveryPrice(total);
   };
-
+  const isLoginUser = useSelector(state => state.UserReducer?.login);
   useEffect(() => {
     calculatePrice();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cartData]);
-
-  console.log('cartData ', cartData);
 
   const getCalculateDeliveryPrice = total => {
     try {
@@ -103,64 +104,74 @@ const CartScreen = () => {
   };
 
   const handleRestaurantAvailability = () => {
-    try {
-      if (cartData) {
-        const data = {
-          Latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
-          Longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
-          id: cartData[0].restaurantId,
-          Date: moment(date).format('DD-MM-YYYY'),
-          TimeSlot: `${moment(new Date()).format('HH:mm')}-${moment(new Date())
-            .add(30, 'minute')
-            .format('HH:mm')}`,
-          Category: selectedCat == null ? '' : selectedCat,
-        };
+    console.log('seladdress >>. ', seladdress);
+    if (seladdress === undefined || seladdress === null) {
+      setLocationModel(true);
+    } else {
+      try {
+        if (cartData) {
+          const data = {
+            Latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
+            Longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
+            id: cartData[0].restaurantId,
+            Date: moment(date).format('DD-MM-YYYY'),
+            TimeSlot: `${moment(new Date()).format('HH:mm')}-${moment(
+              new Date(),
+            )
+              .add(30, 'minute')
+              .format('HH:mm')}`,
+            Category: selectedCat == null ? '' : selectedCat,
+          };
 
-        // {
-        //   Latitute: '11.1569145',
-        //   Longitude: '13.3312435',
-        //   id: 3,
-        //   Date: '24-02-2023',
-        //   TimeSlot: '15:28-15:58',
-        //   Category: '',
-        // };
+          // {
+          //   Latitute: '11.1569145',
+          //   Longitude: '13.3312435',
+          //   id: 3,
+          //   Date: '24-02-2023',
+          //   TimeSlot: '15:28-15:58',
+          //   Category: '',
+          // };
 
-        setLoad(true);
+          setLoad(true);
 
-        const options = {payloads: data};
-        ApiService.post(API.checkestaurantAvailability, options)
-          .then(res => {
-            if (res.Status === 'Success') {
-              console.log('res of RestaurantAvailability >> ', res);
+          const options = {payloads: data};
+          ApiService.post(API.checkestaurantAvailability, options)
+            .then(res => {
+              if (res.Status === 'Success') {
+                console.log('res of RestaurantAvailability >> ', res);
+                setLoad(false);
+                setDelMsg('');
+                navigation.navigate('Checkout', {
+                  total:
+                    pTotal +
+                    (dPrice !== 0 ? dPrice : 2.9) +
+                    (pTotal < cartData[0].MinimumOrder ? 2 : 0),
+                  pTotal: pTotal,
+                });
+              }
+            })
+            .catch(e => {
               setLoad(false);
-              setDelMsg('');
-              navigation.navigate('Checkout', {
-                total:
-                  pTotal +
-                  (dPrice !== 0 ? dPrice : 2.9) +
-                  (pTotal < cartData[0].MinimumOrder ? 2 : 0),
-                pTotal: pTotal,
-              });
-            }
-          })
-          .catch(e => {
-            setLoad(false);
-            setDelMsg(
-              "La consegna non è disponibile dal ristorante all'indirizzo selezionato.",
-            );
-            console.log(
-              'error in RestaurantAvailability> ',
-              e?.response.data?.Errors[0],
-            );
-            //Alert.alert(e.response?.data?.Errors[0]);
-          });
+              setDelMsg(
+                "La consegna non è disponibile dal ristorante all'indirizzo selezionato.",
+              );
+              console.log(
+                'error in RestaurantAvailability> ',
+                e?.response.data?.Errors[0],
+              );
+              //Alert.alert(e.response?.data?.Errors[0]);
+            });
+        }
+      } catch (e) {
+        console.log('e in RestaurantAvailability ', e);
+        setLoad(false);
       }
-    } catch (e) {
-      console.log('e in RestaurantAvailability ', e);
-      setLoad(false);
     }
   };
 
+  const handleClose = () => {
+    setLoginModel(false);
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerView}>
@@ -268,7 +279,10 @@ const CartScreen = () => {
           )}
           <View style={styles.priceingView}>
             <Title title="Spese di consegna" />
-            <Title title={`€ ${dPrice}`} style={styles.number} />
+            <Title
+              title={`€ ${dPrice === 0 ? 2.9 : dPrice}`}
+              style={styles.number}
+            />
           </View>
 
           <View
@@ -305,15 +319,28 @@ const CartScreen = () => {
             style={styles.submitBtn}
             titleStyle={styles.btnTxt}
             onPress={() => {
-              if (seladdress?.Lat === undefined || seladdress?.Lat === null) {
-                Alert.alert('Select the address');
-              } else {
+              if (isLoginUser) {
                 handleRestaurantAvailability();
+              } else {
+                setLoginModel(true);
               }
+              // if (seladdress?.Lat === undefined || seladdress?.Lat === null) {
+              //   Alert.alert('Select the address');
+              // } else {
+              //   handleRestaurantAvailability();
+              // }
             }}
           />
         )}
       </View>
+      <SetLocationModel
+        isShow={locationModel}
+        close={() => {
+          setLocationModel(false);
+        }}
+      />
+
+      <LoginModel isVisible={loginModel} close={handleClose} />
     </SafeAreaView>
   );
 };

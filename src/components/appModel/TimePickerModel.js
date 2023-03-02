@@ -18,6 +18,7 @@ import {BlurView} from '@react-native-community/blur';
 const TimePickerModel = props => {
   const {isVisible, close} = props;
   const [timeSloat, setTimeSlot] = useState([]);
+  const [selTime, setSelTime] = useState(null);
   useEffect(() => {
     let x = {
       slotInterval: 30,
@@ -34,22 +35,23 @@ const TimePickerModel = props => {
     //Times
     let allTimes = [];
 
-    //Loop over the times - only pushes time with 30 minutes interval
     while (startTime < endTime) {
+      const str1 = startTime.format('HH:mm');
+      const str2 = startTime.add(x.slotInterval, 'minutes').format('HH:mm');
+
+      let newStr = str1.concat(' ', str2);
+      console.log('newStr', newStr);
+
       //Push times
-      allTimes.push(
-        startTime.format('HH:mm') +
-          ' ' +
-          startTime.add(x.slotInterval, 'minutes').format('HH:mm'),
-      );
-      //Add interval of 30 minutes
-      startTime.add(x.slotInterval, 'minutes');
+      allTimes.push(newStr);
     }
 
     setTimeSlot(allTimes);
-  }, []);
+  }, [isVisible, close]);
   return (
-    <Modal style={{margin: 0}} visible={isVisible}>
+    <Modal
+      style={{justifyContent: 'center', alignItems: 'center', flex: 1}}
+      visible={isVisible}>
       <BlurView
         style={styles.blurView}
         blurType="dark" // Values = dark, light, xlight .
@@ -60,30 +62,51 @@ const TimePickerModel = props => {
       <View style={styles.container}>
         <View style={styles.header}>
           <Title title="Select Time " />
-          <Feather
+          {/* <Feather
             name="x"
             size={scale(22)}
             color={theme.colors.black}
             onPress={() => {
-              close(null);
+
             }}
-          />
+          /> */}
         </View>
 
-        <View style={{height: '75%', marginTop: scale(10)}}>
+        <View style={{height: theme.SCREENHEIGHT * 0.16, marginTop: scale(10)}}>
           <ScrollView showsVerticalScrollIndicator={false}>
             {timeSloat.map((item, index) => {
               return (
                 <TouchableOpacity
-                  style={styles.timeBtn}
+                  style={[
+                    styles.timeBtn,
+                    {
+                      borderBottomWidth: scale(1),
+                      borderColor:
+                        item === selTime
+                          ? theme.colors.black
+                          : theme.colors.white,
+                    },
+                  ]}
                   onPress={() => {
-                    close(item);
+                    setSelTime(item);
                   }}>
                   <Label title={item} style={styles.txt} />
                 </TouchableOpacity>
               );
             })}
           </ScrollView>
+        </View>
+        <View style={styles.bottomView}>
+          <TouchableOpacity style={styles.btn} onPress={() => close(null)}>
+            <Label title="Cancel" style={styles.cantxt} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() => {
+              close(selTime);
+            }}>
+            <Label title="Confirm" style={styles.contxt} />
+          </TouchableOpacity>
         </View>
       </View>
     </Modal>
@@ -102,12 +125,12 @@ const styles = StyleSheet.create({
   },
   container: {
     // flex: 1,
-    height: '35%',
-    position: 'absolute',
+    height: theme.SCREENHEIGHT * 0.3,
+    // position: 'absolute',
     bottom: 0,
-    borderWidth: 1,
+    // borderWidth: 1,
     backgroundColor: theme.colors.white,
-    borderRadius: scale(20),
+    borderRadius: scale(15),
     padding: scale(5),
     alignItems: 'center',
     width: '100%',
@@ -139,5 +162,19 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: 0,
     right: 0,
+  },
+  bottomView: {
+    flexDirection: 'row',
+    paddingVertical: scale(5),
+    alignItems: 'center',
+  },
+  btn: {
+    paddingHorizontal: scale(5),
+  },
+  cantxt: {
+    color: theme.colors.red,
+  },
+  contxt: {
+    color: theme.colors.black1,
   },
 });

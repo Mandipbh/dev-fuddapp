@@ -44,6 +44,8 @@ const CheckoutScreen = ({route}) => {
   const [timeSloat, setTimeSlot] = useState(null);
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
+  const [isCoupenApplied, setCoupenApplied] = useState(false);
+  const [coupenAmnt, setCoupenAmnt] = useState(0);
   const [copanCode, setCopanCode] = useState('');
   const [notes, setNotes] = useState(null);
   const [paymentModel, setPayment] = useState(false);
@@ -55,7 +57,7 @@ const CheckoutScreen = ({route}) => {
   const isLoginUser = useSelector(state => state.UserReducer?.login);
   const [grandTotal, setGrandTotal] = useState(0);
   const [prdTotal, setProdTotal] = useState(0);
-
+  console.log('date >> ', date);
   const handleTimer = time => {
     setTimeModel(!timeModel);
     // console.log('TIME >> ', time);
@@ -76,31 +78,42 @@ const CheckoutScreen = ({route}) => {
 
   const handleCoupen = () => {
     const userData = user?.UserInfo;
-    try {
-      const folderFrm = {
-        UserId: user?.UserInfo !== undefined && userData?.Id,
-        RestaurantId: 3,
-        RiderId: 0,
-        OrderId: 0,
-        Date: date,
-        DiscountCode: copanCode,
-        Email: user?.UserInfo !== undefined && userData?.EMail,
-        ItemTotalCharge: prdTotal,
-      };
-      // console.log('handleCoupen ', folderFrm);
-      const options = {payloads: folderFrm};
-      ApiService.post(API.coupenCode, options)
-        .then(res => {
-          //  console.log('response >> ', res);
-        })
-        .catch(c => {
-          //  console.log('error catch', c);
-        });
-    } catch (error) {
-      // console.log('error of try ', error);
+    if (copanCode !== '') {
+      try {
+        const folderFrm = {
+          UserId: user?.UserInfo !== undefined && userData?.Id,
+          RestaurantId: 3,
+          RiderId: 0,
+          OrderId: 0,
+          Date: moment(date).utc().format('DD-MM-YYYY'),
+          DiscountCode: copanCode,
+          Email: user?.UserInfo !== undefined && userData?.EMail,
+          ItemTotalCharge: prdTotal,
+        };
+        console.log('handleCoupen ', folderFrm);
+        const options = {payloads: folderFrm};
+        ApiService.post(API.coupenCode, options)
+          .then(res => {
+            if (res.Status === 'Success') {
+              const coupenAmt = res.Amount;
+              setCoupenAmnt(coupenAmt);
+            }
+            console.log('response >> ', res);
+            setCoupenApplied(true);
+          })
+          .catch(c => {
+            Alert.alert(c.response?.data?.Errors[0]);
+            setCoupenApplied(false);
+            console.log('error catch', c.response?.data.Errors[0]);
+          });
+      } catch (error) {
+        setCoupenApplied(false);
+        console.log('error of try ', error);
+      }
+    } else {
+      alert('Inserisci il codice sconto');
     }
   };
-  console.log('paymentData>> ', paymentData);
   const handlePaymentMethod = data => {
     setPaymentData(data);
     setPayment(false);
@@ -204,8 +217,6 @@ const CheckoutScreen = ({route}) => {
     PaymentRequest: paymentrequestData,
   };
 
-  console.log('cartDetailJson >>', JSON.stringify(cartDetailJson, null, 4));
-
   const handlePlaceOrder = () => {
     // console.log('user?.UserInfo.Id',user?.UserInfo.Id);
 
@@ -233,6 +244,8 @@ const CheckoutScreen = ({route}) => {
               console.log('res of placeOrder >> ', res);
               setLoad(false);
               setProcesss(!process);
+              setCoupenApplied(false);
+              setCoupenAmnt(0);
             }
           })
           .catch(e => {
@@ -246,7 +259,6 @@ const CheckoutScreen = ({route}) => {
       }
     }
   };
-  console.log('user ', isLoginUser);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -423,9 +435,45 @@ const CheckoutScreen = ({route}) => {
                         <Text style={styles.applyTxt}>Applica</Text>
                       </TouchableOpacity>
                     </View>
+                    {isCoupenApplied && (
+                      <Title title="Codice Coupen applicato con successo!" />
+                    )}
                   </View>
                   <Label title="" />
                 </View>
+                <View
+                  style={[styles.priceingView, {paddingHorizontal: scale(8)}]}>
+                  <Label title="Somma totale" />
+                  <Label title={`€ ${grandTotal}`} />
+                </View>
+                {isCoupenApplied && (
+                  <>
+                    <View
+                      style={[
+                        styles.priceingView,
+                        {paddingHorizontal: scale(8)},
+                      ]}>
+                      <Label title="Fudd App Resto Promotion" />
+                      <Label
+                        title={`− € ${coupenAmnt}`}
+                        style={{color: theme.colors.red}}
+                      />
+                    </View>
+                    <View style={styles.divider} />
+                    <View
+                      style={[
+                        styles.priceingView,
+                        ,
+                        {paddingHorizontal: scale(8), paddingBottom: scale(30)},
+                      ]}>
+                      <Label title="Totale Finale" />
+                      <Label
+                        title={`€ ${(grandTotal - coupenAmnt).toFixed(2)}`}
+                      />
+                    </View>
+                  </>
+                )}
+
                 <Button
                   title="Invia ordine"
                   style={styles.submitBtn}
@@ -581,6 +629,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginVertical: scale(4),
+    marginHorizontal: scale(15),
   },
   dataview: {
     flexDirection: 'row',
@@ -620,5 +669,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
     marginBottom: scale(10),
+  },
+  divider: {
+    width: '112%',
+    alignSelf: 'center',
+    height: scale(0.5),
+    backgroundColor: theme.colors.gray,
+    overflow: 'hidden',
   },
 });

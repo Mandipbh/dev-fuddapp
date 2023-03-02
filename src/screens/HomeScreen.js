@@ -85,7 +85,7 @@ const Restaturants = ({restaurant}) => {
   return (
     <View style={styles.categoryContainer}>
       <View style={styles.popularView}>
-        <Title title="Restaurants" style={styles.title} />
+        <Title title="Advertising" style={styles.title} />
         {/* <Label title="SEE ALL" style={styles.seeAll} /> */}
       </View>
 
@@ -249,19 +249,27 @@ const HomeScreen = () => {
             titleStyle={styles.btnText}
           />
         )}
-        <ScrollView
-          style={styles.scrollView}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{paddingBottom: theme.SCREENHEIGHT * 0.05}}>
-          {categoryView && Food()}
+        <View
+          style={{
+            height: isLoginUser
+              ? theme.SCREENHEIGHT * 0.6
+              : theme.SCREENHEIGHT * 0.7,
+          }}>
+          <ScrollView
+            // style={styles.scrollView}
+            showsVerticalScrollIndicator={false}
+            // contentContainerStyle={{paddingBottom: theme.SCREENHEIGHT * 0.05}}
+          >
+            {categoryView && Food()}
 
-          {!categoryView && <Category categoryListData={categoryListData} />}
-          <PopularRestaturants
-            ExternalRestaurantData={popularRestaurants}
-            navigation={navigation}
-          />
-          {!categoryView && <Restaturants restaurant={restaurant} />}
-        </ScrollView>
+            {!categoryView && <Category categoryListData={categoryListData} />}
+            <PopularRestaturants
+              ExternalRestaurantData={popularRestaurants}
+              navigation={navigation}
+            />
+            {!categoryView && <Restaturants restaurant={restaurant} />}
+          </ScrollView>
+        </View>
       </View>
       <SetLocationModel
         isShow={locationModel}

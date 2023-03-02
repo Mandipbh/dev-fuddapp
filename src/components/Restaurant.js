@@ -63,7 +63,8 @@ const Restaurant = props => {
             style={{
               flexDirection: 'row',
               width: '32%',
-              justifyContent: 'space-between',
+              justifyContent:
+                item?.Distance !== 0 ? 'space-between' : 'space-evenly',
             }}>
             <LinearGradient
               colors={[theme.colors.purpal1, theme.colors.orange]}
@@ -82,9 +83,11 @@ const Restaurant = props => {
               />
               <Text style={styles.review}>{`${item?.Percentage} %`}</Text>
             </LinearGradient>
-            <View style={styles.km}>
-              <Text style={styles.review}>{'1.2 km'}</Text>
-            </View>
+            {item?.Distance !== 0 && (
+              <View style={styles.km}>
+                <Text style={styles.review}>{`${item?.Distance} km`}</Text>
+              </View>
+            )}
           </View>
         </View>
 

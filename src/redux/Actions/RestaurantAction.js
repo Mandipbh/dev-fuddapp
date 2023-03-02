@@ -11,7 +11,7 @@ export const getpopularRestaurants = data => {
     try {
       dispatch({type: LOADINGRESTORANTI, payload: true});
       const options = {payloads: data};
-      console.log(' pay laof ofgdfg >> ', data);
+      console.log('getAllRestaurant payLoad ', data);
       ApiService.post(API.getAllRestaurant, options)
         .then(res => {
           if (res) {

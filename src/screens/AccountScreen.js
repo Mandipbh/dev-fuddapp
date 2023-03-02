@@ -1,4 +1,5 @@
 import {
+  Alert,
   Image,
   SafeAreaView,
   StyleSheet,
@@ -62,7 +63,7 @@ const AccountScreen = () => {
   }, [selectedMenu]);
   const handleClick = (id, index) => {
     if (id === 4) {
-      handleLogout();
+      handleShowAlert();
     } else {
       index === 3 ? null : setSelectedMenu(id);
     }
@@ -72,18 +73,38 @@ const AccountScreen = () => {
     if (id === 3) {
       setModalVisible(true);
     } else {
-      index === 3 ? null : setSelectedMenu(id);
+      index === 3 || index === 4 ? null : setSelectedMenu(id);
     }
   };
 
   const handleClose = () => {
     setModalVisible(false);
   };
+
   const handleLogout = () => {
     dispatch(logout());
     AsyncStorage.clear();
     dispatch(isLogin(false));
-    navigation.replace('Tab');
+    navigation.goBack();
+  };
+
+  const handleShowAlert = () => {
+    Alert.alert('Sei sicuro di voler andare?', null, [
+      {
+        text: 'Cancel',
+        cancelable: true,
+      },
+      {
+        text: 'Yes',
+        onPress: () => {
+          handleLogout();
+        },
+      },
+    ]);
+    // dispatch(logout());
+    // AsyncStorage.clear();
+    // dispatch(isLogin(false));
+    // navigation.replace('Tab');
   };
   return (
     <SafeAreaView style={styles.container}>

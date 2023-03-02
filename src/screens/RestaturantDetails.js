@@ -320,7 +320,8 @@ const RestaturantDetails = ({route, navigation}) => {
               color={theme.colors.white}
               size={scale(12)}
             />
-            <Text style={styles.review}>{'100%'}</Text>
+            <Text
+              style={styles.review}>{`${restaurantData?.Percentage}%`}</Text>
           </LinearGradient>
           {restaurantData?.MinimumOrder && (
             <View style={styles.timeCon}>
