@@ -35,19 +35,33 @@ const RestaurantsCard = props => {
       </TouchableOpacity>
       <Title title={item.Name} style={styles.resLabel} />
       <Label title={item?.Tags} style={styles.location} numberOfLines={1} />
-      <View style={styles.row}>
-        <LinearGradient
-          colors={[theme.colors.purpal1, theme.colors.orange]}
-          start={{x: 0, y: 0}}
-          end={{x: 1, y: 0}}
-          style={styles.linBtn}>
-          <Icon1 name="thumbs-up" color={theme.colors.white} size={scale(12)} />
-          <Text style={styles.review}>{`${item?.Percentage} %`}</Text>
-        </LinearGradient>
-        <View style={styles.iconView}>
-          <Icon name="hamburger" color={theme.colors.purpal} size={scale(11)} />
+      {Popular && (
+        <View style={styles.row}>
+          <LinearGradient
+            colors={[theme.colors.purpal1, theme.colors.orange]}
+            start={{x: 0, y: 0}}
+            end={{x: 1, y: 0}}
+            style={styles.linBtn}>
+            <Icon1
+              name="thumbs-up"
+              color={theme.colors.white}
+              size={scale(12)}
+            />
+            <Text style={styles.review}>{`${item?.Percentage} %`}</Text>
+          </LinearGradient>
+          {Popular && (
+            <View style={styles.iconView}>
+              <FastImage
+                source={{
+                  uri: Popular ? APP_BASE_URL + item?.CategoryTagIcons[0] : '',
+                }}
+                style={styles.categoryIconImg}
+              />
+              {/* <Icon name="hamburger" color={theme.colors.purpal} size={scale(11)} /> */}
+            </View>
+          )}
         </View>
-      </View>
+      )}
     </View>
   );
 };
@@ -72,6 +86,10 @@ const styles = StyleSheet.create({
     width: '100%',
     resizeMode: 'cover',
     borderRadius: scale(10),
+  },
+  categoryIconImg: {
+    height: scale(15),
+    width: scale(15),
   },
   shadow: {
     shadowColor: '#000',
