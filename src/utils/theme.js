@@ -29,6 +29,8 @@ const theme = {
     green: '#4cd964',
     linkColor: '#808080',
     gray5: '#A3A3A3',
+    catColor: '#F1F1F3',
+    btnColor: '#007985',
   },
   SCREENWIDTH: width,
   SCREENHEIGHT: height,

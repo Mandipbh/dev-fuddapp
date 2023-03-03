@@ -51,12 +51,12 @@ const RestaurantsCard = props => {
           </LinearGradient>
           {Popular && (
             <View style={styles.iconView}>
-              <FastImage
+              {/* <FastImage
                 source={{
                   uri: Popular ? APP_BASE_URL + item?.CategoryTagIcons[0] : '',
                 }}
                 style={styles.categoryIconImg}
-              />
+              /> */}
               {/* <Icon name="hamburger" color={theme.colors.purpal} size={scale(11)} /> */}
             </View>
           )}
@@ -122,12 +122,13 @@ const styles = StyleSheet.create({
     fontFamily: theme.fonts.josefinSans,
   },
   iconView: {
-    padding: scale(4),
-    borderWidth: scale(0.5),
+    padding: scale(2),
+    // borderWidth: scale(0.5),
     borderRadius: scale(5),
-    borderColor: theme.colors.gray,
-    backgroundColor: theme.colors.gray1,
-    marginLeft: scale(10),
+    // borderColor: theme.colors.gray,
+    backgroundColor: theme.colors.category,
+    // marginLeft: scale(10),
+    marginHorizontal: scale(15),
   },
   linBtn: {
     width: null,

@@ -33,7 +33,7 @@ const SliderModal = props => {
             <Text
               style={[
                 styles.mainText,
-                {fontSize: 24, color: theme.colors.black},
+                {fontSize: scale(18), color: theme.colors.black},
               ]}>
               Tutte le cucine
             </Text>
@@ -48,7 +48,7 @@ const SliderModal = props => {
 
           <ScrollView>
             {data &&
-              data.map((item, index) => {
+              data.reverse().map((item, index) => {
                 return (
                   <TouchableOpacity
                     style={[
@@ -132,6 +132,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginHorizontal: scale(8),
+    marginBottom: scale(8),
   },
   blurView: {
     position: 'absolute',

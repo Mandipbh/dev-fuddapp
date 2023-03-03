@@ -31,6 +31,7 @@ const RestaurantScreen = () => {
   const [open, setOpen] = useState(false);
   const [timeModel, setTimeModel] = useState(false);
   const [timeSloat, setTimeSlot] = useState(null);
+  const [displayedTimeSloat, setDisplayedTimeSlot] = useState(null);
   const [restaurantsData, setRestaurantsData] = useState([]);
   const [selCategory, setSelCategory] = useState('');
   const [search, setSearch] = useState();
@@ -41,7 +42,7 @@ const RestaurantScreen = () => {
   const seladdress = useSelector(state => state.UserReducer.selAddress);
   const [load, setLoad] = useState(false);
   const cartData = useSelector(state => state?.CartReducer.cartData);
-
+  const startOfMonth = moment().format('YYYY-MM-DD');
   const selectedCat = useSelector(
     state => state?.RestaurantReducers?.selCategory,
   );
@@ -50,7 +51,6 @@ const RestaurantScreen = () => {
       setSelCategory(selectedCat?.Nome);
     }
     const now = `${moment(new Date()).format('HH:mm')}`;
-    console.log('now >>', now); //18:33   19:03
 
     const times = now.split(':');
     let splitedHour = times[0];
@@ -59,6 +59,7 @@ const RestaurantScreen = () => {
     let newMin = '00';
     let newoundedTime = '';
     let newtimeSlot = '';
+    let displaytimeslot = '';
 
     if (splitedMin >= 15 && splitedMin <= 30) {
       newHOur = parseInt(splitedHour, 10);
@@ -75,14 +76,10 @@ const RestaurantScreen = () => {
     }
 
     newoundedTime = newHOur.toString().concat(':', newMin.toString());
-    console.log('newoundedTime', newoundedTime);
 
     let newEndHour = 0;
     let newEndMin = '00';
     let newEndoundTime = '';
-
-    console.log('splitedHour', splitedHour);
-    console.log('newHOur', newHOur);
 
     if (parseInt(splitedHour) !== parseInt(newHOur)) {
       newEndMin = '30';
@@ -102,16 +99,15 @@ const RestaurantScreen = () => {
       .toString()
       .concat('TO', newEndoundTime.toString());
 
+    displaytimeslot = newoundedTime
+      .toString()
+      .concat(' TO ', newEndoundTime.toString());
     console.log('newtimeSlot', newtimeSlot);
 
-    // setTimeSlot(
-    //   `${moment(new Date()).format('HH:mm')} ${moment(new Date())
-    //     .add(30, 'minute')
-    //     .format('HH:mm')}`,
-    // );
-
+    setDisplayedTimeSlot(displaytimeslot);
     setTimeSlot(newtimeSlot);
-  }, [isFocuse]);
+  }, []);
+
   useEffect(() => {
     setLoadding(true);
 
@@ -159,6 +155,10 @@ const RestaurantScreen = () => {
     setTimeModel(!timeModel);
     if (time !== null) {
       const timeslot = time.replace(' ', 'TO');
+
+      const displayTime = time.replace(' ', ' TO ');
+      console.log('displayTime', displayTime);
+      setDisplayedTimeSlot(displayTime);
       setTimeSlot(timeslot);
     }
   };
@@ -220,7 +220,7 @@ const RestaurantScreen = () => {
               setTimeModel(!timeModel);
             }}>
             <Icon name="clock" size={scale(15)} color={theme.colors.gray2} />
-            <Label title={timeSloat} style={styles.lbl} />
+            <Label title={displayedTimeSloat} style={styles.lbl} />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.btn}
@@ -293,6 +293,7 @@ const RestaurantScreen = () => {
         onCancel={() => {
           setOpen(false);
         }}
+        minimumDate={new Date(startOfMonth)}
       />
       <TimePickerModel isVisible={timeModel} close={handleTimer} />
       {Platform.OS !== 'ios' && loadding && <Loader loading={loadding} />}
@@ -345,6 +346,7 @@ const styles = StyleSheet.create({
   lbl: {
     fontSize: scale(11),
     color: theme.colors.gray,
+    right: scale(12),
   },
   textinputContainer: {
     height: scale(45),

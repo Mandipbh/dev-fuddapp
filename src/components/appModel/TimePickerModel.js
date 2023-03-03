@@ -72,7 +72,7 @@ const TimePickerModel = props => {
           /> */}
         </View>
 
-        <View style={{height: theme.SCREENHEIGHT * 0.16, marginTop: scale(10)}}>
+        <View style={{height: theme.SCREENHEIGHT * 0.25, marginTop: scale(10)}}>
           <ScrollView showsVerticalScrollIndicator={false}>
             {timeSloat.map((item, index) => {
               return (
@@ -98,14 +98,14 @@ const TimePickerModel = props => {
         </View>
         <View style={styles.bottomView}>
           <TouchableOpacity style={styles.btn} onPress={() => close(null)}>
-            <Label title="Cancel" style={styles.cantxt} />
+            <Label title="CANCEL" style={styles.cantxt} />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.btn}
             onPress={() => {
               close(selTime);
             }}>
-            <Label title="Confirm" style={styles.contxt} />
+            <Label title="CONFIRM" style={styles.contxt} />
           </TouchableOpacity>
         </View>
       </View>
@@ -125,12 +125,12 @@ const styles = StyleSheet.create({
   },
   container: {
     // flex: 1,
-    height: theme.SCREENHEIGHT * 0.3,
+    height: theme.SCREENHEIGHT * 0.4,
     // position: 'absolute',
     bottom: 0,
     // borderWidth: 1,
     backgroundColor: theme.colors.white,
-    borderRadius: scale(15),
+    // borderRadius: scale(15),
     padding: scale(5),
     alignItems: 'center',
     width: '100%',
@@ -153,8 +153,8 @@ const styles = StyleSheet.create({
     marginTop: scale(10),
     width: '90%',
     justifyContent: 'space-between',
-    borderBottomWidth: scale(0.3),
-    paddingBottom: scale(3),
+    // borderBottomWidth: scale(0.3),
+    // paddingBottom: scale(3),
   },
   blurView: {
     position: 'absolute',
@@ -165,16 +165,18 @@ const styles = StyleSheet.create({
   },
   bottomView: {
     flexDirection: 'row',
-    paddingVertical: scale(5),
+    padding: theme.SCREENHEIGHT * 0.025,
     alignItems: 'center',
+    justifyContent: 'flex-end',
+    width: '100%',
   },
   btn: {
     paddingHorizontal: scale(5),
   },
   cantxt: {
-    color: theme.colors.red,
+    color: theme.colors.btnColor,
   },
   contxt: {
-    color: theme.colors.black1,
+    color: theme.colors.btnColor,
   },
 });

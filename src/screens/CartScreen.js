@@ -88,7 +88,6 @@ const CartScreen = () => {
           .then(res => {
             if (res.Status === 'Success') {
               setDPrice(res.DeliveryPrice);
-
               setLoad(false);
             }
           })

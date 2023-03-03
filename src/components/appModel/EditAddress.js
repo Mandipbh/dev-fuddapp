@@ -258,7 +258,7 @@ const EditAddress = props => {
                 />
               </ScrollView>
             </KeyboardAvoidingView>
-            <Image source={images.appIcon} style={styles.appIcon} />
+            <Image source={images.appIcon2} style={styles.appIcon} />
             {load ? (
               <ActivityIndicator size="small" color={theme.colors.primary} />
             ) : (
@@ -326,12 +326,12 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   appIcon: {
-    height: scale(77),
-    width: '80%',
+    height: scale(50),
     resizeMode: 'contain',
     alignSelf: 'center',
-    top: scale(40),
+    top: scale(0),
     opacity: 0.35,
+    marginVertical: scale(5),
   },
   btn: {
     // padding: scale(5),
