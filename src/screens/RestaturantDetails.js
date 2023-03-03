@@ -191,10 +191,11 @@ const RestaturantDetails = ({route, navigation}) => {
   };
 
   const renderInfo = ({item, index}) => {
+    const time = item?.Time?.replace('<br />', ' ');
     return (
       <View style={styles.menuViews}>
         <Text style={styles.infoText}>{item?.Day}</Text>
-        <Text style={styles.infoText}>{item?.Time}</Text>
+        <Text style={styles.infoText}>{time}</Text>
       </View>
     );
   };
