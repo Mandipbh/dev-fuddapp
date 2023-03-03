@@ -11,7 +11,7 @@ import {useState} from 'react';
 import AddCardModal from './AddCardModal';
 import {useEffect} from 'react';
 import {BlurView} from '@react-native-community/blur';
-import { AddToCart } from '../../redux/Actions/CartAction';
+import {AddToCart} from '../../redux/Actions/CartAction';
 
 const CartModel = props => {
   const {isVisible, close, data} = props;
@@ -27,7 +27,6 @@ const CartModel = props => {
   const [show, setShow] = useState(false);
   const [selIndex, setIdx] = useState(0);
   const tmpDataForCircle = wantProduct?.ImportoUnitario;
-  
 
   // const popItem = ({ item }) => {
   //   rIds.includes(item?.IDRiga) ? setCheckBox(!checkbox) : null
@@ -48,31 +47,37 @@ const CartModel = props => {
   useEffect(() => {
     setPrice(data?.Amount);
     setProductDetails(data);
-    // console.log('data ?? ', data?.lstAddons);
     data?.lstAddons?.length > 0 && setAddonData(data?.lstAddons);
     // data?.lstAddons?.length === 0 && setAddonData([]);
     calculatePrice();
+    console.log('sMakeTypeNameCSV ?? ', data?.lstAddons);
   }, [data, productDetails.lstAddons, wantProduct, addonData]);
 
-
-  const handleAggiungi =async ()=> {
-    const add1  =   addonData.filter(x=>x.Qty > 0)
-    const add2 =  productDetails.lstIngredients.filter(x=>x.IsChecked===true)
-    const add3 = wantProduct
+  const handleAggiungi = async () => {
+    const add1 = addonData.filter(x => x.Qty > 0);
+    const add2 = productDetails.lstIngredients.filter(
+      x => x.IsChecked === true,
+    );
+    const add3 = wantProduct;
 
     // console.log(' addonData.filter(x=>x.Qty > 0).map(selectedItem=>{ z ? ',add1)
-  //  await  addonData.filter(x=>x.Qty > 0).map(selectedItem=>{
-  //     const new_addOns = { ...productDetails, "lstAddons": selectedItem , "lstMakeTypes": wantProduct} 
-  //     console.log('new_lstAddons >> ',new_addOns)
-  //     setProductDetails(new_addOns)
-  //   })
-    const ProductData = { ...productDetails, "lstAddons": add1 ,lstIngredients:add2, "lstMakeTypes": wantProduct} 
-    console.log('product details >>  ',ProductData)
-  //   setProductDetails(productDetails);
+    //  await  addonData.filter(x=>x.Qty > 0).map(selectedItem=>{
+    //     const new_addOns = { ...productDetails, "lstAddons": selectedItem , "lstMakeTypes": wantProduct}
+    //     console.log('new_lstAddons >> ',new_addOns)
+    //     setProductDetails(new_addOns)
+    //   })
+    const ProductData = {
+      ...productDetails,
+      lstAddons: add1,
+      lstIngredients: add2,
+      lstMakeTypes: wantProduct,
+    };
+    console.log('product details >>  ', ProductData);
+    //   setProductDetails(productDetails);
+    clearify();
+    close(ProductData);
 
-    close(ProductData)
-  //    console.log('tmpData',productDetails)
-
+    //    console.log('tmpData',productDetails)
   };
 
   // const handleCartAddItem = async item => {
@@ -116,15 +121,12 @@ const CartModel = props => {
     setAddonData(tempArray);
   };
 
-  function clearify() {
+  const clearify = () => {
     setProductDetails([]);
+    setWantProduct(null);
     setCartModel(false);
-    // emptyQty()
     close();
-    // let tmpArr = [...addonData]
-    // tmpArr.Qty == 0
-    // setAddonData(tmpArr)
-  }
+  };
 
   const deleteByIndexProduct = index => {
     console.log('clicked position', index);
@@ -135,17 +137,6 @@ const CartModel = props => {
     // rIds.filter((item, itemIndex) => itemIndex != index)
   };
 
-  const changeShow = props => {
-    setShow(!show);
-    setAddonData([]);
-    props.onSubmit(show);
-  };
-
-  // const emptyQty = () => {
-  //   let tmp = [...addonData]
-  //   tmp[idx].Qty != 0 ? tmp[idx].Qty = 0 : null
-  //   setAddonData(tmp)
-  // }
   const calculatePrice = () => {
     const tmparr = [...addonData];
     const initialValue = 0;
@@ -172,8 +163,8 @@ const CartModel = props => {
     };
 
     setProductDetails(tmpdata);
-    
   };
+
   return (
     <Modal
       style={styles.Maincontainer}
@@ -190,7 +181,7 @@ const CartModel = props => {
       <View style={styles.container}>
         <Icon
           name="x"
-          size={scale(30)}
+          size={scale(20)}
           color={theme.colors.white}
           style={styles.closeIcon}
           onPress={() => {
@@ -200,7 +191,7 @@ const CartModel = props => {
         <View style={styles.subView}>
           <Icon
             name="x"
-            size={scale(30)}
+            size={scale(20)}
             color={theme.colors.bla}
             style={styles.closeIcon}
             onPress={() => {
@@ -372,7 +363,7 @@ const CartModel = props => {
                                     </View>
                                     <TouchableOpacity
                                       onPress={() => {
-                                         handleIngredienti(item, index);
+                                        handleIngredienti(item, index);
                                       }}>
                                       {item?.IsChecked ? (
                                         <Icon
@@ -472,10 +463,7 @@ const CartModel = props => {
         </View>
         <View style={styles.bottomView}>
           <Button
-            onPress={() => 
-              
-              handleAggiungi()
-            }
+            onPress={() => handleAggiungi()}
             title="Aggiungi al carrello"
             style={styles.button}
             titleStyle={styles.btntxt}
@@ -502,7 +490,7 @@ const styles = StyleSheet.create({
   },
   closeIcon: {
     alignSelf: 'flex-end',
-    marginRight: scale(10),
+    margin: scale(5),
     // marginBottom: scale(10),
   },
   categoryTitle: {

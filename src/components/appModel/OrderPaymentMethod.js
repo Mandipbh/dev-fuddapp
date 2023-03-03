@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   TextInput,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import {scale, theme} from '../../utils';
@@ -38,8 +39,22 @@ const OrderPaymentMethod = props => {
     title: option,
   };
   const handleCard = () => {
+    console.log('paymentType', paymentType);
     if (option !== null) {
-      close(cardObject);
+      if (
+        paymentType === 2 &&
+        (cardHolderName === null ||
+          cardNumber === null ||
+          month === null ||
+          year === null ||
+          cvv === null ||
+          zip === null)
+      ) {
+        Alert.alert('Please fill all credit card detail');
+      } else {
+        close(cardObject);
+      }
+
       console.log('cardObject', cardObject);
     } else {
       alert('Scegli il metodo di pagamento. ');

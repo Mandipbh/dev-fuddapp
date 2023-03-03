@@ -74,9 +74,9 @@ const MyOrders = () => {
                       />
                     )}
                   </View>
-                  <TouchableOpacity style={styles.btn}>
+                  {/* <TouchableOpacity style={styles.btn}>
                     <Label title="Riordina" style={styles.btntxt} />
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                   <TouchableOpacity
                     style={[
                       styles.row,
@@ -100,12 +100,16 @@ const MyOrders = () => {
                   <>
                     <View style={styles.detailsView}>
                       {oI?.OrderRows &&
-                        oI?.OrderRows.map((product, index) => {
+                        oI?.OrderRows.map((product, idx) => {
                           return (
-                            <View>
+                            <View style={styles.itemDetails} key={idx}>
                               <Label
                                 style={{color: theme.colors.gray5}}
-                                title={`${product?.Qty}X ${product?.Product}`}
+                                title={`${product?.Qty}X `}
+                              />
+                              <Label
+                                style={{color: theme.colors.gray5}}
+                                title={`${product?.Product}`}
                               />
                             </View>
                           );
@@ -115,7 +119,7 @@ const MyOrders = () => {
                     <View
                       style={[
                         styles.row,
-                        {width: '65%', marginBottom: scale(8)},
+                        {width: '100%', marginBottom: scale(8)},
                       ]}>
                       <Label
                         title="Total Amount"
@@ -171,7 +175,7 @@ const styles = StyleSheet.create({
     marginVertical: scale(3),
     borderColor: theme.colors.gray1,
     paddingVertical: scale(5),
-    width: '65%',
+    width: '100%',
   },
   row: {
     flexDirection: 'row',
@@ -180,5 +184,10 @@ const styles = StyleSheet.create({
   price: {
     fontSize: scale(12),
     color: theme.colors.black,
+  },
+  itemDetails: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 });

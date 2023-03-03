@@ -45,6 +45,8 @@ const CartScreen = () => {
     dispatch(AddToCart(tmparr));
   };
 
+  console.log('CartScreen>>', cartData);
+
   const decrimentCart = (selitm, idx) => {
     const tmparr = [...cartData];
     if (tmparr[idx].Qty <= 1) {

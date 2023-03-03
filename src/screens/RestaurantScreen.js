@@ -144,9 +144,9 @@ const RestaurantScreen = () => {
     setLoadding(false);
   }, [restaurantData]);
   const IconClosePicker = data => {
-    if (data !== undefined) {
+    setSelectedModal(false);
+    if (data !== null) {
       setSelCategory(data?.Nome);
-      setSelectedModal(false);
     }
   };
 

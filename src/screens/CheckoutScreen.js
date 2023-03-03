@@ -47,17 +47,19 @@ const CheckoutScreen = ({route}) => {
   const [isCoupenApplied, setCoupenApplied] = useState(false);
   const [coupenAmnt, setCoupenAmnt] = useState(0);
   const [copanCode, setCopanCode] = useState('');
-  const [notes, setNotes] = useState(null);
+  const [notes, setNotes] = useState('Null');
   const [paymentModel, setPayment] = useState(false);
   const user = useSelector(state => state.UserReducer?.userDetails);
   const selAddress = useSelector(state => state.UserReducer.selAddress);
   const [load, setLoad] = useState(false);
+  const [displayedTimeSloat, setDisplayedTimeSlot] = useState(null);
   const cartData = useSelector(state => state?.CartReducer.cartData);
   const [paymentData, setPaymentData] = useState(null);
   const isLoginUser = useSelector(state => state.UserReducer?.login);
   const [grandTotal, setGrandTotal] = useState(0);
   const [prdTotal, setProdTotal] = useState(0);
   console.log('date >> ', date);
+
   const handleTimer = time => {
     setTimeModel(!timeModel);
     // console.log('TIME >> ', time);
@@ -66,7 +68,8 @@ const CheckoutScreen = ({route}) => {
       setTimeSlot(timeslot);
     }
   };
-  // console.log('user ??/ ', user?.UserInfo);
+  console.log('cartData ??/ ', cartData);
+  console.log('route', route.params);
 
   useEffect(() => {
     if (route.params) {
@@ -74,6 +77,66 @@ const CheckoutScreen = ({route}) => {
       setGrandTotal(total);
       setProdTotal(pTotal);
     }
+  }, []);
+
+  //select timer for order
+  useEffect(() => {
+    const now = `${moment(new Date()).format('HH:mm')}`;
+
+    const times = now.split(':');
+    let splitedHour = times[0];
+    let splitedMin = times[1];
+    let newHOur = 0;
+    let newMin = '00';
+    let newoundedTime = '';
+    let newtimeSlot = '';
+    let displaytimeslot = '';
+
+    if (splitedMin >= 15 && splitedMin <= 30) {
+      newHOur = parseInt(splitedHour, 10);
+      newMin = '30'; //19:00
+    } else if (splitedMin > 30 && splitedMin <= 45) {
+      newHOur = parseInt(splitedHour, 10);
+      newMin = '30';
+    } else if (splitedMin > 45) {
+      newHOur = parseInt(splitedHour, 10) + 1;
+      newMin = '00';
+    } else {
+      newHOur = parseInt(splitedHour, 10);
+      newMin = '00'; //18:00
+    }
+
+    newoundedTime = newHOur.toString().concat(':', newMin.toString());
+
+    let newEndHour = 0;
+    let newEndMin = '00';
+    let newEndoundTime = '';
+
+    if (parseInt(splitedHour) !== parseInt(newHOur)) {
+      newEndMin = '30';
+      newEndHour = parseInt(newHOur, 10);
+    } else {
+      if (parseInt(newMin) === 30) {
+        newEndMin = '00';
+        newEndHour = parseInt(newHOur, 10) + 1;
+      } else {
+        newEndMin = '30';
+        newEndHour = parseInt(newHOur, 10);
+      }
+    }
+
+    newEndoundTime = newEndHour.toString().concat(':', newEndMin.toString());
+    newtimeSlot = newoundedTime
+      .toString()
+      .concat('TO', newEndoundTime.toString());
+
+    displaytimeslot = newoundedTime
+      .toString()
+      .concat(' TO ', newEndoundTime.toString());
+    console.log('newtimeSlot', newtimeSlot);
+
+    setDisplayedTimeSlot(displaytimeslot);
+    setTimeSlot(newtimeSlot);
   }, []);
 
   const handleCoupen = () => {
@@ -168,10 +231,11 @@ const CheckoutScreen = ({route}) => {
         ? paymentData.sCardPostcode
         : '',
     sCustomerEmail: user !== undefined && user?.UserInfo?.EMail,
-    nAmount: 0,
+    nAmount: coupenAmnt !== 0 ? grandTotal - coupenAmnt : grandTotal,
   };
 
   cartData.map(item => {
+    console.log('cartItem', item);
     var ingredientsList = [];
     var addOnsList = [];
     var makeTypeIds = [];
@@ -187,7 +251,7 @@ const CheckoutScreen = ({route}) => {
       });
     });
 
-    item.lstMakeTypes == null
+    item.lstMakeTypes?.length === undefined || item.lstMakeTypes?.length === 0
       ? makeTypeIds.push()
       : makeTypeIds.push(item.lstMakeTypes.Id);
 
@@ -218,7 +282,7 @@ const CheckoutScreen = ({route}) => {
   };
 
   const handlePlaceOrder = () => {
-    // console.log('user?.UserInfo.Id',user?.UserInfo.Id);
+    console.log('cartDetailJson', JSON.stringify(cartDetailJson, null, 4));
 
     if (!isLoginUser) {
       Alert.alert('Please login into the App');
@@ -231,9 +295,11 @@ const CheckoutScreen = ({route}) => {
       Alert.alert('Please select atleast one payment option');
     } else if (locationModel === undefined || locationModel === null) {
       Alert.alert('Please select address');
-    } else if (notes === undefined || notes === null) {
-      Alert.alert('Please add notes');
-    } else {
+    }
+    //  else if (notes === undefined || notes === null) {
+    //   Alert.alert('Please add notes');
+    // }
+    else {
       try {
         setLoad(true);
         const options = {payloads: cartDetailJson};

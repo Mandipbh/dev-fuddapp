@@ -40,7 +40,6 @@ const TimePickerModel = props => {
       const str2 = startTime.add(x.slotInterval, 'minutes').format('HH:mm');
 
       let newStr = str1.concat(' ', str2);
-      console.log('newStr', newStr);
 
       //Push times
       allTimes.push(newStr);

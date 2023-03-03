@@ -173,6 +173,7 @@ const RestaturantDetails = ({route, navigation}) => {
                     color={theme.colors.purpal}
                     style={{marginRight: scale(6)}}
                     onPress={() => {
+                      console.log('onPress>', JSON.stringify(m, null, 4));
                       handleCartAddItem(m);
                       // setCartModel(!cartModel);
                     }}
@@ -219,7 +220,7 @@ const RestaturantDetails = ({route, navigation}) => {
             details?.Menu?.ProductsImagePrefix + item?.Image;
           tmpArr.push(itemQtyhandle);
         }
-        setSelItem(item);
+        // setSelItem(item);
       }
     }, 1500);
   };
