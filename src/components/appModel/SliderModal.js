@@ -11,10 +11,17 @@ import {scale, theme} from '../../utils';
 import Modal from 'react-native-modal';
 import {useState} from 'react';
 import {BlurView} from '@react-native-community/blur';
+import {useEffect} from 'react';
 
 const SliderModal = props => {
   const {isVisible, close, data} = props;
   const [selCategory, setSelCategory] = useState(null);
+  const [categoryData, setCategoryData] = useState([]);
+  useEffect(() => {
+    setCategoryData(data.reverse());
+  }, [data]);
+
+  console.log('selCategory ??/ ', selCategory);
   return (
     <Modal animationType="fade" visible={isVisible} style={styles.modalCon}>
       <BlurView
@@ -33,7 +40,7 @@ const SliderModal = props => {
             <Text
               style={[
                 styles.mainText,
-                {fontSize: 24, color: theme.colors.black},
+                {fontSize: scale(18), color: theme.colors.black},
               ]}>
               Tutte le cucine
             </Text>
@@ -47,30 +54,30 @@ const SliderModal = props => {
           </View>
 
           <ScrollView>
-            {data &&
-              data.map((item, index) => {
+            {categoryData &&
+              categoryData.map((item, index) => {
                 return (
                   <TouchableOpacity
                     style={[
                       styles.textContainer,
                       {
                         backgroundColor:
-                          item === selCategory
-                            ? theme.colors.primary
-                            : theme.colors.white,
+                          item?.Id === selCategory
+                            ? theme.colors.purpal
+                            : theme.colors.primary,
                       },
                     ]}
                     key={index}
                     onPress={() => {
                       close(item);
-                      setSelCategory(item?.ID);
+                      setSelCategory(item?.Id);
                     }}>
                     <Text
                       style={[
                         styles.mainText,
                         {
                           color:
-                            item === selCategory
+                            item?.Id !== selCategory
                               ? theme.colors.white
                               : theme.colors.primary,
                           fontSize: scale(13),
@@ -132,6 +139,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginHorizontal: scale(8),
+    marginBottom: scale(8),
   },
   blurView: {
     position: 'absolute',

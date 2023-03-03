@@ -251,11 +251,11 @@ const AccountScreen = () => {
           <Image
             source={images.appIcon}
             style={{
-              height: scale(100),
+              height: scale(85),
               width: theme.SCREENWIDTH * 0.5,
               resizeMode: 'stretch',
               alignSelf: 'center',
-              marginTop: scale(15),
+              marginTop: scale(10),
               // marginVertical: scale(5),
             }}
           />

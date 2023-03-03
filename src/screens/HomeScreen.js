@@ -244,7 +244,7 @@ const HomeScreen = () => {
             onPress={() => {
               setLocationModel(true);
             }}
-            title={'Scegli tra i tuoi indirizzi'}
+            title={'Trova ristoranti'}
             style={styles.ristroBtn}
             titleStyle={styles.btnText}
           />

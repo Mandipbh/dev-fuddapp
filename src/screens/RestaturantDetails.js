@@ -3,6 +3,7 @@ import {
   Image,
   ImageBackground,
   Platform,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -172,6 +173,7 @@ const RestaturantDetails = ({route, navigation}) => {
                     color={theme.colors.purpal}
                     style={{marginRight: scale(6)}}
                     onPress={() => {
+                      console.log('onPress>', JSON.stringify(m, null, 4));
                       handleCartAddItem(m);
                       // setCartModel(!cartModel);
                     }}
@@ -189,10 +191,11 @@ const RestaturantDetails = ({route, navigation}) => {
   };
 
   const renderInfo = ({item, index}) => {
+    const time = item?.Time?.replace('<br />', ' ');
     return (
       <View style={styles.menuViews}>
         <Text style={styles.infoText}>{item?.Day}</Text>
-        <Text style={styles.infoText}>{item?.Time}</Text>
+        <Text style={styles.infoText}>{time}</Text>
       </View>
     );
   };
@@ -218,7 +221,7 @@ const RestaturantDetails = ({route, navigation}) => {
             details?.Menu?.ProductsImagePrefix + item?.Image;
           tmpArr.push(itemQtyhandle);
         }
-        setSelItem(item);
+        // setSelItem(item);
       }
     }, 1500);
   };
@@ -310,19 +313,21 @@ const RestaturantDetails = ({route, navigation}) => {
           )}
         </View>
         <View style={styles.bottomView}>
-          <LinearGradient
-            colors={[theme.colors.purpal1, theme.colors.orange]}
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 0}}
-            style={styles.linCon}>
-            <Icon2
-              name="thumbs-up"
-              color={theme.colors.white}
-              size={scale(12)}
-            />
-            <Text
-              style={styles.review}>{`${restaurantData?.Percentage}%`}</Text>
-          </LinearGradient>
+          {restaurantData?.Percentage && (
+            <LinearGradient
+              colors={[theme.colors.purpal1, theme.colors.orange]}
+              start={{x: 0, y: 0}}
+              end={{x: 1, y: 0}}
+              style={styles.linCon}>
+              <Icon2
+                name="thumbs-up"
+                color={theme.colors.white}
+                size={scale(12)}
+              />
+              <Text
+                style={styles.review}>{`${restaurantData?.Percentage}%`}</Text>
+            </LinearGradient>
+          )}
           {restaurantData?.MinimumOrder && (
             <View style={styles.timeCon}>
               <Icon name="clock" size={scale(15)} color={theme.colors.gray} />
@@ -433,17 +438,23 @@ const RestaturantDetails = ({route, navigation}) => {
         )}
       </View>
       {selectedItem === 1 && (
-        <View style={styles.infoContainer}>
-          <View style={styles.textView}>
-            <Text style={styles.title}>{restaurantData?.Name}</Text>
-            <Text style={styles.addres}>{restaurantData?.Addresses[0]}</Text>
-          </View>
-          <Text style={styles.titleText}>Orari di apertura</Text>
+        <View style={{height: theme.SCREENHEIGHT * 0.48}}>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.infoContainer}>
+              <View style={styles.textView}>
+                <Text style={styles.title}>{restaurantData?.Name}</Text>
+                <Text style={styles.addres}>
+                  {restaurantData?.Addresses[0]}
+                </Text>
+              </View>
+              <Text style={styles.titleText}>Orari di apertura</Text>
 
-          <FlatList
-            data={restaurantData?.OpeningTimes}
-            renderItem={renderInfo}
-          />
+              <FlatList
+                data={restaurantData?.OpeningTimes}
+                renderItem={renderInfo}
+              />
+            </View>
+          </ScrollView>
         </View>
       )}
 
@@ -480,8 +491,8 @@ const styles = StyleSheet.create({
     marginBottom: scale(5),
   },
   image: {
-    borderTopLeftRadius: scale(10),
-    borderTopRightRadius: scale(10),
+    // borderTopLeftRadius: scale(10),
+    // borderTopRightRadius: scale(10),
     opacity: 0.89,
   },
   header: {
@@ -530,23 +541,22 @@ const styles = StyleSheet.create({
     top: scale(7),
   },
   headerTitle: {
-    fontSize: scale(23),
+    fontSize: scale(22),
     textAlign: 'center',
     fontWeight: '900',
     color: theme.colors.white,
-    marginTop: scale(10),
   },
   subtitleView: {
-    paddingVertical: scale(5),
+    paddingVertical: scale(3),
     backgroundColor: theme.colors.black1,
     alignSelf: 'center',
     paddingHorizontal: scale(15),
     borderRadius: scale(15),
     opacity: 0.8,
-    marginTop: scale(10),
+    marginTop: scale(5),
   },
   subTitle: {
-    fontSize: scale(14),
+    fontSize: scale(13),
     color: theme.colors.white,
     fontWeight: '600',
   },
@@ -554,7 +564,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: scale(15),
-    marginTop: scale(12),
+    marginTop: scale(8),
   },
   review: {
     fontSize: scale(11),
@@ -661,7 +671,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.gray,
   },
   infoContainer: {
-    borderWidth: 1,
+    // borderWidth: 1,
     backgroundColor: theme.colors.white,
     paddingVertical: scale(20),
     marginHorizontal: scale(10),

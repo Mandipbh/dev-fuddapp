@@ -33,10 +33,10 @@ const RestaurantsCard = props => {
           style={styles.categoryIcon}
         />
       </TouchableOpacity>
-      <Title title={item.Name} style={styles.resLabel} />
+      <Title title={item.Name} style={styles.resLabel} numberOfLines={1} />
       <Label title={item?.Tags} style={styles.location} numberOfLines={1} />
       {Popular && (
-        <View style={styles.row}>
+        <View style={[styles.row, {justifyContent: 'space-between'}]}>
           <LinearGradient
             colors={[theme.colors.purpal1, theme.colors.orange]}
             start={{x: 0, y: 0}}
@@ -88,8 +88,8 @@ const styles = StyleSheet.create({
     borderRadius: scale(10),
   },
   categoryIconImg: {
-    height: scale(15),
-    width: scale(15),
+    height: scale(20),
+    width: scale(20),
   },
   shadow: {
     shadowColor: '#000',
@@ -104,6 +104,7 @@ const styles = StyleSheet.create({
   resLabel: {
     marginTop: scale(7),
     fontSize: scale(13),
+    width: theme.SCREENWIDTH * 0.4,
   },
   location: {
     fontSize: scale(11),
@@ -122,12 +123,13 @@ const styles = StyleSheet.create({
     fontFamily: theme.fonts.josefinSans,
   },
   iconView: {
-    padding: scale(4),
-    borderWidth: scale(0.5),
+    padding: scale(2),
+    // borderWidth: scale(0.5),
     borderRadius: scale(5),
-    borderColor: theme.colors.gray,
-    backgroundColor: theme.colors.gray1,
-    marginLeft: scale(10),
+    // borderColor: theme.colors.gray,
+    backgroundColor: theme.colors.category,
+    // marginLeft: scale(10),
+    marginHorizontal: scale(15),
   },
   linBtn: {
     width: null,

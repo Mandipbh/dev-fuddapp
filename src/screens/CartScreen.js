@@ -45,6 +45,8 @@ const CartScreen = () => {
     dispatch(AddToCart(tmparr));
   };
 
+  console.log('CartScreen>>', cartData);
+
   const decrimentCart = (selitm, idx) => {
     const tmparr = [...cartData];
     if (tmparr[idx].Qty <= 1) {
@@ -88,7 +90,6 @@ const CartScreen = () => {
           .then(res => {
             if (res.Status === 'Success') {
               setDPrice(res.DeliveryPrice);
-
               setLoad(false);
             }
           })
