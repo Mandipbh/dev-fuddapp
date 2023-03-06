@@ -58,18 +58,62 @@ const CheckoutScreen = ({route}) => {
   const isLoginUser = useSelector(state => state.UserReducer?.login);
   const [grandTotal, setGrandTotal] = useState(0);
   const [prdTotal, setProdTotal] = useState(0);
-  console.log('date >> ', date);
+  const [currentDay, setCurrentDay] = useState('');
+  const [startClosetime, setStartClosetime] = useState('');
+  const [startTime, setStartime] = useState('');
+  const [endTime, setEndtime] = useState('');
+
+  console.log('cartData<<', cartData);
+
+  const restaurantData = useSelector(
+    state => state.RestaurantReducers?.restaurantDetails?.OpeningTimes,
+  );
 
   const handleTimer = time => {
     setTimeModel(!timeModel);
     // console.log('TIME >> ', time);
     if (time !== null) {
-      const timeslot = time.replace(' ', 'TO');
+      const timeslot = time?.replace(' ', 'TO');
       setTimeSlot(timeslot);
     }
   };
-  console.log('cartData ??/ ', cartData);
-  console.log('route', route.params);
+
+  const handleDate = newTime => {
+    console.log('newTime', newTime);
+    const receivedTime = newTime.split('-'); // here the time is like "16:14"
+    let sTime = receivedTime[0];
+    let eTime = receivedTime[1];
+
+    setStartime(sTime);
+    setEndtime(eTime);
+    setStartClosetime(newTime.replace(' - ', 'TO'));
+    setDisplayedTimeSlot(newTime.replace(' - ', 'TO'));
+    // setTimeSlot(startClosetime.replace('TO', ' TO '));
+  };
+
+  useEffect(() => {
+    const today = new Date();
+    const day = today.getDay();
+    const daylist = [
+      'Domenica',
+      'Lunedì',
+      'Martedì',
+      'Mercoledì ',
+      'Giovedì',
+      'Venerdì',
+      'Sabato',
+    ];
+    console.log(`Today is : ${daylist[day]}.`);
+    setCurrentDay(daylist[day]);
+
+    restaurantData
+      .filter(itm => itm.Day == daylist[day])
+      .map(time => {
+        setTimeSlot(time.Time);
+        console.log('timeSloat', time.Time);
+        handleDate(time.Time?.toString());
+      });
+  }, [restaurantData, startClosetime, timeSloat, startTime, endTime]);
 
   useEffect(() => {
     if (route.params) {
@@ -80,64 +124,64 @@ const CheckoutScreen = ({route}) => {
   }, []);
 
   //select timer for order
-  useEffect(() => {
-    const now = `${moment(new Date()).format('HH:mm')}`;
+  // useEffect(() => {
+  //   const now = `${moment(new Date()).format('HH:mm')}`;
 
-    const times = now.split(':');
-    let splitedHour = times[0];
-    let splitedMin = times[1];
-    let newHOur = 0;
-    let newMin = '00';
-    let newoundedTime = '';
-    let newtimeSlot = '';
-    let displaytimeslot = '';
+  //   const times = now.split(':');
+  //   let splitedHour = times[0];
+  //   let splitedMin = times[1];
+  //   let newHOur = 0;
+  //   let newMin = '00';
+  //   let newoundedTime = '';
+  //   let newtimeSlot = '';
+  //   let displaytimeslot = '';
 
-    if (splitedMin >= 15 && splitedMin <= 30) {
-      newHOur = parseInt(splitedHour, 10);
-      newMin = '30'; //19:00
-    } else if (splitedMin > 30 && splitedMin <= 45) {
-      newHOur = parseInt(splitedHour, 10);
-      newMin = '30';
-    } else if (splitedMin > 45) {
-      newHOur = parseInt(splitedHour, 10) + 1;
-      newMin = '00';
-    } else {
-      newHOur = parseInt(splitedHour, 10);
-      newMin = '00'; //18:00
-    }
+  //   if (splitedMin >= 15 && splitedMin <= 30) {
+  //     newHOur = parseInt(splitedHour, 10);
+  //     newMin = '30'; //19:00
+  //   } else if (splitedMin > 30 && splitedMin <= 45) {
+  //     newHOur = parseInt(splitedHour, 10);
+  //     newMin = '30';
+  //   } else if (splitedMin > 45) {
+  //     newHOur = parseInt(splitedHour, 10) + 1;
+  //     newMin = '00';
+  //   } else {
+  //     newHOur = parseInt(splitedHour, 10);
+  //     newMin = '00'; //18:00
+  //   }
 
-    newoundedTime = newHOur.toString().concat(':', newMin.toString());
+  //   newoundedTime = newHOur.toString().concat(':', newMin.toString());
 
-    let newEndHour = 0;
-    let newEndMin = '00';
-    let newEndoundTime = '';
+  //   let newEndHour = 0;
+  //   let newEndMin = '00';
+  //   let newEndoundTime = '';
 
-    if (parseInt(splitedHour) !== parseInt(newHOur)) {
-      newEndMin = '30';
-      newEndHour = parseInt(newHOur, 10);
-    } else {
-      if (parseInt(newMin) === 30) {
-        newEndMin = '00';
-        newEndHour = parseInt(newHOur, 10) + 1;
-      } else {
-        newEndMin = '30';
-        newEndHour = parseInt(newHOur, 10);
-      }
-    }
+  //   if (parseInt(splitedHour) !== parseInt(newHOur)) {
+  //     newEndMin = '30';
+  //     newEndHour = parseInt(newHOur, 10);
+  //   } else {
+  //     if (parseInt(newMin) === 30) {
+  //       newEndMin = '00';
+  //       newEndHour = parseInt(newHOur, 10) + 1;
+  //     } else {
+  //       newEndMin = '30';
+  //       newEndHour = parseInt(newHOur, 10);
+  //     }
+  //   }
 
-    newEndoundTime = newEndHour.toString().concat(':', newEndMin.toString());
-    newtimeSlot = newoundedTime
-      .toString()
-      .concat('TO', newEndoundTime.toString());
+  //   newEndoundTime = newEndHour.toString().concat(':', newEndMin.toString());
+  //   newtimeSlot = newoundedTime
+  //     .toString()
+  //     .concat('TO', newEndoundTime.toString());
 
-    displaytimeslot = newoundedTime
-      .toString()
-      .concat(' TO ', newEndoundTime.toString());
-    console.log('newtimeSlot', newtimeSlot);
+  //   displaytimeslot = newoundedTime
+  //     .toString()
+  //     .concat(' TO ', newEndoundTime.toString());
+  //   console.log('newtimeSlot', newtimeSlot);
 
-    setDisplayedTimeSlot(displaytimeslot);
-    setTimeSlot(newtimeSlot);
-  }, []);
+  //   setDisplayedTimeSlot(displaytimeslot);
+  //   setTimeSlot(newtimeSlot);
+  // }, []);
 
   const handleCoupen = () => {
     const userData = user?.UserInfo;
@@ -148,7 +192,7 @@ const CheckoutScreen = ({route}) => {
           RestaurantId: 3,
           RiderId: 0,
           OrderId: 0,
-          Date: moment(date).utc().format('DD-MM-YYYY'),
+          Date: startTime.concat(endTime, '-'),
           DiscountCode: copanCode,
           Email: user?.UserInfo !== undefined && userData?.EMail,
           ItemTotalCharge: prdTotal,
@@ -251,7 +295,7 @@ const CheckoutScreen = ({route}) => {
       });
     });
 
-    item.lstMakeTypes?.length === undefined || item.lstMakeTypes?.length === 0
+    item?.lstMakeTypes === undefined || item?.lstMakeTypes === null
       ? makeTypeIds.push()
       : makeTypeIds.push(item.lstMakeTypes.Id);
 
@@ -396,9 +440,9 @@ const CheckoutScreen = ({route}) => {
                         </TouchableOpacity>
                       </View>
                     </View>
-                    <TouchableOpacity style={styles.btn}>
+                    {/* <TouchableOpacity style={styles.btn}>
                       <Label title="Cambia" />
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                   </View>
                   <View
                     style={[
@@ -568,7 +612,12 @@ const CheckoutScreen = ({route}) => {
         // maximumDate={new Date(endOfMonth)}
         minimumDate={new Date(startOfMonth)}
       />
-      <TimePickerModel isVisible={timeModel} close={handleTimer} />
+      <TimePickerModel
+        isVisible={timeModel}
+        close={handleTimer}
+        startTime={startTime}
+        closeTime={endTime}
+      />
       <SetLocationModel
         isShow={locationModel}
         close={() => {

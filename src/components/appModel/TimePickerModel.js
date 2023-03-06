@@ -16,21 +16,21 @@ import {useEffect} from 'react';
 import {BlurView} from '@react-native-community/blur';
 
 const TimePickerModel = props => {
-  const {isVisible, close} = props;
+  const {isVisible, close, startTime, closeTime} = props;
   const [timeSloat, setTimeSlot] = useState([]);
   const [selTime, setSelTime] = useState(null);
   useEffect(() => {
     let x = {
       slotInterval: 30,
-      openTime: '10:00',
-      closeTime: '01:00',
+      openTime: props.startTime,
+      closeTime: props.closeTime,
     };
 
     //Format the time
     let startTime = moment(x.openTime, 'HH:mm');
 
     //Format the end time and the next day to it
-    let endTime = moment(x.closeTime, 'HH:mm').add(1, 'days');
+    let endTime = moment(x.closeTime, 'HH:mm');
 
     //Times
     let allTimes = [];

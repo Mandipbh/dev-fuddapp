@@ -105,7 +105,7 @@ const CartScreen = () => {
   };
 
   const handleRestaurantAvailability = () => {
-    console.log('seladdress >>. ', seladdress);
+    console.log('handleRestaurantAvailability-cartData', cartData);
     if (seladdress === undefined || seladdress === null) {
       setLocationModel(true);
     } else {

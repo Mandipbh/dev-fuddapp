@@ -37,6 +37,7 @@ export const restaurantDetails = data => {
       ApiService.post(API.getPerticularRestaurant, options)
         .then(res => {
           if (res) {
+            console.log('res?.RestaurantDetail', res?.RestaurantDetail);
             dispatch({
               type: GETRESTAURANTDETAILS,
               payload: res?.RestaurantDetail,

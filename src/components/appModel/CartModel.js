@@ -70,9 +70,9 @@ const CartModel = props => {
       ...productDetails,
       lstAddons: add1,
       lstIngredients: add2,
-      lstMakeTypes: wantProduct,
+      lstMakeTypes: add3,
     };
-    console.log('product details >>  ', ProductData);
+    console.log('product details >> ', ProductData);
     //   setProductDetails(productDetails);
     clearify();
     close(ProductData);
