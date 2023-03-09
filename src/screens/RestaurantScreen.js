@@ -192,6 +192,7 @@ const RestaurantScreen = () => {
       setSearch(text);
     }
   };
+  console.log('restaurantData >>> ', restaurantData);
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.mainContainer}>

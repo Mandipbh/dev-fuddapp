@@ -24,7 +24,7 @@ import {
   Title,
 } from '../components';
 import LinearGradient from 'react-native-linear-gradient';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useEffect} from 'react';
 import {restaurantDetails} from '../redux/Actions/RestaurantAction';
@@ -48,28 +48,26 @@ const RestaturantDetails = ({route, navigation}) => {
   const seladdress = useSelector(state => state.UserReducer.selAddress);
   // const navigation = useNavigation();
   const dispatch = useDispatch();
-  console.log('restaurantsData ', route.params.restaurantsData);
-  console.log('MinimumOrderMinimumOrder >>> ', details?.MinimumOrder);
+  const isFocuse = useIsFocused();
   //get restaurant details & menus
   useEffect(() => {
-    if (route?.params?.item.ID) {
+    if (route?.params?.item?.ID) {
       setrid(route?.params?.item.ID);
     }
     setLoad(true);
     const data = {
       latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
       longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
-      id: route?.params?.item.ID,
+      id: route?.params?.item?.ID,
       date: moment(date).format('DD-MM-YYYY'),
       timeSlot: `${moment(new Date()).format('HH:mm')}-${moment(new Date())
         .add(30, 'minute')
         .format('HH:mm')}`,
       Category: '',
     };
-
-    console.log('data >?> ', data);
+    console.log('object>>> ', data);
     dispatch(restaurantDetails(data));
-  }, []);
+  }, [isFocuse]);
 
   const restaurantData = useSelector(
     state => state.RestaurantReducers?.restaurantDetails,
@@ -77,6 +75,8 @@ const RestaturantDetails = ({route, navigation}) => {
 
   //set details
   useEffect(() => {
+    // AddToCart(restaurantData);
+    console.log('restaurantData_', restaurantData);
     setLoad(false);
     setDetails(restaurantData);
   }, [restaurantData]);
@@ -173,7 +173,7 @@ const RestaturantDetails = ({route, navigation}) => {
                     color={theme.colors.purpal}
                     style={{marginRight: scale(6)}}
                     onPress={() => {
-                      console.log('onPress>', JSON.stringify(m, null, 4));
+                      // console.log('onPress>', JSON.stringify(m, null, 4));
                       handleCartAddItem(m);
                       // setCartModel(!cartModel);
                     }}
@@ -215,8 +215,9 @@ const RestaturantDetails = ({route, navigation}) => {
         } else {
           let itemQtyhandle = {...item};
           itemQtyhandle.Qty = 1;
-          itemQtyhandle.restaurantId = 3;
+          itemQtyhandle.restaurantId = route?.params?.item.ID;
           itemQtyhandle.MinimumOrder = details?.MinimumOrder;
+          itemQtyhandle.MinOrderSupplment = details?.MinOrderSupplment;
           itemQtyhandle.Image =
             details?.Menu?.ProductsImagePrefix + item?.Image;
           tmpArr.push(itemQtyhandle);
@@ -245,8 +246,9 @@ const RestaturantDetails = ({route, navigation}) => {
       } else {
         let itemQtyhandle = {...item};
         itemQtyhandle.Qty = 1;
-        itemQtyhandle.restaurantId = 3;
+        itemQtyhandle.restaurantId = route?.params?.item.ID;
         itemQtyhandle.MinimumOrder = details?.MinimumOrder;
+        itemQtyhandle.MinOrderSupplment = details?.MinOrderSupplment;
         itemQtyhandle.Image = details?.Menu?.ProductsImagePrefix + item?.Image;
         tmpArr.push(itemQtyhandle);
       }
@@ -256,8 +258,9 @@ const RestaturantDetails = ({route, navigation}) => {
       setCartModel(true);
       let itemQtyhandle = {...item};
       itemQtyhandle.Qty = 1;
-      itemQtyhandle.restaurantId = 3;
+      itemQtyhandle.restaurantId = route?.params?.item.ID;
       itemQtyhandle.MinimumOrder = details?.MinimumOrder;
+      itemQtyhandle.MinOrderSupplment = details?.MinOrderSupplment;
       itemQtyhandle.Image = details?.Menu?.ProductsImagePrefix + item?.Image;
       // show?  null : tmpArr.push(itemQtyhandle) : null
     }
@@ -362,10 +365,6 @@ const RestaturantDetails = ({route, navigation}) => {
         />
       </View>
       <View>
-        {console.log(
-          'details?.Menu?.Categories >?> ',
-          details?.Menu?.Categories?.length,
-        )}
         {selectedItem === 0 && searchtxt === '' ? (
           <FlatList
             data={details?.Menu?.Categories}
@@ -423,7 +422,7 @@ const RestaturantDetails = ({route, navigation}) => {
                           style={{marginRight: scale(6)}}
                           onPress={() => {
                             handleCartAddItem(m);
-                            console.log('route.m', m.MinimumOrder);
+
                             // setCartModel(!cartModel);
                           }}
                         />

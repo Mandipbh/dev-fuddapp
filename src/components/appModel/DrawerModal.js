@@ -28,7 +28,6 @@ const DrawerModal = props => {
   const [modalVisible, setModalVisible] = useState(false);
   const [orderModalVisible, setOrderModalVisible] = useState(false);
 
-  console.log('Modal Visible ======', modalVisible);
   const dispatch = useDispatch();
   const handleLogout = () => {
     dispatch(logout());

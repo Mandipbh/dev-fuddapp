@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import {Label} from './Label';
 import {orderData} from '../utils/MockData';
 import ApiService, {API} from '../utils/ApiService';
-import {ALLORDERS} from '../redux/Actions/ActionsTypes';
+import {ALLORDERS, REORDERS} from '../redux/Actions/ActionsTypes';
 import {useDispatch, useSelector} from 'react-redux';
 import {getAllOrders} from '../redux/Actions/OrderAction';
 import moment from 'moment';
@@ -41,10 +41,20 @@ const MyOrders = () => {
     setgetAllOrder(allOrders?.OrderList);
   }, [allOrders]);
 
-  // console.log(
-  //   'Data of Orders',
-  //   JSON.stringify(getAllOrder[0].OrderRows, null, 4),
-  // );
+  const handleReplaceOrder = (orderId, Email) => {
+    try {
+      ApiService.get(API.ReOrder + `id=${orderId}&userEmail=${Email}`)
+        .then(res => {
+          console.log('RESPONSE_Order', res);
+          dispatch({type: REORDERS, payload: res});
+        })
+        .catch(error => {
+          console.log('error catch ', error);
+        });
+    } catch (error) {
+      console.log('error delete catch ', error);
+    }
+  };
 
   return (
     <View>
@@ -74,7 +84,11 @@ const MyOrders = () => {
                       />
                     )}
                   </View>
-                  {/* <TouchableOpacity style={styles.btn}>
+                  {/* <TouchableOpacity
+                    style={styles.btn}
+                    onPress={() => {
+                      handleReplaceOrder(oI.Number, oI.Email);
+                    }}>
                     <Label title="Riordina" style={styles.btntxt} />
                   </TouchableOpacity> */}
                   <TouchableOpacity

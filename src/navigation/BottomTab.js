@@ -29,7 +29,9 @@ const Restaturant = () => {
   const navigation = useNavigation();
 
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
+    <Stack.Navigator
+      // initialRouteName="Checkout"
+      screenOptions={{headerShown: false}}>
       <Stack.Screen
         name="RISTORANTI"
         component={Restaurant}

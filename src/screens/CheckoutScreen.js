@@ -26,11 +26,12 @@ import {
 } from '../components';
 import {useNavigation} from '@react-navigation/native';
 import SetLocationModel from '../components/appModel/SetLocationModel';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
 import ApiService, {API} from '../utils/ApiService';
 import {useEffect} from 'react';
+import {AddToCart} from '../redux/Actions/CartAction';
 const keyboardVerticalOffset = Platform.OS === 'ios' ? scale(40) : 0;
 const startOfMonth = moment().format('YYYY-MM-DD');
 const endOfMonth = moment().endOf('month').format('YYYY-MM-DD');
@@ -62,11 +63,11 @@ const CheckoutScreen = ({route}) => {
   const [startClosetime, setStartClosetime] = useState('');
   const [startTime, setStartime] = useState('');
   const [endTime, setEndtime] = useState('');
-
+  const [rID, setRId] = useState('');
   console.log('cartData<<', cartData);
 
   const restaurantData = useSelector(
-    state => state.RestaurantReducers?.restaurantDetails?.OpeningTimes,
+    state => state.RestaurantReducers?.restaurantDetails,
   );
 
   const handleTimer = time => {
@@ -74,7 +75,9 @@ const CheckoutScreen = ({route}) => {
     // console.log('TIME >> ', time);
     if (time !== null) {
       const timeslot = time?.replace(' ', 'TO');
+      const dTimeSlot = time?.replace(' ', ' TO ');
       setTimeSlot(timeslot);
+      setDisplayedTimeSlot(dTimeSlot);
     }
   };
 
@@ -91,97 +94,200 @@ const CheckoutScreen = ({route}) => {
     // setTimeSlot(startClosetime.replace('TO', ' TO '));
   };
 
-  useEffect(() => {
-    const today = new Date();
-    const day = today.getDay();
-    const daylist = [
-      'Domenica',
-      'Lunedì',
-      'Martedì',
-      'Mercoledì ',
-      'Giovedì',
-      'Venerdì',
-      'Sabato',
-    ];
-    console.log(`Today is : ${daylist[day]}.`);
-    setCurrentDay(daylist[day]);
+  // useEffect(() => {
+  //   const today = new Date();
+  //   const day = today.getDay();
+  //   const daylist = [
+  //     'Domenica',
+  //     'Lunedì',
+  //     'Martedì',
+  //     'Mercoledì ',
+  //     'Giovedì',
+  //     'Venerdì',
+  //     'Sabato',
+  //   ];
+  //   console.log(`Today is : ${daylist[day]}.`);
+  //   setCurrentDay(daylist[day]);
 
-    restaurantData
-      .filter(itm => itm.Day == daylist[day])
-      .map(time => {
-        setTimeSlot(time.Time);
-        console.log('timeSloat', time.Time);
-        handleDate(time.Time?.toString());
-      });
-  }, [restaurantData, startClosetime, timeSloat, startTime, endTime]);
+  //   (restaurantData !== null || restaurantData !== undefined) &&
+  //     restaurantData
+  //       .filter(itm => itm.Day === daylist[day])
+  //       .map(time => {
+  //         setTimeSlot(time.Time);
+  //         console.log('timeSloat', time.Time);
+  //         handleDate(time.Time?.toString());
+  //       });
+  // }, [restaurantData, startClosetime, timeSloat, startTime, endTime]);
 
   useEffect(() => {
     if (route.params) {
-      const {total, pTotal} = route.params;
+      const {total, pTotal} = route?.params;
       setGrandTotal(total);
       setProdTotal(pTotal);
     }
   }, []);
+  const dispatch = useDispatch();
+  // select timer for order
+  useEffect(() => {
+    var restaurantId = restaurantData?.ID;
+    setRId(restaurantId);
 
-  //select timer for order
-  // useEffect(() => {
-  //   const now = `${moment(new Date()).format('HH:mm')}`;
+    console.log('RID', rID);
 
-  //   const times = now.split(':');
-  //   let splitedHour = times[0];
-  //   let splitedMin = times[1];
-  //   let newHOur = 0;
-  //   let newMin = '00';
-  //   let newoundedTime = '';
-  //   let newtimeSlot = '';
-  //   let displaytimeslot = '';
+    var now = `${moment(new Date()).format('HH:mm')}`;
 
-  //   if (splitedMin >= 15 && splitedMin <= 30) {
-  //     newHOur = parseInt(splitedHour, 10);
-  //     newMin = '30'; //19:00
-  //   } else if (splitedMin > 30 && splitedMin <= 45) {
-  //     newHOur = parseInt(splitedHour, 10);
-  //     newMin = '30';
-  //   } else if (splitedMin > 45) {
-  //     newHOur = parseInt(splitedHour, 10) + 1;
-  //     newMin = '00';
-  //   } else {
-  //     newHOur = parseInt(splitedHour, 10);
-  //     newMin = '00'; //18:00
-  //   }
+    const times = now.split(':');
+    let splitedHour = times[0];
+    // let splitedMin = times[1];
+    let newHOur = 0;
+    let newMin = '00';
+    let newRoundedTime = '';
+    let newEndroundTime = '';
+    let newtimeSlot = '';
+    let displaytimeslot = '';
 
-  //   newoundedTime = newHOur.toString().concat(':', newMin.toString());
+    // DateTime dNow = DateTime.Now;
+    //                 int nMin = dNow.Minute;
+    //                 if (nMin > 30)
+    //                     nMin = (60 - nMin);
+    //                 else
+    //                     nMin = (30 - nMin);
+    //                 dNow = dNow.AddMinutes(nMin);
+    //                 objRistorantiViewModel.SelectedTimeSlot = dNow.ToString("HH:mm")
+    //                 + " - " + dNow.AddMinutes(30).ToString("HH:mm");
 
-  //   let newEndHour = 0;
-  //   let newEndMin = '00';
-  //   let newEndoundTime = '';
+    let splitedMin = times[1];
+    if (splitedMin > 30) {
+      splitedMin = 60 - splitedMin;
+    } else {
+      splitedMin = 30 - splitedMin;
+    }
 
-  //   if (parseInt(splitedHour) !== parseInt(newHOur)) {
-  //     newEndMin = '30';
-  //     newEndHour = parseInt(newHOur, 10);
-  //   } else {
-  //     if (parseInt(newMin) === 30) {
-  //       newEndMin = '00';
-  //       newEndHour = parseInt(newHOur, 10) + 1;
-  //     } else {
-  //       newEndMin = '30';
-  //       newEndHour = parseInt(newHOur, 10);
-  //     }
-  //   }
+    now = moment(new Date()).add(splitedMin, 'm');
+    newRoundedTime = moment(new Date()).add(splitedMin, 'm').format('HH:mm');
 
-  //   newEndoundTime = newEndHour.toString().concat(':', newEndMin.toString());
-  //   newtimeSlot = newoundedTime
-  //     .toString()
-  //     .concat('TO', newEndoundTime.toString());
+    let [hrs, min] = restaurantData?.OpeningTime.split(':').map(Number);
+    console.log('hrs', hrs);
+    console.log('min', min);
 
-  //   displaytimeslot = newoundedTime
-  //     .toString()
-  //     .concat(' TO ', newEndoundTime.toString());
-  //   console.log('newtimeSlot', newtimeSlot);
+    let splitedResOpenTimeMin = min;
+    if (splitedResOpenTimeMin > 30) {
+      splitedResOpenTimeMin = 60 - splitedResOpenTimeMin;
+    } else {
+      splitedResOpenTimeMin = 30 - splitedResOpenTimeMin;
+    }
 
-  //   setDisplayedTimeSlot(displaytimeslot);
-  //   setTimeSlot(newtimeSlot);
-  // }, []);
+    let restaurantOpeningTime = moment(new Date().setHours(hrs, min))
+      .add(splitedResOpenTimeMin, 'm')
+      .format('HH:mm');
+
+    if (restaurantOpeningTime > newRoundedTime) {
+      newEndroundTime = moment(
+        moment(new Date().setHours(hrs, min)).add(splitedResOpenTimeMin, 'm'),
+      )
+        .add(30, 'm')
+        .format('HH:mm');
+    } else {
+      newEndroundTime = moment(now).add(30, 'm').format('HH:mm');
+    }
+
+    console.log('now_', now);
+    console.log('newRoundedTime_', newRoundedTime);
+    console.log('restaurantOpeningTime_', restaurantOpeningTime);
+    console.log('newEndroundTime', newEndroundTime);
+
+    var str1 =
+      restaurantOpeningTime > newRoundedTime
+        ? restaurantOpeningTime.split(':')
+        : newRoundedTime.split(':');
+    var str2 = newEndroundTime.split(':');
+
+    var totalSeconds1 = parseInt(str1[0] * 3600 + str1[1] * 60);
+    var totalSeconds2 = parseInt(str2[0] * 3600 + str2[1] * 60);
+
+    if (totalSeconds2 > totalSeconds1) {
+      // newRoundedTime = moment(new Date())
+      //   .add(splitedMin, 'm')
+      //   .format('HH:mm');
+
+      newtimeSlot =
+        restaurantOpeningTime > newRoundedTime
+          ? restaurantOpeningTime
+              .toString()
+              .concat('TO', newEndroundTime.toString())
+          : newRoundedTime.toString().concat('TO', newEndroundTime.toString());
+      setTimeSlot(newtimeSlot);
+    } else {
+      displaytimeslot = newRoundedTime
+        .toString()
+        .concat(' TO ', newEndroundTime.toString());
+      setDisplayedTimeSlot(displaytimeslot);
+
+      newtimeSlot =
+        restaurantOpeningTime > newRoundedTime
+          ? restaurantOpeningTime
+              .toString()
+              .concat('TO', newEndroundTime.toString())
+          : newRoundedTime.toString().concat('TO', newEndroundTime.toString());
+      setTimeSlot(newtimeSlot);
+    }
+
+    // var newEndroundTime = moment(now).add(30, 'm').toDate();
+
+    // console.log('now', now);
+    // console.log('newEndroundTime', newEndroundTime);
+
+    // if (splitedMin >= 15 && splitedMin <= 30) {
+    //   newHOur = parseInt(splitedHour, 10);
+    //   newMin = '30'; //19:00
+    // } else if (splitedMin > 30 && splitedMin <= 45) {
+    //   newHOur = parseInt(splitedHour, 10);
+    //   newMin = '30';
+    // } else if (splitedMin > 45) {
+    //   newHOur = parseInt(splitedHour, 10) + 1;
+    //   newMin = '00';
+    // } else {
+    //   newHOur = parseInt(splitedHour, 10);
+    //   newMin = '00'; //18:00
+    // }
+
+    // newoundedTime = newHOur.toString().concat(':', newMin.toString());
+
+    // let newEndHour = 0;
+    // let newEndMin = '00';
+    // let newEndoundTime = '';
+
+    // if (parseInt(splitedHour) !== parseInt(newHOur)) {
+    //   newEndMin = '30';
+    //   newEndHour = parseInt(newHOur, 10);
+    // } else {
+    //   if (parseInt(newMin) === 30) {
+    //     newEndMin = '00';
+    //     newEndHour = parseInt(newHOur, 10) + 1;
+    //   } else {
+    //     newEndMin = '30';
+    //     newEndHour = parseInt(newHOur, 10);
+    //   }
+    // }
+
+    // newEndoundTime = newEndHour.toString().concat(':', newEndMin.toString());
+    // newtimeSlot = newoundedTime
+    //   .toString()
+    //   .concat('TO', newEndoundTime.toString());
+
+    // displaytimeslot = newoundedTime
+    //   .toString()
+    //   .concat(' TO ', newEndoundTime.toString());
+    // console.log('newtimeSlot', newtimeSlot);
+
+    // setDisplayedTimeSlot(displaytimeslot);
+    // setTimeSlot(newtimeSlot);
+  }, [restaurantData, rID]);
+
+  const handleResetCoupen = () => {
+    setCopanCode('');
+    setCoupenApplied(false);
+  };
 
   const handleCoupen = () => {
     const userData = user?.UserInfo;
@@ -192,7 +298,7 @@ const CheckoutScreen = ({route}) => {
           RestaurantId: 3,
           RiderId: 0,
           OrderId: 0,
-          Date: startTime.concat(endTime, '-'),
+          Date: moment(date).utc().format('DD-MM-YYYY'),
           DiscountCode: copanCode,
           Email: user?.UserInfo !== undefined && userData?.EMail,
           ItemTotalCharge: prdTotal,
@@ -228,55 +334,63 @@ const CheckoutScreen = ({route}) => {
 
   var itemList = [];
 
-  var paymentrequestData = {
-    PayType:
-      paymentData !== null &&
-      paymentData !== undefined &&
-      paymentData.paymentType,
-    PaymentMethodID:
-      paymentData !== null &&
-      paymentData !== undefined &&
-      paymentData.title?.title,
-    Notes: notes,
-    sCardName:
-      paymentData !== null &&
-      paymentData !== undefined &&
-      paymentData.paymentType === 3
-        ? paymentData.sCardName
-        : '',
-    sCardNumber:
-      paymentData !== null &&
-      paymentData !== undefined &&
-      paymentData.paymentType === 3
-        ? paymentData.sCardNumber
-        : '',
-    sCardExpMonth:
-      paymentData !== null &&
-      paymentData !== undefined &&
-      paymentData.paymentType === 3
-        ? paymentData.sCardExpMonth
-        : '',
-    sCardExpYear:
-      paymentData !== null &&
-      paymentData !== undefined &&
-      paymentData.paymentType === 3
-        ? paymentData.sCardExpYear
-        : '',
-    sCardCvc:
-      paymentData !== null &&
-      paymentData !== undefined &&
-      paymentData.paymentType === 3
-        ? paymentData.sCardCvc
-        : '',
-    sCardPostcode:
-      paymentData !== null &&
-      paymentData !== undefined &&
-      paymentData.paymentType === 3
-        ? paymentData.sCardPostcode
-        : '',
-    sCustomerEmail: user !== undefined && user?.UserInfo?.EMail,
-    nAmount: coupenAmnt !== 0 ? grandTotal - coupenAmnt : grandTotal,
-  };
+  // var paymentrequestData = {
+  //   PayType:
+  //     paymentData !== null &&
+  //     paymentData !== undefined &&
+  //     paymentData.paymentType,
+  //   PaymentMethodID:
+  //     paymentData !== null &&
+  //     paymentData !== undefined &&
+  //     paymentData.title?.title,
+  //   Notes: notes,
+  //   sCardName:
+  //     paymentData !== null &&
+  //     paymentData !== undefined &&
+  //     paymentData.paymentType === 3
+  //       ? paymentData.sCardName
+  //       : '',
+  //   sCardNumber:
+  //     paymentData !== null &&
+  //     paymentData !== undefined &&
+  //     paymentData.paymentType === 3
+  //       ? paymentData.sCardNumber
+  //       : '',
+  //   sCardExpMonth:
+  //     paymentData !== null &&
+  //     paymentData !== undefined &&
+  //     paymentData.paymentType === 3
+  //       ? paymentData.sCardExpMonth
+  //       : '',
+  //   sCardExpYear:
+  //     paymentData !== null &&
+  //     paymentData !== undefined &&
+  //     paymentData.paymentType === 3
+  //       ? paymentData.sCardExpYear
+  //       : '',
+  //   sCardCvc:
+  //     paymentData !== null &&
+  //     paymentData !== undefined &&
+  //     paymentData.paymentType === 3
+  //       ? paymentData.sCardCvc
+  //       : '',
+  //   sCardPostcode:
+  //     paymentData !== null &&
+  //     paymentData !== undefined &&
+  //     paymentData.paymentType === 3
+  //       ? paymentData.sCardPostcode
+  //       : '',
+  //   sCustomerEmail: user !== undefined && user?.UserInfo?.EMail,
+  //   nAmount: (coupenAmnt !== 0 ? grandTotal - coupenAmnt : grandTotal)
+  //     .toFixed(2)
+  //     .replace('.', ''),
+  // };
+
+  //total price of order
+  const nAmount =
+    coupenAmnt !== 0
+      ? grandTotal - coupenAmnt
+      : grandTotal.toFixed(2).replace('.', '');
 
   cartData.map(item => {
     console.log('cartItem', item);
@@ -295,9 +409,37 @@ const CheckoutScreen = ({route}) => {
       });
     });
 
-    item?.lstMakeTypes === undefined || item?.lstMakeTypes === null
-      ? makeTypeIds.push()
-      : makeTypeIds.push(item.lstMakeTypes.Id);
+    console.log('item?.lstMakeTypes', item?.lstMakeTypes);
+
+    // [  "lstMakeTypes": []
+    //    "lstMakeTypes": {
+    //     "CodiceProdo": "Bianca",
+    //     "Id": 25935,
+    //     "ImportoUnitario": 0,
+    //     "Prodo": "con Bacon affumicato",
+    //     "Variante": "56"
+    //   }]
+
+    if (item?.lstMakeTypes.toString() !== '[]') {
+      if (item?.lstMakeTypes.hasOwnProperty('Id')) {
+        makeTypeIds.push(item.lstMakeTypes.Id);
+      }
+    } else {
+      makeTypeIds.push();
+    }
+
+    // if (item?.lstMakeTypes !== null) {
+    //   if (item?.lstMakeTypes !== undefined && item?.lstMakeTypes.length > 0) {
+    //   } else {
+    //     makeTypeIds.push();
+    //   }
+    // } else {
+    //   makeTypeIds.push();
+    // }
+
+    //  item?.lstMakeTypes === null
+    //   ? makeTypeIds.push()
+    //   : makeTypeIds.push(item.lstMakeTypes.Id);
 
     itemList.push({
       ItemCode: item.Code,
@@ -319,10 +461,10 @@ const CheckoutScreen = ({route}) => {
     SelectedAddressId:
       selAddress !== null && selAddress !== undefined && selAddress.Id,
     Date: moment(date).utc().format('DD-MM-YYYY'),
-    TimeSlot: timeSloat === null ? '' : timeSloat,
-    DiscountCode: copanCode,
+    TimeSlot: timeSloat === null ? '' : timeSloat.replace('TO', '-'),
+    DiscountCode: copanCode.replace('null', ''),
     ItemIds: itemList,
-    PaymentRequest: paymentrequestData,
+    PaymentRequest: paymentData,
   };
 
   const handlePlaceOrder = () => {
@@ -350,12 +492,13 @@ const CheckoutScreen = ({route}) => {
         console.log('payLoad', JSON.stringify(options, null, 4));
         ApiService.post(API.placeOrder, options)
           .then(res => {
+            console.log('res of placeOrder >> ', res);
             if (res.Status === 'Success') {
-              console.log('res of placeOrder >> ', res);
               setLoad(false);
               setProcesss(!process);
               setCoupenApplied(false);
               setCoupenAmnt(0);
+              dispatch(AddToCart([]));
             }
           })
           .catch(e => {
@@ -370,6 +513,11 @@ const CheckoutScreen = ({route}) => {
     }
   };
 
+  useEffect(() => {
+    let tmpData = {...paymentData};
+    tmpData.Notes = notes;
+    setPaymentData(tmpData);
+  }, [notes]);
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerView}>
@@ -539,12 +687,33 @@ const CheckoutScreen = ({route}) => {
                           setCopanCode(txt);
                         }}
                       />
-                      <TouchableOpacity
-                        style={styles.applyBtn}
-                        onPress={() => handleCoupen()}>
-                        <Text style={styles.applyTxt}>Applica</Text>
-                      </TouchableOpacity>
+                      <View
+                        style={{
+                          // justifyContent: 'space-between',
+                          alignItems: 'center',
+                          flexDirection: 'row',
+                        }}>
+                        <TouchableOpacity
+                          style={styles.applyBtn}
+                          onPress={() => handleCoupen()}>
+                          <Text style={styles.applyTxt}>Applica</Text>
+                        </TouchableOpacity>
+
+                        {copanCode && (
+                          <TouchableOpacity
+                            onPress={() => {
+                              handleResetCoupen();
+                            }}>
+                            <Icon
+                              name="rotate-ccw"
+                              size={scale(20)}
+                              color={theme.colors.black}
+                            />
+                          </TouchableOpacity>
+                        )}
+                      </View>
                     </View>
+
                     {isCoupenApplied && (
                       <Title title="Codice Coupen applicato con successo!" />
                     )}
@@ -612,12 +781,7 @@ const CheckoutScreen = ({route}) => {
         // maximumDate={new Date(endOfMonth)}
         minimumDate={new Date(startOfMonth)}
       />
-      <TimePickerModel
-        isVisible={timeModel}
-        close={handleTimer}
-        startTime={startTime}
-        closeTime={endTime}
-      />
+      <TimePickerModel isVisible={timeModel} close={handleTimer} />
       <SetLocationModel
         isShow={locationModel}
         close={() => {
@@ -627,6 +791,8 @@ const CheckoutScreen = ({route}) => {
       <OrderPaymentMethod
         isVisible={paymentModel}
         close={handlePaymentMethod}
+        nAmount={nAmount}
+        notes={notes}
       />
     </SafeAreaView>
   );
@@ -759,9 +925,10 @@ const styles = StyleSheet.create({
   applyBtn: {
     backgroundColor: theme.colors.primary,
     borderRadius: 20,
-    width: '30%',
+    width: '50%',
     alignItems: 'center',
     marginLeft: 20,
+    marginHorizontal: scale(20),
   },
   applyTxt: {
     color: theme.colors.white,
@@ -773,7 +940,7 @@ const styles = StyleSheet.create({
   copun: {
     borderWidth: scale(1),
     height: scale(40),
-    width: '60%',
+    width: '40%',
     borderRadius: scale(15),
     marginLeft: scale(3),
     borderColor: theme.colors.gray,

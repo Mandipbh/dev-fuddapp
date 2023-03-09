@@ -25,8 +25,13 @@ const RestaurantsCard = props => {
         style={[styles.restaurantView, styles.shadow]}
         onPress={() => {
           Popular
-            ? navigation.navigate('RISTORANTI', {category: item})
-            : Linking.openURL(item?.ExternalUrl);
+            ? //
+              navigation.navigate('RISTORANTI', {category: item})
+            : // navigation.navigate('RISTORANTI', {
+              //   screen: 'Details',
+              //   params: {item: item},
+              // })
+              Linking.openURL(item?.ExternalUrl);
         }}>
         <FastImage
           source={{uri: Popular ? APP_BASE_URL + item?.Canvas : item?.Canvas}}
@@ -53,7 +58,10 @@ const RestaurantsCard = props => {
             <View style={styles.iconView}>
               <FastImage
                 source={{
-                  uri: Popular ? APP_BASE_URL + item?.CategoryTagIcons[0] : '',
+                  uri:
+                    Popular !== undefined || Popular !== null
+                      ? APP_BASE_URL + item?.CategoryTagIcons[0]
+                      : '',
                 }}
                 style={styles.categoryIconImg}
               />

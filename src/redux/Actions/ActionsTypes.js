@@ -19,5 +19,5 @@ export const SETCATEGORY = 'SETCATEGORY';
 export const ADDTOCART = 'ADDTOCART';
 
 // Orders
-
 export const ALLORDERS = 'ALLORDERS';
+export const REORDERS = 'REORDERS';

@@ -2,11 +2,13 @@ import ApiService, {API} from '../../utils/ApiService';
 import {ALLORDERS} from './ActionsTypes';
 
 export const getAllOrders = payload => {
+  console.log('OrderAction_payload', payload);
   return async dispatch => {
     try {
       ApiService.get(API.getAllOrders + payload)
         .then(res => {
           if (res) {
+            console.log('OrderAction', res);
             dispatch({type: ALLORDERS, payload: res});
           }
         })
