@@ -11,6 +11,7 @@ import {
   Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import {useSelector} from 'react-redux';
 import {scale, theme} from '../../utils';
 import {optionsData} from '../../utils/MockData';
 import Button from '../Button';
@@ -18,15 +19,30 @@ import InputBox from '../InputBox';
 import {Title, Label, Error} from '../Label';
 
 const OrderPaymentMethod = props => {
-  const {isVisible, close} = props;
+  const user = useSelector(state => state.UserReducer?.userDetails);
+  const {isVisible, close, notes, nAmount} = props;
   const [option, setOptions] = useState(null);
-  const [cardHolderName, setName] = useState(null);
-  const [cardNumber, setCardNumber] = useState(null);
-  const [month, setMonth] = useState(null);
-  const [year, setYear] = useState(null);
-  const [cvv, setCvv] = useState(null);
-  const [zip, setZip] = useState(null);
-  const [paymentType, setpaymentType] = useState(null);
+  const [cardHolderName, setName] = useState('');
+  const [cardNumber, setCardNumber] = useState('');
+  const [month, setMonth] = useState('');
+  const [year, setYear] = useState('');
+  const [cvv, setCvv] = useState('');
+  const [zip, setZip] = useState('');
+  const [paymentType, setpaymentType] = useState('');
+
+  const PaymentRequest = {
+    PayType: paymentType,
+    PaymentMethodID: option?.title,
+    Notes: notes,
+    sCardName: cardHolderName,
+    sCardNumber: cardNumber,
+    sCardExpMonth: month,
+    sCardExpYear: year,
+    sCardCvc: cvv,
+    sCardPostcode: zip,
+    sCustomerEmail: user?.UserInfo?.EMail,
+    nAmount: nAmount,
+  };
 
   const cardObject = {
     sCardName: cardHolderName,
@@ -39,23 +55,22 @@ const OrderPaymentMethod = props => {
     title: option,
   };
   const handleCard = () => {
-    console.log('paymentType', paymentType);
     if (option !== null) {
       if (
         paymentType === 2 &&
-        (cardHolderName === null ||
-          cardNumber === null ||
-          month === null ||
-          year === null ||
-          cvv === null ||
-          zip === null)
+        (cardHolderName === '' ||
+          cardNumber === '' ||
+          month === '' ||
+          year === '' ||
+          cvv === '' ||
+          zip === '')
       ) {
         Alert.alert('Please fill all credit card detail');
       } else {
-        close(cardObject);
+        close(PaymentRequest);
       }
 
-      console.log('cardObject', cardObject);
+      // console.log('cardObject', cardObject);
     } else {
       alert('Scegli il metodo di pagamento. ');
     }
@@ -121,7 +136,7 @@ const OrderPaymentMethod = props => {
                   onChangeText={txt => {
                     setCardNumber(txt);
                   }}
-                  maxLength={19}
+                  maxLength={16}
                   keyboardType="number-pad"
                 />
                 <View style={styles.rowView}>

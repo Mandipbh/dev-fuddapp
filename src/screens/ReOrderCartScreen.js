@@ -23,7 +23,7 @@ import moment from 'moment';
 import LoginModel from '../components/appModel/LoginModel';
 import SetLocationModel from '../components/appModel/SetLocationModel';
 
-const CartScreen = () => {
+const ReOrderCartScreen = () => {
   const navigation = useNavigation();
   const cartData = useSelector(state => state?.CartReducer.cartData);
   const user = useSelector(state => state.UserReducer?.userDetails);
@@ -59,7 +59,6 @@ const CartScreen = () => {
 
   const calculatePrice = () => {
     const tmparr = [...cartData];
-    console.log('total ??? ', tmparr);
     const initialValue = 0;
     const total = tmparr.reduce(
       (accumulator, current) => accumulator + current.Amount * current.Qty,
@@ -342,19 +341,19 @@ const CartScreen = () => {
           />
         )}
       </View>
-      <SetLocationModel
+      {/* <SetLocationModel
         isShow={locationModel}
         close={() => {
           setLocationModel(false);
         }}
-      />
+      /> */}
 
-      <LoginModel isVisible={loginModel} close={handleClose} />
+      {/* <LoginModel isVisible={loginModel} close={handleClose} /> */}
     </SafeAreaView>
   );
 };
 
-export default CartScreen;
+export default ReOrderCartScreen;
 
 const styles = StyleSheet.create({
   container: {

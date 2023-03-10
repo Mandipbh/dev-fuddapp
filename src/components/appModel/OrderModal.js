@@ -30,6 +30,8 @@ const OrderModal = props => {
   const user = useSelector(state => state.UserReducer?.userDetails);
   useEffect(() => {
     dispatch(getAllOrders(user?.UserId));
+    setgetAllOrder(allOrders?.OrderList);
+    console.log('OrderJson', JSON.stringify(allOrders?.OrderList, null, 4));
   }, []);
 
   useEffect(() => {
@@ -86,9 +88,9 @@ const OrderModal = props => {
                             />
                           )}
                         </View>
-                        <TouchableOpacity style={styles.btn}>
+                        {/* <TouchableOpacity style={styles.btn}>
                           <Label title="Riordina" style={styles.btntxt} />
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                         <TouchableOpacity
                           style={[
                             styles.row,
