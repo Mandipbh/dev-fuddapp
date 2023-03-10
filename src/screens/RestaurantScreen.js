@@ -12,7 +12,7 @@ import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/Feather';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import DatePicker from 'react-native-date-picker';
-import {scale, theme} from '../utils';
+import {scale, theme, timeSlot} from '../utils';
 import {Label, Loader, Restaurant, TimePickerModel, Title} from '../components';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import SliderModal from '../components/appModel/SliderModal';
@@ -50,63 +50,62 @@ const RestaurantScreen = () => {
     if (selectedCat !== null) {
       setSelCategory(selectedCat?.Nome);
     }
-    const now = `${moment(new Date()).format('HH:mm')}`;
 
-    const times = now.split(':');
-    let splitedHour = times[0];
-    let splitedMin = times[1];
-    let newHOur = 0;
-    let newMin = '00';
-    let newoundedTime = '';
-    let newtimeSlot = '';
-    let displaytimeslot = '';
+    //time logic start
 
-    if (splitedMin >= 15 && splitedMin <= 30) {
-      newHOur = parseInt(splitedHour, 10);
-      newMin = '30'; //19:00
-    } else if (splitedMin > 30 && splitedMin <= 45) {
-      newHOur = parseInt(splitedHour, 10);
-      newMin = '30';
-    } else if (splitedMin > 45) {
-      newHOur = parseInt(splitedHour, 10) + 1;
-      newMin = '00';
-    } else {
-      newHOur = parseInt(splitedHour, 10);
-      newMin = '00'; //18:00
-    }
+    // var now = `${moment(new Date()).format('HH:mm')}`;
 
-    newoundedTime = newHOur.toString().concat(':', newMin.toString());
+    // const times = now.split(':');
+    // let splitedHour = times[0];
+    // let splitedMin = times[1];
+    // let newHOur = 0;
+    // let newMin = '00';
+    // let newoundedTime = '';
+    // let newtimeSlot = '';
+    // let displaytimeslot = '';
 
-    let newEndHour = 0;
-    let newEndMin = '00';
-    let newEndoundTime = '';
+    // if (splitedMin >= 15 && splitedMin <= 30) {
+    //   newHOur = parseInt(splitedHour, 10);
+    //   newMin = '30'; //19:00
+    // } else if (splitedMin > 30 && splitedMin <= 45) {
+    //   newHOur = parseInt(splitedHour, 10);
+    //   newMin = '30';
+    // } else if (splitedMin > 45) {
+    //   newHOur = parseInt(splitedHour, 10) + 1;
+    //   newMin = '00';
+    // } else {
+    //   newHOur = parseInt(splitedHour, 10);
+    //   newMin = '00'; //18:00
+    // }
 
-    if (parseInt(splitedHour) !== parseInt(newHOur)) {
-      newEndMin = '30';
-      newEndHour = parseInt(newHOur, 10);
-    } else {
-      if (parseInt(newMin) === 30) {
-        newEndMin = '00';
-        newEndHour = parseInt(newHOur, 10) + 1;
-      } else {
-        newEndMin = '30';
-        newEndHour = parseInt(newHOur, 10);
-      }
-    }
+    // if (splitedMin > 30) {
+    //   splitedMin = 60 - splitedMin;
+    // } else {
+    //   splitedMin = 30 - splitedMin;
+    // }
 
-    newEndoundTime = newEndHour.toString().concat(':', newEndMin.toString());
-    newtimeSlot = newoundedTime
-      .toString()
-      .concat('TO', newEndoundTime.toString());
+    // now = moment(new Date()).add(splitedMin, 'm');
+    // var newRoundedTime = moment(new Date())
+    //   .add(splitedMin, 'm')
+    //   .format('HH:mm');
+    // var newEndroundTime = moment(now).add(30, 'm').format('HH:mm');
 
-    displaytimeslot = newoundedTime
-      .toString()
-      .concat(' TO ', newEndoundTime.toString());
-    console.log('newtimeSlot', newtimeSlot);
+    // newtimeSlot = newRoundedTime
+    //   .toString()
+    //   .concat('TO', newEndroundTime.toString());
 
-    setDisplayedTimeSlot(displaytimeslot);
-    setTimeSlot(newtimeSlot);
-  }, []);
+    // displaytimeslot = newRoundedTime
+    //   .toString()
+    //   .concat(' TO ', newEndroundTime.toString());
+    // console.log('newtimeSlot', newtimeSlot);
+
+    //END ....
+
+    const timeSlotData = timeSlot();
+    console.log('timeSlotData ?? ', timeSlotData);
+    setDisplayedTimeSlot(timeSlotData.dtime);
+    setTimeSlot(timeSlotData.ptime);
+  }, [isFocuse]);
 
   useEffect(() => {
     setLoadding(true);

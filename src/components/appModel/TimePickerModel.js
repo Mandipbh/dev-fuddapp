@@ -1,4 +1,5 @@
 import {
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -51,7 +52,12 @@ const TimePickerModel = props => {
   }, [isVisible, close]);
   return (
     <Modal
-      style={{justifyContent: 'center', alignItems: 'center', flex: 1}}
+      style={{
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 0,
+        flex: 1,
+      }}
       visible={isVisible}>
       <BlurView
         style={styles.blurView}
@@ -62,7 +68,10 @@ const TimePickerModel = props => {
       />
       <View style={styles.container}>
         <View style={styles.header}>
-          <Title title="Select Time " />
+          <Title
+            title="Select Time "
+            style={{paddingBottom: scale(2), marginLeft: scale(5)}}
+          />
           {/* <Feather
             name="x"
             size={scale(22)}
@@ -73,7 +82,7 @@ const TimePickerModel = props => {
           /> */}
         </View>
 
-        <View style={{height: theme.SCREENHEIGHT * 0.25, marginTop: scale(10)}}>
+        <View style={{height: theme.SCREENHEIGHT * 0.24, marginTop: scale(10)}}>
           <ScrollView showsVerticalScrollIndicator={false}>
             {timeSloat.map((item, index) => {
               return (
@@ -126,7 +135,7 @@ const styles = StyleSheet.create({
   },
   container: {
     // flex: 1,
-    height: theme.SCREENHEIGHT * 0.4,
+    height: theme.SCREENHEIGHT * 0.37,
     // position: 'absolute',
     bottom: 0,
     // borderWidth: 1,
@@ -134,7 +143,7 @@ const styles = StyleSheet.create({
     // borderRadius: scale(15),
     padding: scale(5),
     alignItems: 'center',
-    width: '100%',
+    width: '90%',
   },
   textButton: {
     flexDirection: 'row',
@@ -152,9 +161,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: scale(10),
-    width: '90%',
+    width: '100%',
     justifyContent: 'space-between',
-    // borderBottomWidth: scale(0.3),
+    borderBottomWidth: scale(0.6),
+    borderBottomColor: theme.colors.gray,
     // paddingBottom: scale(3),
   },
   blurView: {
@@ -166,10 +176,13 @@ const styles = StyleSheet.create({
   },
   bottomView: {
     flexDirection: 'row',
-    padding: theme.SCREENHEIGHT * 0.025,
+
     alignItems: 'center',
     justifyContent: 'flex-end',
     width: '100%',
+    borderTopWidth: scale(0.6),
+    borderTopColor: theme.colors.gray,
+    flex: 1,
   },
   btn: {
     paddingHorizontal: scale(5),

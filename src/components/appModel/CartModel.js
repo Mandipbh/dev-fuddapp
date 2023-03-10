@@ -71,6 +71,7 @@ const CartModel = props => {
       lstAddons: add1,
       lstIngredients: add2,
       lstMakeTypes: add3,
+      Amount: data?.Amount + pTotal + (pTotal === 0 ? 0 : 0),
     };
     console.log('product details >> ', ProductData);
     //   setProductDetails(productDetails);
@@ -474,7 +475,7 @@ const CartModel = props => {
             style={styles.price}
           />
         </View>
-
+        {console.log('object', data?.Amount + pTotal + (pTotal === 0 ? 0 : 0))}
         <AddCardModal isVisible={cartModel} close={closeModal} />
       </View>
     </Modal>

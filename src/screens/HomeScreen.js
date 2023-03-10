@@ -9,8 +9,7 @@ import {
   View,
 } from 'react-native';
 import React, {useState} from 'react';
-import Icon from 'react-native-vector-icons/Feather';
-import {scale, theme} from '../utils';
+import {scale, theme, timeSlot} from '../utils';
 import {
   Header,
   Button,
@@ -37,10 +36,12 @@ import SetLocationModel from '../components/appModel/SetLocationModel';
 import moment from 'moment';
 import {setCategory} from '../redux/Actions/RestaurantAction';
 import OrderModal from '../components/appModel/OrderModal';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import Icon from 'react-native-vector-icons/Feather';
 
 const Category = ({categoryListData}) => {
   return (
-    <View style={styles.categoryContainer}>
+    <View>
       <Title title="Categories" style={styles.title} />
       <ScrollView
         contentContainerStyle={{paddingVertical: scale(5)}}
@@ -127,15 +128,17 @@ const HomeScreen = () => {
   };
   const isLoginUser = useSelector(state => state.UserReducer?.login);
   const seladdress = useSelector(state => state.UserReducer.selAddress);
+
   const handleCloseModal = () => {
     setOrderModalVisible(!orderModalVisible);
   };
   useEffect(() => {
+    const timeSlotData = timeSlot();
     dispatch(getAllCategory());
     let obj = {
       id: 0,
       date: moment().format('DD-MM-YYYY'),
-      timeSlot: '16:00TO16:30',
+      timeSlot: timeSlotData.ptime,
       category: '',
       longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
       latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
@@ -166,6 +169,7 @@ const HomeScreen = () => {
     setExternalRestaurant(ExternalRestaurant?.Restaurants);
   }, [ExternalRestaurant]);
 
+  //render all foods
   const Food = () => {
     return (
       <>
@@ -195,6 +199,89 @@ const HomeScreen = () => {
       </>
     );
   };
+
+  // handle google autocomplate Search
+  const compIsType = (t, s) => {
+    for (let z = 0; z < t.length; ++z) if (t[z] == s) return true;
+    return false;
+  };
+  const handlePlaceChanged = async (data, addData) => {
+
+    console('DATTTA', data);
+    console.log('DETAILSSSS', addData);
+
+    const zipCode = data?.address_components.find(addressComponent =>
+      addressComponent.types.includes('postal_code'),
+    )?.short_name;
+    const place = data;
+    let latt,
+      lngg,
+      addrSel,
+      placeName,
+      placeId = '';
+    let country,
+      state,
+      city = null;
+    if (place.geometry !== undefined) {
+      const plcGeom = place.geometry;
+      if (plcGeom.location !== undefined) {
+        const {lat, lng} = place?.geometry?.location;
+        latt = lat;
+        lngg = lng;
+      }
+    }
+
+    addrSel =
+      place.formatted_address !== undefined ? place.formatted_address : '';
+    placeName = place.name !== undefined ? place.name : '';
+    placeId = place.place_id !== undefined ? place.place_id : '';
+    if (place.address_components !== undefined) {
+      let addrComp = place.address_components;
+      for (let i = 0; i < addrComp.length; ++i) {
+        var typ = addrComp[i].types;
+        if (compIsType(typ, 'administrative_area_level_1'))
+          state = addrComp[i].long_name;
+        //store the state
+        else if (compIsType(typ, 'locality')) city = addrComp[i].long_name;
+        //store the city
+        else if (compIsType(typ, 'country')) country = addrComp[i].long_name; //store the country
+
+        //we can break early if we find all three data
+        if (state != null && city != null && country != null) break;
+      }
+    }
+
+    let nameData = '';
+
+    let stateResp = {
+      lat: latt,
+      lng: lngg,
+      formattedAddress: addrSel,
+      placeName: placeName,
+      placeId: placeId,
+      city: city,
+      state: state,
+      country: country,
+      textboxtext: nameData,
+      Description: addData?.description,
+    };
+
+    console.log('stateResp', stateResp);
+
+    const frmData = {
+      Latitute: latt?.toString(),
+      Longitude: lngg.toString(),
+
+      StreetNo: data?.address_components[0]?.long_name,
+
+      Address: placeName,
+    };
+    // setAddressData(frmData);
+    console.log(
+      'stateRespstateRespstateResp  is this ',
+      JSON.stringify(frmData, null, 4),
+    );
+  };
   return (
     <SafeAreaView style={styles.container}>
       <Header
@@ -217,13 +304,87 @@ const HomeScreen = () => {
         }}
       />
       <View style={styles.mainContainer}>
-        <View style={[styles.textinputContainer, styles.shadow]}>
+        <ScrollView
+          contentContainerStyle={{
+            width: '100%',
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 1,
+            },
+            shadowOpacity: 0.2,
+            shadowRadius: 1.41,
+            elevation: 2,
+
+            // flexGrow: 1,
+          }}
+          style={{
+            position: 'absolute',
+            top: theme.SCREENHEIGHT * 0.01,
+            width: '100%',
+            zIndex: 11,
+            alignSelf: 'center',
+          }}
+          nestedScrollEnabled={true}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}>
+          <GooglePlacesAutocomplete
+            // renderLeftButton={() => (
+            //   <Icon
+            //     name="search"
+            //     size={scale(22)}
+            //     color={theme.colors.black}
+            //     style={{
+            //       backgroundColor: theme.colors.white,
+            //       padding: scale(10),
+            //     }}
+            //   />
+            // )}
+            placeholder="Inserisci il tuo indirizzo completo"
+            keepResultsAfterBlur={true}
+            onPress={(data, details = null) => {
+              handlePlaceChanged(details, data);
+              console.log('HOME_SErACH', data);
+            }}
+            fetchDetails={true}
+            query={{
+              key: 'AIzaSyDxUeU36VnWRBXAok6txlBCV2rq9UhHWT4',
+              language: 'en',
+              components: 'country:IT',
+              sessiontoken: 'sessionToken',
+              type: Array[
+                ('address', 'postal_code', 'street_number', 'street_address')
+              ],
+            }}
+            textInputProps={{
+              placeholderTextColor: theme.colors.gray,
+              returnKeyType: 'search',
+            }}
+            styles={{
+              description: {color: 'black'},
+
+              textInput: {
+                color: theme.colors.black,
+                marginHorizontal: scale(5),
+                borderBottomWidth: scale(1),
+                borderBottomColor: theme.colors.gray1,
+                fontSize: scale(14),
+                fontFamily: theme.fonts.josefinSans,
+
+                paddingLeft: scale(10),
+              },
+            }}
+          />
+        </ScrollView>
+
+        {/* <View style={[styles.textinputContainer, styles.shadow]}>
           <Icon
             name="search"
             size={scale(23)}
             color={theme.colors.placeholder}
-          />
-          <TextInput
+          /> */}
+
+        {/* <TextInput
             value={searchtxt}
             onChangeText={txt => {
               setSearchTxt(txt);
@@ -235,8 +396,9 @@ const HomeScreen = () => {
             }
             style={styles.searchbox}
             placeholderTextColor={theme.colors.placeholder}
-          />
-        </View>
+          /> */}
+
+        {/* </View> */}
         {isLoginUser && (
           <Button
             onPress={() => {
@@ -247,19 +409,15 @@ const HomeScreen = () => {
             titleStyle={styles.btnText}
           />
         )}
+        {!isLoginUser && <View style={{height: scale(40)}} />}
         <View
           style={{
             height: isLoginUser
               ? theme.SCREENHEIGHT * 0.6
               : theme.SCREENHEIGHT * 0.7,
+            paddingTop: !isLoginUser ? scale(20) : 0,
           }}>
-          <ScrollView
-            // style={styles.scrollView}
-            showsVerticalScrollIndicator={false}
-            // contentContainerStyle={{paddingBottom: theme.SCREENHEIGHT * 0.05}}
-          >
-            {categoryView && Food()}
-
+          <ScrollView showsVerticalScrollIndicator={false}>
             {!categoryView && <Category categoryListData={categoryListData} />}
             <PopularRestaturants
               ExternalRestaurantData={popularRestaurants}
@@ -328,7 +486,7 @@ const styles = StyleSheet.create({
     width: '65%',
     height: scale(38),
     backgroundColor: theme.colors.purpal,
-    marginTop: scale(20),
+    marginTop: scale(60),
   },
   btnText: {
     fontSize: scale(14),
@@ -340,7 +498,7 @@ const styles = StyleSheet.create({
   },
 
   categoryContainer: {
-    marginTop: scale(25),
+    // marginTop: scale(25),
   },
   title: {
     fontSize: scale(16),

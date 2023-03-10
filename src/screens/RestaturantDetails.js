@@ -201,34 +201,31 @@ const RestaturantDetails = ({route, navigation}) => {
   };
   const handleModel = async item => {
     setCartModel(false);
-    setTimeout(async () => {
-      if (item !== undefined) {
-        const tmpArr = cartData === undefined ? [] : [...cartData];
-        // tmpArr.push(item);
 
-        dispatch(AddToCart(tmpArr));
+    if (item !== undefined) {
+      const tmpArr = cartData === undefined ? [] : [...cartData];
+      // tmpArr.push(item);
 
-        var matchingObj = await cartData.find(o => o.Name === item.Name);
+      dispatch(AddToCart(tmpArr));
 
-        if (matchingObj) {
-          matchingObj.Qty++;
-        } else {
-          let itemQtyhandle = {...item};
-          itemQtyhandle.Qty = 1;
-          itemQtyhandle.restaurantId = route?.params?.item.ID;
-          itemQtyhandle.MinimumOrder = details?.MinimumOrder;
-          itemQtyhandle.MinOrderSupplment = details?.MinOrderSupplment;
-          itemQtyhandle.Image =
-            details?.Menu?.ProductsImagePrefix + item?.Image;
-          tmpArr.push(itemQtyhandle);
-        }
-        // setSelItem(item);
+      var matchingObj = await cartData.find(o => o.Name === item.Name);
+
+      if (matchingObj) {
+        matchingObj.Qty++;
+      } else {
+        let itemQtyhandle = {...item};
+        itemQtyhandle.Qty = 1;
+        itemQtyhandle.restaurantId = route?.params?.item.ID;
+        itemQtyhandle.MinimumOrder = details?.MinimumOrder;
+        itemQtyhandle.MinOrderSupplment = details?.MinOrderSupplment;
+        itemQtyhandle.Image = details?.Menu?.ProductsImagePrefix + item?.Image;
+        tmpArr.push(itemQtyhandle);
       }
-    }, 1500);
+      // setSelItem(item);
+    }
   };
 
   const cartData = useSelector(state => state?.CartReducer.cartData);
-
   const handleCartAddItem = async item => {
     const tmpArr = cartData === undefined ? [] : [...cartData];
     // tmpArr.push(item);
@@ -265,6 +262,7 @@ const RestaturantDetails = ({route, navigation}) => {
       // show?  null : tmpArr.push(itemQtyhandle) : null
     }
   };
+  console.log('cartdata >> ', cartData);
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -537,7 +535,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     fontWeight: '600',
     color: theme.colors.white,
-    top: scale(7),
+    top: Platform.OS === 'ios' ? scale(10.5) : scale(5.5),
   },
   headerTitle: {
     fontSize: scale(22),

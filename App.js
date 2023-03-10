@@ -8,7 +8,7 @@ import SplashScreen from 'react-native-splash-screen';
 
 const App = () => {
   useEffect(() => {
-    SplashScreen.hide();
+    SplashScreen.show();
     LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
     LogBox.ignoreAllLogs();
   }, []);

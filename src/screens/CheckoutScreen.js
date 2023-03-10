@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Alert,
   FlatList,
   Image,
@@ -48,7 +49,7 @@ const CheckoutScreen = ({route}) => {
   const [isCoupenApplied, setCoupenApplied] = useState(false);
   const [coupenAmnt, setCoupenAmnt] = useState(0);
   const [copanCode, setCopanCode] = useState('');
-  const [notes, setNotes] = useState('Null');
+  const [notes, setNotes] = useState('');
   const [paymentModel, setPayment] = useState(false);
   const user = useSelector(state => state.UserReducer?.userDetails);
   const selAddress = useSelector(state => state.UserReducer.selAddress);
@@ -127,6 +128,7 @@ const CheckoutScreen = ({route}) => {
     }
   }, []);
   const dispatch = useDispatch();
+
   // select timer for order
   useEffect(() => {
     var restaurantId = restaurantData?.ID;
@@ -165,10 +167,17 @@ const CheckoutScreen = ({route}) => {
 
     now = moment(new Date()).add(splitedMin, 'm');
     newRoundedTime = moment(new Date()).add(splitedMin, 'm').format('HH:mm');
+    // newEndroundTime = moment(now).add(30, 'm').format('HH:mm');
 
     let [hrs, min] = restaurantData?.OpeningTime.split(':').map(Number);
     console.log('hrs', hrs);
     console.log('min', min);
+
+    newtimeSlot = newRoundedTime
+      .toString()
+      .concat('TO', newEndroundTime.toString());
+
+    setTimeSlot(newtimeSlot);
 
     let splitedResOpenTimeMin = min;
     if (splitedResOpenTimeMin > 30) {
@@ -180,6 +189,7 @@ const CheckoutScreen = ({route}) => {
     let restaurantOpeningTime = moment(new Date().setHours(hrs, min))
       .add(splitedResOpenTimeMin, 'm')
       .format('HH:mm');
+    newEndroundTime = moment(now).add(30, 'm').format('HH:mm');
 
     if (restaurantOpeningTime > newRoundedTime) {
       newEndroundTime = moment(
@@ -209,7 +219,7 @@ const CheckoutScreen = ({route}) => {
       // newRoundedTime = moment(new Date())
       //   .add(splitedMin, 'm')
       //   .format('HH:mm');
-
+      console.log('yessssss');
       newtimeSlot =
         restaurantOpeningTime > newRoundedTime
           ? restaurantOpeningTime
@@ -221,6 +231,8 @@ const CheckoutScreen = ({route}) => {
       displaytimeslot = newRoundedTime
         .toString()
         .concat(' TO ', newEndroundTime.toString());
+      console.log('Noooo >>> ', displaytimeslot);
+      console.log('newEndroundTime ? ', newEndroundTime);
       setDisplayedTimeSlot(displaytimeslot);
 
       newtimeSlot =
@@ -232,6 +244,8 @@ const CheckoutScreen = ({route}) => {
       setTimeSlot(newtimeSlot);
     }
 
+    console.log('newtimeSlot', newtimeSlot);
+    setTimeSlot(newtimeSlot);
     // var newEndroundTime = moment(now).add(30, 'm').toDate();
 
     // console.log('now', now);
@@ -282,7 +296,7 @@ const CheckoutScreen = ({route}) => {
 
     // setDisplayedTimeSlot(displaytimeslot);
     // setTimeSlot(newtimeSlot);
-  }, [restaurantData, rID]);
+  }, [restaurantData]);
 
   const handleResetCoupen = () => {
     setCopanCode('');
@@ -467,6 +481,7 @@ const CheckoutScreen = ({route}) => {
     PaymentRequest: paymentData,
   };
 
+  console.log('paymentData ?? ', paymentData);
   const handlePlaceOrder = () => {
     console.log('cartDetailJson', JSON.stringify(cartDetailJson, null, 4));
 
@@ -477,7 +492,11 @@ const CheckoutScreen = ({route}) => {
       Alert.alert('Please select Date');
     } else if (timeSloat === null || timeSloat === undefined) {
       Alert.alert('Please select time slot');
-    } else if (paymentData === null || paymentData === undefined) {
+    } else if (
+      paymentData?.PayType === null ||
+      paymentData?.PayType === undefined ||
+      paymentData == ''
+    ) {
       Alert.alert('Please select atleast one payment option');
     } else if (locationModel === undefined || locationModel === null) {
       Alert.alert('Please select address');
@@ -753,14 +772,21 @@ const CheckoutScreen = ({route}) => {
                   </>
                 )}
 
-                <Button
-                  title="Invia ordine"
-                  style={styles.submitBtn}
-                  titleStyle={styles.btnTxt}
-                  onPress={() => {
-                    handlePlaceOrder();
-                  }}
-                />
+                {load ? (
+                  <ActivityIndicator
+                    size="large"
+                    color={theme.colors.primary}
+                  />
+                ) : (
+                  <Button
+                    title="Invia ordine"
+                    style={styles.submitBtn}
+                    titleStyle={styles.btnTxt}
+                    onPress={() => {
+                      handlePlaceOrder();
+                    }}
+                  />
+                )}
               </ScrollView>
             </KeyboardAvoidingView>
           </View>

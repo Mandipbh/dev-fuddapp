@@ -59,6 +59,7 @@ const CartScreen = () => {
 
   const calculatePrice = () => {
     const tmparr = [...cartData];
+    console.log('total ??? ', tmparr);
     const initialValue = 0;
     const total = tmparr.reduce(
       (accumulator, current) => accumulator + current.Amount * current.Qty,
