@@ -111,6 +111,7 @@ const BottomTab = () => {
         name="RISTORANTI"
         component={Restaturant}
         options={{
+          unmountOnBlur: true,
           tabBarIcon: ({focused}) => {
             return (
               <MIcon

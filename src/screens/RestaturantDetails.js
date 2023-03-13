@@ -28,7 +28,7 @@ import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useEffect} from 'react';
 import {restaurantDetails} from '../redux/Actions/RestaurantAction';
-import {APP_BASE_URL} from '../utils/ApiService';
+import ApiService, {API, APP_BASE_URL} from '../utils/ApiService';
 import {AddToCart} from '../redux/Actions/CartAction';
 import moment from 'moment';
 
@@ -65,7 +65,32 @@ const RestaturantDetails = ({route, navigation}) => {
         .format('HH:mm')}`,
       Category: '',
     };
-    console.log('object>>> ', data);
+
+    setLoad(true);
+
+    try {
+      const options = {payloads: data};
+      ApiService.post(API.getPerticularRestaurant, options)
+        .then(res => {
+          if (res) {
+            console.log('res?.RestaurantDetail', res?.RestaurantDetail);
+            setLoad(false);
+            setDetails(res?.RestaurantDetail);
+            // dispatch({
+            //   type: GETRESTAURANTDETAILS,
+            //   payload: res?.RestaurantDetail,
+            // });
+          }
+        })
+        .catch(c => {
+          setLoad(false);
+          console.log('catch of restaurants >> ressst ', c.response);
+        });
+    } catch (error) {
+      setLoad(false);
+      console.log('error in restaurants', error);
+    }
+
     dispatch(restaurantDetails(data));
   }, [isFocuse]);
 
@@ -74,12 +99,12 @@ const RestaturantDetails = ({route, navigation}) => {
   );
 
   //set details
-  useEffect(() => {
-    // AddToCart(restaurantData);
-    console.log('restaurantData_', restaurantData);
-    setLoad(false);
-    setDetails(restaurantData);
-  }, [restaurantData]);
+  // useEffect(() => {
+  //   // AddToCart(restaurantData);
+  //   console.log('restaurantData_', restaurantData);
+  //   setLoad(false);
+  //   setDetails(res?.RestaurantDetail);
+  // }, [restaurantData]);
 
   function getNameData(d, searchKey) {
     let returnData = [];
@@ -205,7 +230,6 @@ const RestaturantDetails = ({route, navigation}) => {
     if (item !== undefined) {
       const tmpArr = cartData === undefined ? [] : [...cartData];
       // tmpArr.push(item);
-
 
       dispatch(AddToCart(tmpArr));
 

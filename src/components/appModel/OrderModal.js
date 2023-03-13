@@ -74,16 +74,16 @@ const OrderModal = props => {
                           />
                           {selIndex === index ? (
                             <Label
-                              title={`€${oI.Total} - ${moment(oI.DeliveryDate)
-                                .utc()
-                                .format('DD/MM/YYYY')}`}
+                              title={`€${oI.Total} - ${moment(
+                                oI.DeliveryDate,
+                              ).format('DD/MM/YYYY')}`}
                               style={styles.pd}
                             />
                           ) : (
                             <Label
-                              title={`${moment(oI.DeliveryDate)
-                                .utc()
-                                .format('DD/MM/YYYY')}`}
+                              title={`${moment(oI.DeliveryDate).format(
+                                'DD/MM/YYYY',
+                              )}`}
                               style={styles.pd}
                             />
                           )}

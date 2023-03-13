@@ -206,7 +206,6 @@ const HomeScreen = () => {
     return false;
   };
   const handlePlaceChanged = async (data, addData) => {
-
     console('DATTTA', data);
     console.log('DETAILSSSS', addData);
 

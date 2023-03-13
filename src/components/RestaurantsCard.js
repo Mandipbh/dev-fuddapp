@@ -25,9 +25,12 @@ const RestaurantsCard = props => {
         style={[styles.restaurantView, styles.shadow]}
         onPress={() => {
           Popular
-            ? //
-              navigation.navigate('RISTORANTI', {category: item})
-            : // navigation.navigate('RISTORANTI', {
+            ? navigation.navigate('RISTORANTI', {
+                screen: 'Details',
+                params: {item: item},
+              })
+            : // navigation.navigate('RISTORANTI', {category: item})
+              // navigation.navigate('RISTORANTI', {
               //   screen: 'Details',
               //   params: {item: item},
               // })

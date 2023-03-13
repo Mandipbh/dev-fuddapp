@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {scale, theme} from '../utils';
@@ -10,7 +11,7 @@ import {ALLORDERS, REORDERS} from '../redux/Actions/ActionsTypes';
 import {useDispatch, useSelector} from 'react-redux';
 import {getAllOrders} from '../redux/Actions/OrderAction';
 import moment from 'moment';
-import {useNavigation} from '@react-navigation/core';
+import {useIsFocused, useNavigation} from '@react-navigation/core';
 
 // export const getAllOrders = () => {
 //   return async dispatch => {
@@ -30,19 +31,21 @@ import {useNavigation} from '@react-navigation/core';
 const MyOrders = () => {
   const navigation = useNavigation();
   const [selIndex, setIindex] = useState(0);
-
+  const [loadding, setLoadding] = useState(0);
+  const isFocuse = useIsFocused();
   const dispatch = useDispatch();
   const [getAllOrder, setgetAllOrder] = useState(allOrders);
 
   const allOrders = useSelector(state => state.HomeReducers.allOrders);
   const user = useSelector(state => state.UserReducer?.userDetails);
   useEffect(() => {
+    setLoadding(true);
     dispatch(getAllOrders(user?.UserId));
-  }, []);
+  }, [isFocuse]);
 
   useEffect(() => {
     setgetAllOrder(allOrders?.OrderList);
-    console.log('_allOrders', allOrders);
+    setLoadding(false);
   }, [allOrders]);
 
   return (
@@ -51,12 +54,12 @@ const MyOrders = () => {
         style={{height: theme.SCREENHEIGHT * 0.4}}
         showsVerticalScrollIndicator={false}>
         {getAllOrder &&
-          getAllOrder?.map((oI, index) => {
+          getAllOrder?.reverse()?.map((oI, index) => {
             return (
               <View style={styles.mainCard} key={index}>
                 <View style={[styles.row, {alignItems: 'center'}]}>
                   <View style={{marginVertical: scale(8)}}>
-                    <View style={styles.orderCon}>
+                    <View style={[styles.orderCon, {alignItems: 'center'}]}>
                       <View
                         style={{flexDirection: 'row', alignItems: 'center'}}>
                         <Label
@@ -65,10 +68,24 @@ const MyOrders = () => {
                         />
                         <Label
                           title={' - ' + oI?.Status}
-                          style={{color: oI?.StatusColor, fontSize: scale(11)}}
+                          style={{
+                            color: oI?.StatusColor,
+                            fontSize: scale(11),
+                          }}
                         />
                       </View>
-
+                      {selIndex === index && (
+                        <TouchableOpacity
+                          style={styles.btn}
+                          onPress={() => {
+                            navigation.navigate('ReOrder', {
+                              orderId: oI.Number,
+                              Email: oI.Email,
+                            });
+                          }}>
+                          <Label title="Riordina" style={styles.btntxt} />
+                        </TouchableOpacity>
+                      )}
                       <TouchableOpacity
                         style={[styles.row, {alignItems: 'center'}]}
                         onPress={() => {
@@ -100,9 +117,9 @@ const MyOrders = () => {
                           style={{fontSize: scale(11)}}
                         />
                         <Label
-                          title={`${moment(oI.DeliveryDate)
-                            .utc()
-                            .format('DD/MM/YYYY')} @ ${oI?.DeliveryTime}`}
+                          title={`${moment(oI.DeliveryDate).format(
+                            'DD/MM/YYYY',
+                          )} @ ${oI?.DeliveryTime}`}
                           style={styles.pd}
                         />
 
@@ -154,18 +171,31 @@ const MyOrders = () => {
                             },
                           ]}
                         />
+                        <View style={styles.row1}>
+                          <Label
+                            title="Note ordine :"
+                            style={{fontSize: scale(11)}}
+                          />
+                          <Label
+                            title={` ${oI?.Comments}`}
+                            style={[
+                              styles.pd,
+                              {marginBottom: 0, marginLeft: scale(2)},
+                            ]}
+                          />
+                        </View>
                       </View>
                     ) : (
                       <Label
-                        title={`${moment(oI.DeliveryDate)
-                          .utc()
-                          .format('DD/MM/YYYY')}`}
+                        title={`${moment(oI.DeliveryDate).format(
+                          'DD/MM/YYYY',
+                        )}`}
                         style={styles.pd}
                       />
                     )}
                   </View>
 
-                  <TouchableOpacity
+                  {/* <TouchableOpacity
                     style={styles.btn}
                     onPress={() => {
                       navigation.navigate('ReOrder', {
@@ -193,7 +223,7 @@ const MyOrders = () => {
                       size={scale(18)}
                       color={theme.colors.gray}
                     />
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                 </View>
                 {selIndex === index && (
                   <>
@@ -287,6 +317,11 @@ const MyOrders = () => {
               </View>
             );
           })}
+        {!loadding && getAllOrder?.length === 0 ? (
+          <View style={styles.nodata}>
+            <Label title="Nessun ordine" />
+          </View>
+        ) : null}
       </ScrollView>
     </View>
   );
@@ -301,7 +336,7 @@ const styles = StyleSheet.create({
     marginVertical: scale(10),
   },
   orderCon: {
-    width: theme.SCREENWIDTH * 0.7,
+    width: theme.SCREENWIDTH * 0.8,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -323,7 +358,7 @@ const styles = StyleSheet.create({
     height: scale(20),
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: scale(-10),
+    // marginTop: scale(-10),
   },
   btntxt: {
     textAlign: 'center',
@@ -354,5 +389,11 @@ const styles = StyleSheet.create({
   row1: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  nodata: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+    height: theme.SCREENHEIGHT * 0.35,
   },
 });

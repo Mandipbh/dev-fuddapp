@@ -214,7 +214,7 @@ const ReOrderCheckOutScreen = ({route}) => {
           RestaurantId: 3,
           RiderId: 0,
           OrderId: 0,
-          Date: moment(date).utc().format('DD-MM-YYYY'),
+          Date: moment(date).format('DD-MM-YYYY'),
           DiscountCode: copanCode,
           Email: user?.UserInfo !== undefined && userData?.EMail,
           ItemTotalCharge: prdTotal,
@@ -300,7 +300,7 @@ const ReOrderCheckOutScreen = ({route}) => {
     OrderId: 0,
     SelectedAddressId:
       selAddress !== null && selAddress !== undefined && selAddress.Id,
-    Date: moment(date).utc().format('DD-MM-YYYY'),
+    Date: moment(date).format('DD-MM-YYYY'),
     TimeSlot: timeSloat === null ? '' : timeSloat.replace('TO', '-'),
     DiscountCode: copanCode.replace('null', ''),
     ItemIds: itemList,
@@ -418,7 +418,7 @@ const ReOrderCheckOutScreen = ({route}) => {
                             setOpen(!open);
                           }}>
                           <Label
-                            title={moment(date).utc().format('DD-MM-YYYY')}
+                            title={moment(date).format('DD-MM-YYYY')}
                             style={{marginTop: scale(5), fontSize: scale(12)}}
                           />
                         </TouchableOpacity>
