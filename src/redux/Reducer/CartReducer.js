@@ -2,6 +2,7 @@ import * as types from '../Actions/ActionsTypes';
 
 const initialState = {
   cartData: [],
+  reOrderData: [],
 };
 
 export default (state = initialState, action) => {
@@ -11,7 +12,11 @@ export default (state = initialState, action) => {
         ...state.cartData,
         cartData: action.payload,
       };
-
+    case types.REORDERS:
+      return {
+        ...state.reOrderData,
+        reOrderData: action.payload,
+      };
     case types.LOGOUT:
       return {
         initialState,

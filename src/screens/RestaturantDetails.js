@@ -206,6 +206,7 @@ const RestaturantDetails = ({route, navigation}) => {
       const tmpArr = cartData === undefined ? [] : [...cartData];
       // tmpArr.push(item);
 
+
       dispatch(AddToCart(tmpArr));
 
       var matchingObj = await cartData.find(o => o.Name === item.Name);
@@ -227,6 +228,7 @@ const RestaturantDetails = ({route, navigation}) => {
 
   const cartData = useSelector(state => state?.CartReducer.cartData);
   const handleCartAddItem = async item => {
+    console.log('tmpArr>>', item);
     const tmpArr = cartData === undefined ? [] : [...cartData];
     // tmpArr.push(item);
 

@@ -39,13 +39,13 @@ const CartScreen = () => {
   const [dPrice, setDPrice] = useState(0);
   const [loginModel, setLoginModel] = useState(false);
   const [locationModel, setLocationModel] = useState(false);
+
+  console.log('cartData_screen', cartData);
   const incrimentCart = (selitm, idx) => {
     const tmparr = [...cartData];
     tmparr[idx].Qty = tmparr[idx].Qty + 1;
     dispatch(AddToCart(tmparr));
   };
-
-  console.log('CartScreen>>', cartData);
 
   const decrimentCart = (selitm, idx) => {
     const tmparr = [...cartData];
@@ -61,7 +61,7 @@ const CartScreen = () => {
     const tmparr = [...cartData];
     console.log('total ??? ', tmparr);
     const initialValue = 0;
-    const total = tmparr.reduce(
+    const total = tmparr?.reduce(
       (accumulator, current) => accumulator + current.Amount * current.Qty,
       initialValue,
     );

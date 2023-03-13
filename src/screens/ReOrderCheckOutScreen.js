@@ -1,7 +1,6 @@
 import {
   ActivityIndicator,
   Alert,
-  FlatList,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -15,7 +14,6 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/Feather';
-import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
 import {images, scale, theme} from '../utils';
 import {
   Button,
@@ -37,7 +35,7 @@ const keyboardVerticalOffset = Platform.OS === 'ios' ? scale(40) : 0;
 const startOfMonth = moment().format('YYYY-MM-DD');
 const endOfMonth = moment().endOf('month').format('YYYY-MM-DD');
 
-const CheckoutScreen = ({route}) => {
+const ReOrderCheckOutScreen = ({route}) => {
   const navigation = useNavigation();
   const [process, setProcesss] = useState(false);
   const [locationModel, setLocationModel] = useState(false);
@@ -60,10 +58,7 @@ const CheckoutScreen = ({route}) => {
   const isLoginUser = useSelector(state => state.UserReducer?.login);
   const [grandTotal, setGrandTotal] = useState(0);
   const [prdTotal, setProdTotal] = useState(0);
-  const [currentDay, setCurrentDay] = useState('');
-  const [startClosetime, setStartClosetime] = useState('');
-  const [startTime, setStartime] = useState('');
-  const [endTime, setEndtime] = useState('');
+
   const [rID, setRId] = useState('');
 
   const restaurantData = useSelector(
@@ -81,44 +76,6 @@ const CheckoutScreen = ({route}) => {
     }
   };
 
-  const handleDate = newTime => {
-    console.log('newTime', newTime);
-    const receivedTime = newTime.split('-'); // here the time is like "16:14"
-    let sTime = receivedTime[0];
-    let eTime = receivedTime[1];
-
-    setStartime(sTime);
-    setEndtime(eTime);
-    setStartClosetime(newTime.replace(' - ', 'TO'));
-    setDisplayedTimeSlot(newTime.replace(' - ', 'TO'));
-    // setTimeSlot(startClosetime.replace('TO', ' TO '));
-  };
-
-  // useEffect(() => {
-  //   const today = new Date();
-  //   const day = today.getDay();
-  //   const daylist = [
-  //     'Domenica',
-  //     'Lunedì',
-  //     'Martedì',
-  //     'Mercoledì ',
-  //     'Giovedì',
-  //     'Venerdì',
-  //     'Sabato',
-  //   ];
-  //   console.log(`Today is : ${daylist[day]}.`);
-  //   setCurrentDay(daylist[day]);
-
-  //   (restaurantData !== null || restaurantData !== undefined) &&
-  //     restaurantData
-  //       .filter(itm => itm.Day === daylist[day])
-  //       .map(time => {
-  //         setTimeSlot(time.Time);
-  //         console.log('timeSloat', time.Time);
-  //         handleDate(time.Time?.toString());
-  //       });
-  // }, [restaurantData, startClosetime, timeSloat, startTime, endTime]);
-
   useEffect(() => {
     console.log('route.params', route.params);
     if (route.params) {
@@ -131,39 +88,45 @@ const CheckoutScreen = ({route}) => {
 
   // select timer for order
   useEffect(() => {
-    var restaurantId = restaurantData?.ID;
-    setRId(restaurantId);
+    if (restaurantData !== null && restaurantData !== undefined) {
+      var restaurantId = restaurantData?.ID;
+      setRId(restaurantId);
 
-    console.log('RID', rID);
+      console.log('RID', rID);
 
-    var now = `${moment(new Date()).format('HH:mm')}`;
+      var now = `${moment(new Date()).format('HH:mm')}`;
 
-    const times = now.split(':');
-    let splitedHour = times[0];
-    // let splitedMin = times[1];
-    let newHOur = 0;
-    let newMin = '00';
-    let newRoundedTime = '';
-    let newEndroundTime = '';
-    let newtimeSlot = '';
-    let displaytimeslot = '';
-    let restaurantOpeningTime = '';
+      const times = now.split(':');
+      let splitedHour = times[0];
+      // let splitedMin = times[1];
+      let newHOur = 0;
+      let newMin = '00';
+      let newRoundedTime = '';
+      let newEndroundTime = '';
+      let newtimeSlot = '';
+      let displaytimeslot = '';
 
-    let splitedMin = times[1];
-    if (splitedMin > 30) {
-      splitedMin = 60 - splitedMin;
-    } else {
-      splitedMin = 30 - splitedMin;
-    }
+      let splitedMin = times[1];
+      if (splitedMin > 30) {
+        splitedMin = 60 - splitedMin;
+      } else {
+        splitedMin = 30 - splitedMin;
+      }
 
-    now = moment(new Date()).add(splitedMin, 'm');
-    newRoundedTime = moment(new Date()).add(splitedMin, 'm').format('HH:mm');
-    // newEndroundTime = moment(now).add(30, 'm').format('HH:mm');
+      now = moment(new Date()).add(splitedMin, 'm');
+      newRoundedTime = moment(new Date()).add(splitedMin, 'm').format('HH:mm');
+      // newEndroundTime = moment(now).add(30, 'm').format('HH:mm');
 
-    if (restaurantData?.OpeningTime !== '') {
       let [hrs, min] = restaurantData?.OpeningTime.split(':').map(Number);
       console.log('hrs', hrs);
       console.log('min', min);
+
+      newtimeSlot = newRoundedTime
+        .toString()
+        .concat('TO', newEndroundTime.toString());
+
+      setTimeSlot(newtimeSlot);
+
       let splitedResOpenTimeMin = min;
       if (splitedResOpenTimeMin > 30) {
         splitedResOpenTimeMin = 60 - splitedResOpenTimeMin;
@@ -171,9 +134,10 @@ const CheckoutScreen = ({route}) => {
         splitedResOpenTimeMin = 30 - splitedResOpenTimeMin;
       }
 
-      restaurantOpeningTime = moment(new Date().setHours(hrs, min))
+      let restaurantOpeningTime = moment(new Date().setHours(hrs, min))
         .add(splitedResOpenTimeMin, 'm')
         .format('HH:mm');
+      newEndroundTime = moment(now).add(30, 'm').format('HH:mm');
 
       if (restaurantOpeningTime > newRoundedTime) {
         newEndroundTime = moment(
@@ -184,107 +148,56 @@ const CheckoutScreen = ({route}) => {
       } else {
         newEndroundTime = moment(now).add(30, 'm').format('HH:mm');
       }
-    } else {
-      newEndroundTime = moment(now).add(30, 'm').format('HH:mm');
-    }
 
-    console.log('now_', now);
-    console.log('newRoundedTime_', newRoundedTime);
-    console.log('restaurantOpeningTime_', restaurantOpeningTime);
-    console.log('newEndroundTime', newEndroundTime);
+      console.log('now_', now);
+      console.log('newRoundedTime_', newRoundedTime);
+      console.log('restaurantOpeningTime_', restaurantOpeningTime);
+      console.log('newEndroundTime', newEndroundTime);
 
-    var str1 =
-      restaurantData?.OpeningTime !== ''
-        ? restaurantOpeningTime > newRoundedTime
+      var str1 =
+        restaurantOpeningTime > newRoundedTime
           ? restaurantOpeningTime.split(':')
-          : newRoundedTime.split(':')
-        : newRoundedTime.split(':');
+          : newRoundedTime.split(':');
+      var str2 = newEndroundTime.split(':');
 
-    var str2 = newEndroundTime.split(':');
+      var totalSeconds1 = parseInt(str1[0] * 3600 + str1[1] * 60);
+      var totalSeconds2 = parseInt(str2[0] * 3600 + str2[1] * 60);
 
-    var totalSeconds1 = parseInt(str1[0] * 3600 + str1[1] * 60);
-    var totalSeconds2 = parseInt(str2[0] * 3600 + str2[1] * 60);
+      if (totalSeconds2 > totalSeconds1) {
+        // newRoundedTime = moment(new Date())
+        //   .add(splitedMin, 'm')
+        //   .format('HH:mm');
+        newtimeSlot =
+          restaurantOpeningTime > newRoundedTime
+            ? restaurantOpeningTime
+                .toString()
+                .concat('TO', newEndroundTime.toString())
+            : newRoundedTime
+                .toString()
+                .concat('TO', newEndroundTime.toString());
+        setTimeSlot(newtimeSlot);
+      } else {
+        displaytimeslot = newRoundedTime
+          .toString()
+          .concat(' TO ', newEndroundTime.toString());
+        console.log('Noooo >>> ', displaytimeslot);
+        console.log('newEndroundTime ? ', newEndroundTime);
+        setDisplayedTimeSlot(displaytimeslot);
 
-    if (totalSeconds2 > totalSeconds1) {
-      // newRoundedTime = moment(new Date())
-      //   .add(splitedMin, 'm')
-      //   .format('HH:mm');
-      newtimeSlot =
-        restaurantOpeningTime > newRoundedTime
-          ? restaurantOpeningTime
-              .toString()
-              .concat('TO', newEndroundTime.toString())
-          : newRoundedTime.toString().concat('TO', newEndroundTime.toString());
-      setTimeSlot(newtimeSlot);
-    } else {
-      displaytimeslot = newRoundedTime
-        .toString()
-        .concat(' TO ', newEndroundTime.toString());
-      console.log('Noooo >>> ', displaytimeslot);
-      console.log('newEndroundTime ? ', newEndroundTime);
-      setDisplayedTimeSlot(displaytimeslot);
+        newtimeSlot =
+          restaurantOpeningTime > newRoundedTime
+            ? restaurantOpeningTime
+                .toString()
+                .concat('TO', newEndroundTime.toString())
+            : newRoundedTime
+                .toString()
+                .concat('TO', newEndroundTime.toString());
+        setTimeSlot(newtimeSlot);
+      }
 
-      newtimeSlot =
-        restaurantOpeningTime > newRoundedTime
-          ? restaurantOpeningTime
-              .toString()
-              .concat('TO', newEndroundTime.toString())
-          : newRoundedTime.toString().concat('TO', newEndroundTime.toString());
+      console.log('newtimeSlot', newtimeSlot);
       setTimeSlot(newtimeSlot);
     }
-
-    console.log('newtimeSlot', newtimeSlot);
-    setTimeSlot(newtimeSlot);
-    // var newEndroundTime = moment(now).add(30, 'm').toDate();
-
-    // console.log('now', now);
-    // console.log('newEndroundTime', newEndroundTime);
-
-    // if (splitedMin >= 15 && splitedMin <= 30) {
-    //   newHOur = parseInt(splitedHour, 10);
-    //   newMin = '30'; //19:00
-    // } else if (splitedMin > 30 && splitedMin <= 45) {
-    //   newHOur = parseInt(splitedHour, 10);
-    //   newMin = '30';
-    // } else if (splitedMin > 45) {
-    //   newHOur = parseInt(splitedHour, 10) + 1;
-    //   newMin = '00';
-    // } else {
-    //   newHOur = parseInt(splitedHour, 10);
-    //   newMin = '00'; //18:00
-    // }
-
-    // newoundedTime = newHOur.toString().concat(':', newMin.toString());
-
-    // let newEndHour = 0;
-    // let newEndMin = '00';
-    // let newEndoundTime = '';
-
-    // if (parseInt(splitedHour) !== parseInt(newHOur)) {
-    //   newEndMin = '30';
-    //   newEndHour = parseInt(newHOur, 10);
-    // } else {
-    //   if (parseInt(newMin) === 30) {
-    //     newEndMin = '00';
-    //     newEndHour = parseInt(newHOur, 10) + 1;
-    //   } else {
-    //     newEndMin = '30';
-    //     newEndHour = parseInt(newHOur, 10);
-    //   }
-    // }
-
-    // newEndoundTime = newEndHour.toString().concat(':', newEndMin.toString());
-    // newtimeSlot = newoundedTime
-    //   .toString()
-    //   .concat('TO', newEndoundTime.toString());
-
-    // displaytimeslot = newoundedTime
-    //   .toString()
-    //   .concat(' TO ', newEndoundTime.toString());
-    // console.log('newtimeSlot', newtimeSlot);
-
-    // setDisplayedTimeSlot(displaytimeslot);
-    // setTimeSlot(newtimeSlot);
   }, [restaurantData]);
 
   const handleResetCoupen = () => {
@@ -337,58 +250,6 @@ const CheckoutScreen = ({route}) => {
 
   var itemList = [];
 
-  // var paymentrequestData = {
-  //   PayType:
-  //     paymentData !== null &&
-  //     paymentData !== undefined &&
-  //     paymentData.paymentType,
-  //   PaymentMethodID:
-  //     paymentData !== null &&
-  //     paymentData !== undefined &&
-  //     paymentData.title?.title,
-  //   Notes: notes,
-  //   sCardName:
-  //     paymentData !== null &&
-  //     paymentData !== undefined &&
-  //     paymentData.paymentType === 3
-  //       ? paymentData.sCardName
-  //       : '',
-  //   sCardNumber:
-  //     paymentData !== null &&
-  //     paymentData !== undefined &&
-  //     paymentData.paymentType === 3
-  //       ? paymentData.sCardNumber
-  //       : '',
-  //   sCardExpMonth:
-  //     paymentData !== null &&
-  //     paymentData !== undefined &&
-  //     paymentData.paymentType === 3
-  //       ? paymentData.sCardExpMonth
-  //       : '',
-  //   sCardExpYear:
-  //     paymentData !== null &&
-  //     paymentData !== undefined &&
-  //     paymentData.paymentType === 3
-  //       ? paymentData.sCardExpYear
-  //       : '',
-  //   sCardCvc:
-  //     paymentData !== null &&
-  //     paymentData !== undefined &&
-  //     paymentData.paymentType === 3
-  //       ? paymentData.sCardCvc
-  //       : '',
-  //   sCardPostcode:
-  //     paymentData !== null &&
-  //     paymentData !== undefined &&
-  //     paymentData.paymentType === 3
-  //       ? paymentData.sCardPostcode
-  //       : '',
-  //   sCustomerEmail: user !== undefined && user?.UserInfo?.EMail,
-  //   nAmount: (coupenAmnt !== 0 ? grandTotal - coupenAmnt : grandTotal)
-  //     .toFixed(2)
-  //     .replace('.', ''),
-  // };
-
   //total price of order
   const nAmount =
     coupenAmnt !== 0
@@ -412,17 +273,6 @@ const CheckoutScreen = ({route}) => {
       });
     });
 
-    console.log('item?.lstMakeTypes', item?.lstMakeTypes);
-
-    // [  "lstMakeTypes": []
-    //    "lstMakeTypes": {
-    //     "CodiceProdo": "Bianca",
-    //     "Id": 25935,
-    //     "ImportoUnitario": 0,
-    //     "Prodo": "con Bacon affumicato",
-    //     "Variante": "56"
-    //   }]
-
     if (item?.lstMakeTypes.toString() !== '[]') {
       if (item?.lstMakeTypes.hasOwnProperty('Id')) {
         makeTypeIds.push(item.lstMakeTypes.Id);
@@ -430,19 +280,6 @@ const CheckoutScreen = ({route}) => {
     } else {
       makeTypeIds.push();
     }
-
-    // if (item?.lstMakeTypes !== null) {
-    //   if (item?.lstMakeTypes !== undefined && item?.lstMakeTypes.length > 0) {
-    //   } else {
-    //     makeTypeIds.push();
-    //   }
-    // } else {
-    //   makeTypeIds.push();
-    // }
-
-    //  item?.lstMakeTypes === null
-    //   ? makeTypeIds.push()
-    //   : makeTypeIds.push(item.lstMakeTypes.Id);
 
     itemList.push({
       ItemCode: item.Code,
@@ -521,11 +358,11 @@ const CheckoutScreen = ({route}) => {
     }
   };
 
-  useEffect(() => {
-    let tmpData = {...paymentData};
-    tmpData.Notes = notes;
-    setPaymentData(tmpData);
-  }, [notes]);
+  //   useEffect(() => {
+  //     let tmpData = {...paymentData};
+  //     tmpData.Notes = notes;
+  //     setPaymentData(tmpData);
+  //   }, [notes]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -570,6 +407,7 @@ const CheckoutScreen = ({route}) => {
                     style={[
                       styles.productView,
                       styles.row,
+                      // eslint-disable-next-line react-native/no-inline-styles
                       {justifyContent: 'space-between', marginTop: scale(40)},
                     ]}>
                     <View>
@@ -814,7 +652,7 @@ const CheckoutScreen = ({route}) => {
   );
 };
 
-export default CheckoutScreen;
+export default ReOrderCheckOutScreen;
 
 const styles = StyleSheet.create({
   container: {

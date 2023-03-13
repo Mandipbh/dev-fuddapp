@@ -10,6 +10,7 @@ import {ALLORDERS, REORDERS} from '../redux/Actions/ActionsTypes';
 import {useDispatch, useSelector} from 'react-redux';
 import {getAllOrders} from '../redux/Actions/OrderAction';
 import moment from 'moment';
+import {useNavigation} from '@react-navigation/core';
 
 // export const getAllOrders = () => {
 //   return async dispatch => {
@@ -27,6 +28,7 @@ import moment from 'moment';
 // };
 
 const MyOrders = () => {
+  const navigation = useNavigation();
   const [selIndex, setIindex] = useState(0);
 
   const dispatch = useDispatch();
@@ -40,22 +42,8 @@ const MyOrders = () => {
 
   useEffect(() => {
     setgetAllOrder(allOrders?.OrderList);
+    console.log('_allOrders', allOrders);
   }, [allOrders]);
-
-  const handleReplaceOrder = (orderId, Email) => {
-    try {
-      ApiService.get(API.ReOrder + `id=${orderId}&userEmail=${Email}`)
-        .then(res => {
-          console.log('RESPONSE_Order', res);
-          dispatch({type: REORDERS, payload: res});
-        })
-        .catch(error => {
-          console.log('error catch ', error);
-        });
-    } catch (error) {
-      console.log('error delete catch ', error);
-    }
-  };
 
   return (
     <View>
@@ -176,13 +164,36 @@ const MyOrders = () => {
                       />
                     )}
                   </View>
-                  {/* <TouchableOpacity
+
+                  <TouchableOpacity
                     style={styles.btn}
                     onPress={() => {
-                      handleReplaceOrder(oI.Number, oI.Email);
+                      navigation.navigate('ReOrder', {
+                        orderId: oI.Number,
+                        Email: oI.Email,
+                      });
                     }}>
                     <Label title="Riordina" style={styles.btntxt} />
-                  </TouchableOpacity> */}
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={[
+                      styles.row,
+                      {alignItems: 'center', marginTop: scale(-10)},
+                    ]}
+                    onPress={() => {
+                      selIndex === index ? setIindex(null) : setIindex(index);
+                    }}>
+                    <Label
+                      title="Dettagli "
+                      style={{color: theme.colors.gray5, fontSize: scale(12)}}
+                    />
+                    <Icon
+                      name={selIndex === index ? 'chevron-up' : 'chevron-down'}
+                      size={scale(18)}
+                      color={theme.colors.gray}
+                    />
+                  </TouchableOpacity>
                 </View>
                 {selIndex === index && (
                   <>
@@ -290,7 +301,7 @@ const styles = StyleSheet.create({
     marginVertical: scale(10),
   },
   orderCon: {
-    width: theme.SCREENWIDTH * 0.8,
+    width: theme.SCREENWIDTH * 0.7,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

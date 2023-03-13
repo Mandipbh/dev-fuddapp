@@ -1,29 +1,26 @@
 import {
-  FlatList,
   Image,
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
   View,
-  Alert,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/Feather';
 import LottieView from 'lottie-react-native';
 import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Emptycart, scale, theme} from '../utils';
-import {Button, Label, Title, Error} from '../components';
+import {Button, Label, Title} from '../components';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {AddToCart} from '../redux/Actions/CartAction';
 import ApiService, {API} from '../utils/ApiService';
 import moment from 'moment';
-import LoginModel from '../components/appModel/LoginModel';
 import SetLocationModel from '../components/appModel/SetLocationModel';
+import {REORDERS} from '../redux/Actions/ActionsTypes';
 
-const ReOrderCartScreen = () => {
+const ReOrderCartScreen = ({route}) => {
   const navigation = useNavigation();
   const cartData = useSelector(state => state?.CartReducer.cartData);
   const user = useSelector(state => state.UserReducer?.userDetails);
@@ -31,6 +28,11 @@ const ReOrderCartScreen = () => {
     state => state?.RestaurantReducers?.selCategory,
   );
   const seladdress = useSelector(state => state.UserReducer.selAddress);
+
+  const reOrderCartData = useSelector(
+    state => state?.CartReducer?.reOrderCartData,
+  );
+
   const [delMsg, setDelMsg] = useState('');
   const dispatch = useDispatch();
   const [pTotal, setPTotal] = useState(0);
@@ -39,13 +41,18 @@ const ReOrderCartScreen = () => {
   const [dPrice, setDPrice] = useState(0);
   const [loginModel, setLoginModel] = useState(false);
   const [locationModel, setLocationModel] = useState(false);
+  const [reOrderData, setReOrderData] = useState({});
+
+  // const [orderId, setOrderId] = useState('');
+  //     const [email, setEmail] = useState('');
+
+  var OrderDataArray = [];
+
   const incrimentCart = (selitm, idx) => {
     const tmparr = [...cartData];
     tmparr[idx].Qty = tmparr[idx].Qty + 1;
     dispatch(AddToCart(tmparr));
   };
-
-  console.log('CartScreen>>', cartData);
 
   const decrimentCart = (selitm, idx) => {
     const tmparr = [...cartData];
@@ -57,21 +64,102 @@ const ReOrderCartScreen = () => {
     dispatch(AddToCart(tmparr));
   };
 
-  const calculatePrice = () => {
-    const tmparr = [...cartData];
-    const initialValue = 0;
-    const total = tmparr.reduce(
-      (accumulator, current) => accumulator + current.Amount * current.Qty,
-      initialValue,
-    );
-    setPTotal(total);
-    getCalculateDeliveryPrice(total);
+  const handleGetOrderDetail = (orderId, Email) => {
+    try {
+      ApiService.get(API.ReOrder + `id=${orderId}&userEmail=${Email}`)
+        .then(res => {
+          console.log('RESPONSE_Order', JSON.stringify(res, null, 4));
+          dispatch({type: REORDERS, payload: res});
+          setReOrderData(res);
+        })
+        .catch(error => {
+          console.log('error catch ', error);
+        });
+    } catch (error) {
+      console.log('error delete catch ', error);
+    }
   };
-  const isLoginUser = useSelector(state => state.UserReducer?.login);
+
   useEffect(() => {
-    calculatePrice();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cartData]);
+    handleGetOrderDetail(route.params.orderId, route.params.Email);
+  }, []);
+
+  useEffect(() => {
+    console.log('reOrderData', JSON.stringify(reOrderData, null, 4));
+
+    console.log('selectedAddress');
+
+    // var cartDetailJson = {
+    //   UserId: reOrderData?.cartDetails?.SelectedAddress?.id_utente,
+    //   RestaurantId: reOrderData?.cartDetails?.Rest?.ID,
+    //   RiderId: 0,
+    //   OrderId: 0,
+    //   SelectedAddressId: reOrderData?.cartDetails?.SelectedAddress?.id,
+    //   Date: moment(date).utc().format('DD-MM-YYYY'),
+    //   TimeSlot: reOrderData?.cartDetails?.SelectedTimeSlot,
+    //   DiscountCode: copanCode.replace('null', ''),
+
+    //   ItemIds: itemList,  //remaining
+    //   PaymentRequest: paymentData,  //remaining
+    // };
+
+    var reOrderCartData = {
+      Adds: false,
+      AddsCode: '',
+      Amount: reOrderData?.cartDetails?.Items[0]?.Amount,
+      Code: reOrderData?.cartDetails?.Items[0]?.Code,
+      Composition: reOrderData?.cartDetails?.Items[0]?.Composition,
+      Description: reOrderData?.cartDetails?.Items[0]?.Description,
+      Dinner: reOrderData?.cartDetails?.Items[0]?.Dinner,
+      Image: reOrderData?.cartDetails?.Items[0]?.Image,
+      Ingredients: reOrderData?.cartDetails?.Items[0]?.Ingredients,
+      Lunch: reOrderData?.cartDetails?.Items[0]?.lunch,
+      MakeTypes: reOrderData?.cartDetails?.Items[0]?.MakeTypes,
+      MasterId: reOrderData?.cartDetails?.Items[0]?.MasterId,
+      Name: reOrderData?.cartDetails?.Items[0]?.Name,
+      Qty: reOrderData?.cartDetails?.Items[0]?.Qty,
+      Vars: reOrderData?.cartDetails?.Items[0]?.Vars,
+      lstAddons:
+        reOrderData?.cartDetails?.Items[0].lstAddons !== null
+          ? reOrderData?.cartDetails?.Items[0].lstAddons
+          : [],
+      lstIngredients:
+        reOrderData?.cartDetails?.Items[0]?.lstIngredients !== null
+          ? reOrderData?.cartDetails?.Items[0]?.lstIngredients
+          : [],
+      lstMakeTypes:
+        reOrderData?.cartDetails?.Items[0]?.lstMakeTypes !== null
+          ? reOrderData?.cartDetails?.Items[0]?.lstMakeTypes
+          : [],
+      nNetAmount: reOrderData?.cartDetails?.Items[0]?.nNetAmount,
+      sAddonIDCSV: reOrderData?.cartDetails?.Items[0]?.sAddonIDCSV,
+      sAddonNameCSV: reOrderData?.cartDetails?.Items[0]?.sAddonNameCSV,
+      sIngredientIDCSV: reOrderData?.cartDetails?.Items[0]?.sIngredientIDCSV,
+      sIngredientNameCSV:
+        reOrderData?.cartDetails?.Items[0]?.sIngredientNameCSV,
+      sMakeTypeIDCSV: reOrderData?.cartDetails?.Items[0]?.sMakeTypeIDCSV,
+      sMakeTypeNameCSV: reOrderData?.cartDetails?.Items[0]?.sMakeTypeNameCSV,
+      sTempID: reOrderData?.cartDetails?.Items[0]?.sTempID,
+    };
+
+    OrderDataArray.push(reOrderCartData);
+  }, [reOrderData]);
+
+  // const calculatePrice = () => {
+  //   const tmparr = [...cartData];
+  //   const initialValue = 0;
+  //   const total = tmparr.reduce(
+  //     (accumulator, current) => accumulator + current.Amount * current.Qty,
+  //     initialValue,
+  //   );
+  //   setPTotal(total);
+  //   getCalculateDeliveryPrice(total);
+  // };
+  const isLoginUser = useSelector(state => state.UserReducer?.login);
+  // useEffect(() => {
+  //   calculatePrice();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [cartData]);
 
   const getCalculateDeliveryPrice = total => {
     try {
@@ -143,7 +231,7 @@ const ReOrderCartScreen = () => {
                 console.log('res of RestaurantAvailability >> ', res);
                 setLoad(false);
                 setDelMsg('');
-                navigation.navigate('Checkout', {
+                navigation.navigate('ReCheckOut', {
                   total:
                     pTotal +
                     (dPrice !== 0 ? dPrice : 2.9) +
@@ -192,15 +280,15 @@ const ReOrderCartScreen = () => {
         <ScrollView
           showsVerticalScrollIndicator={false}
           nestedScrollEnabled={true}>
-          {cartData?.length > 0 ? (
-            cartData.map((i, index) => {
+          {reOrderCartData?.length > 0 ? (
+            reOrderCartData.map((i, index) => {
               console.log('item Of cart >> ', i?.MinOrderSupplment);
               return (
                 <View
                   style={{
                     borderBottomColor: theme.colors.gray1,
                     borderBottomWidth:
-                      cartData?.length === index + 1 ? 0 : scale(1),
+                      reOrderCartData?.length === index + 1 ? 0 : scale(1),
                     paddingBottom: scale(10),
                   }}>
                   <View style={styles.items}>
@@ -265,20 +353,20 @@ const ReOrderCartScreen = () => {
         </ScrollView>
       </View>
 
-      {cartData?.length > 0 && (
+      {reOrderCartData?.length > 0 && (
         <View style={styles.PriceView}>
           <View style={styles.priceingView}>
             <Title title="Totale Prodotti" />
             <Title title={`€ ${pTotal.toFixed(2)}`} style={styles.number} />
           </View>
-          {pTotal < cartData[0].MinimumOrder && (
+          {pTotal < reOrderCartData[0].MinimumOrder && (
             <View style={styles.priceingView}>
               <Title
-                title={`Sipplemento ordine inferiore a €${cartData[0].MinimumOrder}`}
+                title={`Sipplemento ordine inferiore a €${reOrderCartData[0].MinimumOrder}`}
                 style={{width: '70%'}}
               />
               <Title
-                title={`€ ${cartData[0].MinOrderSupplment.toFixed(2)}`}
+                title={`€ ${reOrderCartData[0].MinOrderSupplment.toFixed(2)}`}
                 style={styles.number}
               />
             </View>
@@ -307,7 +395,7 @@ const ReOrderCartScreen = () => {
               title={`€ ${(
                 pTotal +
                 (dPrice !== 0 ? dPrice : 2.9) +
-                (pTotal < cartData[0].MinimumOrder ? 2 : 0)
+                (pTotal < reOrderCartData[0].MinimumOrder ? 2 : 0)
               ).toFixed(2)}`}
               style={styles.number}
             />
@@ -321,7 +409,7 @@ const ReOrderCartScreen = () => {
           bottom: theme.SCREENHEIGHT * 0.05,
           zIndex: 111,
         }}>
-        {cartData?.length > 0 && (
+        {reOrderCartData?.length > 0 && (
           <Button
             title="Procedi al CheckOut"
             style={styles.submitBtn}
@@ -341,12 +429,12 @@ const ReOrderCartScreen = () => {
           />
         )}
       </View>
-      {/* <SetLocationModel
+      <SetLocationModel
         isShow={locationModel}
         close={() => {
           setLocationModel(false);
         }}
-      /> */}
+      />
 
       {/* <LoginModel isVisible={loginModel} close={handleClose} /> */}
     </SafeAreaView>
