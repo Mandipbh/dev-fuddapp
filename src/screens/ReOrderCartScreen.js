@@ -22,16 +22,16 @@ import {REORDERS} from '../redux/Actions/ActionsTypes';
 
 const ReOrderCartScreen = ({route}) => {
   const navigation = useNavigation();
-  const cartData = useSelector(state => state?.CartReducer.cartData);
+  // const cartData = useSelector(state => state?.CartReducer.cartData);
   const user = useSelector(state => state.UserReducer?.userDetails);
   const selectedCat = useSelector(
     state => state?.RestaurantReducers?.selCategory,
   );
   const seladdress = useSelector(state => state.UserReducer.selAddress);
 
-  const reOrderCartData = useSelector(
-    state => state?.CartReducer?.reOrderCartData,
-  );
+  // const reOrderCartData = useSelector(
+  //   state => state?.CartReducer?.reOrderCartData,
+  // );
 
   const [delMsg, setDelMsg] = useState('');
   const dispatch = useDispatch();
@@ -42,20 +42,22 @@ const ReOrderCartScreen = ({route}) => {
   const [loginModel, setLoginModel] = useState(false);
   const [locationModel, setLocationModel] = useState(false);
   const [reOrderData, setReOrderData] = useState({});
+  const [dataArray, setDataArray] = useState([]);
 
   // const [orderId, setOrderId] = useState('');
   //     const [email, setEmail] = useState('');
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   var OrderDataArray = [];
 
   const incrimentCart = (selitm, idx) => {
-    const tmparr = [...cartData];
+    const tmparr = [...dataArray];
     tmparr[idx].Qty = tmparr[idx].Qty + 1;
     dispatch(AddToCart(tmparr));
   };
 
   const decrimentCart = (selitm, idx) => {
-    const tmparr = [...cartData];
+    const tmparr = [...dataArray];
     if (tmparr[idx].Qty <= 1) {
       tmparr.splice(idx, 1);
     } else {
@@ -143,31 +145,38 @@ const ReOrderCartScreen = ({route}) => {
     };
 
     OrderDataArray.push(reOrderCartData);
+    setDataArray(OrderDataArray);
   }, [reOrderData]);
 
-  // const calculatePrice = () => {
-  //   const tmparr = [...cartData];
-  //   const initialValue = 0;
-  //   const total = tmparr.reduce(
-  //     (accumulator, current) => accumulator + current.Amount * current.Qty,
-  //     initialValue,
-  //   );
-  //   setPTotal(total);
-  //   getCalculateDeliveryPrice(total);
-  // };
+  useEffect(() => {
+    console.log('OrderDataArray>', JSON.stringify(OrderDataArray, null, 4));
+  }, [OrderDataArray]);
+
+  const calculatePrice = () => {
+    const tmparr = [...dataArray];
+    const initialValue = 0;
+    const total = tmparr.reduce(
+      (accumulator, current) => accumulator + current.Amount * current.Qty,
+      initialValue,
+    );
+    setPTotal(total);
+    getCalculateDeliveryPrice(total);
+  };
+
   const isLoginUser = useSelector(state => state.UserReducer?.login);
-  // useEffect(() => {
-  //   calculatePrice();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [cartData]);
+
+  useEffect(() => {
+    calculatePrice();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reOrderData, OrderDataArray]);
 
   const getCalculateDeliveryPrice = total => {
     try {
-      if (cartData) {
+      if (dataArray) {
         const data = {
           Latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
           Longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
-          id: cartData[0].restaurantId,
+          id: dataArray[0].restaurantId,
           OrderPrice: total,
         };
         setLoad(true);
@@ -194,16 +203,16 @@ const ReOrderCartScreen = ({route}) => {
   };
 
   const handleRestaurantAvailability = () => {
-    console.log('handleRestaurantAvailability-cartData', cartData);
+    console.log('handleRestaurantAvailability-cartData', dataArray);
     if (seladdress === undefined || seladdress === null) {
       setLocationModel(true);
     } else {
       try {
-        if (cartData) {
+        if (dataArray) {
           const data = {
             Latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
             Longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
-            id: cartData[0].restaurantId,
+            id: dataArray[0].restaurantId,
             Date: moment(date).format('DD-MM-YYYY'),
             TimeSlot: `${moment(new Date()).format('HH:mm')}-${moment(
               new Date(),
@@ -234,8 +243,9 @@ const ReOrderCartScreen = ({route}) => {
                 navigation.navigate('ReCheckOut', {
                   total:
                     pTotal +
-                    (dPrice !== 0 ? dPrice : 2.9) +
-                    (pTotal < cartData[0].MinimumOrder ? 2 : 0),
+                    dPrice +
+                
+                    (pTotal < dataArray[0].MinimumOrder ? 2 : 0),
                   pTotal: pTotal,
                 });
               }
@@ -280,15 +290,15 @@ const ReOrderCartScreen = ({route}) => {
         <ScrollView
           showsVerticalScrollIndicator={false}
           nestedScrollEnabled={true}>
-          {reOrderCartData?.length > 0 ? (
-            reOrderCartData.map((i, index) => {
+          {dataArray?.length > 0 ? (
+            dataArray.map((i, index) => {
               console.log('item Of cart >> ', i?.MinOrderSupplment);
               return (
                 <View
                   style={{
                     borderBottomColor: theme.colors.gray1,
                     borderBottomWidth:
-                      reOrderCartData?.length === index + 1 ? 0 : scale(1),
+                      dataArray?.length === index + 1 ? 0 : scale(1),
                     paddingBottom: scale(10),
                   }}>
                   <View style={styles.items}>
@@ -353,20 +363,20 @@ const ReOrderCartScreen = ({route}) => {
         </ScrollView>
       </View>
 
-      {reOrderCartData?.length > 0 && (
+      {dataArray?.length > 0 && (
         <View style={styles.PriceView}>
           <View style={styles.priceingView}>
             <Title title="Totale Prodotti" />
             <Title title={`€ ${pTotal.toFixed(2)}`} style={styles.number} />
           </View>
-          {pTotal < reOrderCartData[0].MinimumOrder && (
+          {pTotal < dataArray[0].MinimumOrder && (
             <View style={styles.priceingView}>
               <Title
-                title={`Sipplemento ordine inferiore a €${reOrderCartData[0].MinimumOrder}`}
+                title={`Sipplemento ordine inferiore a €${dataArray[0].MinimumOrder}`}
                 style={{width: '70%'}}
               />
               <Title
-                title={`€ ${reOrderCartData[0].MinOrderSupplment.toFixed(2)}`}
+                title={`€ ${dataArray[0].MinOrderSupplment.toFixed(2)}`}
                 style={styles.number}
               />
             </View>
@@ -395,7 +405,7 @@ const ReOrderCartScreen = ({route}) => {
               title={`€ ${(
                 pTotal +
                 (dPrice !== 0 ? dPrice : 2.9) +
-                (pTotal < reOrderCartData[0].MinimumOrder ? 2 : 0)
+                (pTotal < dataArray[0].MinimumOrder ? 2 : 0)
               ).toFixed(2)}`}
               style={styles.number}
             />
@@ -409,7 +419,7 @@ const ReOrderCartScreen = ({route}) => {
           bottom: theme.SCREENHEIGHT * 0.05,
           zIndex: 111,
         }}>
-        {reOrderCartData?.length > 0 && (
+        {OrderDataArray?.length > 0 && (
           <Button
             title="Procedi al CheckOut"
             style={styles.submitBtn}

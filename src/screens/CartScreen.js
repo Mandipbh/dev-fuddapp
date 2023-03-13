@@ -40,7 +40,7 @@ const CartScreen = () => {
   const [loginModel, setLoginModel] = useState(false);
   const [locationModel, setLocationModel] = useState(false);
 
-  console.log('cartData_screen', cartData);
+  console.log('cartData_screen', JSON.stringify(cartData, null, 4));
   const incrimentCart = (selitm, idx) => {
     const tmparr = [...cartData];
     tmparr[idx].Qty = tmparr[idx].Qty + 1;
@@ -92,6 +92,7 @@ const CartScreen = () => {
           .then(res => {
             if (res.Status === 'Success') {
               setDPrice(res.DeliveryPrice);
+              console.log('DeliveryPrice_', res.DeliveryPrice);
               setLoad(false);
             }
           })
@@ -287,10 +288,7 @@ const CartScreen = () => {
           {isLoginUser && (
             <View style={styles.priceingView}>
               <Title title="Spese di consegna" />
-              <Title
-                title={`€ ${dPrice === 0 ? 2.9 : dPrice.toFixed(2)}`}
-                style={styles.number}
-              />
+              <Title title={`€ ${dPrice.toFixed(2)}`} style={styles.number} />
             </View>
           )}
 
