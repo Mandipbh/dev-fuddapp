@@ -157,7 +157,6 @@ const ReOrderCartScreen = ({route}) => {
 
   const getCalculateDeliveryPrice = total => {
     try {
-      console.log('dataArray ??? ', dataArray);
       if (dataArray) {
         const data = {
           Latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,

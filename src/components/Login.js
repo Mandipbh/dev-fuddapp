@@ -1,6 +1,13 @@
-import {ActivityIndicator, Alert, StyleSheet, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import React from 'react';
-import {scale, theme} from '../utils';
+import {images, scale, theme} from '../utils';
 import InputBox from './InputBox';
 import {Error, Label} from './Label';
 import Button from './Button';
@@ -151,9 +158,14 @@ const Login = props => {
         />
       </View>
       <View style={styles.appTextView}>
-        <Text style={styles.text}>
+        <Image
+          source={images.appIcon}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+        {/* <Text style={styles.text}>
           Fudd<Text style={styles.text1}>app</Text>
-        </Text>
+        </Text> */}
       </View>
       <ForgotPassword
         isVisible={recovery}
@@ -209,21 +221,27 @@ const styles = StyleSheet.create({
     fontSize: scale(12),
   },
   text: {
-    fontSize: scale(44),
+    fontSize: scale(35),
     color: theme.colors.purpal,
     fontWeight: '700',
     opacity: 0.3,
     fontFamily: theme.fonts.josefinSans,
   },
   text1: {
-    fontSize: scale(44),
+    fontSize: scale(35),
     color: theme.colors.primary,
     fontWeight: '700',
     opacity: 0.3,
   },
   appTextView: {
     position: 'absolute',
-    bottom: scale(5),
+    bottom: scale(-15),
     zIndex: -1,
+  },
+  logo: {
+    height: scale(70),
+    width: scale(160),
+    resizeMode: 'strech',
+    opacity: 0.2,
   },
 });

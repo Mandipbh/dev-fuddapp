@@ -110,13 +110,13 @@ const AccountScreen = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.Subcontainer}>
         <View style={styles.headerView}>
-          {isLoginUser && selectedMenu !== null && (
+          {selectedMenu !== null && (
             <Icon
               name="left"
               color={theme.colors.black}
               size={scale(22)}
               onPress={() => {
-                setSelectedMenu(null);
+                !isLoginUser ? navigation.goBack() : setSelectedMenu(null);
               }}
             />
           )}

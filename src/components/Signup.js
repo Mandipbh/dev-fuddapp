@@ -1,13 +1,14 @@
 import {
   ActivityIndicator,
   Alert,
+  Image,
   SafeAreaView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
 import React from 'react';
-import {scale, theme} from '../utils';
+import {images, scale, theme} from '../utils';
 import InputBox from './InputBox';
 import {Error, Label} from './Label';
 import Button from './Button';
@@ -208,9 +209,14 @@ const Signup = props => {
       )}
 
       <View style={styles.appTextView}>
-        <Text style={styles.text}>
+        <Image
+          source={images.appIcon}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+        {/* <Text style={styles.text}>
           Fudd<Text style={styles.text1}>app</Text>
-        </Text>
+        </Text> */}
       </View>
       <VarificationModel
         signUpData={signupRes}
@@ -281,7 +287,13 @@ const styles = StyleSheet.create({
   },
   appTextView: {
     position: 'absolute',
-    bottom: scale(5),
+    bottom: scale(-15),
     zIndex: -1,
+  },
+  logo: {
+    height: scale(70),
+    width: scale(160),
+    resizeMode: 'strech',
+    opacity: 0.2,
   },
 });
