@@ -12,7 +12,7 @@ import LottieView from 'lottie-react-native';
 import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Emptycart, scale, theme} from '../utils';
 import {Button, Label, Title} from '../components';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {AddToCart} from '../redux/Actions/CartAction';
 import ApiService, {API} from '../utils/ApiService';
@@ -49,7 +49,11 @@ const ReOrderCartScreen = ({route}) => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   var OrderDataArray = [];
-
+  const isFoucse = useIsFocused();
+  useEffect(() => {
+    calculatePrice();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFoucse]);
   const incrimentCart = (selitm, idx) => {
     const tmparr = [...dataArray];
     tmparr[idx].Qty = tmparr[idx].Qty + 1;
@@ -165,11 +169,6 @@ const ReOrderCartScreen = ({route}) => {
 
   const isLoginUser = useSelector(state => state.UserReducer?.login);
 
-  useEffect(() => {
-    calculatePrice();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reOrderData, OrderDataArray]);
-
   const getCalculateDeliveryPrice = total => {
     try {
       if (dataArray) {
@@ -244,7 +243,7 @@ const ReOrderCartScreen = ({route}) => {
                   total:
                     pTotal +
                     dPrice +
-                
+                    // (12 < 15?)
                     (pTotal < dataArray[0].MinimumOrder ? 2 : 0),
                   pTotal: pTotal,
                 });
