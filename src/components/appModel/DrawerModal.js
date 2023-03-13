@@ -1,9 +1,11 @@
 import {
   Alert,
   Linking,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import React from 'react';
@@ -55,78 +57,85 @@ const DrawerModal = props => {
     ]);
 
   return (
-    <Modal
-      backdropOpacity={0.4}
-      visible={isVisible}
-      onRequestClose
-      animationIn="slideOutLeft"
-      animationOut="slideInLeft"
-      animationInTiming={0.5}
-      style={{width: '60%', margin: 0}}>
-      <BlurView
-        style={styles.blurView}
-        blurType="xlight" // Values = dark, light, xlight .
-        blurAmount={6}
-        // viewRef={this.state.viewRef}
-        reducedTransparencyFallbackColor="white"
-      />
-      <View style={styles.container}>
-        <Icon
-          name="x"
-          size={scale(22)}
-          color={theme.colors.black}
-          onPress={() => close()}
-          style={{
-            marginTop: scale(20),
-            marginRight: scale(10),
-            alignSelf: 'flex-end',
-          }}
+    <TouchableWithoutFeedback onPress={() => close()}>
+      <Modal
+        backdropOpacity={0.4}
+        visible={isVisible}
+        animationIn="slideOutLeft"
+        animationOut="slideInLeft"
+        animationInTiming={0.5}
+        style={{width: '60%', margin: 0}}
+        onRequestClose={() => {
+          close();
+        }}>
+        <BlurView
+          style={styles.blurView}
+          blurType="xlight" // Values = dark, light, xlight .
+          blurAmount={6}
+          // viewRef={this.state.viewRef}
+          reducedTransparencyFallbackColor="white"
         />
-        <View
-          style={{
-            marginLeft: scale(25),
-            marginTop: scale(30),
-          }}>
-          {isLoginUser ? (
-            <>
-              <TouchableOpacity
-                style={styles.textButton}
-                onPress={() => {
-                  close();
-                  navigation.navigate('ACCOUNT');
-                }}>
-                <Icon name="user" size={25} color={theme.colors.purpal} />
-                <Text style={styles.btnText}>PROFILE</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.textButton}
-                onPress={() => {
-                  close();
-                  navigation.navigate('ACCOUNT');
-                }}>
-                <Icon name="map-pin" size={25} color={theme.colors.purpal} />
-                <Text style={styles.btnText}>MY ADDRESSES</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.textButton}
-                onPress={handlePayment}>
-                <Icon
-                  name="credit-card"
-                  size={25}
-                  color={theme.colors.purpal}
-                />
-                <Text style={styles.btnText}>PAYMENT METHODS</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  close();
-                  handleMyOrder();
-                }}
-                style={styles.textButton}>
-                <Icon name="clipboard" size={25} color={theme.colors.purpal} />
-                <Text style={styles.btnText}>MY ORDERS</Text>
-              </TouchableOpacity>
-              {/* <TouchableOpacity
+        <View style={styles.container}>
+          <Icon
+            name="x"
+            size={scale(22)}
+            color={theme.colors.black}
+            onPress={() => close()}
+            style={{
+              marginTop: Platform.OS === 'ios' ? scale(35) : scale(20),
+              marginRight: scale(10),
+              alignSelf: 'flex-end',
+            }}
+          />
+          <View
+            style={{
+              marginLeft: scale(25),
+              marginTop: scale(30),
+            }}>
+            {isLoginUser ? (
+              <>
+                <TouchableOpacity
+                  style={styles.textButton}
+                  onPress={() => {
+                    close();
+                    navigation.navigate('ACCOUNT');
+                  }}>
+                  <Icon name="user" size={25} color={theme.colors.purpal} />
+                  <Text style={styles.btnText}>PROFILE</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.textButton}
+                  onPress={() => {
+                    close();
+                    navigation.navigate('ACCOUNT');
+                  }}>
+                  <Icon name="map-pin" size={25} color={theme.colors.purpal} />
+                  <Text style={styles.btnText}>MY ADDRESSES</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.textButton}
+                  onPress={handlePayment}>
+                  <Icon
+                    name="credit-card"
+                    size={25}
+                    color={theme.colors.purpal}
+                  />
+                  <Text style={styles.btnText}>PAYMENT METHODS</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    close();
+                    handleMyOrder();
+                  }}
+                  style={styles.textButton}>
+                  <Icon
+                    name="clipboard"
+                    size={25}
+                    color={theme.colors.purpal}
+                  />
+                  <Text style={styles.btnText}>MY ORDERS</Text>
+                </TouchableOpacity>
+                {/* <TouchableOpacity
                 style={styles.textButton}
                 onPress={handleContact}>
                 <Icon
@@ -136,50 +145,51 @@ const DrawerModal = props => {
                 />
                 <Text style={styles.btnText}>CONTACT</Text>
               </TouchableOpacity> */}
+                <TouchableOpacity
+                  style={styles.textButton}
+                  onPress={() => {
+                    close();
+                    showAlert();
+                  }}>
+                  <MaterialIcons
+                    name="logout"
+                    size={25}
+                    color={theme.colors.purpal}
+                  />
+                  <Text style={styles.btnText}>LOGOUT</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{marginTop: scale(15)}}
+                  onPress={() => {
+                    close();
+                    Linking.openURL('https://www.fuddapp.com/privacy');
+                  }}>
+                  <Label title="Privacy Policy" style={styles.link} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    close();
+                    Linking.openURL('https://www.fuddapp.com/faq');
+                  }}>
+                  <Label title="Support & FAQs" style={styles.link} />
+                </TouchableOpacity>
+              </>
+            ) : (
               <TouchableOpacity
                 style={styles.textButton}
                 onPress={() => {
                   close();
-                  showAlert();
+                  navigation.navigate('ACCOUNT');
                 }}>
-                <MaterialIcons
-                  name="logout"
-                  size={25}
-                  color={theme.colors.purpal}
-                />
-                <Text style={styles.btnText}>LOGOUT</Text>
+                <Icon name="user" size={25} color={theme.colors.purpal} />
+                <Text style={styles.btnText}>Login</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={{marginTop: scale(15)}}
-                onPress={() => {
-                  close();
-                  Linking.openURL('https://www.fuddapp.com/privacy');
-                }}>
-                <Label title="Privacy Policy" style={styles.link} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  close();
-                  Linking.openURL('https://www.fuddapp.com/faq');
-                }}>
-                <Label title="Support & FAQs" style={styles.link} />
-              </TouchableOpacity>
-            </>
-          ) : (
-            <TouchableOpacity
-              style={styles.textButton}
-              onPress={() => {
-                close();
-                navigation.navigate('ACCOUNT');
-              }}>
-              <Icon name="user" size={25} color={theme.colors.purpal} />
-              <Text style={styles.btnText}>Login</Text>
-            </TouchableOpacity>
-          )}
+            )}
+          </View>
+          <ContactModal isVisible={modalVisible} close={handleModal} />
         </View>
-        <ContactModal isVisible={modalVisible} close={handleModal} />
-      </View>
-    </Modal>
+      </Modal>
+    </TouchableWithoutFeedback>
   );
 };
 

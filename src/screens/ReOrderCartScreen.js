@@ -14,7 +14,7 @@ import {Emptycart, scale, theme} from '../utils';
 import {Button, Label, Title} from '../components';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
-import {AddToCart} from '../redux/Actions/CartAction';
+import {AddToCart, ReOrderAction} from '../redux/Actions/CartAction';
 import ApiService, {API} from '../utils/ApiService';
 import moment from 'moment';
 import SetLocationModel from '../components/appModel/SetLocationModel';
@@ -53,11 +53,13 @@ const ReOrderCartScreen = ({route}) => {
   useEffect(() => {
     calculatePrice();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFoucse]);
+  }, [isFoucse, dataArray]);
   const incrimentCart = (selitm, idx) => {
     const tmparr = [...dataArray];
+    console.log('tmparr ??? ', tmparr);
     tmparr[idx].Qty = tmparr[idx].Qty + 1;
-    dispatch(AddToCart(tmparr));
+    dispatch(ReOrderAction(tmparr));
+    setDataArray(tmparr);
   };
 
   const decrimentCart = (selitm, idx) => {
@@ -67,7 +69,8 @@ const ReOrderCartScreen = ({route}) => {
     } else {
       tmparr[idx].Qty = tmparr[idx].Qty - 1;
     }
-    dispatch(AddToCart(tmparr));
+    dispatch(ReOrderAction(tmparr));
+    setDataArray(tmparr);
   };
 
   const handleGetOrderDetail = (orderId, Email) => {
@@ -91,24 +94,6 @@ const ReOrderCartScreen = ({route}) => {
   }, []);
 
   useEffect(() => {
-    console.log('reOrderData', JSON.stringify(reOrderData, null, 4));
-
-    console.log('selectedAddress');
-
-    // var cartDetailJson = {
-    //   UserId: reOrderData?.cartDetails?.SelectedAddress?.id_utente,
-    //   RestaurantId: reOrderData?.cartDetails?.Rest?.ID,
-    //   RiderId: 0,
-    //   OrderId: 0,
-    //   SelectedAddressId: reOrderData?.cartDetails?.SelectedAddress?.id,
-    //   Date: moment(date).utc().format('DD-MM-YYYY'),
-    //   TimeSlot: reOrderData?.cartDetails?.SelectedTimeSlot,
-    //   DiscountCode: copanCode.replace('null', ''),
-
-    //   ItemIds: itemList,  //remaining
-    //   PaymentRequest: paymentData,  //remaining
-    // };
-
     var reOrderCartData = {
       Adds: false,
       AddsCode: '',
@@ -150,11 +135,12 @@ const ReOrderCartScreen = ({route}) => {
 
     OrderDataArray.push(reOrderCartData);
     setDataArray(OrderDataArray);
+    setPTotal(
+      reOrderData?.cartDetails?.Items[0]?.Qty *
+        reOrderData?.cartDetails?.Items[0]?.Amount,
+    );
+    // calculatePrice();
   }, [reOrderData]);
-
-  useEffect(() => {
-    console.log('OrderDataArray>', JSON.stringify(OrderDataArray, null, 4));
-  }, [OrderDataArray]);
 
   const calculatePrice = () => {
     const tmparr = [...dataArray];
@@ -171,11 +157,12 @@ const ReOrderCartScreen = ({route}) => {
 
   const getCalculateDeliveryPrice = total => {
     try {
+      console.log('dataArray ??? ', dataArray);
       if (dataArray) {
         const data = {
           Latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
           Longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
-          id: dataArray[0].restaurantId,
+          id: reOrderData?.cartDetails?.Rest?.ID,
           OrderPrice: total,
         };
         setLoad(true);
@@ -202,7 +189,6 @@ const ReOrderCartScreen = ({route}) => {
   };
 
   const handleRestaurantAvailability = () => {
-    console.log('handleRestaurantAvailability-cartData', dataArray);
     if (seladdress === undefined || seladdress === null) {
       setLocationModel(true);
     } else {
@@ -268,9 +254,6 @@ const ReOrderCartScreen = ({route}) => {
     }
   };
 
-  const handleClose = () => {
-    setLoginModel(false);
-  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerView}>
@@ -291,7 +274,6 @@ const ReOrderCartScreen = ({route}) => {
           nestedScrollEnabled={true}>
           {dataArray?.length > 0 ? (
             dataArray.map((i, index) => {
-              console.log('item Of cart >> ', i?.MinOrderSupplment);
               return (
                 <View
                   style={{

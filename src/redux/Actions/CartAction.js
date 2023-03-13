@@ -6,3 +6,10 @@ export const AddToCart = payload => {
     payload,
   };
 };
+
+export const ReOrderAction = payload => {
+  return {
+    type: types.REORDERS,
+    payload,
+  };
+};

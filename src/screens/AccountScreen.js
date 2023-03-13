@@ -45,7 +45,7 @@ const AccountScreen = () => {
     if (!isLoginUser) {
       setSelectedMenu(4);
     } else {
-      setSelectedMenu(1);
+      setSelectedMenu(0);
     }
   }, [isFoucse]);
 
@@ -135,8 +135,11 @@ const AccountScreen = () => {
         </View>
         {selectedMenu == null && (
           <View style={{alignItems: 'center'}}>
-            <Title title={'Benvenuto'} style={{fontSize: scale(18)}} />
-            <Title title={'Davide Barba'} style={{fontSize: scale(18)}} />
+            <Title title="Benvenuto" style={{fontSize: scale(18)}} />
+            <Title
+              title={user?.UserInfo?.RagSoc}
+              style={{fontSize: scale(18)}}
+            />
           </View>
         )}
 
