@@ -193,10 +193,10 @@ const profileData = [
     id: 2,
     title: 'I miei indirizzi',
   },
-  {
-    id: 3,
-    title: 'Contatti',
-  },
+  // {
+  //   id: 3,
+  //   title: 'Contatti',
+  // },
   {
     id: 4,
     title: 'Esci',
@@ -301,7 +301,6 @@ const optionsData = [
     title: 'Carta di credito',
   },
 ];
-
 
 export {
   foodCategory,

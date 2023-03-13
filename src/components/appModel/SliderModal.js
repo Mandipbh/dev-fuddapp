@@ -18,7 +18,7 @@ const SliderModal = props => {
   const [selCategory, setSelCategory] = useState(null);
   const [categoryData, setCategoryData] = useState([]);
   useEffect(() => {
-    setCategoryData(data.reverse());
+    setCategoryData(data?.reverse());
   }, [data]);
 
   console.log('selCategory ??/ ', selCategory);
@@ -69,8 +69,13 @@ const SliderModal = props => {
                     ]}
                     key={index}
                     onPress={() => {
-                      close(item);
-                      setSelCategory(item?.Id);
+                      if (item?.Id !== selCategory) {
+                        close(item);
+                        setSelCategory(item?.Id);
+                      } else {
+                        close(null);
+                        setSelCategory(null);
+                      }
                     }}>
                     <Text
                       style={[

@@ -122,7 +122,7 @@ const Login = props => {
       <Label title="Oppure" style={[styles.title, {marginTop: scale(20)}]} />
       <View style={[styles.devider, {marginBottom: scale(10)}]} />
       <View>
-        <Button
+        {/* <Button
           ButtonIcon="facebook-with-circle"
           title="Login con Facebook"
           style={[styles.loginButton, {backgroundColor: theme.colors.blue}]}
@@ -139,7 +139,7 @@ const Login = props => {
           onPress={() => {
             // Toast.show('Prossimamente', Toast.SHORT);
           }}
-        />
+        /> */}
         <Button
           title="Registri con indrizzon email"
           style={[

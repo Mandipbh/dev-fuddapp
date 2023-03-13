@@ -126,7 +126,7 @@ const DrawerModal = props => {
                 <Icon name="clipboard" size={25} color={theme.colors.purpal} />
                 <Text style={styles.btnText}>MY ORDERS</Text>
               </TouchableOpacity>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={styles.textButton}
                 onPress={handleContact}>
                 <Icon
@@ -135,7 +135,7 @@ const DrawerModal = props => {
                   color={theme.colors.purpal}
                 />
                 <Text style={styles.btnText}>CONTACT</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               <TouchableOpacity
                 style={styles.textButton}
                 onPress={() => {

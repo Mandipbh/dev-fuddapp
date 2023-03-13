@@ -180,7 +180,9 @@ const RestaurantScreen = () => {
   const handleSearch = text => {
     if (text) {
       const newData = restaurantData?.Restaurants.filter(function (item) {
-        const itemData = item.Name ? item.Name.toUpperCase() : ''.toUpperCase();
+        const itemData = item.Name
+          ? item.Name.toUpperCase() + ' ' + item.Tags.toUpperCase()
+          : ''.toUpperCase();
         const textData = text.toUpperCase();
         return itemData.indexOf(textData) > -1;
       });

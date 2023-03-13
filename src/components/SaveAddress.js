@@ -103,6 +103,7 @@ const SaveAddress = ({back}) => {
       lngg,
       addrSel,
       placeName,
+      street_number,
       placeId = '';
     let country,
       state,
@@ -115,7 +116,7 @@ const SaveAddress = ({back}) => {
         lngg = lng;
       }
     }
-
+    console.log('street_number ??? ', street_number);
     addrSel =
       place.formatted_address !== undefined ? place.formatted_address : '';
     placeName = place.name !== undefined ? place.name : '';
@@ -137,25 +138,6 @@ const SaveAddress = ({back}) => {
     }
 
     let nameData = '';
-    // if (this.props.showKey !== undefined) {
-    //   if (this.props.showKey == 'CITY') {
-    //     nameData = city;
-    //   } else if (this.props.showKey == 'STATE') {
-    //     nameData = state;
-    //   } else if (this.props.showKey == 'COUNTRY') {
-    //     nameData = country;
-    //   } else if (this.props.showKey == 'PLACE_NAME') {
-    //     nameData = country;
-    //   } else if (this.props.showKey == 'FORMATTED_ADDRESS') {
-    //     nameData = addrSel;
-    //   } else if (this.props.showKey == 'PLACE_ID') {
-    //     nameData = placeId;
-    //   } else {
-    //     nameData = addrSel;
-    //   }
-    // } else {
-    //   nameData = addrSel;
-    // }
 
     let stateResp = {
       lat: latt,
@@ -169,6 +151,7 @@ const SaveAddress = ({back}) => {
       textboxtext: nameData,
       Description: addData?.description,
     };
+    console.log('data?.address_components >> ', data?.address_components);
     const frmData = {
       Latitute: latt?.toString(),
       Longitude: lngg.toString(),

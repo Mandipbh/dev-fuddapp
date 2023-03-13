@@ -71,7 +71,7 @@ const CartModel = props => {
       lstAddons: add1,
       lstIngredients: add2,
       lstMakeTypes: add3,
-      Amount: data?.Amount + pTotal + (pTotal === 0 ? 0 : 0),
+      Amount: data?.Amount + pTotal,
     };
     console.log('product details >> ', ProductData);
     //   setProductDetails(productDetails);
@@ -260,12 +260,14 @@ const CartModel = props => {
                                       title={item?.Descrizione}
                                       style={styles.name}
                                     />
-                                    <Label
-                                      title={`${item?.Prezzo.toFixed(
-                                        2,
-                                      )?.toString()}€`}
-                                      style={styles.itemprice}
-                                    />
+                                    {item?.Prezzo !== 0 && (
+                                      <Label
+                                        title={`${item?.Prezzo.toFixed(
+                                          2,
+                                        )?.toString()}€`}
+                                        style={styles.itemprice}
+                                      />
+                                    )}
                                   </View>
                                   <View
                                     style={[
@@ -357,10 +359,12 @@ const CartModel = props => {
                                         title={item?.Descrizione}
                                         style={styles.name}
                                       />
-                                      <Label
-                                        title={`${item?.Prezzo?.toFixed(2)}€`}
-                                        style={styles.itemprice}
-                                      />
+                                      {item?.Prezzo !== 0 && (
+                                        <Label
+                                          title={`${item?.Prezzo?.toFixed(2)}€`}
+                                          style={styles.itemprice}
+                                        />
+                                      )}
                                     </View>
                                     <TouchableOpacity
                                       onPress={() => {
@@ -424,12 +428,14 @@ const CartModel = props => {
                                         title={item?.Prodo}
                                         style={styles.name}
                                       />
-                                      <Label
-                                        title={`${item?.ImportoUnitario.toFixed(
-                                          2,
-                                        )}€`}
-                                        style={styles.itemprice}
-                                      />
+                                      {item?.ImportoUnitario !== 0 && (
+                                        <Label
+                                          title={`${item?.ImportoUnitario.toFixed(
+                                            2,
+                                          )}€`}
+                                          style={styles.itemprice}
+                                        />
+                                      )}
                                     </View>
 
                                     <Icon
@@ -471,11 +477,10 @@ const CartModel = props => {
           />
           {/* <Title title={`€ ${totalPrice?.toFixed(2)}`} style={styles.price} /> */}
           <Title
-            title={`€ ${data?.Amount + pTotal + (pTotal === 0 ? 0 : 0)}`}
+            title={`€ ${(data?.Amount + pTotal).toFixed(2)}`}
             style={styles.price}
           />
         </View>
-        {console.log('object', data?.Amount + pTotal + (pTotal === 0 ? 0 : 0))}
         <AddCardModal isVisible={cartModel} close={closeModal} />
       </View>
     </Modal>

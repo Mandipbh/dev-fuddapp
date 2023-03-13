@@ -16,7 +16,11 @@ import FastImage from 'react-native-fast-image';
 const Restaurant = props => {
   const {item, index, onPress} = props;
   return (
-    <TouchableOpacity onPress={onPress} style={styles.cardView} key={index}>
+    <TouchableOpacity
+      disabled={!item?.IsOnline}
+      onPress={onPress}
+      style={styles.cardView}
+      key={index}>
       <FastImage
         source={{
           uri: APP_BASE_URL + item?.Logo,
@@ -27,8 +31,9 @@ const Restaurant = props => {
         source={{
           uri: APP_BASE_URL + item?.Canvas,
         }}
+        tin
         style={styles.backImage}
-        imageStyle={styles.image}>
+        imageStyle={[styles.image]}>
         <View style={styles.statusView}>
           <TouchableOpacity style={styles.btn}>
             <Label
@@ -66,23 +71,25 @@ const Restaurant = props => {
               justifyContent:
                 item?.Distance !== 0 ? 'space-between' : 'space-evenly',
             }}>
-            <LinearGradient
-              colors={[theme.colors.purpal1, theme.colors.orange]}
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 0}}
-              style={{
-                width: null,
-                flexDirection: 'row',
-                padding: scale(5),
-                borderRadius: scale(15),
-              }}>
-              <Icon1
-                name="thumbs-up"
-                color={theme.colors.white}
-                size={scale(12)}
-              />
-              <Text style={styles.review}>{`${item?.Percentage} %`}</Text>
-            </LinearGradient>
+            {item?.IsOnline && (
+              <LinearGradient
+                colors={[theme.colors.purpal1, theme.colors.orange]}
+                start={{x: 0, y: 0}}
+                end={{x: 1, y: 0}}
+                style={{
+                  width: null,
+                  flexDirection: 'row',
+                  padding: scale(5),
+                  borderRadius: scale(15),
+                }}>
+                <Icon1
+                  name="thumbs-up"
+                  color={theme.colors.white}
+                  size={scale(12)}
+                />
+                <Text style={styles.review}>{`${item?.Percentage} %`}</Text>
+              </LinearGradient>
+            )}
             {item?.Distance !== 0 && (
               <View style={styles.km}>
                 <Text style={styles.review}>{`${item?.Distance} km`}</Text>
@@ -97,10 +104,12 @@ const Restaurant = props => {
             {justifyContent: 'space-between', marginTop: scale(8)},
           ]}>
           <Label title={item?.Tags} style={styles.details} />
-          <Label
-            title={`Orddine minimo ${item?.MinimumOrder}€`}
-            style={styles.details}
-          />
+          {item?.IsOnline && (
+            <Label
+              title={`Orddine minimo ${item?.MinimumOrder}€`}
+              style={styles.details}
+            />
+          )}
         </View>
       </View>
     </TouchableOpacity>
