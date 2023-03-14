@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {scale, theme, timeSlot} from '../utils';
 import {
   Header,
@@ -38,11 +38,12 @@ import {setCategory} from '../redux/Actions/RestaurantAction';
 import OrderModal from '../components/appModel/OrderModal';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import Icon from 'react-native-vector-icons/Feather';
+import {selectedAddress} from '../redux/Actions/UserActions';
 
 const Category = ({categoryListData}) => {
   return (
     <View>
-      <Title title="Categories" style={styles.title} />
+      <Title title="Categorie" style={styles.title} />
       <ScrollView
         contentContainerStyle={{paddingVertical: scale(5)}}
         showsHorizontalScrollIndicator={false}
@@ -60,14 +61,14 @@ const PopularRestaturants = ({ExternalRestaurantData, navigation}) => {
   return (
     <View style={styles.categoryContainer}>
       <View style={styles.popularView}>
-        <Title title="Popular Restaurants" style={styles.title} />
+        <Title title="Ristoranti popolari" style={styles.title} />
         <TouchableOpacity
           onPress={() => {
             navigation.navigate('RISTORANTI', {
               screen: 'RISTORANTI',
             });
           }}>
-          <Label title="SEE ALL" style={styles.seeAll} />
+          <Label title="VEDI TUTTO" style={styles.seeAll} />
         </TouchableOpacity>
       </View>
 
@@ -122,6 +123,7 @@ const HomeScreen = () => {
   const [orderModalVisible, setOrderModalVisible] = useState(false);
   const isFocuse = useIsFocused();
   const navigation = useNavigation();
+  const ref = useRef();
   const dispatch = useDispatch();
   const IconClosePicker = () => {
     setSelectedModal(false);
@@ -281,6 +283,13 @@ const HomeScreen = () => {
       JSON.stringify(frmData, null, 4),
     );
   };
+
+  useEffect(() => {
+    if (seladdress !== null) {
+      ref.current?.setAddressText(seladdress?.AddressName);
+    }
+  }, [isFocuse, seladdress]);
+
   return (
     <SafeAreaView style={styles.container}>
       <Header
@@ -373,6 +382,27 @@ const HomeScreen = () => {
                 paddingLeft: scale(10),
               },
             }}
+            ref={ref}
+            renderRightButton={() =>
+              ref.current?.getAddressText() ? (
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: theme.colors.white,
+                    left: scale(-5),
+                    height: scale(39),
+                    paddingHorizontal: scale(5),
+                    justifyContent: 'center',
+                    borderBottomWidth: scale(1),
+                    borderBottomColor: theme.colors.gray1,
+                  }}
+                  onPress={() => {
+                    ref.current?.setAddressText('');
+                    dispatch(selectedAddress(null));
+                  }}>
+                  <Icon name={'x'} color={'black'} size={20} />
+                </TouchableOpacity>
+              ) : null
+            }
           />
         </ScrollView>
 

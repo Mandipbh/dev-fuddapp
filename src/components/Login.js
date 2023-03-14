@@ -89,13 +89,14 @@ const Login = props => {
       <Label title={'Accedi al tuo account'} style={styles.title} />
       <View style={styles.devider} />
       <InputBox
-        placeholder="Username"
+        placeholder="Nome utente"
         value={name}
         onChangeText={txt => {
           setName(txt);
         }}
         style={[styles.input, {marginTop: theme.SCREENHEIGHT * 0.03}]}
         keyboardType="email-address"
+        autoCompleteType="username"
       />
       {nameErr && <Error error={nameErr} />}
       <InputBox
@@ -104,13 +105,14 @@ const Login = props => {
         onChangeText={txt => {
           setPassword(txt);
         }}
-        placeholder="Password"
+        placeholder="Parola d'ordine"
         style={styles.input}
+        autoCompleteType="password"
       />
       {passwordErr && <Error error={passwordErr} />}
       {!load ? (
         <Button
-          title="Login"
+          title="Accedi"
           style={[styles.loginButton, {marginTop: scale(15)}]}
           titleStyle={[styles.buttonLabel, {color: theme.colors.white}]}
           onPress={() => {

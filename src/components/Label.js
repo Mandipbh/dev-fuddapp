@@ -3,9 +3,12 @@ import {Text, StyleSheet} from 'react-native';
 import {theme, scale} from '../utils';
 
 const Label = props => {
-  const {title, style, numberOfLines} = props;
+  const {title, style, numberOfLines, onPress} = props;
   return (
-    <Text style={[styles.text, style]} numberOfLines={numberOfLines}>
+    <Text
+      style={[styles.text, style]}
+      numberOfLines={numberOfLines}
+      onPress={onPress}>
       {title}
     </Text>
   );

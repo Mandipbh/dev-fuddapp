@@ -122,7 +122,7 @@ const SetLocationModel = props => {
   const handleAddress = item => {
     setSelAdd(item);
     console.log('selected ADDress >> ', selAdd);
-   
+
     dispatch(selectedAddress(item));
   };
   const handleLocationSet = () => {
@@ -154,7 +154,7 @@ const SetLocationModel = props => {
         ]}>
         <View style={styles.container}>
           <View style={styles.headerCon}>
-            <Title title={'Set Location'} />
+            <Title title="Gestione indirizzi" />
             <Icon name="x" size={scale(20)} onPress={close} />
           </View>
           <KeyboardAvoidingView
@@ -225,6 +225,14 @@ const SetLocationModel = props => {
                 handleLocationSet();
               }}
             />
+            <Label
+              title="Chiara"
+              onPress={() => {
+                dispatch(selectedAddress(null));
+                close();
+              }}
+              style={{alignSelf: 'center', textDecorationLine: 'underline'}}
+            />
           </KeyboardAvoidingView>
         </View>
       </View>
@@ -281,7 +289,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.gray,
   },
   addressCon: {
-    height: '80%',
+    height: '70%',
     // backgroundColor: 'lime',
   },
   btn: {

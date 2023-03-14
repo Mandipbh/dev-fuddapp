@@ -19,7 +19,7 @@ const Restaurant = props => {
     <TouchableOpacity
       disabled={!item?.IsOnline}
       onPress={onPress}
-      style={styles.cardView}
+      style={[styles.cardView, {opacity: !item?.IsOnline ? 0.4 : 1}]}
       key={index}>
       <FastImage
         source={{
@@ -31,7 +31,6 @@ const Restaurant = props => {
         source={{
           uri: APP_BASE_URL + item?.Canvas,
         }}
-        tin
         style={styles.backImage}
         imageStyle={[styles.image]}>
         <View style={styles.statusView}>
@@ -90,7 +89,7 @@ const Restaurant = props => {
                 <Text style={styles.review}>{`${item?.Percentage} %`}</Text>
               </LinearGradient>
             )}
-            {item?.Distance !== 0 && (
+            {item?.Distance !== 0 && item?.IsOnline && (
               <View style={styles.km}>
                 <Text style={styles.review}>{`${item?.Distance} km`}</Text>
               </View>

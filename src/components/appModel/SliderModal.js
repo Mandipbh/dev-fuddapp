@@ -12,6 +12,7 @@ import Modal from 'react-native-modal';
 import {useState} from 'react';
 import {BlurView} from '@react-native-community/blur';
 import {useEffect} from 'react';
+import {Title} from '../Label';
 
 const SliderModal = props => {
   const {isVisible, close, data} = props;
@@ -37,13 +38,15 @@ const SliderModal = props => {
           onPress={() => close()}></TouchableOpacity>
         <View style={{marginTop: scale(50)}}>
           <View style={styles.headerContainer}>
-            <Text
-              style={[
-                styles.mainText,
-                {fontSize: scale(18), color: theme.colors.black},
-              ]}>
-              Tutte le cucine
-            </Text>
+            <Title
+              title=" Tutte le cucine"
+              style={{
+                textAlign: 'center',
+                width: '80%',
+                marginLeft: scale(10),
+                fontSize: scale(18),
+              }}
+            />
             <Icon
               name="x"
               size={scale(22)}

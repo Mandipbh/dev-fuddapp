@@ -355,11 +355,11 @@ const RestaturantDetails = ({route, navigation}) => {
                 style={styles.review}>{`${restaurantData?.Percentage}%`}</Text>
             </LinearGradient>
           )}
-          {restaurantData?.MinimumOrder && (
+          {!restaurantData?.IsOpen && (
             <View style={styles.timeCon}>
               <Icon name="clock" size={scale(15)} color={theme.colors.gray} />
               <Label
-                title={`${restaurantData?.MinimumOrder}Min.`}
+                title={`Pre-order ${restaurantData?.OpeningTime}`}
                 style={styles.titmeLbl}
               />
             </View>

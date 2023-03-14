@@ -203,7 +203,7 @@ const CartScreen = () => {
                     borderBottomColor: theme.colors.gray1,
                     borderBottomWidth:
                       cartData?.length === index + 1 ? 0 : scale(1),
-                    paddingBottom: scale(10),
+                    // paddingBottom: scale(3),
                   }}>
                   <View style={styles.items}>
                     <Image

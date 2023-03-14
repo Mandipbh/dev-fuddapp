@@ -45,7 +45,7 @@ const AccountScreen = () => {
     if (!isLoginUser) {
       setSelectedMenu(4);
     } else {
-      setSelectedMenu(0);
+      setSelectedMenu(1);
     }
   }, [isFoucse]);
 
@@ -91,7 +91,7 @@ const AccountScreen = () => {
   const handleShowAlert = () => {
     Alert.alert('Sei sicuro di voler andare?', null, [
       {
-        text: 'Cancel',
+        text: 'Annulla',
         cancelable: true,
       },
       {

@@ -28,6 +28,7 @@ const InputBox = props => {
     Img,
     passwordIcon,
     editable,
+    autoCompleteType,
   } = props;
   const [showpassword, setShowpassword] = React.useState(false);
   //   TextInput.defaultProps.selectionColor = theme.colors.black;
@@ -85,6 +86,7 @@ const InputBox = props => {
         onFocus={onFocus}
         onBlur={onBlur}
         onTouchStart={onTouchStart}
+        autoCompleteType={autoCompleteType}
       />
       {/* {Img ? (
         <Icon

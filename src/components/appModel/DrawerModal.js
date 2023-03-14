@@ -45,7 +45,7 @@ const DrawerModal = props => {
   const showAlert = () =>
     Alert.alert('Sei sicuro di voler andare?', null, [
       {
-        text: 'Cancel',
+        text: 'Annulla',
         cancelable: true,
       },
       {

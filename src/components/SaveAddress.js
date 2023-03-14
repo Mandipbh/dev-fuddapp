@@ -254,7 +254,7 @@ const SaveAddress = ({back}) => {
           <InputBox
             value={mobile}
             onChangeText={txt => {
-              setMobile(txt);
+              setMobile(txt.replace(/[^0-9]/g, ''));
             }}
             placeholder="Telephone"
             style={{marginBottom: scale(3)}}
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   appIcon: {
-    height: scale(77),
+    height: scale(85),
     width: '80%',
     resizeMode: 'contain',
     alignSelf: 'center',

@@ -108,7 +108,7 @@ const TimePickerModel = props => {
         </View>
         <View style={styles.bottomView}>
           <TouchableOpacity style={styles.btn} onPress={() => close(null)}>
-            <Label title="CANCEL" style={styles.cantxt} />
+            <Label title="Annulla" style={styles.cantxt} />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.btn}
