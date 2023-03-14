@@ -12,16 +12,22 @@ import {EditAddress} from '.';
 
 const Address = () => {
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(getAllAddress());
-  }, []);
   const [addressData, setAddressData] = useState([]);
   const addressList = useSelector(state => state.HomeReducers.addressList);
   const [editModel, setEditModel] = useState(false);
   const [selData, setSelData] = useState(null);
+  const [load, setLoad] = useState(false);
+  useEffect(() => {
+    setLoad(true);
+    dispatch(getAllAddress());
+  }, []);
   useEffect(() => {
     setAddressData(addressList?.UserAddresses);
+    setTimeout(() => {
+      setLoad(false);
+    }, 1200);
   }, [addressList]);
+
   const handleDeleteAddress = item => {
     try {
       ApiService.get(API.deleteAddress + item?.Id)
@@ -38,7 +44,10 @@ const Address = () => {
   return (
     <View>
       <ScrollView
-        style={{maxHeight: theme.SCREENHEIGHT * 0.4}}
+        style={{
+          maxHeight: theme.SCREENHEIGHT * 0.4,
+          minHeight: theme.SCREENHEIGHT * 0.3,
+        }}
         showsVerticalScrollIndicator={false}>
         {addressData &&
           addressData.map((item, index) => {
@@ -86,6 +95,16 @@ const Address = () => {
               </View>
             );
           })}
+        {(addressData?.length === 0 || addressData === undefined) && !load && (
+          <View
+            style={{
+              height: theme.SCREENHEIGHT * 0.3,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Label title="Nessun indirizzo inserito" />
+          </View>
+        )}
       </ScrollView>
       <EditAddress
         isVisible={editModel}

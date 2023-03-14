@@ -22,10 +22,12 @@ export const getAllAddress = id => {
         API.getAllAddress + getState().UserReducer?.userDetails?.UserId,
       ).then(res => {
         if (res) {
+          console.log('ressss >>> ', res);
           dispatch({type: types.GETALLADDRESS, payload: res});
         }
       });
     } catch (error) {
+      dispatch({type: types.GETALLADDRESS, payload: []});
       console.log('error in Address', error.response);
     }
   };

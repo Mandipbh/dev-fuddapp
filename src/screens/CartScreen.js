@@ -280,7 +280,7 @@ const CartScreen = () => {
                 style={{width: '70%'}}
               />
               <Title
-                title={`€ ${cartData[0].MinOrderSupplment.toFixed(2)}`}
+                title={`€ ${cartData[0]?.MinOrderSupplment?.toFixed(2)}`}
                 style={styles.number}
               />
             </View>
