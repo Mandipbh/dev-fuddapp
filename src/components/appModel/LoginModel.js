@@ -40,13 +40,13 @@ const LoginModel = props => {
   const handleValidation = () => {
     if (name.trim() === '') {
       error = true;
-      setNameErr('Please enter username');
+      setNameErr('Inserisci il nome utente');
     } else {
       setNameErr('');
     }
     if (password.trim() === '') {
       error = true;
-      setpasswordErr('Please enter password');
+      setpasswordErr('Per favore, inserisci la password');
     } else {
       error = false;
       setNameErr(null);

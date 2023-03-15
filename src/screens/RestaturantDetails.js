@@ -225,6 +225,7 @@ const RestaturantDetails = ({route, navigation}) => {
     );
   };
   const handleModel = async item => {
+    console.log('handleModel', item);
     setCartModel(false);
 
     if (item !== undefined) {
@@ -246,13 +247,24 @@ const RestaturantDetails = ({route, navigation}) => {
         itemQtyhandle.Image = details?.Menu?.ProductsImagePrefix + item?.Image;
         tmpArr.push(itemQtyhandle);
       }
-      // setSelItem(item);
+      setSelItem(item);
+    } else {
+      setSelItem(item);
+      setCartModel(true);
+      let itemQtyhandle = {...item};
+      itemQtyhandle.Qty = 1;
+      itemQtyhandle.restaurantId = route?.params?.item.ID;
+      itemQtyhandle.MinimumOrder = details?.MinimumOrder;
+      itemQtyhandle.MinOrderSupplment = details?.MinOrderSupplment;
+      itemQtyhandle.Image = details?.Menu?.ProductsImagePrefix + item?.Image;
+      // show?  null : tmpArr.push(itemQtyhandle) : null
     }
   };
 
   const cartData = useSelector(state => state?.CartReducer.cartData);
+
   const handleCartAddItem = async item => {
-    console.log('tmpArr>>', item);
+    console.log('handleCartAddItem', item);
     const tmpArr = cartData === undefined ? [] : [...cartData];
     // tmpArr.push(item);
 
@@ -288,7 +300,7 @@ const RestaturantDetails = ({route, navigation}) => {
       // show?  null : tmpArr.push(itemQtyhandle) : null
     }
   };
-  console.log('cartdata >> ', cartData);
+  console.log('cartdata_restDetail ', JSON.stringify(cartData, null, 4));
   return (
     <View style={styles.container}>
       <ImageBackground

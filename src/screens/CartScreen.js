@@ -40,7 +40,7 @@ const CartScreen = () => {
   const [loginModel, setLoginModel] = useState(false);
   const [locationModel, setLocationModel] = useState(false);
 
-  console.log('cartData_screen', JSON.stringify(cartData, null, 4));
+  console.log('cartData_screen', seladdress);
   const incrimentCart = (selitm, idx) => {
     const tmparr = [...cartData];
     tmparr[idx].Qty = tmparr[idx].Qty + 1;
@@ -75,6 +75,7 @@ const CartScreen = () => {
   }, [cartData]);
 
   const getCalculateDeliveryPrice = total => {
+    console.log('seladdress?.Lat ?>> ',seladdress?.Lat)
     try {
       if (cartData) {
         const data = {
@@ -273,7 +274,7 @@ const CartScreen = () => {
             <Title title="Totale Prodotti" />
             <Title title={`€ ${pTotal.toFixed(2)}`} style={styles.number} />
           </View>
-          {pTotal < cartData[0].MinimumOrder && (
+          {pTotal < cartData[0].MinimumOrder &&  seladdress !== null &&(
             <View style={styles.priceingView}>
               <Title
                 title={`Sipplemento ordine inferiore a €${cartData[0].MinimumOrder}`}
@@ -285,7 +286,7 @@ const CartScreen = () => {
               />
             </View>
           )}
-          {isLoginUser && (
+          {isLoginUser && seladdress !== null && (
             <View style={styles.priceingView}>
               <Title title="Spese di consegna" />
               <Title title={`€ ${dPrice.toFixed(2)}`} style={styles.number} />
@@ -305,7 +306,7 @@ const CartScreen = () => {
             <Title
               title={`€ ${(
                 pTotal +
-                (dPrice !== 0 ? dPrice : 2.9) +
+                dPrice +
                 (pTotal < cartData[0].MinimumOrder ? 2 : 0)
               ).toFixed(2)}`}
               style={styles.number}

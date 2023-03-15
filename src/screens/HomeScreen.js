@@ -208,12 +208,7 @@ const HomeScreen = () => {
     return false;
   };
   const handlePlaceChanged = async (data, addData) => {
-    console('DATTTA', data);
-    console.log('DETAILSSSS', addData);
-
-    const zipCode = data?.address_components.find(addressComponent =>
-      addressComponent.types.includes('postal_code'),
-    )?.short_name;
+  
     const place = data;
     let latt,
       lngg,
@@ -263,21 +258,17 @@ const HomeScreen = () => {
       city: city,
       state: state,
       country: country,
-      textboxtext: nameData,
-      Description: addData?.description,
     };
-
-    console.log('stateResp', stateResp);
 
     const frmData = {
-      Latitute: latt?.toString(),
-      Longitude: lngg.toString(),
-
+      Lat: latt?.toString(),
+      Lon: lngg.toString(),
+      AddressName: addrSel,
+      placeName: placeName,
       StreetNo: data?.address_components[0]?.long_name,
-
-      Address: placeName,
+     Address: placeName,
     };
-    // setAddressData(frmData);
+    dispatch(selectedAddress(frmData));
     console.log(
       'stateRespstateRespstateResp  is this ',
       JSON.stringify(frmData, null, 4),
@@ -289,7 +280,7 @@ const HomeScreen = () => {
       ref.current?.setAddressText(seladdress?.AddressName);
     }
   }, [isFocuse, seladdress]);
-
+  
   return (
     <SafeAreaView style={styles.container}>
       <Header
@@ -352,7 +343,6 @@ const HomeScreen = () => {
             keepResultsAfterBlur={true}
             onPress={(data, details = null) => {
               handlePlaceChanged(details, data);
-              console.log('HOME_SErACH', data);
             }}
             fetchDetails={true}
             query={{

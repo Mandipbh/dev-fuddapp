@@ -7,11 +7,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Icon1 from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/Fontisto';
-import {images, scale, theme} from '../utils';
+import { images, scale, theme } from '../utils';
 import {
   Address,
   ContactModal,
@@ -23,18 +23,20 @@ import {
   Signup,
   Title,
 } from '../components';
-import {profileData} from '../utils/MockData';
-import {useDispatch, useSelector} from 'react-redux';
-import {useIsFocused, useNavigation} from '@react-navigation/core';
-import {isLogin, logout} from '../redux/Actions/UserActions';
+import { profileData } from '../utils/MockData';
+import { useDispatch, useSelector } from 'react-redux';
+import { useIsFocused, useNavigation, useRoute } from '@react-navigation/core';
+import { isLogin, logout } from '../redux/Actions/UserActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
-const AccountScreen = () => {
+const AccountScreen = ({ route, props }) => {
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [showImg, setImg] = useState(true);
   const [text, setText] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
+
+
 
   const isLoginUser = useSelector(state => state.UserReducer?.login);
   const dispatch = useDispatch();
@@ -45,7 +47,7 @@ const AccountScreen = () => {
     if (!isLoginUser) {
       setSelectedMenu(4);
     } else {
-      setSelectedMenu(1);
+      route?.params?.data === 1 ? setSelectedMenu(2) : route?.params?.data === 11 ? setSelectedMenu(11) : route?.params?.data === 3 ? (3) : setSelectedMenu(1);
     }
   }, [isFoucse]);
 
@@ -134,11 +136,11 @@ const AccountScreen = () => {
           />
         </View>
         {selectedMenu == null && (
-          <View style={{alignItems: 'center'}}>
-            <Title title="Benvenuto" style={{fontSize: scale(18)}} />
+          <View style={{ alignItems: 'center' }}>
+            <Title title="Benvenuto" style={{ fontSize: scale(18) }} />
             <Title
               title={user?.UserInfo?.RagSoc}
-              style={{fontSize: scale(18)}}
+              style={{ fontSize: scale(18) }}
             />
           </View>
         )}
@@ -309,7 +311,7 @@ const styles = StyleSheet.create({
     height: scale(55),
     paddingHorizontal: scale(5),
   },
-  appLogo: {resizeMode: 'contain', alignSelf: 'center'},
+  appLogo: { resizeMode: 'contain', alignSelf: 'center' },
   option: {
     paddingVertical: scale(10),
   },

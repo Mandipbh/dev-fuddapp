@@ -31,15 +31,15 @@ const CartModel = props => {
   // const popItem = ({ item }) => {
   //   rIds.includes(item?.IDRiga) ? setCheckBox(!checkbox) : null
   // }
-  const dataObject = {
-    Name: productDetails.Name,
-    Amount: productDetails.Amount,
-    productQuantity: 1,
-    Image: productDetails.Image,
-    lstAddons: addonData,
-    lstMakeTypes: wantProduct,
-    lstIngredients: rIds,
-  };
+  // const dataObject = {
+  //   Name: productDetails.Name,
+  //   Amount: productDetails.Amount,
+  //   productQuantity: 1,
+  //   Image: productDetails.Image,
+  //   lstAddons: addonData,
+  //   lstMakeTypes: wantProduct,
+  //   lstIngredients: rIds,
+  // };
   // const [rIdData, setRIds] = useState([]);
   const closeModal = () => {
     setCartModel(false);
@@ -51,7 +51,7 @@ const CartModel = props => {
     // data?.lstAddons?.length === 0 && setAddonData([]);
     calculatePrice();
     console.log('sMakeTypeNameCSV ?? ', data?.lstAddons);
-  }, [data, productDetails.lstAddons, wantProduct, addonData]);
+  }, [data, wantProduct, addonData]);
 
   const handleAggiungi = async () => {
     const add1 = addonData.filter(x => x.Qty > 0);
@@ -481,7 +481,7 @@ const CartModel = props => {
             style={styles.price}
           />
         </View>
-        <AddCardModal isVisible={cartModel} close={closeModal} />
+        {/* <AddCardModal isVisible={cartModel} close={closeModal} /> */}
       </View>
     </Modal>
   );

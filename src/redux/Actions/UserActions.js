@@ -35,6 +35,7 @@ export const getAllAddress = id => {
 
 //selected address by user
 export const selectedAddress = payload => {
+  console.log('payload >> ',payload)
   return {
     type: types.SELECTEDADDRESS,
     payload,

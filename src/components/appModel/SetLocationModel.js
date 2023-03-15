@@ -1,5 +1,5 @@
 import moment from 'moment';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -9,18 +9,20 @@ import {
   Platform,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import {scale, theme} from '../../utils';
+import { scale, theme } from '../../utils';
 import Icon from 'react-native-vector-icons/Feather';
+import Icon1 from 'react-native-vector-icons/AntDesign'
 // import Toast from 'react-native-simple-toast';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
-import {Label, Title} from '../Label';
-import {Button} from '../index';
-import {KeyboardAvoidingView} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {getAllAddress, selectedAddress} from '../../redux/Actions/UserActions';
+import { Label, Title } from '../Label';
+import { Button } from '../index';
+import { KeyboardAvoidingView } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllAddress, selectedAddress } from '../../redux/Actions/UserActions';
+import { useNavigation } from '@react-navigation/core';
 const SetLocationModel = props => {
-  const {isShow, close} = props;
+  const { isShow, close } = props;
   const [selAdd, setSelAdd] = useState(null);
   const [saveAddress, setSaveAddress] = useState([]);
 
@@ -29,11 +31,12 @@ const SetLocationModel = props => {
   const dispatch = useDispatch();
 
   // const userInfo = useSelector(state => state.AppReducer.userDetails);
-
+  const navigation = useNavigation()
   useEffect(() => {
     dispatch(getAllAddress());
   }, [isShow]);
   useEffect(() => {
+    console.log('addresList', addressList);
     setSaveAddress(addressList?.UserAddresses);
     if (seladdress !== undefined) {
       setSelAdd(seladdress);
@@ -41,7 +44,11 @@ const SetLocationModel = props => {
   }, [addressList, isShow]);
 
   const compIsType = (t, s) => {
-    for (let z = 0; z < t.length; ++z) if (t[z] == s) return true;
+    for (let z = 0; z < t.length; ++z) {
+      if (t[z] == s) {
+        return true;
+      }
+    }
     return false;
   };
 
@@ -59,7 +66,7 @@ const SetLocationModel = props => {
     if (place.geometry !== undefined) {
       const plcGeom = place.geometry;
       if (plcGeom.location !== undefined) {
-        const {lat, lng} = place?.geometry?.location;
+        const { lat, lng } = place?.geometry?.location;
 
         latt = lat;
         lngg = lng;
@@ -74,15 +81,22 @@ const SetLocationModel = props => {
       let addrComp = place.address_components;
       for (let i = 0; i < addrComp.length; ++i) {
         var typ = addrComp[i].types;
-        if (compIsType(typ, 'administrative_area_level_1'))
+        if (compIsType(typ, 'administrative_area_level_1')) {
           state = addrComp[i].long_name;
+        }
         //store the state
-        else if (compIsType(typ, 'locality')) city = addrComp[i].long_name;
+        else if (compIsType(typ, 'locality')) {
+          city = addrComp[i].long_name;
+        }
         //store the city
-        else if (compIsType(typ, 'country')) country = addrComp[i].long_name; //store the country
+        else if (compIsType(typ, 'country')) {
+          country = addrComp[i].long_name;
+        } //store the country
 
         //we can break early if we find all three data
-        if (state != null && city != null && country != null) break;
+        if (state != null && city != null && country != null) {
+          break;
+        }
       }
     }
 
@@ -141,7 +155,7 @@ const SetLocationModel = props => {
       statusBarTranslucent
       backdropColor={theme.colors.black1}
       backdropOpacity={0.5}
-      style={{margin: 0}}>
+      style={{ margin: 0 }}>
       <View
         style={[
           styles.mainContainer,
@@ -157,10 +171,14 @@ const SetLocationModel = props => {
             <Title title="Gestione indirizzi" />
             <Icon name="x" size={scale(20)} onPress={close} />
           </View>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={[styles.container, {paddingHorizontal: 0}]}>
-            {/* <GooglePlacesAutocomplete
+
+
+          {saveAddress?.length > 0 ? (
+            <>
+              <KeyboardAvoidingView
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                style={[styles.container, { paddingHorizontal: 0 }]}>
+                {/* <GooglePlacesAutocomplete
               placeholder="Inserisci indirizzo"
               disableScroll={false}
               keepResultsAfterBlur={true}
@@ -180,60 +198,77 @@ const SetLocationModel = props => {
                 type: 'address',
               }}
             /> */}
-            <View style={styles.addressCon}>
-              <ScrollView>
-                {saveAddress &&
-                  saveAddress?.map((item, index) => {
-                    return (
-                      <View style={styles.viewCon} key={index}>
-                        <TouchableOpacity
-                          style={styles.checkboxCon}
-                          onPress={() => {
-                            handleAddress(item);
-                          }}>
-                          {selAdd?.Id === item?.Id && (
-                            <View style={styles.check} />
-                          )}
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.btn}>
-                          <Label
-                            title={item?.AddressName}
-                            style={styles.btnTxt}
-                          />
-                          <View style={styles.devider} />
-                          <View style={styles.row}>
-                            <Label title={`${item?.Name} ${item?.LastName}`} />
-                            <View style={styles.row}>
-                              <Icon
-                                name="phone"
-                                style={{marginLeft: scale(8)}}
+                <View style={styles.addressCon}>
+                  <ScrollView showsVerticalScrollIndicator={false} >
+                    {saveAddress &&
+                      saveAddress?.map((item, index) => {
+                        return (
+                          <View style={styles.viewCon} key={index}>
+                            <TouchableOpacity
+                              style={styles.checkboxCon}
+                              onPress={() => {
+                                handleAddress(item);
+                              }}>
+                              {selAdd?.Id === item?.Id && (
+                                <View style={styles.check} />
+                              )}
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.btn}>
+                              <Label
+                                title={item?.AddressName}
+                                style={styles.btnTxt}
                               />
-                              <Label title={` ${item?.Telephone}`} />
-                            </View>
+                              <View style={styles.devider} />
+                              <View style={styles.row}>
+                                <Label
+                                  title={`${item?.Name} ${item?.LastName}`}
+                                />
+                                <View style={styles.row}>
+                                  <Icon
+                                    name="phone"
+                                    style={{ marginLeft: scale(8) }}
+                                  />
+                                  <Label title={` ${item?.Telephone}`} />
+                                </View>
+                              </View>
+                            </TouchableOpacity>
                           </View>
-                        </TouchableOpacity>
-                      </View>
-                    );
-                  })}
-              </ScrollView>
+                        );
+                      })}
+                  </ScrollView>
+                </View>
+                <Button
+                  title="Imposta"
+                  style={{ backgroundColor: theme.colors.primary }}
+                  titleStyle={{ color: theme.colors.white }}
+                  onPress={() => {
+                    handleLocationSet();
+                  }}
+                />
+                <Label
+                  title="Chiara"
+                  onPress={() => {
+                    dispatch(selectedAddress(null));
+                    close();
+                  }}
+                  style={{ alignSelf: 'center', textDecorationLine: 'underline' }}
+                />
+              </KeyboardAvoidingView></>
+          ) :
+            <View style={styles.nodataCon}>
+
+              <TouchableOpacity
+                style={styles.addressBtn}
+                onPress={() => {
+                  navigation.navigate('ACCOUNT', { data: 11 });
+                }}>
+                <Icon1 name="plus"
+                  size={scale(22)} color={theme.colors.green} />
+                <Label title="Aggiungi indirizzo" style={styles.btnlbl} />
+              </TouchableOpacity>
             </View>
-            <Button
-              title="Imposta"
-              style={{backgroundColor: theme.colors.primary}}
-              titleStyle={{color: theme.colors.white}}
-              onPress={() => {
-                handleLocationSet();
-              }}
-            />
-            <Label
-              title="Chiara"
-              onPress={() => {
-                dispatch(selectedAddress(null));
-                close();
-              }}
-              style={{alignSelf: 'center', textDecorationLine: 'underline'}}
-            />
-          </KeyboardAvoidingView>
+          }
+
         </View>
       </View>
     </Modal>
@@ -289,8 +324,8 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.gray,
   },
   addressCon: {
-    height: '70%',
-    // backgroundColor: 'lime',
+    height: theme.SCREENHEIGHT * 0.56,
+    marginVertical: scale(5),
   },
   btn: {
     flexDirection: 'column',
@@ -320,6 +355,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: scale(3),
   },
+  addressBtn: {
+    width: '90%',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: scale(10),
+    borderWidth: scale(1),
+    borderRadius: scale(20),
+    borderColor: theme.colors.gray,
+    marginVertical: scale(15),
+  },
+  btnlbl: {
+    marginLeft: scale(10),
+    fontWeight: '600',
+    fontSize: scale(14),
+    color: theme.colors.gray,
+  },
+  nodataCon: { flex: 1, justifyContent: 'center', alignItems: 'center' }
 });
 
 export default SetLocationModel;
