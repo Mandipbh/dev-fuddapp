@@ -126,7 +126,7 @@ const CartModel = props => {
     setProductDetails([]);
     setWantProduct(null);
     setCartModel(false);
-    close();
+    close(null);
   };
 
   const deleteByIndexProduct = index => {

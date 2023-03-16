@@ -8,16 +8,16 @@ import {
   View,
 } from 'react-native';
 import React from 'react';
-import { images, scale, theme } from '../utils';
+import {images, scale, theme} from '../utils';
 import InputBox from './InputBox';
 import Button from './Button';
-import { useState } from 'react';
+import {useState} from 'react';
 import ApiService from '../utils/ApiService';
-import { useDispatch, useSelector } from 'react-redux';
-import { getAllAddress } from '../redux/Actions/UserActions';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import {useDispatch, useSelector} from 'react-redux';
+import {getAllAddress} from '../redux/Actions/UserActions';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 
-const SaveAddress = ({ back }) => {
+const SaveAddress = ({back}) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastname] = useState('');
   const [mobile, setMobile] = useState('');
@@ -65,7 +65,7 @@ const SaveAddress = ({ back }) => {
           Description: address,
           Phone: mobile,
         };
-        const options = { payloads: frmData };
+        const options = {payloads: frmData};
         console.log('options >>> ', frmData);
         ApiService.post('Users/SaveUserAddress', options)
           .then(res => {
@@ -89,7 +89,6 @@ const SaveAddress = ({ back }) => {
         dispatch(getAllAddress());
       }
     }
-
   };
   const compIsType = (t, s) => {
     for (let z = 0; z < t.length; ++z) if (t[z] == s) return true;
@@ -112,7 +111,7 @@ const SaveAddress = ({ back }) => {
     if (place.geometry !== undefined) {
       const plcGeom = place.geometry;
       if (plcGeom.location !== undefined) {
-        const { lat, lng } = place?.geometry?.location;
+        const {lat, lng} = place?.geometry?.location;
         latt = lat;
         lngg = lng;
       }
@@ -180,7 +179,7 @@ const SaveAddress = ({ back }) => {
     <View>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={[styles.container, { paddingHorizontal: 0 }]}>
+        style={[styles.container, {paddingHorizontal: 0}]}>
         <ScrollView
           style={styles.container}
           contentContainerStyle={styles.view}
@@ -193,7 +192,7 @@ const SaveAddress = ({ back }) => {
             keepResultsAfterBlur={true}
             onPress={(data, details = null) => {
               handlePlaceChanged(details, data);
-              const { lat, lng } = details?.geometry?.location;
+              const {lat, lng} = details?.geometry?.location;
             }}
             // debounce={200}
             fetchDetails={true}
@@ -202,7 +201,7 @@ const SaveAddress = ({ back }) => {
               // language: 'en',
               // types: '(cities)',
               // components: 'country:IT',
-              language: 'en',
+              language: 'it',
               components: 'country:IT',
               sessiontoken: 'sessionToken',
               type: Array[
@@ -214,7 +213,7 @@ const SaveAddress = ({ back }) => {
               returnKeyType: 'search',
             }}
             styles={{
-              description: { color: 'black' },
+              description: {color: 'black'},
 
               textInput: {
                 color: theme.colors.black,
@@ -234,7 +233,7 @@ const SaveAddress = ({ back }) => {
               setFirstName(txt);
             }}
             placeholder="Nome di battesimo"
-            style={{ marginBottom: scale(3) }}
+            style={{marginBottom: scale(3)}}
           />
           <InputBox
             value={lastName}
@@ -242,7 +241,7 @@ const SaveAddress = ({ back }) => {
               setLastname(txt);
             }}
             placeholder="Cognome"
-            style={{ marginBottom: scale(3) }}
+            style={{marginBottom: scale(3)}}
           />
           <InputBox
             value={address}
@@ -250,7 +249,7 @@ const SaveAddress = ({ back }) => {
               setAddress(txt);
             }}
             placeholder="Intercom at, staircase, floor"
-            style={{ marginBottom: scale(3) }}
+            style={{marginBottom: scale(3)}}
           />
           <InputBox
             value={mobile}
@@ -258,7 +257,7 @@ const SaveAddress = ({ back }) => {
               setMobile(txt.replace(/[^0-9]/g, ''));
             }}
             placeholder="Telefono"
-            style={{ marginBottom: scale(3) }}
+            style={{marginBottom: scale(3)}}
             keyboardType="numeric"
           />
         </ScrollView>
@@ -315,5 +314,5 @@ const styles = StyleSheet.create({
     elevation: 2,
     // flexGrow: 1,
   },
-  container: { height: theme.SCREENHEIGHT * 0.38, width: '100%' },
+  container: {height: theme.SCREENHEIGHT * 0.38, width: '100%'},
 });

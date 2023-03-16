@@ -208,7 +208,6 @@ const HomeScreen = () => {
     return false;
   };
   const handlePlaceChanged = async (data, addData) => {
-  
     const place = data;
     let latt,
       lngg,
@@ -266,7 +265,7 @@ const HomeScreen = () => {
       AddressName: addrSel,
       placeName: placeName,
       StreetNo: data?.address_components[0]?.long_name,
-     Address: placeName,
+      Address: placeName,
     };
     dispatch(selectedAddress(frmData));
     console.log(
@@ -278,9 +277,10 @@ const HomeScreen = () => {
   useEffect(() => {
     if (seladdress !== null) {
       ref.current?.setAddressText(seladdress?.AddressName);
+      // ref.current.();
     }
   }, [isFocuse, seladdress]);
-  
+
   return (
     <SafeAreaView style={styles.container}>
       <Header
@@ -347,7 +347,7 @@ const HomeScreen = () => {
             fetchDetails={true}
             query={{
               key: 'AIzaSyDxUeU36VnWRBXAok6txlBCV2rq9UhHWT4',
-              language: 'en',
+              language: 'it',
               components: 'country:IT',
               sessiontoken: 'sessionToken',
               type: Array[

@@ -227,37 +227,39 @@ const RestaturantDetails = ({route, navigation}) => {
   const handleModel = async item => {
     console.log('handleModel', item);
     setCartModel(false);
+    if (item !== null) {
+      if (item !== undefined) {
+        const tmpArr = cartData === undefined ? [] : [...cartData];
+        // tmpArr.push(item);
 
-    if (item !== undefined) {
-      const tmpArr = cartData === undefined ? [] : [...cartData];
-      // tmpArr.push(item);
+        dispatch(AddToCart(tmpArr));
 
-      dispatch(AddToCart(tmpArr));
+        var matchingObj = await cartData.find(o => o.Name === item.Name);
 
-      var matchingObj = await cartData.find(o => o.Name === item.Name);
-
-      if (matchingObj) {
-        matchingObj.Qty++;
+        if (matchingObj) {
+          matchingObj.Qty++;
+        } else {
+          let itemQtyhandle = {...item};
+          itemQtyhandle.Qty = 1;
+          itemQtyhandle.restaurantId = route?.params?.item.ID;
+          itemQtyhandle.MinimumOrder = details?.MinimumOrder;
+          itemQtyhandle.MinOrderSupplment = details?.MinOrderSupplment;
+          itemQtyhandle.Image =
+            details?.Menu?.ProductsImagePrefix + item?.Image;
+          tmpArr.push(itemQtyhandle);
+        }
+        setSelItem(item);
       } else {
+        setSelItem(item);
+        setCartModel(true);
         let itemQtyhandle = {...item};
         itemQtyhandle.Qty = 1;
         itemQtyhandle.restaurantId = route?.params?.item.ID;
         itemQtyhandle.MinimumOrder = details?.MinimumOrder;
         itemQtyhandle.MinOrderSupplment = details?.MinOrderSupplment;
         itemQtyhandle.Image = details?.Menu?.ProductsImagePrefix + item?.Image;
-        tmpArr.push(itemQtyhandle);
+        // show?  null : tmpArr.push(itemQtyhandle) : null
       }
-      setSelItem(item);
-    } else {
-      setSelItem(item);
-      setCartModel(true);
-      let itemQtyhandle = {...item};
-      itemQtyhandle.Qty = 1;
-      itemQtyhandle.restaurantId = route?.params?.item.ID;
-      itemQtyhandle.MinimumOrder = details?.MinimumOrder;
-      itemQtyhandle.MinOrderSupplment = details?.MinOrderSupplment;
-      itemQtyhandle.Image = details?.Menu?.ProductsImagePrefix + item?.Image;
-      // show?  null : tmpArr.push(itemQtyhandle) : null
     }
   };
 
