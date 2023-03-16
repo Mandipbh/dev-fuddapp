@@ -93,7 +93,7 @@ const CheckoutScreen = ({route}) => {
     setDisplayedTimeSlot(newTime.replace(' - ', 'TO'));
     // setTimeSlot(startClosetime.replace('TO', ' TO '));
   };
-
+  const seladdress = useSelector(state => state.UserReducer.selAddress);
   // useEffect(() => {
   //   const today = new Date();
   //   const day = today.getDay();
@@ -119,6 +119,7 @@ const CheckoutScreen = ({route}) => {
   //       });
   // }, [restaurantData, startClosetime, timeSloat, startTime, endTime]);
 
+  console.log('seladdress ??? ', seladdress);
   useEffect(() => {
     console.log('route.params', route.params);
     if (route.params) {
@@ -471,6 +472,11 @@ const CheckoutScreen = ({route}) => {
     DiscountCode: copanCode.replace('null', ''),
     ItemIds: itemList,
     PaymentRequest: paymentData,
+    OrderDeliveryAddress: {
+      Address: selAddress?.AddressName,
+      lat: selAddress?.Lat,
+      lon: selAddress?.Lon,
+    },
   };
 
   console.log('paymentData ?? ', paymentData);
@@ -733,9 +739,12 @@ const CheckoutScreen = ({route}) => {
                   <Label title="" />
                 </View>
                 <View
-                  style={[styles.priceingView, {paddingHorizontal: scale(8)}]}>
+                  style={[
+                    styles.priceingView,
+                    {paddingHorizontal: scale(5), paddingBottom: scale(10)},
+                  ]}>
                   <Label title="Somma totale" />
-                  <Label title={`€ ${grandTotal}`} />
+                  <Label title={`€ ${grandTotal.toFixed(2)}`} />
                 </View>
                 {isCoupenApplied && (
                   <>
@@ -831,11 +840,13 @@ const styles = StyleSheet.create({
   },
   submitBtn: {
     backgroundColor: theme.colors.primary,
+    width: theme.SCREENWIDTH * 0.9,
     // bottom: theme.SCREENHEIGHT * -0.08,
   },
   btnTxt: {
     color: theme.colors.white,
     fontWeight: '600',
+    fontSize: scale(15),
   },
   headerView: {
     flexDirection: 'row',

@@ -81,7 +81,7 @@ const CartScreen = () => {
         const data = {
           Latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
           Longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
-          id: cartData[0].restaurantId,
+          RestaurantId: cartData[0].restaurantId,
           OrderPrice: total,
         };
         setLoad(true);

@@ -262,7 +262,7 @@ const MyOrders = () => {
                         <Label title={`€${(oI?.MinOrderCharge).toFixed(2)}`} />
                       </View>
                     )}
-                    {oI?.MinOrderCharge > 0 && (
+                    {oI?.DeliveryFee > 0 && (
                       <View style={styles.row}>
                         <Label title={'Spese di consegna'} />
                         <Label title={`€${(oI?.DeliveryFee).toFixed(2)}`} />
@@ -276,7 +276,7 @@ const MyOrders = () => {
                     )}
                     {oI?.KmFee > 0 && (
                       <View style={styles.row}>
-                        <Label title={oI?.KmFee} />
+                        <Label title={oI?.km} />
                         <Label title={`€${(oI?.KmFee).toFixed(2)}`} />
                       </View>
                     )}

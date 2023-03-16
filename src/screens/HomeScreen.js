@@ -9,8 +9,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useRef, useState } from 'react';
-import { scale, theme, timeSlot } from '../utils';
+import React, {useRef, useState} from 'react';
+import {scale, theme, timeSlot} from '../utils';
 import {
   Header,
   Button,
@@ -23,30 +23,30 @@ import {
   ContactModal,
   OrderPaymentMethod,
 } from '../components';
-import { foodData } from '../utils/MockData';
+import {foodData} from '../utils/MockData';
 import DrawerModal from '../components/appModel/DrawerModal';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {useEffect} from 'react';
 import {
   getAllCategory,
   getAllRestaurants,
   getpopularRestaurants,
 } from '../redux/Actions/HomeAction';
-import { useIsFocused, useNavigation } from '@react-navigation/core';
+import {useIsFocused, useNavigation} from '@react-navigation/core';
 import SetLocationModel from '../components/appModel/SetLocationModel';
 import moment from 'moment';
-import { setCategory } from '../redux/Actions/RestaurantAction';
+import {setCategory} from '../redux/Actions/RestaurantAction';
 import OrderModal from '../components/appModel/OrderModal';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import Icon from 'react-native-vector-icons/Feather';
-import { selectedAddress } from '../redux/Actions/UserActions';
+import {selectedAddress} from '../redux/Actions/UserActions';
 
-const Category = ({ categoryListData }) => {
+const Category = ({categoryListData}) => {
   return (
     <View>
       <Title title="Categorie" style={styles.title} />
       <ScrollView
-        contentContainerStyle={{ paddingVertical: scale(5) }}
+        contentContainerStyle={{paddingVertical: scale(5)}}
         showsHorizontalScrollIndicator={false}
         horizontal>
         {categoryListData &&
@@ -58,7 +58,7 @@ const Category = ({ categoryListData }) => {
   );
 };
 
-const PopularRestaturants = ({ ExternalRestaurantData, navigation }) => {
+const PopularRestaturants = ({ExternalRestaurantData, navigation}) => {
   return (
     <View style={styles.categoryContainer}>
       <View style={styles.popularView}>
@@ -74,7 +74,7 @@ const PopularRestaturants = ({ ExternalRestaurantData, navigation }) => {
       </View>
 
       <ScrollView
-        contentContainerStyle={{ paddingVertical: scale(5) }}
+        contentContainerStyle={{paddingVertical: scale(5)}}
         showsHorizontalScrollIndicator={false}
         horizontal>
         {ExternalRestaurantData &&
@@ -86,7 +86,7 @@ const PopularRestaturants = ({ ExternalRestaurantData, navigation }) => {
   );
 };
 
-const Restaturants = ({ restaurant }) => {
+const Restaturants = ({restaurant}) => {
   return (
     <View style={styles.categoryContainer}>
       <View style={styles.popularView}>
@@ -95,7 +95,7 @@ const Restaturants = ({ restaurant }) => {
       </View>
 
       <ScrollView
-        contentContainerStyle={{ paddingVertical: scale(15) }}
+        contentContainerStyle={{paddingVertical: scale(15)}}
         showsHorizontalScrollIndicator={false}
         horizontal>
         {restaurant &&
@@ -184,12 +184,12 @@ const HomeScreen = () => {
           onPress={() => {
             setCategoryView(false);
           }}
-          styleImage={{ width: '95%' }}
+          styleImage={{width: '95%'}}
         />
         <FlatList
           data={foodData}
           numColumns={2}
-          renderItem={({ item, index }) => {
+          renderItem={({item, index}) => {
             return (
               <FoodCard
                 item={item}
@@ -227,7 +227,7 @@ const HomeScreen = () => {
     if (place.geometry !== undefined) {
       const plcGeom = place.geometry;
       if (plcGeom.location !== undefined) {
-        const { lat, lng } = place?.geometry?.location;
+        const {lat, lng} = place?.geometry?.location;
         latt = lat;
         lngg = lng;
       }
@@ -315,7 +315,7 @@ const HomeScreen = () => {
       // ref.current.();
     }
   }, [seladdress]);
-  console.log('selected addres >> ', seladdress)
+  console.log('selected addres >> ', seladdress);
   return (
     <SafeAreaView style={styles.container}>
       <Header
@@ -394,7 +394,7 @@ const HomeScreen = () => {
               returnKeyType: 'search',
             }}
             styles={{
-              description: { color: 'black' },
+              description: {color: 'black'},
 
               textInput: {
                 color: theme.colors.black,
@@ -453,17 +453,21 @@ const HomeScreen = () => {
           /> */}
 
         {/* </View> */}
-        {isLoginUser && (
-          <Button
-            onPress={() => {
-              setLocationModel(true);
-            }}
-            title={'Scegli tra i tuoi indirizzi'}
-            style={styles.ristroBtn}
-            titleStyle={styles.btnText}
-          />
-        )}
-        {!isLoginUser && <View style={{ height: scale(40) }} />}
+
+        <Button
+          onPress={() => {
+            !isLoginUser
+              ? navigation.navigate('RISTORANTI')
+              : seladdress !== null && seladdress !== undefined
+              ? navigation.navigate('RISTORANTI')
+              : setLocationModel(true);
+          }}
+          title={'Trova ristoranti'}
+          style={styles.ristroBtn}
+          titleStyle={styles.btnText}
+        />
+
+        {/* {!isLoginUser && <View style={{height: scale(40)}} />} */}
         <View
           style={{
             height: isLoginUser

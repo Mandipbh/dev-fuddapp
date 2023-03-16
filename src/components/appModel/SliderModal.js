@@ -13,6 +13,7 @@ import {useState} from 'react';
 import {BlurView} from '@react-native-community/blur';
 import {useEffect} from 'react';
 import {Title} from '../Label';
+import { useSelector } from 'react-redux';
 
 const SliderModal = props => {
   const {isVisible, close, data} = props;
@@ -21,8 +22,8 @@ const SliderModal = props => {
   useEffect(() => {
     setCategoryData(data?.reverse());
   }, [data]);
-
-  console.log('selCategory ??/ ', selCategory);
+// const sAd = useSelector(state=>state.)
+  // console.log('selCategory ??/ ', selCategory);
   return (
     <Modal animationType="fade" visible={isVisible} style={styles.modalCon}>
       <BlurView
