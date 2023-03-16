@@ -75,7 +75,7 @@ const CartScreen = () => {
   }, [cartData]);
 
   const getCalculateDeliveryPrice = total => {
-    console.log('seladdress?.Lat ?>> ',seladdress?.Lat)
+    console.log('seladdress?.Lat ?>> ', seladdress?.Lat);
     try {
       if (cartData) {
         const data = {
@@ -226,7 +226,7 @@ const CartScreen = () => {
                           decrimentCart(i, index);
                         }}>
                         <Icon1
-                          name="delete"
+                          name={i?.Qty <= 1 ? 'delete' : 'minus'}
                           size={scale(16)}
                           color={theme.colors.gray}
                         />
@@ -274,7 +274,7 @@ const CartScreen = () => {
             <Title title="Totale Prodotti" />
             <Title title={`€ ${pTotal.toFixed(2)}`} style={styles.number} />
           </View>
-          {pTotal < cartData[0].MinimumOrder &&  seladdress !== null &&(
+          {pTotal < cartData[0].MinimumOrder && seladdress !== null && (
             <View style={styles.priceingView}>
               <Title
                 title={`Sipplemento ordine inferiore a €${cartData[0].MinimumOrder}`}

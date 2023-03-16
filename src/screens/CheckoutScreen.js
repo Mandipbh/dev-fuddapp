@@ -291,7 +291,7 @@ const CheckoutScreen = ({route}) => {
     setCopanCode('');
     setCoupenApplied(false);
   };
-
+  console.log('resturn >>>> ', restaurantData);
   const handleCoupen = () => {
     const userData = user?.UserInfo;
     if (copanCode !== '') {
@@ -423,8 +423,11 @@ const CheckoutScreen = ({route}) => {
     //     "Variante": "56"
     //   }]
 
-    if (item?.lstMakeTypes.toString() !== '[]') {
-      if (item?.lstMakeTypes.hasOwnProperty('Id')) {
+    if (
+      item?.lstMakeTypes?.toString() !== '[]' ||
+      item?.lstMakeTypes?.length === 0
+    ) {
+      if (item?.lstMakeTypes?.hasOwnProperty('Id')) {
         makeTypeIds.push(item.lstMakeTypes.Id);
       }
     } else {
@@ -535,7 +538,7 @@ const CheckoutScreen = ({route}) => {
           size={scale(28)}
           color={theme.colors.black}
           onPress={() => {
-            navigation.replace('Tab');
+            navigation.goBack();
           }}
         />
         <Title title="Check Out" style={styles.title} />
@@ -783,6 +786,8 @@ const CheckoutScreen = ({route}) => {
         </>
       )}
       <DatePicker
+        confirmText="CONFIRM"
+        cancelText="Annulla"
         modal
         open={open}
         date={date}

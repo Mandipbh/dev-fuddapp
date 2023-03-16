@@ -146,6 +146,8 @@ const RestaurantScreen = () => {
     setSelectedModal(false);
     if (data !== null) {
       setSelCategory(data?.Nome);
+    } else {
+      setSelCategory('');
     }
   };
 
@@ -288,6 +290,8 @@ const RestaurantScreen = () => {
         open={open}
         date={date}
         mode="date"
+        confirmText="CONFIRM"
+        cancelText="Annulla"
         onConfirm={date => {
           setOpen(false);
           setDate(date);

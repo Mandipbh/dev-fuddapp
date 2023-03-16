@@ -372,10 +372,12 @@ const RestaturantDetails = ({route, navigation}) => {
           {!restaurantData?.IsOpen && (
             <View style={styles.timeCon}>
               <Icon name="clock" size={scale(15)} color={theme.colors.gray} />
-              <Label
-                title={`Pre-order ${restaurantData?.OpeningTime}`}
-                style={styles.titmeLbl}
-              />
+              {restaurantData?.OpeningTime && (
+                <Label
+                  title={`Pre-order ${restaurantData?.OpeningTime}`}
+                  style={styles.titmeLbl}
+                />
+              )}
             </View>
           )}
         </View>
