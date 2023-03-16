@@ -7,7 +7,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useRef} from 'react';
 import {images, scale, theme} from '../utils';
 import InputBox from './InputBox';
 import Button from './Button';
@@ -26,6 +26,8 @@ const SaveAddress = ({back}) => {
   const [load, setLoad] = useState(false);
   const userData = useSelector(state => state?.UserReducer?.userDetails);
   const dispatch = useDispatch();
+  const [streetNumber, setStreetNumber] = useState('');
+  const addRef = useRef();
 
   const validation = () => {
     let error = false;
@@ -41,13 +43,6 @@ const SaveAddress = ({back}) => {
     } else if (mobile === '') {
       alert('Inserisci nome e cognome');
       error = true;
-    } else if (
-      addressData?.StreetNo === undefined ||
-      addressData?.StreetNo === ''
-    ) {
-      alert(
-        `Inserisci un indirizzo preciso con numero civico. L' indirizzo selezionato è troppo vago.`,
-      );
     } else {
       error = false;
     }
@@ -56,42 +51,55 @@ const SaveAddress = ({back}) => {
 
   const handleSave = () => {
     if (!validation()) {
-      try {
-        setLoad(true);
-        const frmData = {
-          ...addressData,
-          Firstname: firstName,
-          Lastname: lastName,
-          Description: address,
-          Phone: mobile,
-        };
-        const options = {payloads: frmData};
-        console.log('options >>> ', frmData);
-        ApiService.post('Users/SaveUserAddress', options)
-          .then(res => {
-            setLoad(false);
-            console.log('res address', res?.Status);
-            if (res?.Status == 'Success') {
+      if (addressData === '') {
+        console.log('Error2', 'sdfdsfdfdf');
+        addRef.current?.setAddressText('');
+        alert(
+          "Inserisci un indirizzo preciso con numero civico. L' indirizzo selezionato è troppo vago.",
+        );
+      } else {
+        console.log('Error2', 'success');
+        try {
+          setLoad(true);
+          const frmData = {
+            ...addressData,
+            Firstname: firstName,
+            Lastname: lastName,
+            Description: address,
+            Phone: mobile,
+          };
+          const options = {payloads: frmData};
+          console.log('options >>> ', frmData);
+          ApiService.post('Users/SaveUserAddress', options)
+            .then(res => {
+              setLoad(false);
+              console.log('res address', res?.Status);
+              if (res?.Status == 'Success') {
+                back();
+                dispatch(getAllAddress());
+              }
+            })
+            .catch(error => {
+              setLoad(false);
+              console.log('error catch ', error.response);
               back();
               dispatch(getAllAddress());
-            }
-          })
-          .catch(error => {
-            setLoad(false);
-            console.log('error catch ', error.response);
-            back();
-            dispatch(getAllAddress());
-          });
-      } catch (error) {
-        setLoad(false);
-        console.log('eror save address ', error);
-        back();
-        dispatch(getAllAddress());
+            });
+        } catch (error) {
+          setLoad(false);
+          console.log('eror save address ', error);
+          back();
+          dispatch(getAllAddress());
+        }
       }
     }
   };
   const compIsType = (t, s) => {
-    for (let z = 0; z < t.length; ++z) if (t[z] == s) return true;
+    for (let z = 0; z < t.length; ++z) {
+      if (t[z] == s) {
+        return true;
+      }
+    }
     return false;
   };
   const handlePlaceChanged = async (data, addData) => {
@@ -125,15 +133,22 @@ const SaveAddress = ({back}) => {
       let addrComp = place.address_components;
       for (let i = 0; i < addrComp.length; ++i) {
         var typ = addrComp[i].types;
-        if (compIsType(typ, 'administrative_area_level_1'))
+        if (compIsType(typ, 'administrative_area_level_1')) {
           state = addrComp[i].long_name;
+        }
         //store the state
-        else if (compIsType(typ, 'locality')) city = addrComp[i].long_name;
+        else if (compIsType(typ, 'locality')) {
+          city = addrComp[i].long_name;
+        }
         //store the city
-        else if (compIsType(typ, 'country')) country = addrComp[i].long_name; //store the country
+        else if (compIsType(typ, 'country')) {
+          country = addrComp[i].long_name;
+        } //store the country
 
         //we can break early if we find all three data
-        if (state != null && city != null && country != null) break;
+        if (state != null && city != null && country != null) {
+          break;
+        }
       }
     }
 
@@ -151,14 +166,33 @@ const SaveAddress = ({back}) => {
       textboxtext: nameData,
       Description: addData?.description,
     };
+
+    var addressName = null,
+      postalCode = null,
+      numberStreet = null;
+    if (data.address_components) {
+      for (const obj of data.address_components) {
+        if (obj.types.includes('route')) {
+          addressName = obj.short_name;
+          console.log('addressName', addressName);
+        } else if (obj.types.includes('street_number')) {
+          numberStreet = obj.long_name;
+          setStreetNumber(numberStreet);
+          console.log('numberStreet', numberStreet);
+        } else if (obj.types.includes('postal_code')) {
+          postalCode = obj.long_name;
+          console.log('postalCode', postalCode);
+        }
+      }
+    }
+
     console.log('data?.address_components >> ', data?.address_components);
     const frmData = {
       Latitute: latt?.toString(),
       Longitude: lngg.toString(),
       UserId: userData?.UserId,
       AddressId: 0,
-      StreetNo: data?.address_components[0]?.long_name,
-
+      StreetNo: numberStreet !== null ? numberStreet : '',
       City: city,
       Postcode: zipCode,
       FullAddress: addrSel,
@@ -168,7 +202,12 @@ const SaveAddress = ({back}) => {
       Phone: mobile,
       Address: placeName,
     };
-    setAddressData(frmData);
+    if (frmData.StreetNo === '') {
+      setAddressData('');
+    } else {
+      setAddressData(frmData);
+    }
+
     console.log(
       'stateRespstateRespstateResp  is this ',
       JSON.stringify(frmData, null, 4),
@@ -187,6 +226,7 @@ const SaveAddress = ({back}) => {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
           <GooglePlacesAutocomplete
+            ref={addRef}
             placeholder="Inserisci indirizzo"
             // disableScroll={true}
             keepResultsAfterBlur={true}

@@ -1,5 +1,6 @@
 import {
   ActivityIndicator,
+  Alert,
   Image,
   KeyboardAvoidingView,
   Modal,
@@ -27,6 +28,7 @@ const EditAddress = props => {
   const [mobile, setMobile] = useState('');
   const [address, setAddress] = useState('');
   const [addressData, setAddressData] = useState('');
+  const [streetNumber, setStreetNumber] = useState('');
   const [load, setLoad] = useState(false);
   const dispatch = useDispatch();
   const userData = useSelector(state => state?.UserReducer?.userDetails);
@@ -64,15 +66,41 @@ const EditAddress = props => {
       let addrComp = place.address_components;
       for (let i = 0; i < addrComp.length; ++i) {
         var typ = addrComp[i].types;
-        if (compIsType(typ, 'administrative_area_level_1'))
+        if (compIsType(typ, 'administrative_area_level_1')) {
           state = addrComp[i].long_name;
+        }
         //store the state
-        else if (compIsType(typ, 'locality')) city = addrComp[i].long_name;
+        else if (compIsType(typ, 'locality')) {
+          city = addrComp[i].long_name;
+        }
         //store the city
-        else if (compIsType(typ, 'country')) country = addrComp[i].long_name; //store the country
+        else if (compIsType(typ, 'country')) {
+          country = addrComp[i].long_name;
+        } //store the country
 
         //we can break early if we find all three data
-        if (state != null && city != null && country != null) break;
+        if (state != null && city != null && country != null) {
+          break;
+        }
+      }
+    }
+
+    var addressName = null,
+      postalCode = null,
+      numberStreet = null;
+    if (data.address_components) {
+      for (const obj of data.address_components) {
+        if (obj.types.includes('route')) {
+          addressName = obj.short_name;
+          console.log('addressName', addressName);
+        } else if (obj.types.includes('street_number')) {
+          numberStreet = obj.long_name;
+          setStreetNumber(numberStreet);
+          console.log('numberStreet', numberStreet);
+        } else if (obj.types.includes('postal_code')) {
+          postalCode = obj.long_name;
+          console.log('postalCode', postalCode);
+        }
       }
     }
 
@@ -82,7 +110,7 @@ const EditAddress = props => {
       Latitute: latt?.toString(),
       Longitude: lngg.toString(),
       UserId: userData?.UserId,
-      StreetNo: data?.address_components[0]?.long_name,
+      StreetNo: numberStreet !== null ? numberStreet : '',
       City: city,
       Postcode: zipCode,
       FullAddress: addrSel,
@@ -92,46 +120,59 @@ const EditAddress = props => {
       Phone: mobile,
       Address: placeName,
     };
-    setAddressData(frmData);
+    if (frmData.StreetNo === '') {
+      setAddressData('');
+    } else {
+      setAddressData(frmData);
+    }
   };
   const compIsType = (t, s) => {
-    for (let z = 0; z < t.length; ++z) if (t[z] == s) return true;
+    for (let z = 0; z < t.length; ++z) {
+      if (t[z] == s) {
+        return true;
+      }
+    }
     return false;
   };
   console.log('editData ???? ', editData);
   const handleSave = () => {
-    try {
-      setLoad(true);
-      const frmData = {
-        ...addressData,
-        AddressId: editData?.Id,
-        Description: address,
-        Firstname: firstName,
-        Lastname: lastName,
-        Phone: mobile,
-      };
-      const options = {payloads: frmData};
-      console.log('options >>> ', frmData);
-      ApiService.post('Users/SaveUserAddress', options)
-        .then(res => {
-          setLoad(false);
-          close();
-          console.log('res address', res?.Status);
-          if (res?.Status == 'Success') {
+    if (addressData !== '') {
+      try {
+        setLoad(true);
+        const frmData = {
+          ...addressData,
+          AddressId: editData?.Id,
+          Description: address,
+          Firstname: firstName,
+          Lastname: lastName,
+          Phone: mobile,
+        };
+        const options = {payloads: frmData};
+        console.log('options >>> ', frmData);
+        ApiService.post('Users/SaveUserAddress', options)
+          .then(res => {
+            setLoad(false);
+            close();
+            console.log('res address', res?.Status);
+            if (res?.Status == 'Success') {
+              dispatch(getAllAddress());
+            }
+          })
+          .catch(error => {
+            setLoad(false);
+            console.log('error catch ', error.response);
+            //   close();
             dispatch(getAllAddress());
-          }
-        })
-        .catch(error => {
-          setLoad(false);
-          console.log('error catch ', error.response);
-          //   close();
-          dispatch(getAllAddress());
-        });
-    } catch (error) {
-      setLoad(false);
-      console.log('eror save address ', error);
-      //   close();
-      dispatch(getAllAddress());
+          });
+      } catch (error) {
+        setLoad(false);
+        console.log('eror save address ', error);
+        //   close();
+        dispatch(getAllAddress());
+      }
+    } else {
+      Alert.alert('indirizzo non valido');
+      addRef.current?.setAddressText('');
     }
   };
   useEffect(() => {

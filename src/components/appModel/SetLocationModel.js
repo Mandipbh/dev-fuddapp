@@ -1,5 +1,5 @@
 import moment from 'moment';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -9,20 +9,20 @@ import {
   Platform,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import {scale, theme} from '../../utils';
+import { scale, theme } from '../../utils';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon1 from 'react-native-vector-icons/AntDesign';
 // import Toast from 'react-native-simple-toast';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
-import {Label, Title} from '../Label';
-import {Button} from '../index';
-import {KeyboardAvoidingView} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {getAllAddress, selectedAddress} from '../../redux/Actions/UserActions';
-import {useNavigation} from '@react-navigation/core';
+import { Label, Title } from '../Label';
+import { Button } from '../index';
+import { KeyboardAvoidingView } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllAddress, selectedAddress } from '../../redux/Actions/UserActions';
+import { useNavigation } from '@react-navigation/core';
 const SetLocationModel = props => {
-  const {isShow, close} = props;
+  const { isShow, close } = props;
   const [selAdd, setSelAdd] = useState(null);
   const [saveAddress, setSaveAddress] = useState([]);
 
@@ -66,7 +66,7 @@ const SetLocationModel = props => {
     if (place.geometry !== undefined) {
       const plcGeom = place.geometry;
       if (plcGeom.location !== undefined) {
-        const {lat, lng} = place?.geometry?.location;
+        const { lat, lng } = place?.geometry?.location;
 
         latt = lat;
         lngg = lng;
@@ -155,7 +155,7 @@ const SetLocationModel = props => {
       statusBarTranslucent
       backdropColor={theme.colors.black1}
       backdropOpacity={0.5}
-      style={{margin: 0}}>
+      style={{ margin: 0 }}>
       <View
         style={[
           styles.mainContainer,
@@ -176,7 +176,7 @@ const SetLocationModel = props => {
             <>
               <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                style={[styles.container, {paddingHorizontal: 0}]}>
+                style={[styles.container, { paddingHorizontal: 0 }]}>
                 {/* <GooglePlacesAutocomplete
               placeholder="Inserisci indirizzo"
               disableScroll={false}
@@ -229,7 +229,7 @@ const SetLocationModel = props => {
                                 <View style={styles.row}>
                                   <Icon
                                     name="phone"
-                                    style={{marginLeft: scale(8)}}
+                                    style={{ marginLeft: scale(8) }}
                                   />
                                   <Label title={` ${item?.Telephone}`} />
                                 </View>
@@ -242,20 +242,28 @@ const SetLocationModel = props => {
                 </View>
                 <Button
                   title="Imposta"
-                  style={{backgroundColor: theme.colors.primary}}
-                  titleStyle={{color: theme.colors.white}}
+                  style={{ backgroundColor: theme.colors.primary, marginTop: scale(10) }}
+                  titleStyle={{ color: theme.colors.white }}
                   onPress={() => {
                     handleLocationSet();
                   }}
                 />
-                <Label
-                  title="Chiara"
+                <TouchableOpacity
+                  style={styles.addressBtn}
                   onPress={() => {
-                    dispatch(selectedAddress(null));
                     close();
-                  }}
-                  style={{alignSelf: 'center', textDecorationLine: 'underline'}}
-                />
+                    setTimeout(() => {
+                      navigation.navigate('ACCOUNT', { data: 11 });
+                    }, 600);
+
+                  }}>
+                  <Icon1
+                    name="plus"
+                    size={scale(22)}
+                    color={theme.colors.green}
+                  />
+                  <Label title="Aggiungi indirizzo" style={styles.btnlbl} />
+                </TouchableOpacity>
               </KeyboardAvoidingView>
             </>
           ) : (
@@ -263,7 +271,11 @@ const SetLocationModel = props => {
               <TouchableOpacity
                 style={styles.addressBtn}
                 onPress={() => {
-                  navigation.navigate('ACCOUNT', {data: 11});
+                  close();
+                  setTimeout(() => {
+                    navigation.navigate('ACCOUNT', { data: 11 });
+                  }, 600);
+
                 }}>
                 <Icon1
                   name="plus"
@@ -329,7 +341,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.gray,
   },
   addressCon: {
-    height: theme.SCREENHEIGHT * 0.56,
+    height: theme.SCREENHEIGHT * 0.5,
     marginVertical: scale(5),
   },
   btn: {
@@ -370,7 +382,7 @@ const styles = StyleSheet.create({
     borderWidth: scale(1),
     borderRadius: scale(20),
     borderColor: theme.colors.gray,
-    marginVertical: scale(15),
+    // marginVertical: scale(15),
   },
   btnlbl: {
     marginLeft: scale(10),
@@ -378,7 +390,7 @@ const styles = StyleSheet.create({
     fontSize: scale(14),
     color: theme.colors.gray,
   },
-  nodataCon: {flex: 1, justifyContent: 'center', alignItems: 'center'},
+  nodataCon: { flex: 1, justifyContent: 'center', alignItems: 'center' },
 });
 
 export default SetLocationModel;

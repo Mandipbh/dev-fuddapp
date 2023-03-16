@@ -1,4 +1,5 @@
 import {
+  Alert,
   FlatList,
   Platform,
   SafeAreaView,
@@ -8,8 +9,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useRef, useState} from 'react';
-import {scale, theme, timeSlot} from '../utils';
+import React, { useRef, useState } from 'react';
+import { scale, theme, timeSlot } from '../utils';
 import {
   Header,
   Button,
@@ -22,30 +23,30 @@ import {
   ContactModal,
   OrderPaymentMethod,
 } from '../components';
-import {foodData} from '../utils/MockData';
+import { foodData } from '../utils/MockData';
 import DrawerModal from '../components/appModel/DrawerModal';
-import {useDispatch, useSelector} from 'react-redux';
-import {useEffect} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
 import {
   getAllCategory,
   getAllRestaurants,
   getpopularRestaurants,
 } from '../redux/Actions/HomeAction';
-import {useIsFocused, useNavigation} from '@react-navigation/core';
+import { useIsFocused, useNavigation } from '@react-navigation/core';
 import SetLocationModel from '../components/appModel/SetLocationModel';
 import moment from 'moment';
-import {setCategory} from '../redux/Actions/RestaurantAction';
+import { setCategory } from '../redux/Actions/RestaurantAction';
 import OrderModal from '../components/appModel/OrderModal';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import Icon from 'react-native-vector-icons/Feather';
-import {selectedAddress} from '../redux/Actions/UserActions';
+import { selectedAddress } from '../redux/Actions/UserActions';
 
-const Category = ({categoryListData}) => {
+const Category = ({ categoryListData }) => {
   return (
     <View>
       <Title title="Categorie" style={styles.title} />
       <ScrollView
-        contentContainerStyle={{paddingVertical: scale(5)}}
+        contentContainerStyle={{ paddingVertical: scale(5) }}
         showsHorizontalScrollIndicator={false}
         horizontal>
         {categoryListData &&
@@ -57,7 +58,7 @@ const Category = ({categoryListData}) => {
   );
 };
 
-const PopularRestaturants = ({ExternalRestaurantData, navigation}) => {
+const PopularRestaturants = ({ ExternalRestaurantData, navigation }) => {
   return (
     <View style={styles.categoryContainer}>
       <View style={styles.popularView}>
@@ -73,7 +74,7 @@ const PopularRestaturants = ({ExternalRestaurantData, navigation}) => {
       </View>
 
       <ScrollView
-        contentContainerStyle={{paddingVertical: scale(5)}}
+        contentContainerStyle={{ paddingVertical: scale(5) }}
         showsHorizontalScrollIndicator={false}
         horizontal>
         {ExternalRestaurantData &&
@@ -85,7 +86,7 @@ const PopularRestaturants = ({ExternalRestaurantData, navigation}) => {
   );
 };
 
-const Restaturants = ({restaurant}) => {
+const Restaturants = ({ restaurant }) => {
   return (
     <View style={styles.categoryContainer}>
       <View style={styles.popularView}>
@@ -94,7 +95,7 @@ const Restaturants = ({restaurant}) => {
       </View>
 
       <ScrollView
-        contentContainerStyle={{paddingVertical: scale(15)}}
+        contentContainerStyle={{ paddingVertical: scale(15) }}
         showsHorizontalScrollIndicator={false}
         horizontal>
         {restaurant &&
@@ -121,6 +122,8 @@ const HomeScreen = () => {
   const [contactModal, setContact] = useState(false);
   const [paymentModel, setPayModel] = useState(false);
   const [orderModalVisible, setOrderModalVisible] = useState(false);
+  const [streetNumber, setStreetNumber] = useState('');
+
   const isFocuse = useIsFocused();
   const navigation = useNavigation();
   const ref = useRef();
@@ -181,12 +184,12 @@ const HomeScreen = () => {
           onPress={() => {
             setCategoryView(false);
           }}
-          styleImage={{width: '95%'}}
+          styleImage={{ width: '95%' }}
         />
         <FlatList
           data={foodData}
           numColumns={2}
-          renderItem={({item, index}) => {
+          renderItem={({ item, index }) => {
             return (
               <FoodCard
                 item={item}
@@ -204,7 +207,11 @@ const HomeScreen = () => {
 
   // handle google autocomplate Search
   const compIsType = (t, s) => {
-    for (let z = 0; z < t.length; ++z) if (t[z] == s) return true;
+    for (let z = 0; z < t.length; ++z) {
+      if (t[z] == s) {
+        return true;
+      }
+    }
     return false;
   };
   const handlePlaceChanged = async (data, addData) => {
@@ -220,7 +227,7 @@ const HomeScreen = () => {
     if (place.geometry !== undefined) {
       const plcGeom = place.geometry;
       if (plcGeom.location !== undefined) {
-        const {lat, lng} = place?.geometry?.location;
+        const { lat, lng } = place?.geometry?.location;
         latt = lat;
         lngg = lng;
       }
@@ -234,15 +241,41 @@ const HomeScreen = () => {
       let addrComp = place.address_components;
       for (let i = 0; i < addrComp.length; ++i) {
         var typ = addrComp[i].types;
-        if (compIsType(typ, 'administrative_area_level_1'))
+        if (compIsType(typ, 'administrative_area_level_1')) {
           state = addrComp[i].long_name;
+        }
         //store the state
-        else if (compIsType(typ, 'locality')) city = addrComp[i].long_name;
+        else if (compIsType(typ, 'locality')) {
+          city = addrComp[i].long_name;
+        }
         //store the city
-        else if (compIsType(typ, 'country')) country = addrComp[i].long_name; //store the country
+        else if (compIsType(typ, 'country')) {
+          country = addrComp[i].long_name;
+        } //store the country
 
         //we can break early if we find all three data
-        if (state != null && city != null && country != null) break;
+        if (state != null && city != null && country != null) {
+          break;
+        }
+      }
+    }
+
+    var addressName = null,
+      postalCode = null,
+      numberStreet = null;
+    if (data.address_components) {
+      for (const obj of data.address_components) {
+        if (obj.types.includes('route')) {
+          addressName = obj.short_name;
+          console.log('addressName', addressName);
+        } else if (obj.types.includes('street_number')) {
+          numberStreet = obj.long_name;
+          setStreetNumber(numberStreet);
+          console.log('numberStreet', numberStreet);
+        } else if (obj.types.includes('postal_code')) {
+          postalCode = obj.long_name;
+          console.log('postalCode', postalCode);
+        }
       }
     }
 
@@ -264,23 +297,25 @@ const HomeScreen = () => {
       Lon: lngg.toString(),
       AddressName: addrSel,
       placeName: placeName,
-      StreetNo: data?.address_components[0]?.long_name,
+      StreetNo: numberStreet !== null ? numberStreet : '',
       Address: placeName,
     };
     dispatch(selectedAddress(frmData));
-    console.log(
-      'stateRespstateRespstateResp  is this ',
-      JSON.stringify(frmData, null, 4),
-    );
   };
 
   useEffect(() => {
-    if (seladdress !== null) {
-      ref.current?.setAddressText(seladdress?.AddressName);
+    if (seladdress !== null && seladdress !== undefined) {
+      if (seladdress.StreetNo !== '') {
+        ref.current?.setAddressText(seladdress?.AddressName);
+      } else {
+        Alert.alert('indirizzo non valido');
+        ref.current?.setAddressText('');
+      }
+
       // ref.current.();
     }
-  }, [isFocuse, seladdress]);
-
+  }, [seladdress]);
+  console.log('selected addres >> ', seladdress)
   return (
     <SafeAreaView style={styles.container}>
       <Header
@@ -359,7 +394,7 @@ const HomeScreen = () => {
               returnKeyType: 'search',
             }}
             styles={{
-              description: {color: 'black'},
+              description: { color: 'black' },
 
               textInput: {
                 color: theme.colors.black,
@@ -378,8 +413,8 @@ const HomeScreen = () => {
                 <TouchableOpacity
                   style={{
                     backgroundColor: theme.colors.white,
-                    left: scale(-5),
-                    height: scale(39),
+                    left: scale(-8),
+                    height: scale(37.5),
                     paddingHorizontal: scale(5),
                     justifyContent: 'center',
                     borderBottomWidth: scale(1),
@@ -423,12 +458,12 @@ const HomeScreen = () => {
             onPress={() => {
               setLocationModel(true);
             }}
-            title={'Trova ristoranti'}
+            title={'Scegli tra i tuoi indirizzi'}
             style={styles.ristroBtn}
             titleStyle={styles.btnText}
           />
         )}
-        {!isLoginUser && <View style={{height: scale(40)}} />}
+        {!isLoginUser && <View style={{ height: scale(40) }} />}
         <View
           style={{
             height: isLoginUser
