@@ -315,7 +315,6 @@ const HomeScreen = () => {
       // ref.current.();
     }
   }, [seladdress]);
-  console.log('selected addres >> ', seladdress);
   return (
     <SafeAreaView style={styles.container}>
       <Header
