@@ -21,6 +21,7 @@ import { KeyboardAvoidingView } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllAddress, selectedAddress } from '../../redux/Actions/UserActions';
 import { useNavigation } from '@react-navigation/core';
+
 const SetLocationModel = props => {
   const { isShow, close } = props;
   const [selAdd, setSelAdd] = useState(null);
@@ -28,6 +29,9 @@ const SetLocationModel = props => {
 
   const addressList = useSelector(state => state.HomeReducers.addressList);
   const seladdress = useSelector(state => state.UserReducer.selAddress);
+
+  console.log('seladdressReducer', seladdress);
+  console.log('addressList_', addressList);
   const dispatch = useDispatch();
 
   // const userInfo = useSelector(state => state.AppReducer.userDetails);
@@ -36,7 +40,6 @@ const SetLocationModel = props => {
     dispatch(getAllAddress());
   }, [isShow]);
   useEffect(() => {
-    console.log('addresList', addressList);
     setSaveAddress(addressList?.UserAddresses);
     if (seladdress !== undefined) {
       setSelAdd(seladdress);
@@ -52,95 +55,96 @@ const SetLocationModel = props => {
     return false;
   };
 
-  const handlePlaceChanged = async data => {
-    const place = data;
-    // let userInfo = this.props.route.params?.data;
-    let latt,
-      lngg,
-      addrSel,
-      placeName,
-      placeId = '';
-    let country,
-      state,
-      city = null;
-    if (place.geometry !== undefined) {
-      const plcGeom = place.geometry;
-      if (plcGeom.location !== undefined) {
-        const { lat, lng } = place?.geometry?.location;
+  // const handlePlaceChanged = async data => {
+  //   const place = data;
+  //   // let userInfo = this.props.route.params?.data;
+  //   let latt,
+  //     lngg,
+  //     addrSel,
+  //     placeName,
+  //     placeId = '';
+  //   let country,
+  //     state,
+  //     city = null;
+  //   if (place.geometry !== undefined) {
+  //     const plcGeom = place.geometry;
+  //     if (plcGeom.location !== undefined) {
+  //       const { lat, lng } = place?.geometry?.location;
 
-        latt = lat;
-        lngg = lng;
-      }
-    }
+  //       latt = lat;
+  //       lngg = lng;
+  //     }
+  //   }
 
-    addrSel =
-      place.formatted_address !== undefined ? place.formatted_address : '';
-    placeName = place.name !== undefined ? place.name : '';
-    placeId = place.place_id !== undefined ? place.place_id : '';
-    if (place.address_components !== undefined) {
-      let addrComp = place.address_components;
-      for (let i = 0; i < addrComp.length; ++i) {
-        var typ = addrComp[i].types;
-        if (compIsType(typ, 'administrative_area_level_1')) {
-          state = addrComp[i].long_name;
-        }
-        //store the state
-        else if (compIsType(typ, 'locality')) {
-          city = addrComp[i].long_name;
-        }
-        //store the city
-        else if (compIsType(typ, 'country')) {
-          country = addrComp[i].long_name;
-        } //store the country
+  //   addrSel =
+  //     place.formatted_address !== undefined ? place.formatted_address : '';
+  //   placeName = place.name !== undefined ? place.name : '';
+  //   placeId = place.place_id !== undefined ? place.place_id : '';
+  //   if (place.address_components !== undefined) {
+  //     let addrComp = place.address_components;
+  //     for (let i = 0; i < addrComp.length; ++i) {
+  //       var typ = addrComp[i].types;
+  //       if (compIsType(typ, 'administrative_area_level_1')) {
+  //         state = addrComp[i].long_name;
+  //       }
+  //       //store the state
+  //       else if (compIsType(typ, 'locality')) {
+  //         city = addrComp[i].long_name;
+  //       }
+  //       //store the city
+  //       else if (compIsType(typ, 'country')) {
+  //         country = addrComp[i].long_name;
+  //       } //store the country
 
-        //we can break early if we find all three data
-        if (state != null && city != null && country != null) {
-          break;
-        }
-      }
-    }
+  //       //we can break early if we find all three data
+  //       if (state != null && city != null && country != null) {
+  //         break;
+  //       }
+  //     }
+  //   }
 
-    let nameData = '';
-    // if (this.props.showKey !== undefined) {
-    //   if (this.props.showKey == 'CITY') {
-    //     nameData = city;
-    //   } else if (this.props.showKey == 'STATE') {
-    //     nameData = state;
-    //   } else if (this.props.showKey == 'COUNTRY') {
-    //     nameData = country;
-    //   } else if (this.props.showKey == 'PLACE_NAME') {
-    //     nameData = country;
-    //   } else if (this.props.showKey == 'FORMATTED_ADDRESS') {
-    //     nameData = addrSel;
-    //   } else if (this.props.showKey == 'PLACE_ID') {
-    //     nameData = placeId;
-    //   } else {
-    //     nameData = addrSel;
-    //   }
-    // } else {
-    //   nameData = addrSel;
-    // }
+  //   let nameData = '';
+  //   // if (this.props.showKey !== undefined) {
+  //   //   if (this.props.showKey == 'CITY') {
+  //   //     nameData = city;
+  //   //   } else if (this.props.showKey == 'STATE') {
+  //   //     nameData = state;
+  //   //   } else if (this.props.showKey == 'COUNTRY') {
+  //   //     nameData = country;
+  //   //   } else if (this.props.showKey == 'PLACE_NAME') {
+  //   //     nameData = country;
+  //   //   } else if (this.props.showKey == 'FORMATTED_ADDRESS') {
+  //   //     nameData = addrSel;
+  //   //   } else if (this.props.showKey == 'PLACE_ID') {
+  //   //     nameData = placeId;
+  //   //   } else {
+  //   //     nameData = addrSel;
+  //   //   }
+  //   // } else {
+  //   //   nameData = addrSel;
+  //   // }
 
-    let stateResp = {
-      lat: latt,
-      lng: lngg,
-      formattedAddress: addrSel,
-      placeName: placeName,
-      placeId: placeId,
-      city: city,
-      state: state,
-      country: country,
-      textboxtext: nameData,
-    };
-  };
+  //   let stateResp = {
+  //     lat: latt,
+  //     lng: lngg,
+  //     formattedAddress: addrSel,
+  //     placeName: placeName,
+  //     placeId: placeId,
+  //     city: city,
+  //     state: state,
+  //     country: country,
+  //     textboxtext: nameData,
+  //   };
+  // };
+
   const handleAddress = item => {
     setSelAdd(item);
-    console.log('selected ADDress >> ', selAdd);
+    console.log('selected ADDress >> ', item);
 
     dispatch(selectedAddress(item));
   };
   const handleLocationSet = () => {
-    if (selAdd === null) {
+    if (selAdd === null || selAdd === undefined) {
       alert('Seleziona un indirizzo');
       // Toast.show('Seleziona un indirizzo', Toast.show);
     } else {
@@ -242,7 +246,10 @@ const SetLocationModel = props => {
                 </View>
                 <Button
                   title="Imposta"
-                  style={{ backgroundColor: theme.colors.primary, marginTop: scale(10) }}
+                  style={{
+                    backgroundColor: theme.colors.primary,
+                    marginTop: scale(10),
+                  }}
                   titleStyle={{ color: theme.colors.white }}
                   onPress={() => {
                     handleLocationSet();
@@ -255,7 +262,6 @@ const SetLocationModel = props => {
                     setTimeout(() => {
                       navigation.navigate('ACCOUNT', { data: 11 });
                     }, 600);
-
                   }}>
                   <Icon1
                     name="plus"
@@ -275,7 +281,6 @@ const SetLocationModel = props => {
                   setTimeout(() => {
                     navigation.navigate('ACCOUNT', { data: 11 });
                   }, 600);
-
                 }}>
                 <Icon1
                   name="plus"

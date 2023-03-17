@@ -1,4 +1,4 @@
-import ApiService, {API} from '../../utils/ApiService';
+import ApiService, { API } from '../../utils/ApiService';
 import * as types from './ActionsTypes';
 
 export const isLogin = payload => {
@@ -23,11 +23,11 @@ export const getAllAddress = id => {
       ).then(res => {
         if (res) {
           console.log('ressss >>> ', res);
-          dispatch({type: types.GETALLADDRESS, payload: res});
+          dispatch({ type: types.GETALLADDRESS, payload: res });
         }
       });
     } catch (error) {
-      dispatch({type: types.GETALLADDRESS, payload: []});
+      dispatch({ type: types.GETALLADDRESS, payload: [] });
       console.log('error in Address', error.response);
     }
   };
@@ -35,7 +35,7 @@ export const getAllAddress = id => {
 
 //selected address by user
 export const selectedAddress = payload => {
-  console.log('payload >> ',payload)
+  console.log('payload >> ', payload);
   return {
     type: types.SELECTEDADDRESS,
     payload,

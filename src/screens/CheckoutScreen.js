@@ -13,10 +13,10 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
-import {images, scale, theme} from '../utils';
+import { images, scale, theme, timeSlot } from '../utils';
 import {
   Button,
   InputBox,
@@ -25,23 +25,23 @@ import {
   TimePickerModel,
   Title,
 } from '../components';
-import {useNavigation} from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import SetLocationModel from '../components/appModel/SetLocationModel';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
-import ApiService, {API} from '../utils/ApiService';
-import {useEffect} from 'react';
-import {AddToCart} from '../redux/Actions/CartAction';
+import ApiService, { API } from '../utils/ApiService';
+import { useEffect } from 'react';
+import { AddToCart } from '../redux/Actions/CartAction';
+import NextSlotAvailabilityModel from '../components/appModel/NextSlotAvailabilityModel';
 const keyboardVerticalOffset = Platform.OS === 'ios' ? scale(40) : 0;
 const startOfMonth = moment().format('YYYY-MM-DD');
 const endOfMonth = moment().endOf('month').format('YYYY-MM-DD');
 
-const CheckoutScreen = ({route}) => {
+const CheckoutScreen = ({ route }) => {
   const navigation = useNavigation();
   const [process, setProcesss] = useState(false);
   const [locationModel, setLocationModel] = useState(false);
-  const [] = useState(false);
   const [timeModel, setTimeModel] = useState(false);
   const [timeSloat, setTimeSlot] = useState(null);
   const [date, setDate] = useState(new Date());
@@ -65,6 +65,14 @@ const CheckoutScreen = ({route}) => {
   const [startTime, setStartime] = useState('');
   const [endTime, setEndtime] = useState('');
   const [rID, setRId] = useState('');
+  const isFocus = useIsFocused();
+  const [nextSlotAvailability, setNextSlotAvailability] = useState(false);
+  const [delMsg, setDelMsg] = useState('');
+  const [checkTimeslot, setCheckTimeslot] = useState('');
+
+  const selectedCat = useSelector(
+    state => state?.RestaurantReducers?.selCategory,
+  );
 
   const restaurantData = useSelector(
     state => state.RestaurantReducers?.restaurantDetails,
@@ -81,8 +89,15 @@ const CheckoutScreen = ({route}) => {
     }
   };
 
+  useEffect(() => {
+    var timeslot = timeSlot().ptime.replace('TO', '-');
+    console.log('object>>> ', timeslot)
+    setCheckTimeslot(timeslot);
+    console.log('CheckTimeSlot', checkTimeslot);
+    // handleRestaurantAvailability();
+  }, [checkTimeslot == '']);
+
   const handleDate = newTime => {
-    console.log('newTime', newTime);
     const receivedTime = newTime.split('-'); // here the time is like "16:14"
     let sTime = receivedTime[0];
     let eTime = receivedTime[1];
@@ -93,7 +108,6 @@ const CheckoutScreen = ({route}) => {
     setDisplayedTimeSlot(newTime.replace(' - ', 'TO'));
     // setTimeSlot(startClosetime.replace('TO', ' TO '));
   };
-  const seladdress = useSelector(state => state.UserReducer.selAddress);
   // useEffect(() => {
   //   const today = new Date();
   //   const day = today.getDay();
@@ -119,11 +133,10 @@ const CheckoutScreen = ({route}) => {
   //       });
   // }, [restaurantData, startClosetime, timeSloat, startTime, endTime]);
 
-  console.log('seladdress ??? ', seladdress);
   useEffect(() => {
     console.log('route.params', route.params);
     if (route.params) {
-      const {total, pTotal} = route?.params;
+      const { total, pTotal } = route?.params;
       setGrandTotal(total);
       setProdTotal(pTotal);
     }
@@ -163,8 +176,6 @@ const CheckoutScreen = ({route}) => {
 
     if (restaurantData?.OpeningTime !== '') {
       let [hrs, min] = restaurantData?.OpeningTime.split(':').map(Number);
-      console.log('hrs', hrs);
-      console.log('min', min);
       let splitedResOpenTimeMin = min;
       if (splitedResOpenTimeMin > 30) {
         splitedResOpenTimeMin = 60 - splitedResOpenTimeMin;
@@ -189,11 +200,6 @@ const CheckoutScreen = ({route}) => {
       newEndroundTime = moment(now).add(30, 'm').format('HH:mm');
     }
 
-    console.log('now_', now);
-    console.log('newRoundedTime_', newRoundedTime);
-    console.log('restaurantOpeningTime_', restaurantOpeningTime);
-    console.log('newEndroundTime', newEndroundTime);
-
     var str1 =
       restaurantData?.OpeningTime !== ''
         ? restaurantOpeningTime > newRoundedTime
@@ -207,34 +213,29 @@ const CheckoutScreen = ({route}) => {
     var totalSeconds2 = parseInt(str2[0] * 3600 + str2[1] * 60);
 
     if (totalSeconds2 > totalSeconds1) {
-      // newRoundedTime = moment(new Date())
-      //   .add(splitedMin, 'm')
-      //   .format('HH:mm');
       newtimeSlot =
         restaurantOpeningTime > newRoundedTime
           ? restaurantOpeningTime
-              .toString()
-              .concat('TO', newEndroundTime.toString())
+            .toString()
+            .concat('TO', newEndroundTime.toString())
           : newRoundedTime.toString().concat('TO', newEndroundTime.toString());
       setTimeSlot(newtimeSlot);
     } else {
       displaytimeslot = newRoundedTime
         .toString()
         .concat(' TO ', newEndroundTime.toString());
-      console.log('Noooo >>> ', displaytimeslot);
-      console.log('newEndroundTime ? ', newEndroundTime);
+
       setDisplayedTimeSlot(displaytimeslot);
 
       newtimeSlot =
         restaurantOpeningTime > newRoundedTime
           ? restaurantOpeningTime
-              .toString()
-              .concat('TO', newEndroundTime.toString())
+            .toString()
+            .concat('TO', newEndroundTime.toString())
           : newRoundedTime.toString().concat('TO', newEndroundTime.toString());
       setTimeSlot(newtimeSlot);
     }
 
-    console.log('newtimeSlot', newtimeSlot);
     setTimeSlot(newtimeSlot);
     // var newEndroundTime = moment(now).add(30, 'm').toDate();
 
@@ -286,13 +287,12 @@ const CheckoutScreen = ({route}) => {
 
     // setDisplayedTimeSlot(displaytimeslot);
     // setTimeSlot(newtimeSlot);
-  }, [restaurantData]);
+  }, [isFocus]);
 
   const handleResetCoupen = () => {
     setCopanCode('');
     setCoupenApplied(false);
   };
-  console.log('resturn >>>> ', restaurantData);
   const handleCoupen = () => {
     const userData = user?.UserInfo;
     if (copanCode !== '') {
@@ -307,8 +307,7 @@ const CheckoutScreen = ({route}) => {
           Email: user?.UserInfo !== undefined && userData?.EMail,
           ItemTotalCharge: prdTotal,
         };
-        console.log('handleCoupen ', folderFrm);
-        const options = {payloads: folderFrm};
+        const options = { payloads: folderFrm };
         ApiService.post(API.coupenCode, options)
           .then(res => {
             if (res.Status === 'Success') {
@@ -397,7 +396,6 @@ const CheckoutScreen = ({route}) => {
       : grandTotal.toFixed(2).replace('.', '');
 
   cartData.map(item => {
-    console.log('cartItem', item);
     var ingredientsList = [];
     var addOnsList = [];
     var makeTypeIds = [];
@@ -412,8 +410,6 @@ const CheckoutScreen = ({route}) => {
         Quantity: addOnItem.Qty,
       });
     });
-
-    console.log('item?.lstMakeTypes', item?.lstMakeTypes);
 
     // [  "lstMakeTypes": []
     //    "lstMakeTypes": {
@@ -460,27 +456,46 @@ const CheckoutScreen = ({route}) => {
 
   //console.log('itemList >> ', JSON.stringify(itemList, null, 4));
 
-  var cartDetailJson = {
-    UserId: user?.UserInfo !== undefined && user?.UserInfo.Id,
-    RestaurantId: 3,
-    RiderId: 0,
-    OrderId: 0,
-    SelectedAddressId:
-      selAddress !== null && selAddress !== undefined && selAddress.Id,
-    Date: moment(date).format('DD-MM-YYYY'),
-    TimeSlot: timeSloat === null ? '' : timeSloat.replace('TO', '-'),
-    DiscountCode: copanCode.replace('null', ''),
-    ItemIds: itemList,
-    PaymentRequest: paymentData,
-    OrderDeliveryAddress: {
-      Address: selAddress?.AddressName,
-      lat: selAddress?.Lat,
-      lon: selAddress?.Lon,
-    },
-  };
+  // var cartDetailJson = {
+  //   UserId: user?.UserInfo !== undefined && user?.UserInfo.Id,
+  //   RestaurantId: 3,
+  //   RiderId: 0,
+  //   OrderId: 0,
+  //   SelectedAddressId:
+  //     selAddress !== null && selAddress !== undefined && selAddress.Id,
+  //   Date: moment(date).format('DD-MM-YYYY'),
+  //   TimeSlot: timeSloat === null ? '' : timeSloat.replace('TO', '-'),
+  //   DiscountCode: copanCode.replace('null', ''),
+  //   ItemIds: itemList,
+  //   PaymentRequest: paymentData,
+  //   OrderDeliveryAddress: {
+  //     Address: selAddress?.AddressName,
+  //     lat: selAddress?.Lat,
+  //     lon: selAddress?.Lon,
+  //   },
+  // };
 
-  console.log('paymentData ?? ', paymentData);
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = (time) => {
+
+    var cartDetailJson = {
+      UserId: user?.UserInfo !== undefined && user?.UserInfo.Id,
+      RestaurantId: 3,
+      RiderId: 0,
+      OrderId: 0,
+      SelectedAddressId:
+        selAddress !== null && selAddress !== undefined && selAddress.Id,
+      Date: moment(date).format('DD-MM-YYYY'),
+      // TimeSlot: timeSloat === null ? '' : timeSloat.replace('TO', '-'),
+      TimeSlot: time,
+      DiscountCode: copanCode.replace('null', ''),
+      ItemIds: itemList,
+      PaymentRequest: paymentData,
+      OrderDeliveryAddress: {
+        Address: selAddress?.AddressName,
+        lat: selAddress?.Lat,
+        lon: selAddress?.Lon,
+      },
+    };
     console.log('cartDetailJson', JSON.stringify(cartDetailJson, null, 4));
 
     if (!isLoginUser) {
@@ -505,8 +520,7 @@ const CheckoutScreen = ({route}) => {
     else {
       try {
         setLoad(true);
-        const options = {payloads: cartDetailJson};
-        console.log('payLoad', JSON.stringify(options, null, 4));
+        const options = { payloads: cartDetailJson };
         ApiService.post(API.placeOrder, options)
           .then(res => {
             console.log('res of placeOrder >> ', res);
@@ -530,8 +544,71 @@ const CheckoutScreen = ({route}) => {
     }
   };
 
+  const handleRestaurantAvailability = () => {
+    if (selAddress === undefined || selAddress === null) {
+      setLocationModel(true);
+    } else {
+      try {
+        if (cartData) {
+          const data = {
+            Latitute: selAddress?.Lat === undefined ? '' : selAddress?.Lat,
+            Longitude: selAddress?.Lon === undefined ? '' : selAddress?.Lon,
+            id: cartData[0].restaurantId,
+            Date: moment(date).format('DD-MM-YYYY'),
+            TimeSlot: checkTimeslot,
+            Category: selectedCat == null ? '' : selectedCat,
+          };
+          setLoad(true);
+
+          const options = { payloads: data };
+
+          console.log('payloads_options', options);
+
+          ApiService.post(API.checkestaurantAvailability, options)
+            .then(res => {
+              if (res.Status === 'Success') {
+                console.log('res of RestaurantAvailability >> ', res);
+                setLoad(false);
+                setDelMsg('');
+                if (res.IsAvail == false) {
+                  console.log('ifffff');
+                  setCheckTimeslot(res.NextAvailableSlot);
+                  setNextSlotAvailability(true);
+                } else {
+                  setNextSlotAvailability(false);
+                  handlePlaceOrder(checkTimeslot);
+                }
+
+                // navigation.navigate('Checkout', {
+                //   total:
+                //     pTotal +
+                //     dPrice +
+                //     (pTotal < cartData[0].MinimumOrder ? 2 : 0),
+                //   pTotal: pTotal,
+                // });
+              }
+            })
+            .catch(e => {
+              setLoad(false);
+              setDelMsg(
+                "La consegna non è disponibile dal ristorante all'indirizzo selezionato.",
+              );
+              console.log(
+                'error in RestaurantAvailability> ',
+                e?.response.data,
+              );
+              Alert.alert(e.response?.data?.Errors[0]);
+            });
+        }
+      } catch (e) {
+        console.log('e in RestaurantAvailability ', e);
+        setLoad(false);
+      }
+    }
+  };
+
   useEffect(() => {
-    let tmpData = {...paymentData};
+    let tmpData = { ...paymentData };
     tmpData.Notes = notes;
     setPaymentData(tmpData);
   }, [notes]);
@@ -572,14 +649,14 @@ const CheckoutScreen = ({route}) => {
               behavior="position"
               keyboardVerticalOffset={keyboardVerticalOffset}>
               <ScrollView
-                contentContainerStyle={{paddingBottom: scale(10)}}
+                contentContainerStyle={{ paddingBottom: scale(10) }}
                 showsVerticalScrollIndicator={false}>
                 <View style={styles.mainContainer}>
                   <View
                     style={[
                       styles.productView,
                       styles.row,
-                      {justifyContent: 'space-between', marginTop: scale(40)},
+                      { justifyContent: 'space-between', marginTop: scale(40) },
                     ]}>
                     <View>
                       <Title title="Orario di consegna" />
@@ -590,7 +667,7 @@ const CheckoutScreen = ({route}) => {
                           }}>
                           <Label
                             title={moment(date).format('DD-MM-YYYY')}
-                            style={{marginTop: scale(5), fontSize: scale(12)}}
+                            style={{ marginTop: scale(5), fontSize: scale(12) }}
                           />
                         </TouchableOpacity>
                         <TouchableOpacity
@@ -614,13 +691,13 @@ const CheckoutScreen = ({route}) => {
                     style={[
                       styles.productView,
                       styles.row,
-                      {justifyContent: 'space-between'},
+                      { justifyContent: 'space-between' },
                     ]}>
-                    <View style={{width: '80%'}}>
+                    <View style={{ width: '80%' }}>
                       <Title title="Indirizzo di consegna" />
                       <Label
                         title={'Nome Cognome'}
-                        style={{color: theme.colors.gray}}
+                        style={{ color: theme.colors.gray }}
                       />
                       <Label
                         title={selAddress?.AddressName}
@@ -632,7 +709,7 @@ const CheckoutScreen = ({route}) => {
                       />
                     </View>
                     <TouchableOpacity
-                      style={[styles.btn, {width: '20%'}]}
+                      style={[styles.btn, { width: '20%' }]}
                       onPress={() => {
                         setLocationModel(!locationModel);
                       }}>
@@ -643,13 +720,13 @@ const CheckoutScreen = ({route}) => {
                     style={[
                       styles.productView,
                       styles.row,
-                      {justifyContent: 'space-between'},
+                      { justifyContent: 'space-between' },
                     ]}>
                     <View>
                       <Title title="Dati di pagamento" />
                       <Label
                         title="Carta di credito"
-                        style={{color: theme.colors.gray}}
+                        style={{ color: theme.colors.gray }}
                       />
                       <Label
                         title=""
@@ -672,7 +749,7 @@ const CheckoutScreen = ({route}) => {
                     style={[
                       styles.productView,
                       styles.row,
-                      {justifyContent: 'space-between'},
+                      { justifyContent: 'space-between' },
                     ]}>
                     <View>
                       <Title title="Note per il ristorante" />
@@ -688,7 +765,6 @@ const CheckoutScreen = ({route}) => {
                         }}
                         onChangeText={txt => {
                           setNotes(txt);
-                          console.log('notes >> ', txt);
                         }}
                         numberOfLines={4}
                       />
@@ -741,7 +817,7 @@ const CheckoutScreen = ({route}) => {
                 <View
                   style={[
                     styles.priceingView,
-                    {paddingHorizontal: scale(5), paddingBottom: scale(10)},
+                    { paddingHorizontal: scale(5), paddingBottom: scale(10) },
                   ]}>
                   <Label title="Somma totale" />
                   <Label title={`€ ${grandTotal.toFixed(2)}`} />
@@ -751,12 +827,12 @@ const CheckoutScreen = ({route}) => {
                     <View
                       style={[
                         styles.priceingView,
-                        {paddingHorizontal: scale(8)},
+                        { paddingHorizontal: scale(8) },
                       ]}>
                       <Label title="Fudd App Resto Promotion" />
                       <Label
                         title={`− € ${coupenAmnt}`}
-                        style={{color: theme.colors.red}}
+                        style={{ color: theme.colors.red }}
                       />
                     </View>
                     <View style={styles.divider} />
@@ -764,7 +840,7 @@ const CheckoutScreen = ({route}) => {
                       style={[
                         styles.priceingView,
                         ,
-                        {paddingHorizontal: scale(8), paddingBottom: scale(30)},
+                        { paddingHorizontal: scale(8), paddingBottom: scale(30) },
                       ]}>
                       <Label title="Totale Finale" />
                       <Label
@@ -785,7 +861,10 @@ const CheckoutScreen = ({route}) => {
                     style={styles.submitBtn}
                     titleStyle={styles.btnTxt}
                     onPress={() => {
-                      handlePlaceOrder();
+                      console.log('CHECKTIMESLOT', checkTimeslot);
+
+                      handleRestaurantAvailability();
+
                     }}
                   />
                 )}
@@ -823,6 +902,15 @@ const CheckoutScreen = ({route}) => {
         close={handlePaymentMethod}
         nAmount={nAmount}
         notes={notes}
+      />
+
+      <NextSlotAvailabilityModel
+        isVisible={nextSlotAvailability}
+        timeslot={checkTimeslot}
+        close={(stime) => {
+          stime !== null && handlePlaceOrder(stime);
+          setNextSlotAvailability(false);
+        }}
       />
     </SafeAreaView>
   );
@@ -906,7 +994,7 @@ const styles = StyleSheet.create({
     shadowRadius: scale(9),
     // marginVertical: scale(10),
   },
-  row: {flexDirection: 'row', alignItems: 'center'},
+  row: { flexDirection: 'row', alignItems: 'center' },
   items: {
     // marginVertical: scale(7),
     flexDirection: 'row',

@@ -192,7 +192,7 @@ const OrderPaymentMethod = props => {
                 backgroundColor: theme.colors.primary,
                 marginTop: scale(10),
               }}
-              title="Submit"
+              title="Invia"
               titleStyle={{color: theme.colors.white}}
             />
           </View>
