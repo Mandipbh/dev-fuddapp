@@ -299,7 +299,7 @@ const CheckoutScreen = ({ route }) => {
       try {
         const folderFrm = {
           UserId: user?.UserInfo !== undefined && userData?.Id,
-          RestaurantId: 3,
+          RestaurantId: route?.params?.restId,
           RiderId: 0,
           OrderId: 0,
           Date: moment(date).format('DD-MM-YYYY'),
@@ -479,7 +479,7 @@ const CheckoutScreen = ({ route }) => {
 
     var cartDetailJson = {
       UserId: user?.UserInfo !== undefined && user?.UserInfo.Id,
-      RestaurantId: 3,
+      RestaurantId: route?.params?.restId,
       RiderId: 0,
       OrderId: 0,
       SelectedAddressId:
