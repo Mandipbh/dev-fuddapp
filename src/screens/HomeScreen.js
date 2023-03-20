@@ -313,8 +313,10 @@ const HomeScreen = () => {
       }
 
       // ref.current.();
+    } else {
+      ref.current?.setAddressText('');
     }
-  }, [seladdress]);
+  }, [seladdress, isFocuse]);
   return (
     <SafeAreaView style={styles.container}>
       <Header

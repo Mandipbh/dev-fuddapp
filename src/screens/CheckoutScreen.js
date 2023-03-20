@@ -501,17 +501,17 @@ const CheckoutScreen = ({route}) => {
       Alert.alert('Please login into the App');
       navigation.navigate('ACCOUNT');
     } else if (date === null || date === undefined) {
-      Alert.alert('Please select Date');
+      Alert.alert('Seleziona la data');
     } else if (timeSloat === null || timeSloat === undefined) {
-      Alert.alert('Please select time slot');
+      Alert.alert('Seleziona Time Slot');
     } else if (
       paymentData?.PayType === null ||
       paymentData?.PayType === undefined ||
       paymentData == ''
     ) {
-      Alert.alert('Please select atleast one payment option');
+      Alert.alert('Scegli il metodo di pagamento.');
     } else if (locationModel === undefined || locationModel === null) {
-      Alert.alert('Please select address');
+      Alert.alert(`Seleziona l'indirizzo`);
     }
     //  else if (notes === undefined || notes === null) {
     //   Alert.alert('Please add notes');

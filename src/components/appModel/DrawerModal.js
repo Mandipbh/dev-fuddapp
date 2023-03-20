@@ -9,22 +9,26 @@ import {
   View,
 } from 'react-native';
 import React from 'react';
-import { scale, theme } from '../../utils';
+import {scale, theme} from '../../utils';
 import Modal from 'react-native-modal';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Icon from 'react-native-vector-icons/Feather';
-import { useNavigation } from '@react-navigation/core';
-import { useDispatch, useSelector } from 'react-redux';
-import { isLogin, logout } from '../../redux/Actions/UserActions';
+import {useNavigation} from '@react-navigation/core';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  isLogin,
+  logout,
+  selectedAddress,
+} from '../../redux/Actions/UserActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Label } from '../Label';
+import {Label} from '../Label';
 import ContactModal from './ContactModal';
-import { useState } from 'react';
-import { BlurView } from '@react-native-community/blur';
+import {useState} from 'react';
+import {BlurView} from '@react-native-community/blur';
 import OrderModal from './OrderModal';
 
 const DrawerModal = props => {
-  const { isVisible, close, handlePayment, handleContact, handleMyOrder } = props;
+  const {isVisible, close, handlePayment, handleContact, handleMyOrder} = props;
   const navigation = useNavigation();
   const isLoginUser = useSelector(state => state.UserReducer?.login);
   const [modalVisible, setModalVisible] = useState(false);
@@ -35,6 +39,7 @@ const DrawerModal = props => {
     dispatch(logout());
     AsyncStorage.clear();
     dispatch(isLogin(false));
+    dispatch(selectedAddress(null));
     close();
     navigation.navigate('ACCOUNT');
   };
@@ -64,7 +69,7 @@ const DrawerModal = props => {
         animationIn="slideOutLeft"
         animationOut="slideInLeft"
         animationInTiming={0.5}
-        style={{ width: '60%', margin: 0 }}
+        style={{width: '60%', margin: 0}}
         onRequestClose={() => {
           close();
         }}>
@@ -107,7 +112,7 @@ const DrawerModal = props => {
                   style={styles.textButton}
                   onPress={() => {
                     close();
-                    navigation.navigate('ACCOUNT', { data: 1 });
+                    navigation.navigate('ACCOUNT', {data: 1});
                   }}>
                   <Icon name="map-pin" size={25} color={theme.colors.purpal} />
                   <Text style={styles.btnText}>I MIEI INDIRIZZI</Text>
@@ -125,7 +130,7 @@ const DrawerModal = props => {
                 <TouchableOpacity
                   onPress={() => {
                     close();
-                    navigation.navigate('ACCOUNT', { data: 3 });
+                    navigation.navigate('ACCOUNT', {data: 3});
                   }}
                   style={styles.textButton}>
                   <Icon
@@ -159,19 +164,25 @@ const DrawerModal = props => {
                   <Text style={styles.btnText}>ESCI</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={{ marginTop: scale(15) }}
+                  style={{marginTop: scale(15)}}
                   onPress={() => {
                     close();
                     Linking.openURL('https://www.fuddapp.com/privacy');
                   }}>
-                  <Label title="Politica sulla riservatezza" style={styles.link} />
+                  <Label
+                    title="Politica sulla riservatezza"
+                    style={styles.link}
+                  />
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
                     close();
                     Linking.openURL('https://www.fuddapp.com/faq');
                   }}>
-                  <Label title="Supporto e domande frequenti" style={styles.link} />
+                  <Label
+                    title="Supporto e domande frequenti"
+                    style={styles.link}
+                  />
                 </TouchableOpacity>
               </>
             ) : (
@@ -205,7 +216,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.7)',
     zIndex: 111,
   },
-  label: { color: theme.colors.black, fontSize: scale(14), fontWeight: '500' },
+  label: {color: theme.colors.black, fontSize: scale(14), fontWeight: '500'},
   activityIndicatorWrapper: {
     backgroundColor: theme.colors.white,
     // height: theme.SCREENHEIGHT * 0.2,
@@ -243,7 +254,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontFamily: theme.fonts.josefinSans,
     color: theme.colors.black,
-    width: '90%'
+    width: '90%',
   },
   link: {
     marginVertical: scale(10),

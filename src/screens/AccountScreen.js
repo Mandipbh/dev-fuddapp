@@ -26,7 +26,7 @@ import {
 import {profileData} from '../utils/MockData';
 import {useDispatch, useSelector} from 'react-redux';
 import {useIsFocused, useNavigation, useRoute} from '@react-navigation/core';
-import {isLogin, logout} from '../redux/Actions/UserActions';
+import {isLogin, logout, selectedAddress} from '../redux/Actions/UserActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 
@@ -91,6 +91,7 @@ const AccountScreen = ({route, props}) => {
     dispatch(logout());
     AsyncStorage.clear();
     dispatch(isLogin(false));
+    dispatch(selectedAddress(null));
     navigation.goBack();
   };
 

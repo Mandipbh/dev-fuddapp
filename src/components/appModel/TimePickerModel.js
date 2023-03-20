@@ -69,7 +69,7 @@ const TimePickerModel = props => {
       <View style={styles.container}>
         <View style={styles.header}>
           <Title
-            title="Select Time "
+            title="Seleziona il tempo "
             style={{paddingBottom: scale(2), marginLeft: scale(5)}}
           />
           {/* <Feather
