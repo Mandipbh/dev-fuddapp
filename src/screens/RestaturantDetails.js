@@ -339,7 +339,7 @@ const RestaturantDetails = ({route, navigation}) => {
           <TouchableOpacity
             style={styles.cartBtn}
             onPress={() => {
-              navigation.navigate('Cart', {restaurantId: resId});
+              navigation.navigate('Cart', { restaurantId: resId });
               // setCartModel(!cartModel);
             }}>
             <Icon1 name="bag" size={scale(25)} color={theme.colors.white} />

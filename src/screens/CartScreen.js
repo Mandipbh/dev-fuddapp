@@ -215,9 +215,10 @@ const CartScreen = ({ route }) => {
         <View style={styles.PriceView}>
           <View style={styles.priceingView}>
             <Title title="Totale Prodotti" />
-            <Title title={`€ ${pTotal.toFixed(2)}`} style={styles.number} />
+            <Title title={`€ ${pTotal?.toFixed(2)}`} style={styles.number} />
           </View>
-          {pTotal < cartData[0].MinimumOrder && (
+
+          {pTotal < cartData[0]?.MinimumOrder && (
             <View style={styles.priceingView}>
               <Title
                 title={`Sipplemento ordine inferiore a €${cartData[0].MinimumOrder}`}
@@ -231,7 +232,7 @@ const CartScreen = ({ route }) => {
           )}
           <View style={styles.priceingView}>
             <Title title="Spese di consegna" />
-            <Title title={`€ ${dPrice.toFixed(2)}`} style={styles.number} />
+            <Title title={`€ ${dPrice?.toFixed(2)}`} style={styles.number} />
           </View>
 
           <View
@@ -248,7 +249,9 @@ const CartScreen = ({ route }) => {
               title={`€ ${(
                 pTotal +
                 dPrice +
-                (pTotal < cartData[0].MinimumOrder ? 2 : 0)
+                (pTotal < cartData[0].MinimumOrder
+                  ? cartData[0].MinOrderSupplment
+                  : 0)
               ).toFixed(2)}`}
               style={styles.number}
             />

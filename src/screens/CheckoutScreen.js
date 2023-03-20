@@ -91,9 +91,11 @@ const CheckoutScreen = ({route}) => {
 
   useEffect(() => {
     var timeslot = timeSlot().ptime.replace('TO', '-');
+<<<<<<< Updated upstream
     console.log('object>>> ', timeslot);
+=======
+>>>>>>> Stashed changes
     setCheckTimeslot(timeslot);
-    console.log('CheckTimeSlot', checkTimeslot);
     // handleRestaurantAvailability();
   }, [checkTimeslot == '']);
 
@@ -203,11 +205,11 @@ const CheckoutScreen = ({route}) => {
     var str1 =
       restaurantData?.OpeningTime !== ''
         ? restaurantOpeningTime > newRoundedTime
-          ? restaurantOpeningTime.split(':')
-          : newRoundedTime.split(':')
-        : newRoundedTime.split(':');
+          ? restaurantOpeningTime?.split(':')
+          : newRoundedTime?.split(':')
+        : newRoundedTime?.split(':');
 
-    var str2 = newEndroundTime.split(':');
+    var str2 = newEndroundTime?.split(':');
 
     var totalSeconds1 = parseInt(str1[0] * 3600 + str1[1] * 60);
     var totalSeconds2 = parseInt(str2[0] * 3600 + str2[1] * 60);
@@ -216,23 +218,27 @@ const CheckoutScreen = ({route}) => {
       newtimeSlot =
         restaurantOpeningTime > newRoundedTime
           ? restaurantOpeningTime
-              .toString()
-              .concat('TO', newEndroundTime.toString())
-          : newRoundedTime.toString().concat('TO', newEndroundTime.toString());
+            ?.toString()
+            .concat('TO', newEndroundTime?.toString())
+          : newRoundedTime
+            ?.toString()
+            .concat('TO', newEndroundTime?.toString());
       setTimeSlot(newtimeSlot);
     } else {
       displaytimeslot = newRoundedTime
-        .toString()
-        .concat(' TO ', newEndroundTime.toString());
+        ?.toString()
+        .concat(' TO ', newEndroundTime?.toString());
 
       setDisplayedTimeSlot(displaytimeslot);
 
       newtimeSlot =
         restaurantOpeningTime > newRoundedTime
           ? restaurantOpeningTime
-              .toString()
-              .concat('TO', newEndroundTime.toString())
-          : newRoundedTime.toString().concat('TO', newEndroundTime.toString());
+            ?.toString()
+            .concat('TO', newEndroundTime?.toString())
+          : newRoundedTime
+            ?.toString()
+            .concat('TO', newEndroundTime?.toString());
       setTimeSlot(newtimeSlot);
     }
 
@@ -395,16 +401,16 @@ const CheckoutScreen = ({route}) => {
       ? grandTotal - coupenAmnt
       : grandTotal.toFixed(2).replace('.', '');
 
-  cartData.map(item => {
+  cartData?.map(item => {
     var ingredientsList = [];
     var addOnsList = [];
     var makeTypeIds = [];
 
-    item.lstIngredients.map(ingredients => {
+    item?.lstIngredients?.map(ingredients => {
       ingredientsList.push(ingredients.IDRiga);
     });
 
-    item.lstAddons.map(addOnItem => {
+    item?.lstAddons?.map(addOnItem => {
       addOnsList.push({
         AddOneId: addOnItem.IDRiga,
         Quantity: addOnItem.Qty,
