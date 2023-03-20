@@ -299,6 +299,8 @@ const RestaurantScreen = () => {
         onCancel={() => {
           setOpen(false);
         }}
+        title="Seleziona la data"
+        theme="light"
         minimumDate={new Date(startOfMonth)}
       />
       <TimePickerModel isVisible={timeModel} close={handleTimer} />

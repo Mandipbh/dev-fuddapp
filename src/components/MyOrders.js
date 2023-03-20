@@ -78,7 +78,7 @@ const MyOrders = () => {
                         <TouchableOpacity
                           style={styles.btn}
                           onPress={() => {
-                            navigation.navigate('ReOrder', {
+                            navigation.navigate('RISTORANTI', {
                               orderId: oI.Number,
                               Email: oI.Email,
                             });
