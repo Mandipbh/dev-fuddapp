@@ -140,7 +140,7 @@ const CartScreen = ({ route }) => {
           {cartData !== null &&
             cartData !== undefined &&
             cartData?.length > 0 ? (
-            cartData[0].Items?.map((i, index) => {
+            cartData?.map((i, index) => {
 
               return (
                 <View
