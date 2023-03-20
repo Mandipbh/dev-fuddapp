@@ -13,10 +13,10 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
-import {images, scale, theme, timeSlot} from '../utils';
+import { images, scale, theme, timeSlot } from '../utils';
 import {
   Button,
   InputBox,
@@ -25,20 +25,20 @@ import {
   TimePickerModel,
   Title,
 } from '../components';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import SetLocationModel from '../components/appModel/SetLocationModel';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
-import ApiService, {API} from '../utils/ApiService';
-import {useEffect} from 'react';
-import {AddToCart} from '../redux/Actions/CartAction';
+import ApiService, { API } from '../utils/ApiService';
+import { useEffect } from 'react';
+import { AddToCart } from '../redux/Actions/CartAction';
 import NextSlotAvailabilityModel from '../components/appModel/NextSlotAvailabilityModel';
 const keyboardVerticalOffset = Platform.OS === 'ios' ? scale(40) : 0;
 const startOfMonth = moment().format('YYYY-MM-DD');
 const endOfMonth = moment().endOf('month').format('YYYY-MM-DD');
 
-const CheckoutScreen = ({route}) => {
+const CheckoutScreen = ({ route }) => {
   const navigation = useNavigation();
   const [process, setProcesss] = useState(false);
   const [locationModel, setLocationModel] = useState(false);
@@ -91,10 +91,6 @@ const CheckoutScreen = ({route}) => {
 
   useEffect(() => {
     var timeslot = timeSlot().ptime.replace('TO', '-');
-<<<<<<< Updated upstream
-    console.log('object>>> ', timeslot);
-=======
->>>>>>> Stashed changes
     setCheckTimeslot(timeslot);
     // handleRestaurantAvailability();
   }, [checkTimeslot == '']);
@@ -136,9 +132,8 @@ const CheckoutScreen = ({route}) => {
   // }, [restaurantData, startClosetime, timeSloat, startTime, endTime]);
 
   useEffect(() => {
-    console.log('route.params', route.params);
     if (route.params) {
-      const {total, pTotal} = route?.params;
+      const { total, pTotal } = route?.params;
       setGrandTotal(total);
       setProdTotal(pTotal);
     }
@@ -313,7 +308,7 @@ const CheckoutScreen = ({route}) => {
           Email: user?.UserInfo !== undefined && userData?.EMail,
           ItemTotalCharge: prdTotal,
         };
-        const options = {payloads: folderFrm};
+        const options = { payloads: folderFrm };
         ApiService.post(API.coupenCode, options)
           .then(res => {
             if (res.Status === 'Success') {
@@ -525,7 +520,7 @@ const CheckoutScreen = ({route}) => {
     else {
       try {
         setLoad(true);
-        const options = {payloads: cartDetailJson};
+        const options = { payloads: cartDetailJson };
         ApiService.post(API.placeOrder, options)
           .then(res => {
             console.log('res of placeOrder >> ', res);
@@ -565,7 +560,7 @@ const CheckoutScreen = ({route}) => {
           };
           setLoad(true);
 
-          const options = {payloads: data};
+          const options = { payloads: data };
 
           console.log('payloads_options', options);
 
@@ -613,7 +608,7 @@ const CheckoutScreen = ({route}) => {
   };
 
   useEffect(() => {
-    let tmpData = {...paymentData};
+    let tmpData = { ...paymentData };
     tmpData.Notes = notes;
     setPaymentData(tmpData);
   }, [notes]);
@@ -654,14 +649,14 @@ const CheckoutScreen = ({route}) => {
               behavior="position"
               keyboardVerticalOffset={keyboardVerticalOffset}>
               <ScrollView
-                contentContainerStyle={{paddingBottom: scale(10)}}
+                contentContainerStyle={{ paddingBottom: scale(10) }}
                 showsVerticalScrollIndicator={false}>
                 <View style={styles.mainContainer}>
                   <View
                     style={[
                       styles.productView,
                       styles.row,
-                      {justifyContent: 'space-between', marginTop: scale(40)},
+                      { justifyContent: 'space-between', marginTop: scale(40) },
                     ]}>
                     <View>
                       <Title title="Orario di consegna" />
@@ -672,7 +667,7 @@ const CheckoutScreen = ({route}) => {
                           }}>
                           <Label
                             title={moment(date).format('DD-MM-YYYY')}
-                            style={{marginTop: scale(5), fontSize: scale(12)}}
+                            style={{ marginTop: scale(5), fontSize: scale(12) }}
                           />
                         </TouchableOpacity>
                         <TouchableOpacity
@@ -696,13 +691,13 @@ const CheckoutScreen = ({route}) => {
                     style={[
                       styles.productView,
                       styles.row,
-                      {justifyContent: 'space-between'},
+                      { justifyContent: 'space-between' },
                     ]}>
-                    <View style={{width: '80%'}}>
+                    <View style={{ width: '80%' }}>
                       <Title title="Indirizzo di consegna" />
                       <Label
                         title={'Nome Cognome'}
-                        style={{color: theme.colors.gray}}
+                        style={{ color: theme.colors.gray }}
                       />
                       <Label
                         title={selAddress?.AddressName}
@@ -714,7 +709,7 @@ const CheckoutScreen = ({route}) => {
                       />
                     </View>
                     <TouchableOpacity
-                      style={[styles.btn, {width: '20%'}]}
+                      style={[styles.btn, { width: '20%' }]}
                       onPress={() => {
                         setLocationModel(!locationModel);
                       }}>
@@ -725,13 +720,13 @@ const CheckoutScreen = ({route}) => {
                     style={[
                       styles.productView,
                       styles.row,
-                      {justifyContent: 'space-between'},
+                      { justifyContent: 'space-between' },
                     ]}>
                     <View>
                       <Title title="Dati di pagamento" />
                       <Label
                         title="Carta di credito"
-                        style={{color: theme.colors.gray}}
+                        style={{ color: theme.colors.gray }}
                       />
                       <Label
                         title=""
@@ -754,7 +749,7 @@ const CheckoutScreen = ({route}) => {
                     style={[
                       styles.productView,
                       styles.row,
-                      {justifyContent: 'space-between'},
+                      { justifyContent: 'space-between' },
                     ]}>
                     <View>
                       <Title title="Note per il ristorante" />
@@ -822,7 +817,7 @@ const CheckoutScreen = ({route}) => {
                 <View
                   style={[
                     styles.priceingView,
-                    {paddingHorizontal: scale(5), paddingBottom: scale(10)},
+                    { paddingHorizontal: scale(5), paddingBottom: scale(10) },
                   ]}>
                   <Label title="Somma totale" />
                   <Label title={`€ ${grandTotal.toFixed(2)}`} />
@@ -832,12 +827,12 @@ const CheckoutScreen = ({route}) => {
                     <View
                       style={[
                         styles.priceingView,
-                        {paddingHorizontal: scale(8)},
+                        { paddingHorizontal: scale(8) },
                       ]}>
                       <Label title="Fudd App Resto Promotion" />
                       <Label
                         title={`− € ${coupenAmnt}`}
-                        style={{color: theme.colors.red}}
+                        style={{ color: theme.colors.red }}
                       />
                     </View>
                     <View style={styles.divider} />
@@ -845,7 +840,7 @@ const CheckoutScreen = ({route}) => {
                       style={[
                         styles.priceingView,
                         ,
-                        {paddingHorizontal: scale(8), paddingBottom: scale(30)},
+                        { paddingHorizontal: scale(8), paddingBottom: scale(30) },
                       ]}>
                       <Label title="Totale Finale" />
                       <Label
@@ -1000,7 +995,7 @@ const styles = StyleSheet.create({
     shadowRadius: scale(9),
     // marginVertical: scale(10),
   },
-  row: {flexDirection: 'row', alignItems: 'center'},
+  row: { flexDirection: 'row', alignItems: 'center' },
   items: {
     // marginVertical: scale(7),
     flexDirection: 'row',

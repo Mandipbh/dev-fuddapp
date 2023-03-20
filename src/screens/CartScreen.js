@@ -43,8 +43,8 @@ const CartScreen = ({ route }) => {
   const [locationModel, setLocationModel] = useState(false);
   const [nextSlotAvailability, setNextSlotAvailability] = useState(false);
 
-
   console.log('route_restaurantId', route?.params?.restaurantId);
+  console.log('cartData<<', JSON.stringify(cartData, null, 4));
 
   const incrimentCart = (selitm, idx) => {
     const tmparr = [...cartData];
@@ -140,7 +140,8 @@ const CartScreen = ({ route }) => {
           {cartData !== null &&
             cartData !== undefined &&
             cartData?.length > 0 ? (
-            cartData?.map((i, index) => {
+            cartData[0].Items?.map((i, index) => {
+
               return (
                 <View
                   style={{
@@ -191,6 +192,8 @@ const CartScreen = ({ route }) => {
                       title={`€ ${(i?.Amount * i?.Qty)?.toFixed(2)}`}
                       style={styles.price}
                     />
+                    {/* i?.Items?.length > 0 ? i?.Items.map((data, index) =>  { return <Title title={data?.Name} />} ) */}
+
                   </View>
                 </View>
               );

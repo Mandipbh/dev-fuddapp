@@ -58,8 +58,10 @@ const MyOrders = () => {
     try {
       ApiService.get(API.ReOrder + `id=${orderId}&userEmail=${Email}`)
         .then(res => {
-
-          console.log('myOrderResponse', JSON.stringify(res?.cartDetails, null, 4));
+          console.log(
+            'myOrderResponse',
+            JSON.stringify(res?.cartDetails, null, 4),
+          );
 
           var reOrderCartData = {
             Adds: false,
@@ -102,16 +104,20 @@ const MyOrders = () => {
             sMakeTypeIDCSV: res?.cartDetails?.Items[0]?.sMakeTypeIDCSV,
             sMakeTypeNameCSV: res?.cartDetails?.Items[0]?.sMakeTypeNameCSV,
             sTempID: res?.cartDetails?.Items[0]?.sTempID,
+            Items: res?.cartDetails.Items,
           };
 
           OrderDataArray.push(reOrderCartData);
           dispatch(AddToCart(OrderDataArray));
 
-          console.log('dataArray', OrderDataArray);
           navigation.navigate('RISTORANTI', {
-            screen: 'Cart',
-            params: { restaurantId: reOrderCartData?.ID },
-          });
+            screen: 'Details',
+            params: { item: reOrderCartData },
+          })
+          // navigation.navigate('RISTORANTI', {
+          //   screen: 'Cart',
+          //   params: {restaurantId: reOrderCartData?.ID},
+          // });
         })
         .catch(error => {
           console.log('error catch ', error);
@@ -152,19 +158,12 @@ const MyOrders = () => {
                         <TouchableOpacity
                           style={styles.btn}
                           onPress={() => {
-<<<<<<< Updated upstream
-                            navigation.navigate('RISTORANTI', {
-                              orderId: oI.Number,
-                              Email: oI.Email,
-                            });
-=======
                             // navigation.navigate('ReOrder', {
                             //   orderId: oI.Number,
                             //   Email: oI.Email,
                             // });
                             handleGetOrderDetail(oI.Number, oI.Email);
                             // navigation.navigate('Cart', { restaurantId: resId });
->>>>>>> Stashed changes
                           }}>
                           <Label title="Riordina" style={styles.btntxt} />
                         </TouchableOpacity>
