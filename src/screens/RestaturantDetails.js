@@ -339,11 +339,14 @@ const RestaturantDetails = ({route, navigation}) => {
           <TouchableOpacity
             style={styles.cartBtn}
             onPress={() => {
-              navigation.navigate('Cart', { restaurantId: resId });
+              navigation.navigate('Cart', {restaurantId: resId});
               // setCartModel(!cartModel);
             }}>
             <Icon1 name="bag" size={scale(25)} color={theme.colors.white} />
-            <Label title={cartData?.length} style={styles.Cartcount} />
+            <Label
+              title={cartData?.length === undefined ? 0 : cartData?.length}
+              style={styles.Cartcount}
+            />
           </TouchableOpacity>
         </View>
         <Title title={restaurantData?.Name} style={styles.headerTitle} />

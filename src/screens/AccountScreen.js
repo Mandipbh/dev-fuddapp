@@ -34,7 +34,7 @@ const AccountScreen = ({route, props}) => {
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [showImg, setImg] = useState(true);
   const [text, setText] = useState('');
-  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);  
 
   const isLoginUser = useSelector(state => state.UserReducer?.login);
   const dispatch = useDispatch();
@@ -98,7 +98,7 @@ const AccountScreen = ({route, props}) => {
   const handleShowAlert = () => {
     Alert.alert('Sei sicuro di voler andare?', null, [
       {
-        text: 'Annulla',
+        text: 'ANNULLA',
         cancelable: true,
       },
       {
@@ -216,6 +216,9 @@ const AccountScreen = ({route, props}) => {
               isFocus={isFoucse}
               onPress={() => {
                 setSelectedMenu(null);
+              }}
+              moveLogin={() => {
+                setSelectedMenu(4);
               }}
             />
           )}

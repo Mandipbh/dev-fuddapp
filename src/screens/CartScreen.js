@@ -9,23 +9,23 @@ import {
   View,
   Alert,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/Feather';
 import LottieView from 'lottie-react-native';
 import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Emptycart, scale, theme } from '../utils';
-import { Button, Label, Title, Error } from '../components';
-import { useNavigation } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
-import { AddToCart } from '../redux/Actions/CartAction';
-import ApiService, { API } from '../utils/ApiService';
+import {Emptycart, scale, theme} from '../utils';
+import {Button, Label, Title, Error} from '../components';
+import {useNavigation} from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
+import {AddToCart} from '../redux/Actions/CartAction';
+import ApiService, {API} from '../utils/ApiService';
 import moment from 'moment';
 import LoginModel from '../components/appModel/LoginModel';
 import SetLocationModel from '../components/appModel/SetLocationModel';
-import { timeSlot } from '../utils/TimeSlot';
+import {timeSlot} from '../utils/TimeSlot';
 import NextSlotAvailabilityModel from '../components/appModel/NextSlotAvailabilityModel';
 
-const CartScreen = ({ route }) => {
+const CartScreen = ({route}) => {
   const navigation = useNavigation();
   const cartData = useSelector(state => state?.CartReducer.cartData);
   const user = useSelector(state => state.UserReducer?.userDetails);
@@ -42,9 +42,6 @@ const CartScreen = ({ route }) => {
   const [loginModel, setLoginModel] = useState(false);
   const [locationModel, setLocationModel] = useState(false);
   const [nextSlotAvailability, setNextSlotAvailability] = useState(false);
-
-  console.log('route_restaurantId', route?.params?.restaurantId);
-  console.log('cartData<<', JSON.stringify(cartData, null, 4));
 
   const incrimentCart = (selitm, idx) => {
     const tmparr = [...cartData];
@@ -94,7 +91,7 @@ const CartScreen = ({ route }) => {
         };
         setLoad(true);
 
-        const options = { payloads: data };
+        const options = {payloads: data};
         console.log('options', options);
 
         ApiService.post(API.CalculateDeliveryPrice, options)
@@ -138,10 +135,9 @@ const CartScreen = ({ route }) => {
           showsVerticalScrollIndicator={false}
           nestedScrollEnabled={true}>
           {cartData !== null &&
-            cartData !== undefined &&
-            cartData?.length > 0 ? (
+          cartData !== undefined &&
+          cartData?.length > 0 ? (
             cartData?.map((i, index) => {
-
               return (
                 <View
                   style={{
@@ -162,8 +158,8 @@ const CartScreen = ({ route }) => {
                       <Label title={i?.Code} style={styles.desc} />
                     </View>
                   </View>
-                  <View style={[styles.row, { justifyContent: 'space-between' }]}>
-                    <View style={[styles.row, { marginLeft: scale(35) }]}>
+                  <View style={[styles.row, {justifyContent: 'space-between'}]}>
+                    <View style={[styles.row, {marginLeft: scale(35)}]}>
                       <TouchableOpacity
                         style={styles.btn}
                         onPress={() => {
@@ -193,7 +189,6 @@ const CartScreen = ({ route }) => {
                       style={styles.price}
                     />
                     {/* i?.Items?.length > 0 ? i?.Items.map((data, index) =>  { return <Title title={data?.Name} />} ) */}
-
                   </View>
                 </View>
               );
@@ -205,7 +200,7 @@ const CartScreen = ({ route }) => {
                   source={Emptycart}
                   autoPlay
                   loop
-                  style={{ height: scale(240) }}
+                  style={{height: scale(240)}}
                 />
                 <Title title="Carrello vuoto" />
               </View>
@@ -225,7 +220,7 @@ const CartScreen = ({ route }) => {
             <View style={styles.priceingView}>
               <Title
                 title={`Sipplemento ordine inferiore a €${cartData[0].MinimumOrder}`}
-                style={{ width: '70%' }}
+                style={{width: '70%'}}
               />
               <Title
                 title={`€ ${cartData[0]?.MinOrderSupplment?.toFixed(2)}`}
@@ -361,7 +356,7 @@ const styles = StyleSheet.create({
     margin: scale(15),
     maxHeight: theme.SCREENHEIGHT * 0.45,
   },
-  row: { flexDirection: 'row', alignItems: 'center' },
+  row: {flexDirection: 'row', alignItems: 'center'},
   items: {
     // marginVertical: scale(7),
     flexDirection: 'row',

@@ -291,7 +291,7 @@ const RestaurantScreen = () => {
         date={date}
         mode="date"
         confirmText="CONFIRM"
-        cancelText="Annulla"
+        cancelText="ANNULLA"
         onConfirm={date => {
           setOpen(false);
           setDate(date);

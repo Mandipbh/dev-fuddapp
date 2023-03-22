@@ -17,6 +17,8 @@ import {optionsData} from '../../utils/MockData';
 import Button from '../Button';
 import InputBox from '../InputBox';
 import {Title, Label, Error} from '../Label';
+import MonthPickerModel from './MonthPickerModel';
+import YearPickerModel from './YearPickerModel';
 
 const OrderPaymentMethod = props => {
   const user = useSelector(state => state.UserReducer?.userDetails);
@@ -29,6 +31,8 @@ const OrderPaymentMethod = props => {
   const [cvv, setCvv] = useState('');
   const [zip, setZip] = useState('');
   const [paymentType, setpaymentType] = useState('');
+  const [monthModel, setMonthModel] = useState(false);
+  const [yearModel, setYearModel] = useState(false);
 
   const PaymentRequest = {
     PayType: paymentType,
@@ -43,7 +47,7 @@ const OrderPaymentMethod = props => {
     sCustomerEmail: user?.UserInfo?.EMail,
     nAmount: nAmount,
   };
-
+  console.log('PaymentRequestPaymentRequest >> ', PaymentRequest);
   const cardObject = {
     sCardName: cardHolderName,
     sCardNumber: cardNumber,
@@ -65,7 +69,9 @@ const OrderPaymentMethod = props => {
           cvv === '' ||
           zip === '')
       ) {
-        Alert.alert('Please fill all credit card detail');
+        Alert.alert(
+          'Si prega di compilare tutti i dettagli della carta di credito',
+        );
       } else {
         close(PaymentRequest);
       }
@@ -76,129 +82,169 @@ const OrderPaymentMethod = props => {
     }
   };
   return (
-    <Modal
-      transparent={true}
-      animationType={'none'}
-      visible={isVisible}
-      onRequestClose={() => {}}>
-      <BlurView
-        style={styles.blurView}
-        blurType="dark" // Values = dark, light, xlight .
-        blurAmount={2}
-        // viewRef={this.state.viewRef}
-        reducedTransparencyFallbackColor="white"
-      />
-      <View style={styles.modalBackground}>
-        <View style={styles.activityIndicatorWrapper}>
-          <View style={styles.headerView}>
-            {<Title title="Dati di pagamento" style={{textAlign: 'center'}} />}
-            <Icon
-              name="x"
-              size={scale(22)}
-              color={theme.colors.black}
-              onPress={() => {
-                close();
-                setOptions(null);
-              }}
-            />
-          </View>
-          <View style={styles.divider} />
-          <View style={styles.subTitleView}>
-            {optionsData.map((item, idx) => {
-              return (
-                <View style={styles.row}>
-                  <TouchableOpacity
-                    style={styles.checkboxCon}
-                    onPress={() => {
-                      setOptions(item);
-                      setpaymentType(item.id);
-                    }}>
-                    {option?.id === item?.id && <View style={styles.check} />}
-                  </TouchableOpacity>
-                  <Label title={item?.title} style={styles.lbl} />
-                </View>
-              );
-            })}
-            {option?.id === 2 && (
-              <View style={{marginTop: scale(10)}}>
-                <InputBox
-                  placeholder="Intestatario carta di credito"
-                  style={styles.txtInput1}
-                  value={cardHolderName}
-                  onChangeText={txt => {
-                    setName(txt);
-                  }}
+    <>
+      <Modal
+        transparent={true}
+        animationType={'none'}
+        visible={isVisible}
+        onRequestClose={() => {}}>
+        <BlurView
+          style={styles.blurView}
+          blurType="dark" // Values = dark, light, xlight .
+          blurAmount={2}
+          // viewRef={this.state.viewRef}
+          reducedTransparencyFallbackColor="white"
+        />
+        <View style={styles.modalBackground}>
+          <View style={styles.activityIndicatorWrapper}>
+            <View style={styles.headerView}>
+              {
+                <Title
+                  title="Dati di pagamento"
+                  style={{textAlign: 'center'}}
                 />
-                <InputBox
-                  placeholder="Card Number"
-                  style={styles.txtInput1}
-                  value={cardNumber}
-                  onChangeText={txt => {
-                    setCardNumber(txt);
-                  }}
-                  maxLength={16}
-                  keyboardType="number-pad"
-                />
-                <View style={styles.rowView}>
-                  <TextInput
-                    placeholder="MM"
-                    style={styles.txtInput}
-                    value={month}
+              }
+              <Icon
+                name="x"
+                size={scale(22)}
+                color={theme.colors.black}
+                onPress={() => {
+                  close();
+                  setOptions(null);
+                }}
+              />
+            </View>
+            <View style={styles.divider} />
+            <View style={styles.subTitleView}>
+              {optionsData.map((item, idx) => {
+                return (
+                  <View style={styles.row}>
+                    <TouchableOpacity
+                      style={styles.checkboxCon}
+                      onPress={() => {
+                        setOptions(item);
+                        setpaymentType(item.id);
+                      }}>
+                      {option?.id === item?.id && <View style={styles.check} />}
+                    </TouchableOpacity>
+                    <Label title={item?.title} style={styles.lbl} />
+                  </View>
+                );
+              })}
+              {option?.id === 2 && (
+                <View style={{marginTop: scale(10)}}>
+                  <InputBox
+                    placeholder="Intestatario carta di credito"
+                    style={styles.txtInput1}
+                    value={cardHolderName}
                     onChangeText={txt => {
-                      setMonth(txt);
+                      setName(txt);
                     }}
-                    maxLength={2}
+                  />
+                  <InputBox
+                    placeholder="Card Number"
+                    style={styles.txtInput1}
+                    value={cardNumber}
+                    onChangeText={txt => {
+                      setCardNumber(txt);
+                    }}
+                    maxLength={16}
                     keyboardType="number-pad"
                   />
-                  <TextInput
-                    placeholder="YYYY"
-                    style={styles.txtInput}
-                    value={year}
-                    onChangeText={txt => {
-                      setYear(txt);
-                    }}
-                    maxLength={4}
-                    keyboardType="number-pad"
-                  />
+                  <View style={styles.rowView}>
+                    <TouchableOpacity
+                      onPress={() => setMonthModel(!monthModel)}>
+                      <TextInput
+                        placeholder="MM"
+                        style={styles.txtInput}
+                        value={month}
+                        onChangeText={txt => {
+                          setMonth(txt);
+                        }}
+                        maxLength={2}
+                        keyboardType="number-pad"
+                        onTouchStart={() => {
+                          setMonthModel(!monthModel);
+                        }}
+                        editable={false}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => setYearModel(!yearModel)}>
+                      <TextInput
+                        placeholder="YYYY"
+                        style={styles.txtInput}
+                        value={year}
+                        onChangeText={txt => {
+                          setYear(txt);
+                        }}
+                        maxLength={4}
+                        keyboardType="number-pad"
+                        onTouchStart={() => {
+                          setYearModel(!yearModel);
+                        }}
+                        editable={false}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  <View style={styles.rowView}>
+                    <TextInput
+                      placeholder="CVV"
+                      value={cvv}
+                      onChangeText={txt => {
+                        setCvv(txt);
+                      }}
+                      style={styles.txtInput}
+                      maxLength={3}
+                      keyboardType="number-pad"
+                    />
+                    <TextInput
+                      placeholder="Zip Code"
+                      value={zip}
+                      onChangeText={txt => {
+                        setZip(txt);
+                      }}
+                      style={styles.txtInput}
+                      maxLength={5}
+                      keyboardType="number-pad"
+                    />
+                  </View>
                 </View>
-                <View style={styles.rowView}>
-                  <TextInput
-                    placeholder="CVV"
-                    value={cvv}
-                    onChangeText={txt => {
-                      setCvv(txt);
-                    }}
-                    style={styles.txtInput}
-                    maxLength={4}
-                  />
-                  <TextInput
-                    placeholder="Zip Code"
-                    value={zip}
-                    onChangeText={txt => {
-                      setZip(txt);
-                    }}
-                    style={styles.txtInput}
-                    maxLength={6}
-                    keyboardType="number-pad"
-                  />
-                </View>
-              </View>
-            )}
-            <Button
-              onPress={() => {
-                handleCard();
-              }}
-              style={{
-                backgroundColor: theme.colors.primary,
-                marginTop: scale(10),
-              }}
-              title="Invia"
-              titleStyle={{color: theme.colors.white}}
-            />
+              )}
+              <Button
+                onPress={() => {
+                  handleCard();
+                }}
+                style={{
+                  backgroundColor: theme.colors.primary,
+                  marginTop: scale(10),
+                }}
+                title="Invia"
+                titleStyle={{color: theme.colors.white}}
+              />
+            </View>
           </View>
         </View>
-      </View>
-    </Modal>
+      </Modal>
+      {monthModel && (
+        <MonthPickerModel
+          isVisible={monthModel}
+          close={m => {
+            setMonthModel(false);
+            m && setMonth(m.toString());
+          }}
+        />
+      )}
+      {yearModel && (
+        <YearPickerModel
+          isVisible={yearModel}
+          close={y => {
+            setYearModel(false);
+            y && setYear(y.toString());
+            console.log('year >> ', y);
+          }}
+        />
+      )}
+    </>
   );
 };
 
@@ -280,7 +326,7 @@ const styles = StyleSheet.create({
     height: scale(40),
     width: theme.SCREENWIDTH * 0.3,
     borderWidth: 1,
-    borderRadius: scale(15),
+    borderRadius: scale(10),
     borderColor: theme.colors.gray,
     padding: scale(10),
     margin: scale(2),

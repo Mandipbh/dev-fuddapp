@@ -1,5 +1,5 @@
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -9,29 +9,27 @@ import {
   Platform,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import { scale, theme } from '../../utils';
+import {scale, theme} from '../../utils';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon1 from 'react-native-vector-icons/AntDesign';
 // import Toast from 'react-native-simple-toast';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 
-import { Label, Title } from '../Label';
-import { Button } from '../index';
-import { KeyboardAvoidingView } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import { getAllAddress, selectedAddress } from '../../redux/Actions/UserActions';
-import { useNavigation } from '@react-navigation/core';
+import {Label, Title} from '../Label';
+import {AddNewAddress, Button} from '../index';
+import {KeyboardAvoidingView} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
+import {getAllAddress, selectedAddress} from '../../redux/Actions/UserActions';
+import {useNavigation} from '@react-navigation/core';
 
 const SetLocationModel = props => {
-  const { isShow, close } = props;
+  const {isShow, close} = props;
   const [selAdd, setSelAdd] = useState(null);
   const [saveAddress, setSaveAddress] = useState([]);
-
+  const [newAddressModel, setNewAddressModel] = useState(false);
   const addressList = useSelector(state => state.HomeReducers.addressList);
   const seladdress = useSelector(state => state.UserReducer.selAddress);
 
-  console.log('seladdressReducer', seladdress);
-  console.log('addressList_', addressList);
   const dispatch = useDispatch();
 
   // const userInfo = useSelector(state => state.AppReducer.userDetails);
@@ -46,6 +44,7 @@ const SetLocationModel = props => {
     }
   }, [addressList, isShow]);
 
+  // handle google autocomplate Search
   const compIsType = (t, s) => {
     for (let z = 0; z < t.length; ++z) {
       if (t[z] == s) {
@@ -54,88 +53,94 @@ const SetLocationModel = props => {
     }
     return false;
   };
+  const handlePlaceChanged = async (data, addData) => {
+    const place = data;
+    let latt,
+      lngg,
+      addrSel,
+      placeName,
+      placeId = '';
+    let country,
+      state,
+      city = null;
+    if (place.geometry !== undefined) {
+      const plcGeom = place.geometry;
+      if (plcGeom.location !== undefined) {
+        const {lat, lng} = place?.geometry?.location;
+        latt = lat;
+        lngg = lng;
+      }
+    }
 
-  // const handlePlaceChanged = async data => {
-  //   const place = data;
-  //   // let userInfo = this.props.route.params?.data;
-  //   let latt,
-  //     lngg,
-  //     addrSel,
-  //     placeName,
-  //     placeId = '';
-  //   let country,
-  //     state,
-  //     city = null;
-  //   if (place.geometry !== undefined) {
-  //     const plcGeom = place.geometry;
-  //     if (plcGeom.location !== undefined) {
-  //       const { lat, lng } = place?.geometry?.location;
+    addrSel =
+      place.formatted_address !== undefined ? place.formatted_address : '';
+    placeName = place.name !== undefined ? place.name : '';
+    placeId = place.place_id !== undefined ? place.place_id : '';
+    if (place.address_components !== undefined) {
+      let addrComp = place.address_components;
+      for (let i = 0; i < addrComp.length; ++i) {
+        var typ = addrComp[i].types;
+        if (compIsType(typ, 'administrative_area_level_1')) {
+          state = addrComp[i].long_name;
+        }
+        //store the state
+        else if (compIsType(typ, 'locality')) {
+          city = addrComp[i].long_name;
+        }
+        //store the city
+        else if (compIsType(typ, 'country')) {
+          country = addrComp[i].long_name;
+        } //store the country
 
-  //       latt = lat;
-  //       lngg = lng;
-  //     }
-  //   }
+        //we can break early if we find all three data
+        if (state != null && city != null && country != null) {
+          break;
+        }
+      }
+    }
 
-  //   addrSel =
-  //     place.formatted_address !== undefined ? place.formatted_address : '';
-  //   placeName = place.name !== undefined ? place.name : '';
-  //   placeId = place.place_id !== undefined ? place.place_id : '';
-  //   if (place.address_components !== undefined) {
-  //     let addrComp = place.address_components;
-  //     for (let i = 0; i < addrComp.length; ++i) {
-  //       var typ = addrComp[i].types;
-  //       if (compIsType(typ, 'administrative_area_level_1')) {
-  //         state = addrComp[i].long_name;
-  //       }
-  //       //store the state
-  //       else if (compIsType(typ, 'locality')) {
-  //         city = addrComp[i].long_name;
-  //       }
-  //       //store the city
-  //       else if (compIsType(typ, 'country')) {
-  //         country = addrComp[i].long_name;
-  //       } //store the country
+    var addressName = null,
+      postalCode = null,
+      numberStreet = null;
+    if (data.address_components) {
+      for (const obj of data.address_components) {
+        if (obj.types.includes('route')) {
+          addressName = obj.short_name;
+          console.log('addressName', addressName);
+        } else if (obj.types.includes('street_number')) {
+          numberStreet = obj.long_name;
+          // setStreetNumber(numberStreet);
+          console.log('numberStreet', numberStreet);
+        } else if (obj.types.includes('postal_code')) {
+          postalCode = obj.long_name;
+          console.log('postalCode', postalCode);
+        }
+      }
+    }
 
-  //       //we can break early if we find all three data
-  //       if (state != null && city != null && country != null) {
-  //         break;
-  //       }
-  //     }
-  //   }
+    let nameData = '';
 
-  //   let nameData = '';
-  //   // if (this.props.showKey !== undefined) {
-  //   //   if (this.props.showKey == 'CITY') {
-  //   //     nameData = city;
-  //   //   } else if (this.props.showKey == 'STATE') {
-  //   //     nameData = state;
-  //   //   } else if (this.props.showKey == 'COUNTRY') {
-  //   //     nameData = country;
-  //   //   } else if (this.props.showKey == 'PLACE_NAME') {
-  //   //     nameData = country;
-  //   //   } else if (this.props.showKey == 'FORMATTED_ADDRESS') {
-  //   //     nameData = addrSel;
-  //   //   } else if (this.props.showKey == 'PLACE_ID') {
-  //   //     nameData = placeId;
-  //   //   } else {
-  //   //     nameData = addrSel;
-  //   //   }
-  //   // } else {
-  //   //   nameData = addrSel;
-  //   // }
+    let stateResp = {
+      lat: latt,
+      lng: lngg,
+      formattedAddress: addrSel,
+      placeName: placeName,
+      placeId: placeId,
+      city: city,
+      state: state,
+      country: country,
+    };
 
-  //   let stateResp = {
-  //     lat: latt,
-  //     lng: lngg,
-  //     formattedAddress: addrSel,
-  //     placeName: placeName,
-  //     placeId: placeId,
-  //     city: city,
-  //     state: state,
-  //     country: country,
-  //     textboxtext: nameData,
-  //   };
-  // };
+    const frmData = {
+      Lat: latt?.toString(),
+      Lon: lngg.toString(),
+      AddressName: addrSel,
+      placeName: placeName,
+      StreetNo: numberStreet !== null ? numberStreet : '',
+      Address: placeName,
+    };
+    dispatch(selectedAddress(frmData));
+  };
 
   const handleAddress = item => {
     setSelAdd(item);
@@ -152,36 +157,37 @@ const SetLocationModel = props => {
     }
   };
   return (
-    <Modal
-      isVisible={isShow}
-      animationIn="slideInUp"
-      animationOut="slideOutDown"
-      statusBarTranslucent
-      backdropColor={theme.colors.black1}
-      backdropOpacity={0.5}
-      style={{ margin: 0 }}>
-      <View
-        style={[
-          styles.mainContainer,
-          // externalStyle.shadow,
-          {
-            elevation: scale(3),
-            shadowColor: theme.colors.black,
-            shadowRadius: scale(2),
-          },
-        ]}>
-        <View style={styles.container}>
-          <View style={styles.headerCon}>
-            <Title title="Gestione indirizzi" />
-            <Icon name="x" size={scale(20)} onPress={close} />
-          </View>
+    <>
+      <Modal
+        isVisible={isShow}
+        animationIn="slideInUp"
+        animationOut="slideOutDown"
+        statusBarTranslucent
+        backdropColor={theme.colors.black1}
+        backdropOpacity={0.5}
+        style={{margin: 0}}>
+        <View
+          style={[
+            styles.mainContainer,
+            // externalStyle.shadow,
+            {
+              elevation: scale(3),
+              shadowColor: theme.colors.black,
+              shadowRadius: scale(2),
+            },
+          ]}>
+          <View style={styles.container}>
+            <View style={styles.headerCon}>
+              <Title title="Gestione indirizzi" />
+              <Icon name="x" size={scale(20)} onPress={close} />
+            </View>
 
-          {saveAddress?.length > 0 ? (
-            <>
-              <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                style={[styles.container, { paddingHorizontal: 0 }]}>
-                {/* <GooglePlacesAutocomplete
+            {saveAddress?.length > 0 ? (
+              <>
+                <KeyboardAvoidingView
+                  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                  style={[styles.container, {paddingHorizontal: 0}]}>
+                  {/* <GooglePlacesAutocomplete
               placeholder="Inserisci indirizzo"
               disableScroll={false}
               keepResultsAfterBlur={true}
@@ -201,67 +207,96 @@ const SetLocationModel = props => {
                 type: 'address',
               }}
             /> */}
-                <View style={styles.addressCon}>
-                  <ScrollView showsVerticalScrollIndicator={false}>
-                    {saveAddress &&
-                      saveAddress?.map((item, index) => {
-                        return (
-                          <View style={styles.viewCon} key={index}>
-                            <TouchableOpacity
-                              style={styles.checkboxCon}
-                              onPress={() => {
-                                handleAddress(item);
-                              }}>
-                              {selAdd?.Id === item?.Id && (
-                                <View style={styles.check} />
-                              )}
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                              style={styles.btn}
-                              onPress={() => {
-                                handleAddress(item);
-                              }}>
-                              <Label
-                                title={item?.AddressName}
-                                style={styles.btnTxt}
-                              />
-                              <View style={styles.devider} />
-                              <View style={styles.row}>
+                  <View style={styles.addressCon}>
+                    <ScrollView showsVerticalScrollIndicator={false}>
+                      {saveAddress &&
+                        saveAddress?.map((item, index) => {
+                          return (
+                            <View style={styles.viewCon} key={index}>
+                              <TouchableOpacity
+                                style={styles.checkboxCon}
+                                onPress={() => {
+                                  handleAddress(item);
+                                }}>
+                                {selAdd?.Id === item?.Id && (
+                                  <View style={styles.check} />
+                                )}
+                              </TouchableOpacity>
+                              <TouchableOpacity
+                                style={styles.btn}
+                                onPress={() => {
+                                  handleAddress(item);
+                                  console.log('save add item >>> ', item);
+                                }}>
                                 <Label
-                                  title={`${item?.Name} ${item?.LastName}`}
+                                  title={item?.AddressName}
+                                  style={styles.btnTxt}
                                 />
-                                <View style={styles.row}>
-                                  <Icon
-                                    name="phone"
-                                    style={{ marginLeft: scale(8) }}
+                                <View style={styles.devider} />
+                                <View
+                                  style={[
+                                    styles.row,
+                                    {
+                                      width: theme.SCREENWIDTH * 0.82,
+                                      justifyContent: 'space-between',
+                                    },
+                                  ]}>
+                                  <Label
+                                    title={`${item?.Name} ${item?.LastName}`}
                                   />
-                                  <Label title={` ${item?.Telephone}`} />
+                                  <View style={styles.row}>
+                                    <Icon
+                                      name="phone"
+                                      style={{marginLeft: scale(8)}}
+                                    />
+                                    <Label title={` ${item?.Telephone}`} />
+                                  </View>
                                 </View>
-                              </View>
-                            </TouchableOpacity>
-                          </View>
-                        );
-                      })}
-                  </ScrollView>
-                </View>
-                <Button
-                  title="Imposta"
-                  style={{
-                    backgroundColor: theme.colors.primary,
-                    marginTop: scale(10),
-                  }}
-                  titleStyle={{ color: theme.colors.white }}
-                  onPress={() => {
-                    handleLocationSet();
-                  }}
-                />
+                              </TouchableOpacity>
+                            </View>
+                          );
+                        })}
+                    </ScrollView>
+                  </View>
+                  <Button
+                    title="Imposta"
+                    style={{
+                      backgroundColor: theme.colors.primary,
+                      marginTop: scale(10),
+                    }}
+                    titleStyle={{color: theme.colors.white}}
+                    onPress={() => {
+                      handleLocationSet();
+                    }}
+                  />
+                  <TouchableOpacity
+                    style={styles.addressBtn}
+                    onPress={() => {
+                      setNewAddressModel(true);
+                      // close();
+                      // setTimeout(() => {
+                      //   navigation.navigate('ACCOUNT', {data: 11});
+                      // }, 600);
+                    }}>
+                    <Icon1
+                      name="plus"
+                      size={scale(22)}
+                      color={theme.colors.green}
+                    />
+                    <Label title="Aggiungi indirizzo" style={styles.btnlbl} />
+                  </TouchableOpacity>
+                </KeyboardAvoidingView>
+              </>
+            ) : (
+              <View style={styles.nodataCon}>
                 <TouchableOpacity
                   style={styles.addressBtn}
                   onPress={() => {
-                    close();
-                    setTimeout(() => {
-                      navigation.navigate('ACCOUNT', { data: 11 });
-                    }, 600);
+                    setNewAddressModel(true);
+                    // close();
+                    // setTimeout(() => {
+                    //   navigation.navigate('ACCOUNT', {data: 11});
+                    // }, 600);
                   }}>
                   <Icon1
                     name="plus"
@@ -270,30 +305,19 @@ const SetLocationModel = props => {
                   />
                   <Label title="Aggiungi indirizzo" style={styles.btnlbl} />
                 </TouchableOpacity>
-              </KeyboardAvoidingView>
-            </>
-          ) : (
-            <View style={styles.nodataCon}>
-              <TouchableOpacity
-                style={styles.addressBtn}
-                onPress={() => {
-                  close();
-                  setTimeout(() => {
-                    navigation.navigate('ACCOUNT', { data: 11 });
-                  }, 600);
-                }}>
-                <Icon1
-                  name="plus"
-                  size={scale(22)}
-                  color={theme.colors.green}
-                />
-                <Label title="Aggiungi indirizzo" style={styles.btnlbl} />
-              </TouchableOpacity>
-            </View>
-          )}
+              </View>
+            )}
+          </View>
         </View>
-      </View>
-    </Modal>
+      </Modal>
+      <AddNewAddress
+        isVisible={newAddressModel}
+        close={() => {
+          setNewAddressModel(false);
+          // close();
+        }}
+      />
+    </>
   );
 };
 
@@ -395,7 +419,7 @@ const styles = StyleSheet.create({
     fontSize: scale(14),
     color: theme.colors.gray,
   },
-  nodataCon: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  nodataCon: {flex: 1, justifyContent: 'center', alignItems: 'center'},
 });
 
 export default SetLocationModel;

@@ -22,6 +22,7 @@ import {
   PaymentMethod,
   ContactModal,
   OrderPaymentMethod,
+  AddNewAddress,
 } from '../components';
 import {foodData} from '../utils/MockData';
 import DrawerModal from '../components/appModel/DrawerModal';
@@ -364,17 +365,6 @@ const HomeScreen = () => {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
           <GooglePlacesAutocomplete
-            // renderLeftButton={() => (
-            //   <Icon
-            //     name="search"
-            //     size={scale(22)}
-            //     color={theme.colors.black}
-            //     style={{
-            //       backgroundColor: theme.colors.white,
-            //       padding: scale(10),
-            //     }}
-            //   />
-            // )}
             placeholder="Inserisci il tuo indirizzo completo"
             keepResultsAfterBlur={true}
             onPress={(data, details = null) => {

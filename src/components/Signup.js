@@ -18,7 +18,7 @@ import ApiService, {API} from '../utils/ApiService';
 import {useEffect} from 'react';
 
 const Signup = props => {
-  const {onPress, isFocus} = props;
+  const {onPress, isFocus, moveLogin} = props;
   const [name, setName] = useState('');
   const [sureName, setSureName] = useState('');
   const [email, setEmail] = useState('');
@@ -42,47 +42,47 @@ const Signup = props => {
     let Emailreg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     let errr = {...errrMsg};
     if (name.trim() === '') {
-      errr.nameErr = 'Please enter name';
+      errr.nameErr = 'Inserisci il nome';
       error = true;
     } else {
       errr.nameErr = '';
     }
     if (sureName.trim() === '') {
       error = true;
-      errr.sureNameErr = 'Please enter surename';
+      errr.sureNameErr = 'Si prega di inserire Surename';
     } else {
       errr.sureNameErr = '';
     }
     if (email.trim() === '') {
       error = true;
-      errr.emailErr = 'Please enter email';
+      errr.emailErr = `Inserisci l'email`;
     } else {
       errr.emailErr = '';
     }
     if (Emailreg.test(email) === false) {
       error = true;
-      errr.emailErr = 'Please enter valid email';
+      errr.emailErr = `inserire una email valida, grazie`;
     } else {
       errr.emailErr = '';
     }
     if (mobile.trim() === '') {
       error = true;
-      errr.mobileErr = 'Please enter mobile number';
+      errr.mobileErr = `Inserisci il numero di cellulare`;
     } else {
       errr.mobileErr = '';
     }
     if (password.trim() === '') {
       error = true;
-      errr.passwordErr = 'Please enter password';
+      errr.passwordErr = 'Per favore, inserisci la password';
     } else {
       errr.passwordErr = '';
     }
     if (CPasseword.trim() === '') {
       error = true;
-      errr.CPassewordErr = 'Please enter password';
+      errr.CPassewordErr = 'Per favore, inserisci la password';
     } else if (password !== CPasseword) {
       error = true;
-      errr.CPassewordErr = 'Password not match';
+      errr.CPassewordErr = 'La password non corrisponde';
     } else {
       errr.CPassewordErr = '';
     }
@@ -93,6 +93,7 @@ const Signup = props => {
   const handleClose = () => {
     setVarification(false);
     onPress();
+    moveLogin();
   };
 
   // useEffect(() => {
@@ -222,7 +223,10 @@ const Signup = props => {
         signUpData={signupRes}
         isVisible={varification}
         title="Attivazione Account"
-        close={handleClose}
+        close={() => {
+          setVarification(false);
+          moveLogin();
+        }}
         closeVarification={handleClose}
       />
     </View>

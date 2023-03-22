@@ -28,3 +28,6 @@ export {default as EditAddress} from './appModel/EditAddress';
 export {default as PaymentMethod} from './appModel/PaymentMethod';
 export {default as ContactModal} from './appModel/ContactModal';
 export {default as OrderPaymentMethod} from './appModel/OrderPaymentMethod';
+export {default as MonthPickerModel} from './appModel/MonthPickerModel';
+export {default as YearPickerModel} from './appModel/YearPickerModel';
+export {default as AddNewAddress} from './appModel/AddNewAddress'
