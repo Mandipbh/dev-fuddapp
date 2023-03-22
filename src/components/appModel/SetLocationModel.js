@@ -23,7 +23,7 @@ import {getAllAddress, selectedAddress} from '../../redux/Actions/UserActions';
 import {useNavigation} from '@react-navigation/core';
 
 const SetLocationModel = props => {
-  const {isShow, close} = props;
+  const {isShow, close, fromCheckOut} = props;
   const [selAdd, setSelAdd] = useState(null);
   const [saveAddress, setSaveAddress] = useState([]);
   const [newAddressModel, setNewAddressModel] = useState(false);
@@ -31,6 +31,9 @@ const SetLocationModel = props => {
   const seladdress = useSelector(state => state.UserReducer.selAddress);
 
   const dispatch = useDispatch();
+
+  const isFromCheckOutpage = fromCheckOut;
+  console.log('isFromCheckOutpage', isFromCheckOutpage);
 
   // const userInfo = useSelector(state => state.AppReducer.userDetails);
   const navigation = useNavigation();
@@ -153,7 +156,7 @@ const SetLocationModel = props => {
       alert('Seleziona un indirizzo');
       // Toast.show('Seleziona un indirizzo', Toast.show);
     } else {
-      close();
+      close(isFromCheckOutpage);
     }
   };
   return (

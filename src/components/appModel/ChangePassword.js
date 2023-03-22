@@ -1,17 +1,17 @@
-import {BlurView} from '@react-native-community/blur';
+import { BlurView } from '@react-native-community/blur';
 import React from 'react';
-import {useState} from 'react';
-import {StyleSheet, View, Modal, ActivityIndicator} from 'react-native';
+import { useState } from 'react';
+import { StyleSheet, View, Modal, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import {useSelector} from 'react-redux';
-import {scale, theme} from '../../utils';
-import ApiService, {API} from '../../utils/ApiService';
+import { useSelector } from 'react-redux';
+import { scale, theme } from '../../utils';
+import ApiService, { API } from '../../utils/ApiService';
 import Button from '../Button';
 import InputBox from '../InputBox';
-import {Title, Label, Error} from '../Label';
+import { Title, Label, Error } from '../Label';
 
 const ChangePassword = props => {
-  const {isVisible, close, title, subTitle} = props;
+  const { isVisible, close, title, subTitle } = props;
   const [oldPassword, setOldPassword] = useState('');
   const [NewPassword, setNewPassword] = useState('');
   const [ConPassword, setConPassword] = useState('');
@@ -24,19 +24,19 @@ const ChangePassword = props => {
   const handleValidation = () => {
     if (oldPassword?.trim() === '') {
       error = true;
-      setpasswordErr('Please enter password');
+      setpasswordErr('Per favore, inserisci la password');
     } else {
       setpasswordErr('');
     }
     if (NewPassword?.trim() === '') {
       error = true;
-      setNpasswordErr('Please enter new password');
+      setNpasswordErr('Inserisci una nuova password');
     } else if (ConPassword?.trim() === '') {
       error = true;
-      setCpasswordErr('Please enter confrim password');
+      setCpasswordErr('Inserisci la password di conferma');
     } else if (NewPassword !== ConPassword) {
       error = true;
-      setCpasswordErr('Both password are not match');
+      setCpasswordErr('Entrambe le password non corrispondono');
     } else {
       error = false;
       setNpasswordErr('');
@@ -57,7 +57,7 @@ const ChangePassword = props => {
           OldPassword: oldPassword,
           NewPassword: NewPassword,
         };
-        const options = {payloads: folderFrm};
+        const options = { payloads: folderFrm };
         ApiService.post(API.updatePassword, options)
           .then(res => {
             setLoad(false);
@@ -89,7 +89,7 @@ const ChangePassword = props => {
       transparent={true}
       animationType={'none'}
       visible={isVisible}
-      onRequestClose={() => {}}>
+      onRequestClose={() => { }}>
       <BlurView
         style={styles.blurView}
         blurType="dark" // Values = dark, light, xlight .
@@ -100,7 +100,7 @@ const ChangePassword = props => {
       <View style={styles.modalBackground}>
         <View style={styles.activityIndicatorWrapper}>
           <View style={styles.headerView}>
-            {<Title title={title} style={{textAlign: 'center'}} />}
+            {<Title title={title} style={{ textAlign: 'center' }} />}
             <Icon
               name="x"
               size={scale(22)}
@@ -158,7 +158,7 @@ const ChangePassword = props => {
                   backgroundColor: theme.colors.primary,
                   marginTop: scale(15),
                 }}
-                titleStyle={{color: theme.colors.white, fontWeight: '600'}}
+                titleStyle={{ color: theme.colors.white, fontWeight: '600' }}
                 onPress={() => handleForgotPassword()}
               />
             )}
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#00000020',
     zIndex: 111,
   },
-  label: {textAlign: 'center', color: theme.colors.black},
+  label: { textAlign: 'center', color: theme.colors.black },
   activityIndicatorWrapper: {
     backgroundColor: theme.colors.white,
     // height: theme.SCREENHEIGHT * 0.2,

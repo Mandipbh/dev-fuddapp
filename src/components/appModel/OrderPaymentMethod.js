@@ -1,6 +1,6 @@
-import {BlurView} from '@react-native-community/blur';
+import { BlurView } from '@react-native-community/blur';
 import React from 'react';
-import {useState} from 'react';
+import { useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -11,18 +11,18 @@ import {
   Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import {useSelector} from 'react-redux';
-import {scale, theme} from '../../utils';
-import {optionsData} from '../../utils/MockData';
+import { useSelector } from 'react-redux';
+import { scale, theme } from '../../utils';
+import { optionsData } from '../../utils/MockData';
 import Button from '../Button';
 import InputBox from '../InputBox';
-import {Title, Label, Error} from '../Label';
+import { Title, Label, Error } from '../Label';
 import MonthPickerModel from './MonthPickerModel';
 import YearPickerModel from './YearPickerModel';
 
 const OrderPaymentMethod = props => {
   const user = useSelector(state => state.UserReducer?.userDetails);
-  const {isVisible, close, notes, nAmount} = props;
+  const { isVisible, close, notes, nAmount } = props;
   const [option, setOptions] = useState(null);
   const [cardHolderName, setName] = useState('');
   const [cardNumber, setCardNumber] = useState('');
@@ -87,7 +87,7 @@ const OrderPaymentMethod = props => {
         transparent={true}
         animationType={'none'}
         visible={isVisible}
-        onRequestClose={() => {}}>
+        onRequestClose={() => { }}>
         <BlurView
           style={styles.blurView}
           blurType="dark" // Values = dark, light, xlight .
@@ -101,7 +101,7 @@ const OrderPaymentMethod = props => {
               {
                 <Title
                   title="Dati di pagamento"
-                  style={{textAlign: 'center'}}
+                  style={{ textAlign: 'center' }}
                 />
               }
               <Icon
@@ -118,21 +118,25 @@ const OrderPaymentMethod = props => {
             <View style={styles.subTitleView}>
               {optionsData.map((item, idx) => {
                 return (
-                  <View style={styles.row}>
+                  <TouchableOpacity style={styles.row} onPress={() => {
+                    setOptions(item);
+                    setpaymentType(item.id);
+                  }}>
                     <TouchableOpacity
-                      style={styles.checkboxCon}
                       onPress={() => {
                         setOptions(item);
                         setpaymentType(item.id);
-                      }}>
+                      }}
+                      style={styles.checkboxCon}
+                    >
                       {option?.id === item?.id && <View style={styles.check} />}
                     </TouchableOpacity>
                     <Label title={item?.title} style={styles.lbl} />
-                  </View>
+                  </TouchableOpacity>
                 );
               })}
               {option?.id === 2 && (
-                <View style={{marginTop: scale(10)}}>
+                <View style={{ marginTop: scale(10) }}>
                   <InputBox
                     placeholder="Intestatario carta di credito"
                     style={styles.txtInput1}
@@ -219,7 +223,7 @@ const OrderPaymentMethod = props => {
                   marginTop: scale(10),
                 }}
                 title="Invia"
-                titleStyle={{color: theme.colors.white}}
+                titleStyle={{ color: theme.colors.white }}
               />
             </View>
           </View>
@@ -266,7 +270,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
   },
-  label: {color: theme.colors.black, fontSize: scale(14), fontWeight: '500'},
+  label: { color: theme.colors.black, fontSize: scale(14), fontWeight: '500' },
   activityIndicatorWrapper: {
     backgroundColor: theme.colors.white,
     // height: theme.SCREENHEIGHT * 0.2,

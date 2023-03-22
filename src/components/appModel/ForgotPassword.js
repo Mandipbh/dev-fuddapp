@@ -1,17 +1,17 @@
-import {BlurView} from '@react-native-community/blur';
+import { BlurView } from '@react-native-community/blur';
 import React from 'react';
-import {useState} from 'react';
-import {StyleSheet, View, Modal, Alert, ActivityIndicator} from 'react-native';
+import { useState } from 'react';
+import { StyleSheet, View, Modal, Alert, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 // import Toast from 'react-native-simple-toast';
-import {scale, theme} from '../../utils';
-import ApiService, {API} from '../../utils/ApiService';
+import { scale, theme } from '../../utils';
+import ApiService, { API } from '../../utils/ApiService';
 import Button from '../Button';
 import InputBox from '../InputBox';
-import {Title, Error} from '../Label';
+import { Title, Error } from '../Label';
 
 const ForgotPassword = props => {
-  const {isVisible, close, title} = props;
+  const { isVisible, close, title } = props;
   const [email, setEmail] = useState('');
   const [emailErr, setEmailErr] = useState('');
   const [load, setLoad] = useState(false);
@@ -20,7 +20,7 @@ const ForgotPassword = props => {
   const handleValidation = () => {
     if (email?.trim() === '') {
       error = true;
-      setEmailErr('Please enter email');
+      setEmailErr("Inserisci l'e - mail");
     } else {
       setEmailErr('');
       error = false;
@@ -65,11 +65,11 @@ const ForgotPassword = props => {
       transparent={true}
       animationType={'none'}
       visible={isVisible}
-      onRequestClose={() => {}}>
+      onRequestClose={() => { }}>
       <View style={styles.modalBackground}>
         <View style={styles.activityIndicatorWrapper}>
           <View style={styles.headerView}>
-            {<Title title={title} style={{textAlign: 'center'}} />}
+            {<Title title={title} style={{ textAlign: 'center' }} />}
             <Icon
               name="x"
               size={scale(22)}
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#00000020',
     zIndex: 111,
   },
-  label: {textAlign: 'center', color: theme.colors.black},
+  label: { textAlign: 'center', color: theme.colors.black },
   activityIndicatorWrapper: {
     backgroundColor: theme.colors.white,
     // height: theme.SCREENHEIGHT * 0.2,
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     color: theme.colors.black,
     fontSize: scale(11),
   },
-  txt: {color: theme.colors.white, fontWeight: '600'},
+  txt: { color: theme.colors.white, fontWeight: '600' },
   blurView: {
     position: 'absolute',
     top: 0,
