@@ -8,7 +8,6 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   TextInput,
-  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useSelector } from 'react-redux';
@@ -19,6 +18,8 @@ import InputBox from '../InputBox';
 import { Title, Label, Error } from '../Label';
 import MonthPickerModel from './MonthPickerModel';
 import YearPickerModel from './YearPickerModel';
+import { useToast } from 'react-native-toast-notifications';
+
 
 const OrderPaymentMethod = props => {
   const user = useSelector(state => state.UserReducer?.userDetails);
@@ -33,6 +34,8 @@ const OrderPaymentMethod = props => {
   const [paymentType, setpaymentType] = useState('');
   const [monthModel, setMonthModel] = useState(false);
   const [yearModel, setYearModel] = useState(false);
+  const toast = useToast();
+
 
   const PaymentRequest = {
     PayType: paymentType,
@@ -69,8 +72,10 @@ const OrderPaymentMethod = props => {
           cvv === '' ||
           zip === '')
       ) {
-        Alert.alert(
+        toast.show(
           'Si prega di compilare tutti i dettagli della carta di credito',
+          toast,
+          {duration: 1000},
         );
       } else {
         close(PaymentRequest);
@@ -78,7 +83,8 @@ const OrderPaymentMethod = props => {
 
       // console.log('cardObject', cardObject);
     } else {
-      alert('Scegli il metodo di pagamento. ');
+      toast.show('Scegli il metodo di pagamento. ', toast, { duration: 1000 });
+
     }
   };
   return (
@@ -118,17 +124,18 @@ const OrderPaymentMethod = props => {
             <View style={styles.subTitleView}>
               {optionsData.map((item, idx) => {
                 return (
-                  <TouchableOpacity style={styles.row} onPress={() => {
-                    setOptions(item);
-                    setpaymentType(item.id);
-                  }}>
+                  <TouchableOpacity
+                    style={styles.row}
+                    onPress={() => {
+                      setOptions(item);
+                      setpaymentType(item.id);
+                    }}>
                     <TouchableOpacity
                       onPress={() => {
                         setOptions(item);
                         setpaymentType(item.id);
                       }}
-                      style={styles.checkboxCon}
-                    >
+                      style={styles.checkboxCon}>
                       {option?.id === item?.id && <View style={styles.check} />}
                     </TouchableOpacity>
                     <Label title={item?.title} style={styles.lbl} />

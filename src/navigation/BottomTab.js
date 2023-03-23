@@ -1,5 +1,5 @@
 import React from 'react';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -11,12 +11,12 @@ import {
   CartScreen,
   Checkout,
 } from '../screens';
-import {scale, theme} from '../utils';
-import {Platform, Text, View} from 'react-native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {AboutUs, Label} from '../components';
-import {useState} from 'react';
-import {useFocusEffect, useNavigation} from '@react-navigation/core';
+import { scale, theme } from '../utils';
+import { Platform, Text, View } from 'react-native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { AboutUs, Label } from '../components';
+import { useState } from 'react';
+import { useFocusEffect, useNavigation } from '@react-navigation/core';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -30,27 +30,26 @@ const Restaturant = () => {
 
   return (
     <Stack.Navigator
-      // initialRouteName="Checkout"
-      screenOptions={{headerShown: false}}>
+      screenOptions={{ headerShown: false }}>
       <Stack.Screen
         name="RISTORANTI"
         component={Restaurant}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="Details"
         component={RestaturantDetails}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="Cart"
         component={CartScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="Checkout"
         component={Checkout}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
@@ -95,7 +94,7 @@ const BottomTab = () => {
         name="Home"
         component={Home}
         options={{
-          tabBarIcon: ({focused}) => {
+          tabBarIcon: ({ focused }) => {
             return (
               <FontAwesome5
                 name="home"
@@ -112,7 +111,7 @@ const BottomTab = () => {
         component={Restaturant}
         options={{
           unmountOnBlur: true,
-          tabBarIcon: ({focused}) => {
+          tabBarIcon: ({ focused }) => {
             return (
               <MIcon
                 name="silverware-fork-knife"
@@ -128,7 +127,7 @@ const BottomTab = () => {
         name="ACCOUNT"
         component={Account}
         options={{
-          tabBarIcon: ({focused}) => {
+          tabBarIcon: ({ focused }) => {
             return (
               <FontAwesome5
                 name="user-alt"
@@ -144,7 +143,7 @@ const BottomTab = () => {
         name="AUITO"
         component={Comman}
         options={{
-          tabBarIcon: ({focused}) => {
+          tabBarIcon: ({ focused }) => {
             return (
               <AntDesign
                 name="questioncircle"

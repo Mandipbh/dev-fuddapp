@@ -8,20 +8,21 @@ import {
   View,
   Modal,
 } from 'react-native';
-import React, {useRef} from 'react';
-import {images, scale, theme} from '../../utils';
+import React, { useRef } from 'react';
+import { images, scale, theme } from '../../utils';
 
 import Button from '../Button';
-import {useState} from 'react';
+import { useState } from 'react';
 import ApiService from '../../utils/ApiService';
-import {useDispatch, useSelector} from 'react-redux';
-import {getAllAddress, selectedAddress} from '../../redux/Actions/UserActions';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllAddress, selectedAddress } from '../../redux/Actions/UserActions';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import Icon from 'react-native-vector-icons/Feather';
 import InputBox from '../InputBox';
+import { useToast } from 'react-native-toast-notifications';
 
 const AddNewAddress = props => {
-  const {isVisible, close, title, subTitle} = props;
+  const { isVisible, close, title, subTitle } = props;
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastname] = useState('');
   const [mobile, setMobile] = useState('');
@@ -32,20 +33,23 @@ const AddNewAddress = props => {
   const dispatch = useDispatch();
   const [streetNumber, setStreetNumber] = useState('');
   const addRef = useRef();
+  const toast = useToast();
 
   const validation = () => {
     let error = false;
     if (firstName === '') {
-      alert('Inserisci nome e cognome');
+      toast.show('Inserisci il tuo nome di battesimo', toast, { duration: 1000 });
       error = true;
     } else if (lastName === '') {
-      alert('Inserisci nome e cognome');
+      toast.show('AInserire il cognome', toast, { duration: 1000 });
       error = true;
     } else if (address === '') {
-      alert('Inserisci nome e cognome');
+      toast.show('Inserisci un indirizzo valido', toast, { duration: 1000 });
+
       error = true;
     } else if (mobile === '') {
-      alert('Inserisci nome e cognome');
+      toast.show('Inserisci un numero di cellulare valido', toast, { duration: 1000 });
+
       error = true;
     } else {
       error = false;
@@ -57,8 +61,10 @@ const AddNewAddress = props => {
     if (!validation()) {
       if (addressData === '') {
         addRef.current?.setAddressText('');
-        alert(
+        toast.show(
           "Inserisci un indirizzo preciso con numero civico. L' indirizzo selezionato è troppo vago.",
+          toast,
+          {duration: 1000},
         );
       } else {
         console.log('Error2', 'success');
@@ -86,7 +92,7 @@ const AddNewAddress = props => {
             Description: address,
             Phone: mobile,
           };
-          const options = {payloads: frmData};
+          const options = { payloads: frmData };
           console.log('options >>> ', frmData);
           ApiService.post('Users/SaveUserAddress', options)
             .then(res => {
@@ -138,7 +144,7 @@ const AddNewAddress = props => {
     if (place.geometry !== undefined) {
       const plcGeom = place.geometry;
       if (plcGeom.location !== undefined) {
-        const {lat, lng} = place?.geometry?.location;
+        const { lat, lng } = place?.geometry?.location;
         latt = lat;
         lngg = lng;
       }
@@ -244,7 +250,7 @@ const AddNewAddress = props => {
       transparent={true}
       animationType={'none'}
       visible={isVisible}
-      onRequestClose={() => {}}>
+      onRequestClose={() => { }}>
       <View style={styles.modalBackground}>
         <View style={styles.activityIndicatorWrapper}>
           <Icon
@@ -258,7 +264,7 @@ const AddNewAddress = props => {
           />
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={[styles.container, {paddingHorizontal: 0}]}>
+            style={[styles.container, { paddingHorizontal: 0 }]}>
             <ScrollView
               style={styles.container}
               contentContainerStyle={styles.view}
@@ -272,7 +278,7 @@ const AddNewAddress = props => {
                 keepResultsAfterBlur={true}
                 onPress={(data, details = null) => {
                   handlePlaceChanged(details, data);
-                  const {lat, lng} = details?.geometry?.location;
+                  const { lat, lng } = details?.geometry?.location;
                 }}
                 // debounce={200}
                 fetchDetails={true}
@@ -286,9 +292,9 @@ const AddNewAddress = props => {
                   sessiontoken: 'sessionToken',
                   type: Array[
                     ('address',
-                    'postal_code',
-                    'street_number',
-                    'street_address')
+                      'postal_code',
+                      'street_number',
+                      'street_address')
                   ],
                 }}
                 textInputProps={{
@@ -296,7 +302,7 @@ const AddNewAddress = props => {
                   returnKeyType: 'search',
                 }}
                 styles={{
-                  description: {color: 'black'},
+                  description: { color: 'black' },
 
                   textInput: {
                     color: theme.colors.black,
@@ -316,7 +322,7 @@ const AddNewAddress = props => {
                   setFirstName(txt);
                 }}
                 placeholder="Nome di battesimo"
-                style={{marginBottom: scale(3)}}
+                style={{ marginBottom: scale(3) }}
               />
               <InputBox
                 value={lastName}
@@ -324,7 +330,7 @@ const AddNewAddress = props => {
                   setLastname(txt);
                 }}
                 placeholder="Cognome"
-                style={{marginBottom: scale(3)}}
+                style={{ marginBottom: scale(3) }}
               />
               <InputBox
                 value={address}
@@ -332,7 +338,7 @@ const AddNewAddress = props => {
                   setAddress(txt);
                 }}
                 placeholder="Intercom at, staircase, floor"
-                style={{marginBottom: scale(3)}}
+                style={{ marginBottom: scale(3) }}
               />
               <InputBox
                 value={mobile}
@@ -340,7 +346,7 @@ const AddNewAddress = props => {
                   setMobile(txt.replace(/[^0-9]/g, ''));
                 }}
                 placeholder="Telefono"
-                style={{marginBottom: scale(3)}}
+                style={{ marginBottom: scale(3) }}
                 keyboardType="numeric"
               />
             </ScrollView>
@@ -374,7 +380,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#00000020',
     zIndex: 111,
   },
-  label: {textAlign: 'center', color: theme.colors.black},
+  label: { textAlign: 'center', color: theme.colors.black },
   activityIndicatorWrapper: {
     backgroundColor: theme.colors.white,
     // height: theme.SCREENHEIGHT * 0.2,

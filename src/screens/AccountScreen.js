@@ -34,7 +34,7 @@ const AccountScreen = ({route, props}) => {
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [showImg, setImg] = useState(true);
   const [text, setText] = useState('');
-  const [modalVisible, setModalVisible] = useState(false);  
+  const [modalVisible, setModalVisible] = useState(false);
 
   const isLoginUser = useSelector(state => state.UserReducer?.login);
   const dispatch = useDispatch();

@@ -1,6 +1,5 @@
 import {
   ActivityIndicator,
-  Alert,
   Image,
   KeyboardAvoidingView,
   Modal,
@@ -9,20 +8,22 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import React, {useEffect, useRef} from 'react';
-import {images, scale, theme} from '../../utils';
+import React, { useEffect, useRef } from 'react';
+import { images, scale, theme } from '../../utils';
 import InputBox from '../InputBox';
 import Button from '../Button';
-import {useState} from 'react';
-import ApiService, {API} from '../../utils/ApiService';
-import {useDispatch, useSelector} from 'react-redux';
-import {getAllAddress} from '../../redux/Actions/UserActions';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import { useState } from 'react';
+import ApiService, { API } from '../../utils/ApiService';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllAddress } from '../../redux/Actions/UserActions';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import Icon from 'react-native-vector-icons/Feather';
-import {Title, Error} from '../Label';
+import { Title, Error } from '../Label';
+import { useToast } from 'react-native-toast-notifications';
+
 
 const EditAddress = props => {
-  const {isVisible, close, editData} = props;
+  const { isVisible, close, editData } = props;
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastname] = useState(null);
   const [mobile, setMobile] = useState('');
@@ -33,6 +34,7 @@ const EditAddress = props => {
   const dispatch = useDispatch();
   const userData = useSelector(state => state?.UserReducer?.userDetails);
   const addRef = useRef();
+  const toast = useToast();
 
   const handlePlaceChanged = async (data, addData) => {
     const zipCode = data?.address_components.find(addressComponent =>
@@ -51,7 +53,7 @@ const EditAddress = props => {
     if (place.geometry !== undefined) {
       const plcGeom = place.geometry;
       if (plcGeom.location !== undefined) {
-        const {lat, lng} = place?.geometry?.location;
+        const { lat, lng } = place?.geometry?.location;
         latt = lat;
         lngg = lng;
       }
@@ -147,7 +149,7 @@ const EditAddress = props => {
           Lastname: lastName,
           Phone: mobile,
         };
-        const options = {payloads: frmData};
+        const options = { payloads: frmData };
         console.log('options >>> ', frmData);
         ApiService.post('Users/SaveUserAddress', options)
           .then(res => {
@@ -171,7 +173,8 @@ const EditAddress = props => {
         dispatch(getAllAddress());
       }
     } else {
-      Alert.alert('indirizzo non valido');
+      toast.show('indirizzo non valido', toast, { duration: 1000 });
+
       addRef.current?.setAddressText('');
     }
   };
@@ -202,11 +205,11 @@ const EditAddress = props => {
       transparent={true}
       animationType={'none'}
       visible={isVisible}
-      onRequestClose={() => {}}>
+      onRequestClose={() => { }}>
       <View style={styles.modalBackground}>
         <View style={styles.activityIndicatorWrapper}>
           <View style={styles.headerView}>
-            <Title title="modifica indirizzo" style={{textAlign: 'center'}} />
+            <Title title="modifica indirizzo" style={{ textAlign: 'center' }} />
             <Icon
               name="x"
               size={scale(22)}
@@ -220,7 +223,7 @@ const EditAddress = props => {
           <View>
             <KeyboardAvoidingView
               behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-              style={[styles.container, {paddingHorizontal: 0}]}>
+              style={[styles.container, { paddingHorizontal: 0 }]}>
               <ScrollView
                 style={styles.container}
                 contentContainerStyle={{
@@ -258,9 +261,9 @@ const EditAddress = props => {
                     sessiontoken: 'sessionToken',
                     type: Array[
                       ('address',
-                      'postal_code',
-                      'street_number',
-                      'street_address')
+                        'postal_code',
+                        'street_number',
+                        'street_address')
                     ],
                   }}
                 />
@@ -270,7 +273,7 @@ const EditAddress = props => {
                     setFirstName(txt);
                   }}
                   placeholder="first name"
-                  style={{marginBottom: scale(3), width: '95%'}}
+                  style={{ marginBottom: scale(3), width: '95%' }}
                 />
                 <InputBox
                   value={lastName}
@@ -279,7 +282,7 @@ const EditAddress = props => {
                   }}
                   placeholder="last name"
                   keyboardType="numeric"
-                  style={{marginBottom: scale(3)}}
+                  style={{ marginBottom: scale(3) }}
                 />
                 <InputBox
                   value={address}
@@ -287,7 +290,7 @@ const EditAddress = props => {
                     setAddress(txt);
                   }}
                   placeholder="Intercom at, staircase, floor"
-                  style={{marginBottom: scale(3)}}
+                  style={{ marginBottom: scale(3) }}
                 />
                 <InputBox
                   value={mobile}
@@ -295,7 +298,7 @@ const EditAddress = props => {
                     setMobile(txt);
                   }}
                   placeholder="Telephone"
-                  style={{marginBottom: scale(3)}}
+                  style={{ marginBottom: scale(3) }}
                 />
               </ScrollView>
             </KeyboardAvoidingView>
@@ -329,7 +332,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#00000020',
     zIndex: 111,
   },
-  label: {textAlign: 'center', color: theme.colors.black},
+  label: { textAlign: 'center', color: theme.colors.black },
   activityIndicatorWrapper: {
     backgroundColor: theme.colors.white,
     // height: theme.SCREENHEIGHT * 0.2,
@@ -361,7 +364,7 @@ const styles = StyleSheet.create({
     color: theme.colors.black,
     fontSize: scale(11),
   },
-  txt: {color: theme.colors.white, fontWeight: '600'},
+  txt: { color: theme.colors.white, fontWeight: '600' },
   btntxt: {
     color: theme.colors.white,
     fontWeight: '600',

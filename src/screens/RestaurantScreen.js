@@ -8,20 +8,20 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/Feather';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import DatePicker from 'react-native-date-picker';
-import {scale, theme, timeSlot} from '../utils';
-import {Label, Loader, Restaurant, TimePickerModel, Title} from '../components';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
+import { scale, theme, timeSlot } from '../utils';
+import { Label, Loader, Restaurant, TimePickerModel, Title } from '../components';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import SliderModal from '../components/appModel/SliderModal';
-import {useDispatch, useSelector} from 'react-redux';
-import {useEffect} from 'react';
-import {getAllCategory} from '../redux/Actions/HomeAction';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { getAllCategory } from '../redux/Actions/HomeAction';
 import moment from 'moment';
-import {getpopularRestaurants} from '../redux/Actions/RestaurantAction';
-import ApiService, {API} from '../utils/ApiService';
+import { getpopularRestaurants } from '../redux/Actions/RestaurantAction';
+import ApiService, { API } from '../utils/ApiService';
 
 const RestaurantScreen = () => {
   const navigation = useNavigation();
@@ -111,23 +111,24 @@ const RestaurantScreen = () => {
     setLoadding(true);
 
     const data =
-      // {
-      //   id: 0,
-      //   date: '01-12-2022',
-      //   timeSlot: '16:00TO16:30',
-      //   category: '',
-      //   latitute: '',
-      //   longitude: '',
-      // };
+    // {
+    //   id: 0,
+    //   date: '01-12-2022',
+    //   timeSlot: '16:00TO16:30',
+    //   category: '',
+    //   latitute: '',
+    //   longitude: '',
+    // };
 
-      {
-        date: moment(date).format('DD-MM-YYYY'),
-        timeSlot: timeSloat, //'16:00TO16:30',
-        category: selCategory,
-        latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
-        longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
-      };
+    {
+      date: moment(date).format('DD-MM-YYYY'),
+      timeSlot: timeSloat, //'16:00TO16:30',
+      category: selCategory,
+      latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
+      longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
+    };
     console.log('Payload of ??? ', data);
+    setTimeSlot(timeSloat);
     dispatch(getpopularRestaurants(data));
     dispatch(getAllCategory());
   }, [isFocuse, selCategory, timeSloat, date]);
@@ -164,15 +165,17 @@ const RestaurantScreen = () => {
     }
   };
 
-  const renderList = ({item, index}) => {
+  const renderList = ({ item, index }) => {
     return (
       <Restaurant
         item={item}
         index={index}
         onPress={() => {
+          console.log('_timeSloat', timeSloat);
           navigation.navigate('Details', {
             item: item,
             restaurantsData: restaurantsData,
+            timeSlot: timeSloat,
           });
         }}
       />
@@ -265,7 +268,7 @@ const RestaurantScreen = () => {
         </View>
 
         <FlatList
-          style={{height: '70%'}}
+          style={{ height: '70%' }}
           data={restaurantsData}
           renderItem={renderList}
           showsVerticalScrollIndicator={false}

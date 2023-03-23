@@ -1,6 +1,5 @@
 import {
   ActivityIndicator,
-  Alert,
   FlatList,
   Image,
   KeyboardAvoidingView,
@@ -25,6 +24,8 @@ import {
   TimePickerModel,
   Title,
 } from '../components';
+import { useToast } from 'react-native-toast-notifications';
+
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import SetLocationModel from '../components/appModel/SetLocationModel';
 import { useDispatch, useSelector } from 'react-redux';
@@ -72,6 +73,8 @@ const CheckoutScreen = ({ route }) => {
 
   const [delMsg, setDelMsg] = useState('');
   const [checkTimeslot, setCheckTimeslot] = useState('');
+  const toast = useToast();
+
 
   const selectedCat = useSelector(
     state => state?.RestaurantReducers?.selCategory,
@@ -81,6 +84,8 @@ const CheckoutScreen = ({ route }) => {
     state => state.RestaurantReducers?.restaurantDetails,
   );
 
+  console.log('route?.params?.TimeSlot', route?.params?.TimeSlot);
+
   const handleTimer = time => {
     setTimeModel(!timeModel);
     // console.log('TIME >> ', time);
@@ -89,20 +94,21 @@ const CheckoutScreen = ({ route }) => {
       const dTimeSlot = time?.replace(' ', ' TO ');
       setTimeSlot(timeslot);
       setDisplayedTimeSlot(dTimeSlot);
+      setCheckTimeslot(timeslot);
     }
   };
 
   useEffect(() => {
     console.log('selAddresssss', selAddress);
-    handleRestaurantAvailability();
+    // handleRestaurantAvailability();
   }, [changeAddress == true]);
 
-  useEffect(() => {
-    var timeslot = timeSlot().ptime.replace('TO', '-');
-    setCheckTimeslot(timeslot);
-    // handleRestaurantAvailability();
-    console.log('ptime ??? ', timeslot);
-  }, [checkTimeslot == '']);
+  // useEffect(() => {
+  //   var timeslot = timeSlot().ptime.replace('TO', '-');
+  //   setCheckTimeslot(timeslot);
+  //   // handleRestaurantAvailability();
+  //   console.log('ptime ??? ', timeslot);
+  // }, [checkTimeslot == '']);
 
   const handleDate = newTime => {
     const receivedTime = newTime.split('-'); // here the time is like "16:14"
@@ -153,35 +159,42 @@ const CheckoutScreen = ({ route }) => {
   useEffect(() => {
     var restaurantId = restaurantData?.ID;
     setRId(restaurantId);
-
     console.log('RID', rID);
 
-    var now = `${moment(new Date()).format('HH:mm')}`;
-
-    const times = now.split(':');
-    let splitedHour = times[0];
-    // let splitedMin = times[1];
-    let newHOur = 0;
-    let newMin = '00';
     let newRoundedTime = '';
     let newEndroundTime = '';
     let newtimeSlot = '';
-    let displaytimeslot = '';
     let restaurantOpeningTime = '';
+    let restaurantClosingTime = '';
 
-    let splitedMin = times[1];
-    if (splitedMin > 30) {
-      splitedMin = 60 - splitedMin;
-    } else {
-      splitedMin = 30 - splitedMin;
-    }
+    // restaurantData?.OpeningTime  -->  JSOn response time
+    // restaurantScreenSelectedTime = route?.params?.TimeSlot?.split('TO'); --> previos screen selected time
 
-    now = moment(new Date()).add(splitedMin, 'm');
-    newRoundedTime = moment(new Date()).add(splitedMin, 'm').format('HH:mm');
-    // newEndroundTime = moment(now).add(30, 'm').format('HH:mm');
 
-    if (restaurantData?.OpeningTime !== '') {
-      let [hrs, min] = restaurantData?.OpeningTime.split(':').map(Number);
+    console.log('route?.params?.TimeSlot', route?.params?.TimeSlot)
+    //selected time from previous screen
+    let restaurantScreenSelectedTime = route?.params?.TimeSlot?.split('TO');
+    let restaurantOpenTime = '';
+    let restaurantCloseTime = '';
+    restaurantOpenTime = restaurantScreenSelectedTime[0];
+    restaurantCloseTime = restaurantScreenSelectedTime[1];
+
+    let [selectedhrs, selectedMin] = restaurantOpenTime.split(':').map(Number);
+    var restScreenSelectedTime = parseInt(selectedhrs * 3600 + selectedMin * 60);
+
+    //Json response time
+    let [hrs, min] = restaurantData?.OpeningTime.split(':').map(Number);
+    var jsonResponseOpenTime = parseInt(hrs * 3600 + min * 60);
+
+    console.log('restaurantData?.OpeningTime ', restaurantData?.OpeningTime);
+    console.log('restScreenSelectedTime', restScreenSelectedTime);
+    console.log('jsonResponseOpenTime', jsonResponseOpenTime);
+    console.log('=========================================================');
+
+    if (restScreenSelectedTime < jsonResponseOpenTime) {
+      console.log('TEST1');
+
+      //make json response as selected time
       let splitedResOpenTimeMin = min;
 
       if (splitedResOpenTimeMin > 0) {
@@ -195,110 +208,23 @@ const CheckoutScreen = ({ route }) => {
         .add(splitedResOpenTimeMin, 'm')
         .format('HH:mm');
 
-      if (restaurantOpeningTime > newRoundedTime) {
-        newEndroundTime = moment(
-          moment(new Date().setHours(hrs, min)).add(splitedResOpenTimeMin, 'm'),
-        )
-          .add(30, 'm')
-          .format('HH:mm');
-      } else {
-        newEndroundTime = moment(now).add(30, 'm').format('HH:mm');
-      }
-    } else {
-      newEndroundTime = moment(now).add(30, 'm').format('HH:mm');
-    }
+      restaurantClosingTime = moment(
+        moment(new Date().setHours(hrs, min)).add(splitedResOpenTimeMin, 'm'),
+      )
+        .add(30, 'm')
+        .format('HH:mm');
 
-    var str1 =
-      restaurantData?.OpeningTime !== ''
-        ? restaurantOpeningTime > newRoundedTime
-          ? restaurantOpeningTime?.split(':')
-          : newRoundedTime?.split(':')
-        : newRoundedTime?.split(':');
-
-    var str2 = newEndroundTime?.split(':');
-
-    var totalSeconds1 = parseInt(str1[0] * 3600 + str1[1] * 60);
-    var totalSeconds2 = parseInt(str2[0] * 3600 + str2[1] * 60);
-
-    if (totalSeconds2 > totalSeconds1) {
-      newtimeSlot =
-        restaurantOpeningTime > newRoundedTime
-          ? restaurantOpeningTime
-            ?.toString()
-            .concat('TO', newEndroundTime?.toString())
-          : newRoundedTime
-            ?.toString()
-            .concat('TO', newEndroundTime?.toString());
-      setTimeSlot(newtimeSlot);
-    } else {
-      displaytimeslot = newRoundedTime
+      newtimeSlot = restaurantOpeningTime
         ?.toString()
-        .concat(' TO ', newEndroundTime?.toString());
-
-      setDisplayedTimeSlot(displaytimeslot);
-
-      newtimeSlot =
-        restaurantOpeningTime > newRoundedTime
-          ? restaurantOpeningTime
-            ?.toString()
-            .concat('TO', newEndroundTime?.toString())
-          : newRoundedTime
-            ?.toString()
-            .concat('TO', newEndroundTime?.toString());
+        .concat('TO', restaurantClosingTime?.toString());
       setTimeSlot(newtimeSlot);
+      setCheckTimeslot(newtimeSlot);
+    } else {
+      console.log('TEST2', route?.params?.TimeSlot);
+
+      setTimeSlot(route?.params?.TimeSlot);
+      setCheckTimeslot(route?.params?.TimeSlot);
     }
-
-    setTimeSlot(newtimeSlot);
-    // var newEndroundTime = moment(now).add(30, 'm').toDate();
-
-    // console.log('now', now);
-    // console.log('newEndroundTime', newEndroundTime);
-
-    // if (splitedMin >= 15 && splitedMin <= 30) {
-    //   newHOur = parseInt(splitedHour, 10);
-    //   newMin = '30'; //19:00
-    // } else if (splitedMin > 30 && splitedMin <= 45) {
-    //   newHOur = parseInt(splitedHour, 10);
-    //   newMin = '30';
-    // } else if (splitedMin > 45) {
-    //   newHOur = parseInt(splitedHour, 10) + 1;
-    //   newMin = '00';
-    // } else {
-    //   newHOur = parseInt(splitedHour, 10);
-    //   newMin = '00'; //18:00
-    // }
-
-    // newoundedTime = newHOur.toString().concat(':', newMin.toString());
-
-    // let newEndHour = 0;
-    // let newEndMin = '00';
-    // let newEndoundTime = '';
-
-    // if (parseInt(splitedHour) !== parseInt(newHOur)) {
-    //   newEndMin = '30';
-    //   newEndHour = parseInt(newHOur, 10);
-    // } else {
-    //   if (parseInt(newMin) === 30) {
-    //     newEndMin = '00';
-    //     newEndHour = parseInt(newHOur, 10) + 1;
-    //   } else {
-    //     newEndMin = '30';
-    //     newEndHour = parseInt(newHOur, 10);
-    //   }
-    // }
-
-    // newEndoundTime = newEndHour.toString().concat(':', newEndMin.toString());
-    // newtimeSlot = newoundedTime
-    //   .toString()
-    //   .concat('TO', newEndoundTime.toString());
-
-    // displaytimeslot = newoundedTime
-    //   .toString()
-    //   .concat(' TO ', newEndoundTime.toString());
-    // console.log('newtimeSlot', newtimeSlot);
-
-    // setDisplayedTimeSlot(displaytimeslot);
-    // setTimeSlot(newtimeSlot);
   }, [isFocus]);
 
   const handleResetCoupen = () => {
@@ -330,7 +256,8 @@ const CheckoutScreen = ({ route }) => {
             setCoupenApplied(true);
           })
           .catch(c => {
-            Alert.alert(c.response?.data?.Errors[0]);
+            toast.show(c.response?.data?.Errors[0], toast, { duration: 1000 });
+
             setCoupenApplied(false);
             console.log('error catch', c.response?.data.Errors[0]);
           });
@@ -339,7 +266,8 @@ const CheckoutScreen = ({ route }) => {
         console.log('error of try ', error);
       }
     } else {
-      alert('Inserisci il codice sconto');
+      toast.show('Inserisci il codice sconto', toast, { duration: 1000 });
+
     }
   };
   const handlePaymentMethod = data => {
@@ -348,59 +276,6 @@ const CheckoutScreen = ({ route }) => {
   };
 
   var itemList = [];
-
-  // var paymentrequestData = {
-  //   PayType:
-  //     paymentData !== null &&
-  //     paymentData !== undefined &&
-  //     paymentData.paymentType,
-  //   PaymentMethodID:
-  //     paymentData !== null &&
-  //     paymentData !== undefined &&
-  //     paymentData.title?.title,
-  //   Notes: notes,
-  //   sCardName:
-  //     paymentData !== null &&
-  //     paymentData !== undefined &&
-  //     paymentData.paymentType === 3
-  //       ? paymentData.sCardName
-  //       : '',
-  //   sCardNumber:
-  //     paymentData !== null &&
-  //     paymentData !== undefined &&
-  //     paymentData.paymentType === 3
-  //       ? paymentData.sCardNumber
-  //       : '',
-  //   sCardExpMonth:
-  //     paymentData !== null &&
-  //     paymentData !== undefined &&
-  //     paymentData.paymentType === 3
-  //       ? paymentData.sCardExpMonth
-  //       : '',
-  //   sCardExpYear:
-  //     paymentData !== null &&
-  //     paymentData !== undefined &&
-  //     paymentData.paymentType === 3
-  //       ? paymentData.sCardExpYear
-  //       : '',
-  //   sCardCvc:
-  //     paymentData !== null &&
-  //     paymentData !== undefined &&
-  //     paymentData.paymentType === 3
-  //       ? paymentData.sCardCvc
-  //       : '',
-  //   sCardPostcode:
-  //     paymentData !== null &&
-  //     paymentData !== undefined &&
-  //     paymentData.paymentType === 3
-  //       ? paymentData.sCardPostcode
-  //       : '',
-  //   sCustomerEmail: user !== undefined && user?.UserInfo?.EMail,
-  //   nAmount: (coupenAmnt !== 0 ? grandTotal - coupenAmnt : grandTotal)
-  //     .toFixed(2)
-  //     .replace('.', ''),
-  // };
-
   //total price of order
   const nAmount =
     coupenAmnt !== 0
@@ -422,15 +297,6 @@ const CheckoutScreen = ({ route }) => {
         Quantity: addOnItem.Qty,
       });
     });
-
-    // [  "lstMakeTypes": []
-    //    "lstMakeTypes": {
-    //     "CodiceProdo": "Bianca",
-    //     "Id": 25935,
-    //     "ImportoUnitario": 0,
-    //     "Prodo": "con Bacon affumicato",
-    //     "Variante": "56"
-    //   }]
 
     if (
       item?.lstMakeTypes?.toString() !== '[]' ||
@@ -510,20 +376,22 @@ const CheckoutScreen = ({ route }) => {
     console.log('cartDetailJson', JSON.stringify(cartDetailJson, null, 4));
 
     if (!isLoginUser) {
-      Alert.alert('Please login into the App');
+      toast.show("Accedi all'app", toast, { duration: 1000 });
       navigation.navigate('ACCOUNT');
     } else if (date === null || date === undefined) {
-      Alert.alert('Seleziona la data');
+      toast.show("Seleziona la data", toast, { duration: 1000 });
     } else if (timeSloat === null || timeSloat === undefined) {
-      Alert.alert('Seleziona Time Slot');
+      toast.show("Seleziona Time Slot", toast, { duration: 1000 });
     } else if (
       paymentData?.PayType === null ||
       paymentData?.PayType === undefined ||
       paymentData == ''
     ) {
-      Alert.alert('Scegli il metodo di pagamento.');
+      toast.show("Scegli il metodo di pagamento.", toast, { duration: 1000 });
+
     } else if (locationModel === undefined || locationModel === null) {
-      Alert.alert(`Seleziona l'indirizzo`);
+      toast.show("Seleziona l'indirizzo", toast, { duration: 1000 });
+
     }
     //  else if (notes === undefined || notes === null) {
     //   Alert.alert('Please add notes');
@@ -547,7 +415,8 @@ const CheckoutScreen = ({ route }) => {
           .catch(e => {
             setLoad(false);
             console.log('error in placeOrder> ', e.response?.data);
-            Alert.alert(e.response?.data?.Errors[0]);
+            toast.show(e.response?.data?.Errors[0], toast, { duration: 1000 });
+
           });
       } catch (e) {
         console.log('e in placeOrder ', e);
@@ -586,7 +455,6 @@ const CheckoutScreen = ({ route }) => {
                   console.log('ifffff');
                   setCheckTimeslot(res.NextAvailableSlot);
                   setNextSlotAvailability(true);
-
                 } else {
                   setNextSlotAvailability(false);
                   handlePlaceOrder(checkTimeslot);
@@ -610,7 +478,9 @@ const CheckoutScreen = ({ route }) => {
                 'error in RestaurantAvailability> ',
                 e?.response.data,
               );
-              Alert.alert(e.response?.data?.Errors[0]);
+            
+              toast.show(e.response?.data?.Errors[0], toast, { duration: 1000 });
+
             });
         }
       } catch (e) {

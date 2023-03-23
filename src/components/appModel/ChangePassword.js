@@ -9,6 +9,8 @@ import ApiService, { API } from '../../utils/ApiService';
 import Button from '../Button';
 import InputBox from '../InputBox';
 import { Title, Label, Error } from '../Label';
+import { useToast } from 'react-native-toast-notifications';
+
 
 const ChangePassword = props => {
   const { isVisible, close, title, subTitle } = props;
@@ -21,6 +23,9 @@ const ChangePassword = props => {
   const user = useSelector(state => state.UserReducer?.userDetails);
   const [load, setLoad] = useState(false);
   let error = false;
+  const toast = useToast();
+
+
   const handleValidation = () => {
     if (oldPassword?.trim() === '') {
       error = true;
@@ -68,7 +73,8 @@ const ChangePassword = props => {
           })
           .catch(e => {
             setLoad(false);
-            alert(e.response?.data?.Errors[0]);
+            toast.show(e.response?.data?.Errors[0], toast, { duration: 1000 });
+
             // console.log('error in login> ', e.response?.data?.Errors[0]);
           });
       } catch (error) {

@@ -9,12 +9,15 @@ import ApiService, { API } from '../../utils/ApiService';
 import Button from '../Button';
 import InputBox from '../InputBox';
 import { Title, Error } from '../Label';
+import { useToast } from 'react-native-toast-notifications';
 
 const ForgotPassword = props => {
   const { isVisible, close, title } = props;
   const [email, setEmail] = useState('');
   const [emailErr, setEmailErr] = useState('');
   const [load, setLoad] = useState(false);
+  const toast = useToast();
+
 
   let error = false;
   const handleValidation = () => {
@@ -48,7 +51,8 @@ const ForgotPassword = props => {
           })
           .catch(e => {
             setLoad(false);
-            Alert.alert(e.response?.data?.Errors[0]);
+            toast.show(e.response?.data?.Errors[0], toast, { duration: 1000 });
+
           });
       } catch (e) {
         setLoad(false);

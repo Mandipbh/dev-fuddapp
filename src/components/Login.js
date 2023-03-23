@@ -1,31 +1,35 @@
 import {
   ActivityIndicator,
-  Alert,
   Image,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
 import React from 'react';
-import {images, scale, theme} from '../utils';
+import { images, scale, theme } from '../utils';
 import InputBox from './InputBox';
-import {Error, Label} from './Label';
+import { Error, Label } from './Label';
 import Button from './Button';
-import {useState} from 'react';
-import ApiService, {API} from '../utils/ApiService';
+import { useState } from 'react';
+import ApiService, { API } from '../utils/ApiService';
 // import Toast from 'react-native-simple-toast';
-import {useDispatch} from 'react-redux';
-import {isLogin, userData} from '../redux/Actions/UserActions';
+import { useDispatch } from 'react-redux';
+import { isLogin, userData } from '../redux/Actions/UserActions';
 import ForgotPassword from './appModel/ForgotPassword';
-import {useEffect} from 'react';
+import { useEffect } from 'react';
+import { useToast } from 'react-native-toast-notifications';
+
+
 const Login = props => {
-  const {onPress, onPressRegister, isFocus} = props;
+  const { onPress, onPressRegister, isFocus } = props;
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [nameErr, setNameErr] = useState('');
   const [passwordErr, setpasswordErr] = useState('');
   const [recovery, setRecovery] = useState(false);
   const [load, setLoad] = useState(false);
+  const toast = useToast();
+
   var regex = '^\\s+$';
   const disptch = useDispatch();
   let error = false;
@@ -58,7 +62,7 @@ const Login = props => {
           email: name,
           password: password,
         };
-        const options = {payloads: folderFrm};
+        const options = { payloads: folderFrm };
         ApiService.post(API.login, options)
           .then(res => {
             if (res.Status === 'Success') {
@@ -74,7 +78,8 @@ const Login = props => {
           .catch(e => {
             setLoad(false);
             console.log('error in login> ', e.response?.data);
-            Alert.alert(e.response?.data?.Errors[0]);
+            toast.show(e.response?.data?.Errors[0], toast, { duration: 1000 });
+
           });
       } catch (e) {
         console.log('e in login ', e);
@@ -94,7 +99,7 @@ const Login = props => {
         onChangeText={txt => {
           setName(txt);
         }}
-        style={[styles.input, {marginTop: theme.SCREENHEIGHT * 0.03}]}
+        style={[styles.input, { marginTop: theme.SCREENHEIGHT * 0.03 }]}
         keyboardType="email-address"
         autoCompleteType="username"
       />
@@ -113,8 +118,8 @@ const Login = props => {
       {!load ? (
         <Button
           title="Accedi"
-          style={[styles.loginButton, {marginTop: scale(15)}]}
-          titleStyle={[styles.buttonLabel, {color: theme.colors.white}]}
+          style={[styles.loginButton, { marginTop: scale(15) }]}
+          titleStyle={[styles.buttonLabel, { color: theme.colors.white }]}
           onPress={() => {
             handleLogin();
           }}
@@ -124,12 +129,12 @@ const Login = props => {
       )}
       <Button
         title="Password dimenticata"
-        style={[styles.loginButton, {backgroundColor: theme.colors.purpal}]}
-        titleStyle={[styles.buttonLabel, {color: theme.colors.white}]}
+        style={[styles.loginButton, { backgroundColor: theme.colors.purpal }]}
+        titleStyle={[styles.buttonLabel, { color: theme.colors.white }]}
         onPress={() => setRecovery(!recovery)}
       />
-      <Label title="Oppure" style={[styles.title, {marginTop: scale(20)}]} />
-      <View style={[styles.devider, {marginBottom: scale(10)}]} />
+      <Label title="Oppure" style={[styles.title, { marginTop: scale(20) }]} />
+      <View style={[styles.devider, { marginBottom: scale(10) }]} />
       <View>
         {/* <Button
           ButtonIcon="facebook-with-circle"
@@ -153,9 +158,9 @@ const Login = props => {
           title="Registri con indrizzon email"
           style={[
             styles.loginButton,
-            {backgroundColor: theme.colors.primary, zIndex: 1},
+            { backgroundColor: theme.colors.primary, zIndex: 1 },
           ]}
-          titleStyle={[styles.buttonLabel, {color: theme.colors.white}]}
+          titleStyle={[styles.buttonLabel, { color: theme.colors.white }]}
           onPress={onPressRegister}
         />
       </View>

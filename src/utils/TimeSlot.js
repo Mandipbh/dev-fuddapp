@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-const timeSlot = () => {
+const   timeSlot = () => {
   var now = `${moment(new Date()).format('HH:mm')}`;
 
   const times = now.split(':');

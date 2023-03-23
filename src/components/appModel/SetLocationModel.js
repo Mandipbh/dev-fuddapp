@@ -21,6 +21,8 @@ import {KeyboardAvoidingView} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {getAllAddress, selectedAddress} from '../../redux/Actions/UserActions';
 import {useNavigation} from '@react-navigation/core';
+import { useToast } from 'react-native-toast-notifications';
+
 
 const SetLocationModel = props => {
   const {isShow, close, fromCheckOut} = props;
@@ -31,6 +33,7 @@ const SetLocationModel = props => {
   const seladdress = useSelector(state => state.UserReducer.selAddress);
 
   const dispatch = useDispatch();
+  const toast = useToast();
 
   const isFromCheckOutpage = fromCheckOut;
   console.log('isFromCheckOutpage', isFromCheckOutpage);
@@ -153,7 +156,8 @@ const SetLocationModel = props => {
   };
   const handleLocationSet = () => {
     if (selAdd === null || selAdd === undefined) {
-      alert('Seleziona un indirizzo');
+      toast.show('Seleziona un indirizzo', toast, { duration: 1000 });
+
       // Toast.show('Seleziona un indirizzo', Toast.show);
     } else {
       close(isFromCheckOutpage);

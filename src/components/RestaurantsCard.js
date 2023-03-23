@@ -24,6 +24,7 @@ const RestaurantsCard = props => {
       <TouchableOpacity
         style={[styles.restaurantView, styles.shadow]}
         onPress={() => {
+          console.log('NULLLLL');
           Popular
             ? navigation.navigate('RISTORANTI', {
                 screen: 'Details',
