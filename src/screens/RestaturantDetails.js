@@ -54,6 +54,8 @@ const RestaturantDetails = ({ route, navigation }) => {
   const isFocuse = useIsFocused();
   const toast = useToast();
 
+  const [cartItemCount, setCartCount] = useState(0);
+
   //get restaurant details & menus
   useEffect(() => {
     if (route?.params) {
@@ -63,6 +65,17 @@ const RestaturantDetails = ({ route, navigation }) => {
     if (route?.params?.item?.ID) {
       setrid(route?.params?.item.ID);
     }
+
+
+
+    var cartCount = 0;
+    cartData.map((data, index) => {
+      if (data.restaurantId == route?.params?.item.ID) {
+        cartCount++;
+        setCartCount(cartCount);
+      }
+    });
+
     setLoad(true);
     const data = {
       latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
@@ -357,7 +370,8 @@ const RestaturantDetails = ({ route, navigation }) => {
             }}>
             <Icon1 name="bag" size={scale(25)} color={theme.colors.white} />
             <Label
-              title={cartData?.length === undefined ? 0 : cartData?.length}
+              // title={cartData?.length === undefined ? 0 : cartData?.length}
+              title={cartData?.length === undefined ? 0 : cartItemCount}
               style={styles.Cartcount}
             />
           </TouchableOpacity>
