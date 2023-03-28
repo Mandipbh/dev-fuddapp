@@ -47,52 +47,62 @@ const CartScreen = ({ route }) => {
   console.log('cartData_', cartData);
 
   const [listedCartData, setListedCartData] = useState([]);
+  const [tmpData, setTmpData] = useState([]);
+  const [hasCartDataAvailable, setCartDataAvailable] = useState(false);
+
   var cartDataArray = [];
 
   useEffect(() => {
     cartData.map((data, index) => {
       if (data.restaurantId == route?.params?.restaurantId) {
         cartDataArray.push(data);
+        setTmpData(cartDataArray);
       }
     });
     setListedCartData(cartDataArray);
+    console.log('sdjhkhj', tmpData);
   }, [isFocus]);
 
+
+
   const incrimentCart = (selitm, idx) => {
+    // listedCartData[idx].Qty = listedCartData[idx].Qty + 1;
     const tmparr = [...cartData];
     tmparr.map(async (data, i) => {
       if (data.Name == selitm.Name) {
         tmparr[i].Qty = tmparr[i].Qty + 1;
       }
     }, []);
-    dispatch(AddToCart(tmparr));
+    setTmpData(tmparr);
 
+    console.log('cartData+++', cartData);
+    //dispatch(AddToCart(tmparr));
   };
 
   const decrimentCart = (selitm, idx) => {
+
     const tmparr = [...cartData];
     tmparr.map(async (data, i) => {
-      console.log('POSITION', i);
       if (data.Name == selitm.Name) {
         if (data.Qty == 1) {
           // tmparr.remove(data);
-
+          console.log('87', cartData);
           const index = tmparr.indexOf(data);
-          console.log('tmparr', index);
           tmparr.splice(index, 1);
-
         } else {
           tmparr[i].Qty = tmparr[i].Qty - 1;
         }
-
       }
     }, []);
+    setTmpData(tmparr);
+    console.log('cartData---', cartData);
+
     dispatch(AddToCart(tmparr));
   };
 
   const calculatePrice = () => {
-    if (listedCartData !== null && listedCartData !== undefined) {
-      const tmparr = [...listedCartData];
+    if (availableCartItem !== null && availableCartItem !== undefined) {
+      const tmparr = [...availableCartItem];
       const initialValue = 0;
       const total = tmparr?.reduce(
         (accumulator, current) => accumulator + current.Amount * current?.Qty,
@@ -103,13 +113,26 @@ const CartScreen = ({ route }) => {
     }
   };
   const isLoginUser = useSelector(state => state.UserReducer?.login);
+
+  var availableCartItem = cartData.filter(function (data) {
+    return data.restaurantId == route?.params?.restaurantId;
+  });
   useEffect(() => {
+    var hasCartData =
+      cartData.filter(function (data) {
+        return data.restaurantId == route?.params?.restaurantId;
+      }).length > 0;
+    console.log('hasCartData', hasCartData);
+    setCartDataAvailable(hasCartData);
+    console.log('availableCartItem', availableCartItem);
+
     if (listedCartData !== null && listedCartData !== undefined) {
       calculatePrice();
+    } else {
+      console.log('cart is empty');
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [listedCartData]);
+  }, [listedCartData, cartData, tmpData]);
 
   const getCalculateDeliveryPrice = total => {
     try {
@@ -120,8 +143,8 @@ const CartScreen = ({ route }) => {
           RestaurantId: listedCartData[0].restaurantId,
           OrderPrice: total,
         };
-        setLoad(true);
 
+        setLoad(true);
         const options = { payloads: data };
         console.log('options', options);
 
@@ -129,7 +152,6 @@ const CartScreen = ({ route }) => {
           .then(res => {
             if (res.Status === 'Success') {
               setDPrice(res.DeliveryPrice);
-              console.log('DeliveryPrice_', res.DeliveryPrice);
               setLoad(false);
             }
           })
@@ -165,7 +187,7 @@ const CartScreen = ({ route }) => {
         <ScrollView
           showsVerticalScrollIndicator={false}
           nestedScrollEnabled={true}>
-          {listedCartData?.length > 0 ? (
+          {hasCartDataAvailable ? (
             cartData
               .filter(data => data.restaurantId == route?.params?.restaurantId)
               .map((i, index) => {
@@ -241,7 +263,7 @@ const CartScreen = ({ route }) => {
         </ScrollView>
       </View>
 
-      {listedCartData?.length > 0 && (
+      {hasCartDataAvailable && (
         <View style={styles.PriceView}>
           <View style={styles.priceingView}>
             <Title title="Totale Prodotti" />
@@ -280,8 +302,8 @@ const CartScreen = ({ route }) => {
               title={`€ ${(
                 pTotal +
                 dPrice +
-                (pTotal < listedCartData[0].MinimumOrder
-                  ? listedCartData[0].MinOrderSupplment
+                (pTotal < tmpData[0]?.MinimumOrder
+                  ? tmpData[0]?.MinOrderSupplment
                   : 0)
               ).toFixed(2)}`}
               style={styles.number}
@@ -296,7 +318,7 @@ const CartScreen = ({ route }) => {
           bottom: theme.SCREENHEIGHT * 0.05,
           zIndex: 111,
         }}>
-        {listedCartData?.length > 0 && (
+        {hasCartDataAvailable && (
           <Button
             title="Procedi al CheckOut"
             style={styles.submitBtn}
@@ -309,12 +331,13 @@ const CartScreen = ({ route }) => {
                   total:
                     pTotal +
                     dPrice +
-                    (pTotal < listedCartData[0].MinimumOrder
-                      ? listedCartData[0].MinOrderSupplment
+                    (pTotal < availableCartItem[0].MinimumOrder
+                      ? availableCartItem[0].MinOrderSupplment
                       : 0),
                   pTotal: pTotal,
                   restId: route?.params?.restaurantId,
                   TimeSlot: route?.params?.selectedTimeSlot,
+                  cartdata: availableCartItem,
                 });
               }
 
@@ -333,7 +356,6 @@ const CartScreen = ({ route }) => {
           setLocationModel(false);
         }}
       />
-
       <LoginModel isVisible={loginModel} close={handleClose} />
     </SafeAreaView>
   );
