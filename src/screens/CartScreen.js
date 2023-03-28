@@ -14,9 +14,10 @@ import LottieView from 'lottie-react-native';
 import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Emptycart, scale, theme } from '../utils';
 import { Button, Label, Title, Error } from '../components';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { AddToCart } from '../redux/Actions/CartAction';
+
 import ApiService, { API } from '../utils/ApiService';
 import moment from 'moment';
 import LoginModel from '../components/appModel/LoginModel';
@@ -41,28 +42,67 @@ const CartScreen = ({ route }) => {
   const [loginModel, setLoginModel] = useState(false);
   const [locationModel, setLocationModel] = useState(false);
   const [nextSlotAvailability, setNextSlotAvailability] = useState(false);
+  const isFocus = useIsFocused();
 
   console.log('cartData_', cartData);
 
+  const [listedCartData, setListedCartData] = useState([]);
+  const [tmpData, setTmpData] = useState([]);
+  const [hasCartDataAvailable, setCartDataAvailable] = useState(false);
+
+  var cartDataArray = [];
+
+  useEffect(() => {
+    cartData.map((data, index) => {
+      if (data.restaurantId == route?.params?.restaurantId) {
+        cartDataArray.push(data);
+        setTmpData(cartDataArray);
+      }
+    });
+    setListedCartData(cartDataArray);
+    console.log('sdjhkhj', tmpData);
+  }, [isFocus]);
+
+
+
   const incrimentCart = (selitm, idx) => {
+    // listedCartData[idx].Qty = listedCartData[idx].Qty + 1;
     const tmparr = [...cartData];
-    tmparr[idx].Qty = tmparr[idx]?.Qty + 1;
-    dispatch(AddToCart(tmparr));
+    tmparr.map(async (data, i) => {
+      if (data.Name == selitm.Name) {
+        tmparr[i].Qty = tmparr[i].Qty + 1;
+      }
+    }, []);
+    setTmpData(tmparr);
+
+    console.log('cartData+++', cartData);
+    //dispatch(AddToCart(tmparr));
   };
 
   const decrimentCart = (selitm, idx) => {
+
     const tmparr = [...cartData];
-    if (tmparr[idx].Qty <= 1) {
-      tmparr.splice(idx, 1);
-    } else {
-      tmparr[idx].Qty = tmparr[idx]?.Qty - 1;
-    }
+    tmparr.map(async (data, i) => {
+      if (data.Name == selitm.Name) {
+        if (data.Qty == 1) {
+          // tmparr.remove(data);
+          console.log('87', cartData);
+          const index = tmparr.indexOf(data);
+          tmparr.splice(index, 1);
+        } else {
+          tmparr[i].Qty = tmparr[i].Qty - 1;
+        }
+      }
+    }, []);
+    setTmpData(tmparr);
+    console.log('cartData---', cartData);
+
     dispatch(AddToCart(tmparr));
   };
 
   const calculatePrice = () => {
-    if (cartData !== null && cartData !== undefined) {
-      const tmparr = [...cartData];
+    if (availableCartItem !== null && availableCartItem !== undefined) {
+      const tmparr = [...availableCartItem];
       const initialValue = 0;
       const total = tmparr?.reduce(
         (accumulator, current) => accumulator + current.Amount * current?.Qty,
@@ -73,25 +113,38 @@ const CartScreen = ({ route }) => {
     }
   };
   const isLoginUser = useSelector(state => state.UserReducer?.login);
-  useEffect(() => {
-    if (cartData !== null && cartData !== undefined) {
-      calculatePrice();
-    }
 
+  var availableCartItem = cartData.filter(function (data) {
+    return data.restaurantId == route?.params?.restaurantId;
+  });
+  useEffect(() => {
+    var hasCartData =
+      cartData.filter(function (data) {
+        return data.restaurantId == route?.params?.restaurantId;
+      }).length > 0;
+    console.log('hasCartData', hasCartData);
+    setCartDataAvailable(hasCartData);
+    console.log('availableCartItem', availableCartItem);
+
+    if (listedCartData !== null && listedCartData !== undefined) {
+      calculatePrice();
+    } else {
+      console.log('cart is empty');
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cartData]);
+  }, [listedCartData, cartData, tmpData]);
 
   const getCalculateDeliveryPrice = total => {
     try {
-      if (cartData) {
+      if (listedCartData) {
         const data = {
           Latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
           Longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
-          RestaurantId: cartData[0].restaurantId,
+          RestaurantId: listedCartData[0].restaurantId,
           OrderPrice: total,
         };
-        setLoad(true);
 
+        setLoad(true);
         const options = { payloads: data };
         console.log('options', options);
 
@@ -99,7 +152,6 @@ const CartScreen = ({ route }) => {
           .then(res => {
             if (res.Status === 'Success') {
               setDPrice(res.DeliveryPrice);
-              console.log('DeliveryPrice_', res.DeliveryPrice);
               setLoad(false);
             }
           })
@@ -135,65 +187,66 @@ const CartScreen = ({ route }) => {
         <ScrollView
           showsVerticalScrollIndicator={false}
           nestedScrollEnabled={true}>
-          {cartData !== null &&
-            cartData !== undefined &&
-            cartData?.length > 0 ? (
-            cartData?.map((i, index) => {
-              return (
-                <View
-                  style={{
-                    borderBottomColor: theme.colors.gray1,
-                    borderBottomWidth:
-                      cartData?.length === index + 1 ? 0 : scale(1),
-                    // paddingBottom: scale(3),
-                  }}>
-                  <View style={styles.items}>
-                    <Image
-                      source={{
-                        uri: i?.Image,
-                      }}
-                      style={styles.productImg}
-                    />
-                    <View style={styles.detailsView}>
-                      <Title title={i?.Name} />
-                      <Label title={i?.Code} style={styles.desc} />
+          {hasCartDataAvailable ? (
+            cartData
+              .filter(data => data.restaurantId == route?.params?.restaurantId)
+              .map((i, index) => {
+                // listedCartData?.map((i, index) => {
+                return (
+                  <View
+                    style={{
+                      borderBottomColor: theme.colors.gray1,
+                      borderBottomWidth:
+                        listedCartData?.length === index + 1 ? 0 : scale(1),
+                      // paddingBottom: scale(3),
+                    }}>
+                    <View style={styles.items}>
+                      <Image
+                        source={{
+                          uri: i?.Image,
+                        }}
+                        style={styles.productImg}
+                      />
+                      <View style={styles.detailsView}>
+                        <Title title={i?.Name} />
+                        <Label title={i?.Code} style={styles.desc} />
+                      </View>
+                    </View>
+                    <View style={[styles.row, { justifyContent: 'space-between' }]}>
+                      <View style={[styles.row, { marginLeft: scale(35) }]}>
+                        <TouchableOpacity
+                          style={styles.btn}
+                          onPress={() => {
+                            decrimentCart(i, index);
+                          }}>
+                          <Icon1
+                            name={i?.Qty <= 1 ? 'delete' : 'minus'}
+                            size={scale(16)}
+                            color={theme.colors.gray}
+                          />
+                        </TouchableOpacity>
+                        <Title title={i?.Qty} style={styles.number} />
+                        <TouchableOpacity
+                          style={styles.btn}
+                          onPress={() => {
+                            incrimentCart(i, index);
+                          }}>
+                          <Icon
+                            name="plus"
+                            size={scale(16)}
+                            color={theme.colors.gray}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                      <Title
+                        title={`€ ${(i?.Amount * i?.Qty)?.toFixed(2)}`}
+                        style={styles.price}
+                      />
+                      {/* i?.Items?.length > 0 ? i?.Items.map((data, index) =>  { return <Title title={data?.Name} />} ) */}
                     </View>
                   </View>
-                  <View style={[styles.row, { justifyContent: 'space-between' }]}>
-                    <View style={[styles.row, { marginLeft: scale(35) }]}>
-                      <TouchableOpacity
-                        style={styles.btn}
-                        onPress={() => {
-                          decrimentCart(i, index);
-                        }}>
-                        <Icon1
-                          name={i?.Qty <= 1 ? 'delete' : 'minus'}
-                          size={scale(16)}
-                          color={theme.colors.gray}
-                        />
-                      </TouchableOpacity>
-                      <Title title={i?.Qty} style={styles.number} />
-                      <TouchableOpacity
-                        style={styles.btn}
-                        onPress={() => {
-                          incrimentCart(i, index);
-                        }}>
-                        <Icon
-                          name="plus"
-                          size={scale(16)}
-                          color={theme.colors.gray}
-                        />
-                      </TouchableOpacity>
-                    </View>
-                    <Title
-                      title={`€ ${(i?.Amount * i?.Qty)?.toFixed(2)}`}
-                      style={styles.price}
-                    />
-                    {/* i?.Items?.length > 0 ? i?.Items.map((data, index) =>  { return <Title title={data?.Name} />} ) */}
-                  </View>
-                </View>
-              );
-            })
+                );
+              })
           ) : (
             <>
               <View style={styles.noDataCon}>
@@ -210,22 +263,22 @@ const CartScreen = ({ route }) => {
         </ScrollView>
       </View>
 
-      {cartData !== null && cartData !== undefined && cartData?.length > 0 && (
+      {hasCartDataAvailable && (
         <View style={styles.PriceView}>
           <View style={styles.priceingView}>
             <Title title="Totale Prodotti" />
             <Title title={`€ ${pTotal?.toFixed(2)}`} style={styles.number} />
           </View>
 
-          {pTotal < cartData[0]?.MinimumOrder && (
+          {pTotal < listedCartData[0]?.MinimumOrder && (
             <View style={styles.priceingView}>
               <Title
-                title={`Sipplemento ordine inferiore a €${cartData[0].MinimumOrder}`}
+                title={`Sipplemento ordine inferiore a €${listedCartData[0].MinimumOrder}`}
                 MinOrderCharge
                 style={{ width: '70%' }}
               />
               <Title
-                title={`€ ${cartData[0]?.MinOrderSupplment?.toFixed(2)}`}
+                title={`€ ${listedCartData[0]?.MinOrderSupplment?.toFixed(2)}`}
                 style={styles.number}
               />
             </View>
@@ -249,8 +302,8 @@ const CartScreen = ({ route }) => {
               title={`€ ${(
                 pTotal +
                 dPrice +
-                (pTotal < cartData[0].MinimumOrder
-                  ? cartData[0].MinOrderSupplment
+                (pTotal < tmpData[0]?.MinimumOrder
+                  ? tmpData[0]?.MinOrderSupplment
                   : 0)
               ).toFixed(2)}`}
               style={styles.number}
@@ -265,7 +318,7 @@ const CartScreen = ({ route }) => {
           bottom: theme.SCREENHEIGHT * 0.05,
           zIndex: 111,
         }}>
-        {cartData?.length > 0 && (
+        {hasCartDataAvailable && (
           <Button
             title="Procedi al CheckOut"
             style={styles.submitBtn}
@@ -278,12 +331,13 @@ const CartScreen = ({ route }) => {
                   total:
                     pTotal +
                     dPrice +
-                    (pTotal < cartData[0].MinimumOrder
-                      ? cartData[0].MinOrderSupplment
+                    (pTotal < availableCartItem[0].MinimumOrder
+                      ? availableCartItem[0].MinOrderSupplment
                       : 0),
                   pTotal: pTotal,
                   restId: route?.params?.restaurantId,
                   TimeSlot: route?.params?.selectedTimeSlot,
+                  cartdata: availableCartItem,
                 });
               }
 
@@ -302,7 +356,6 @@ const CartScreen = ({ route }) => {
           setLocationModel(false);
         }}
       />
-
       <LoginModel isVisible={loginModel} close={handleClose} />
     </SafeAreaView>
   );

@@ -43,9 +43,16 @@ const RestaurantScreen = () => {
   const [load, setLoad] = useState(false);
   const cartData = useSelector(state => state?.CartReducer.cartData);
   const startOfMonth = moment().format('YYYY-MM-DD');
+
   const selectedCat = useSelector(
     state => state?.RestaurantReducers?.selCategory,
   );
+  const categoryData = useSelector(state => state.HomeReducers?.categoryList);
+
+  const restaurantData = useSelector(
+    state => state.RestaurantReducers?.restaurantList,
+  );
+
   useEffect(() => {
     if (selectedCat !== null) {
       setSelCategory(selectedCat?.Nome);
@@ -105,38 +112,35 @@ const RestaurantScreen = () => {
     console.log('timeSlotData ?? ', timeSlotData);
     setDisplayedTimeSlot(timeSlotData.dtime);
     setTimeSlot(timeSlotData.ptime);
+
+    const data = {
+      date: moment(date).format('DD-MM-YYYY'),
+      timeSlot: timeSlotData.ptime, //'16:00TO16:30',
+      category: selCategory,
+      latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
+      longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
+    };
+    console.log('Payload of ??? ', data);
+    dispatch(getpopularRestaurants(data));
+    dispatch(getAllCategory());
   }, [isFocuse]);
 
   useEffect(() => {
     setLoadding(true);
-
-    const data =
-    // {
-    //   id: 0,
-    //   date: '01-12-2022',
-    //   timeSlot: '16:00TO16:30',
-    //   category: '',
-    //   latitute: '',
-    //   longitude: '',
-    // };
-
-    {
+    const data = {
       date: moment(date).format('DD-MM-YYYY'),
       timeSlot: timeSloat, //'16:00TO16:30',
       category: selCategory,
       latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
       longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
     };
-    console.log('Payload of ??? ', data);
+    console.log('Payload data', data);
     setTimeSlot(timeSloat);
     dispatch(getpopularRestaurants(data));
     dispatch(getAllCategory());
-  }, [isFocuse, selCategory, timeSloat, date]);
+  }, [selCategory, timeSloat, date]);
 
-  const categoryData = useSelector(state => state.HomeReducers?.categoryList);
-  const restaurantData = useSelector(
-    state => state.RestaurantReducers?.restaurantList,
-  );
+
   // const loadding = useSelector(state => state.RestaurantReducers.loadding);
 
   useEffect(() => {
@@ -198,7 +202,7 @@ const RestaurantScreen = () => {
       setSearch(text);
     }
   };
-  console.log('restaurantData >>> ', restaurantData);
+  // console.log('restaurantData >>> ', restaurantData);
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.mainContainer}>

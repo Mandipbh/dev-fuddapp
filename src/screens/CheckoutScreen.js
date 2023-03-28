@@ -57,7 +57,7 @@ const CheckoutScreen = ({ route }) => {
   const selAddress = useSelector(state => state.UserReducer.selAddress);
   const [load, setLoad] = useState(false);
   const [displayedTimeSloat, setDisplayedTimeSlot] = useState(null);
-  const cartData = useSelector(state => state?.CartReducer.cartData);
+  var cartDataArray = useSelector(state => state?.CartReducer.cartData);
   const [paymentData, setPaymentData] = useState(null);
   const isLoginUser = useSelector(state => state.UserReducer?.login);
   const [grandTotal, setGrandTotal] = useState(0);
@@ -70,6 +70,7 @@ const CheckoutScreen = ({ route }) => {
   const isFocus = useIsFocused();
   const [nextSlotAvailability, setNextSlotAvailability] = useState(false);
   const [changeAddress, setChangeAddress] = useState(false);
+  const [cartData, setCartData] = useState();
 
   const [delMsg, setDelMsg] = useState('');
   const [checkTimeslot, setCheckTimeslot] = useState('');
@@ -84,7 +85,11 @@ const CheckoutScreen = ({ route }) => {
     state => state.RestaurantReducers?.restaurantDetails,
   );
 
-  console.log('route?.params?.TimeSlot', route?.params?.TimeSlot);
+  useEffect(() => {
+    setCartData(route?.params?.cartdata);
+  }, [isFocus]);
+
+
 
   const handleTimer = time => {
     setTimeModel(!timeModel);
@@ -99,7 +104,6 @@ const CheckoutScreen = ({ route }) => {
   };
 
   useEffect(() => {
-    console.log('selAddresssss', selAddress);
     // handleRestaurantAvailability();
   }, [changeAddress == true]);
 
@@ -159,7 +163,6 @@ const CheckoutScreen = ({ route }) => {
   useEffect(() => {
     var restaurantId = restaurantData?.ID;
     setRId(restaurantId);
-    console.log('RID', rID);
 
     let newRoundedTime = '';
     let newEndroundTime = '';
@@ -171,12 +174,12 @@ const CheckoutScreen = ({ route }) => {
     // restaurantScreenSelectedTime = route?.params?.TimeSlot?.split('TO'); --> previos screen selected time
 
 
-    console.log('route?.params?.TimeSlot', route?.params?.TimeSlot)
     //selected time from previous screen
     let restaurantScreenSelectedTime = route?.params?.TimeSlot?.split('TO');
     let restaurantOpenTime = '';
     let restaurantCloseTime = '';
-    restaurantOpenTime = restaurantScreenSelectedTime[0];
+    restaurantOpenTime =
+      route?.params?.TimeSlot !== null ? restaurantScreenSelectedTime[0] : '';
     restaurantCloseTime = restaurantScreenSelectedTime[1];
 
     let [selectedhrs, selectedMin] = restaurantOpenTime.split(':').map(Number);
@@ -186,13 +189,12 @@ const CheckoutScreen = ({ route }) => {
     let [hrs, min] = restaurantData?.OpeningTime.split(':').map(Number);
     var jsonResponseOpenTime = parseInt(hrs * 3600 + min * 60);
 
-    console.log('restaurantData?.OpeningTime ', restaurantData?.OpeningTime);
-    console.log('restScreenSelectedTime', restScreenSelectedTime);
-    console.log('jsonResponseOpenTime', jsonResponseOpenTime);
-    console.log('=========================================================');
+    // console.log('restaurantData?.OpeningTime ', restaurantData?.OpeningTime);
+    // console.log('restScreenSelectedTime', restScreenSelectedTime);
+    // console.log('jsonResponseOpenTime', jsonResponseOpenTime);
+    // console.log('=========================================================');
 
     if (restScreenSelectedTime < jsonResponseOpenTime) {
-      console.log('TEST1');
 
       //make json response as selected time
       let splitedResOpenTimeMin = min;
@@ -220,7 +222,6 @@ const CheckoutScreen = ({ route }) => {
       setTimeSlot(newtimeSlot);
       setCheckTimeslot(newtimeSlot);
     } else {
-      console.log('TEST2', route?.params?.TimeSlot);
 
       setTimeSlot(route?.params?.TimeSlot);
       setCheckTimeslot(route?.params?.TimeSlot);
@@ -252,7 +253,7 @@ const CheckoutScreen = ({ route }) => {
               const coupenAmt = res.Amount;
               setCoupenAmnt(coupenAmt);
             }
-            console.log('response >> ', res);
+            //  console.log('response >> ', res);
             setCoupenApplied(true);
           })
           .catch(c => {
@@ -353,6 +354,30 @@ const CheckoutScreen = ({ route }) => {
   //   },
   // };
 
+  const [remainingData, setRemainingData] = useState([]);
+
+  const handleRemainingCartData = async () => {
+    var cartdata = [];
+    await cartDataArray
+      .filter(data => {
+
+        return data.restaurantId !== route?.params?.restId;
+      })
+      .map((i, index) => {
+        cartdata.push(i);
+        console.log('loop', cartdata);
+      });
+    console.log('handleRemainingCartData', cartdata);
+    setAvailableData(cartdata);
+  };
+
+  const setAvailableData = data => {
+    // setRemainingData(cartData);
+    console.log('cartData1', data);
+    dispatch(AddToCart(data));
+  };
+
+
   const handlePlaceOrder = time => {
     var cartDetailJson = {
       UserId: user?.UserInfo !== undefined && user?.UserInfo.Id,
@@ -402,14 +427,16 @@ const CheckoutScreen = ({ route }) => {
         const options = { payloads: cartDetailJson };
         ApiService.post(API.placeOrder, options)
           .then(res => {
-            console.log('res of placeOrder >> ', res);
+            //  console.log('res of placeOrder >> ', res);
             if (res.Status === 'Success') {
               setLoad(false);
               setProcesss(!process);
               setCoupenApplied(false);
               setCoupenAmnt(0);
               dispatch(selectedAddress(null));
-              dispatch(AddToCart([]));
+
+              handleRemainingCartData();
+              //dispatch(AddToCart([]));
             }
           })
           .catch(e => {
@@ -443,16 +470,16 @@ const CheckoutScreen = ({ route }) => {
 
           const options = { payloads: data };
 
-          console.log('payloads_options', options);
+          //  console.log('payloads_options', options);
 
           ApiService.post(API.checkestaurantAvailability, options)
             .then(res => {
               if (res.Status === 'Success') {
-                console.log('res of RestaurantAvailability >> ', res);
+                //   console.log('res of RestaurantAvailability >> ', res);
                 setLoad(false);
                 setDelMsg('');
                 if (res.IsAvail == false) {
-                  console.log('ifffff');
+
                   setCheckTimeslot(res.NextAvailableSlot);
                   setNextSlotAvailability(true);
                 } else {
@@ -478,7 +505,7 @@ const CheckoutScreen = ({ route }) => {
                 'error in RestaurantAvailability> ',
                 e?.response.data,
               );
-            
+
               toast.show(e.response?.data?.Errors[0], toast, { duration: 1000 });
 
             });
@@ -738,8 +765,6 @@ const CheckoutScreen = ({ route }) => {
                     style={styles.submitBtn}
                     titleStyle={styles.btnTxt}
                     onPress={() => {
-                      console.log('CHECKTIMESLOT', checkTimeslot);
-
                       handleRestaurantAvailability();
                     }}
                   />
@@ -770,12 +795,12 @@ const CheckoutScreen = ({ route }) => {
       />
       <TimePickerModel isVisible={timeModel} close={handleTimer} />
       <SetLocationModel
-        fromCheckOut={true}
+        // fromCheckOut={true}
         isShow={locationModel}
-        close={isFromCheckOutpage => {
-          if (isFromCheckOutpage == true) {
-            setChangeAddress(true);
-          }
+        close={() => {
+          // if (isFromCheckOutpage == true) {
+          //   setChangeAddress(true);
+          // }
           setLocationModel(!locationModel);
         }}
         isCart

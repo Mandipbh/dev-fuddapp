@@ -54,6 +54,21 @@ const RestaturantDetails = ({ route, navigation }) => {
   const isFocuse = useIsFocused();
   const toast = useToast();
 
+  const [cartItemCount, setCartCount] = useState(0);
+
+  useEffect(() => {
+    var cartCount = 0;
+    console.log('RestDetail', cartData);
+    setCartCount(cartCount);
+    cartData.map((data, index) => {
+      if (data.restaurantId === route?.params?.item.ID) {
+        cartCount++;
+        setCartCount(cartCount);
+      }
+    });
+  }, [isFocuse, cartItemCount]);
+
+
   //get restaurant details & menus
   useEffect(() => {
     if (route?.params) {
@@ -63,6 +78,10 @@ const RestaturantDetails = ({ route, navigation }) => {
     if (route?.params?.item?.ID) {
       setrid(route?.params?.item.ID);
     }
+
+
+
+
     setLoad(true);
     const data = {
       latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
@@ -82,7 +101,7 @@ const RestaturantDetails = ({ route, navigation }) => {
       ApiService.post(API.getPerticularRestaurant, options)
         .then(res => {
           if (res) {
-            console.log('res?.RestaurantDetail', res?.RestaurantDetail);
+            // console.log('res?.RestaurantDetail', res?.RestaurantDetail);
             setLoad(false);
             setDetails(res?.RestaurantDetail);
             // dispatch({
@@ -235,6 +254,7 @@ const RestaturantDetails = ({ route, navigation }) => {
   };
   const handleModel = async item => {
     console.log('handleModel', item);
+
     setCartModel(false);
     if (item !== null) {
       if (item !== undefined) {
@@ -256,8 +276,19 @@ const RestaturantDetails = ({ route, navigation }) => {
           itemQtyhandle.Image =
             details?.Menu?.ProductsImagePrefix + item?.Image;
           tmpArr.push(itemQtyhandle);
+
+
+
         }
         setSelItem(item);
+        var cartCount = 0;
+        tmpArr.map((data, index) => {
+          if (data.restaurantId == route?.params?.item.ID) {
+            cartCount++;
+            setCartCount(cartCount);
+          }
+        });
+
       } else {
         setSelItem(item);
         setCartModel(true);
@@ -268,7 +299,11 @@ const RestaturantDetails = ({ route, navigation }) => {
         itemQtyhandle.MinOrderSupplment = details?.MinOrderSupplment;
         itemQtyhandle.Image = details?.Menu?.ProductsImagePrefix + item?.Image;
         // show?  null : tmpArr.push(itemQtyhandle) : null
+        // console.log('handleCartData2', tmpArr.length);
+
       }
+
+
     }
   };
 
@@ -277,6 +312,7 @@ const RestaturantDetails = ({ route, navigation }) => {
   const handleCartAddItem = async item => {
     const tmpArr = cartData === undefined ? [] : [...cartData];
     // tmpArr.push(item);
+
 
     dispatch(AddToCart(tmpArr));
     if (
@@ -298,6 +334,16 @@ const RestaturantDetails = ({ route, navigation }) => {
         tmpArr.push(itemQtyhandle);
       }
       setSelItem(item);
+      console.log('handleCartData1', tmpArr.length);
+
+      var cartCount = 0;
+      tmpArr.map((data, index) => {
+        if (data.restaurantId == route?.params?.item.ID) {
+          cartCount++;
+          setCartCount(cartCount);
+        }
+      });
+
     } else {
       setSelItem(item);
       setCartModel(true);
@@ -309,7 +355,18 @@ const RestaturantDetails = ({ route, navigation }) => {
       itemQtyhandle.Image = details?.Menu?.ProductsImagePrefix + item?.Image;
       // show?  null : tmpArr.push(itemQtyhandle) : null
     }
-    toast.show('Articolo aggiunto nel carrello.', toast, { duration: 1000 });
+    toast.show('Articolo aggiunto nel carrello.', toast, { duration: 500 });
+
+    // var countArray = [];
+    // tmpArr.map(async (data, i) => {
+    //   console.log('dasgfd', tmpArr);
+    //   if (data.restaurantId == item.restaurantId) {
+    //     countArray.push(data);
+    //     console.log('countArray', countArray.length);
+    //     setCartCount(countArray.length);
+    //     console.log('called_348', cartItemCount);
+    //   }
+    // }, []);
   };
 
   return (
@@ -351,13 +408,14 @@ const RestaturantDetails = ({ route, navigation }) => {
             onPress={() => {
               navigation.navigate('Cart', {
                 restaurantId: resId,
-                selectedTimeSlot: selectedTimeSlot,
+                selectedTimeSlot: route?.params?.timeSlot,
               });
               // setCartModel(!cartModel);
             }}>
             <Icon1 name="bag" size={scale(25)} color={theme.colors.white} />
             <Label
-              title={cartData?.length === undefined ? 0 : cartData?.length}
+              // title={cartData?.length === undefined ? 0 : cartData?.length}
+              title={cartData?.length === undefined ? 0 : cartItemCount}
               style={styles.Cartcount}
             />
           </TouchableOpacity>
