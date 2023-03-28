@@ -1,5 +1,5 @@
 import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -10,13 +10,15 @@ import {
   RestaturantDetails,
   CartScreen,
   Checkout,
+  OrderDetails,
+  OrderDetailScreen,
 } from '../screens';
-import { scale, theme } from '../utils';
-import { Platform, Text, View } from 'react-native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { AboutUs, Label } from '../components';
-import { useState } from 'react';
-import { useFocusEffect, useNavigation } from '@react-navigation/core';
+import {scale, theme} from '../utils';
+import {Platform, Text, View} from 'react-native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {AboutUs, Label} from '../components';
+import {useState} from 'react';
+import {useFocusEffect, useNavigation} from '@react-navigation/core';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -25,36 +27,56 @@ const Comman = () => {
 };
 
 const Restaturant = () => {
-  const [isFirstScreenShown, seisFirstScreenShown] = useState(false);
-  const navigation = useNavigation();
-
   return (
-    <Stack.Navigator
-      screenOptions={{ headerShown: false }}>
+    <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen
         name="RISTORANTI"
         component={Restaurant}
-        options={{ headerShown: false }}
+        options={{headerShown: false}}
       />
       <Stack.Screen
         name="Details"
         component={RestaturantDetails}
-        options={{ headerShown: false }}
+        options={{headerShown: false}}
       />
       <Stack.Screen
         name="Cart"
         component={CartScreen}
-        options={{ headerShown: false }}
+        options={{headerShown: false}}
       />
       <Stack.Screen
         name="Checkout"
         component={Checkout}
-        options={{ headerShown: false }}
+        options={{headerShown: false}}
       />
     </Stack.Navigator>
   );
 };
 
+const AccountStack = () => {
+  return (
+    <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Screen
+        name="Account"
+        component={Account}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="OrderDetails"
+        component={OrderDetailScreen}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
+  );
+};
+
+const restaurantList = ({navigation, route}) => ({
+  tabPress: () => navigation.navigate(route.name),
+});
+
+const AccountLis = ({navigation, route}) => ({
+  tabPress: () => navigation.navigate(route.name),
+});
 const BottomTab = () => {
   return (
     <Tab.Navigator
@@ -94,7 +116,7 @@ const BottomTab = () => {
         name="Home"
         component={Home}
         options={{
-          tabBarIcon: ({ focused }) => {
+          tabBarIcon: ({focused}) => {
             return (
               <FontAwesome5
                 name="home"
@@ -109,9 +131,10 @@ const BottomTab = () => {
       <Tab.Screen
         name="RISTORANTI"
         component={Restaturant}
+        listeners={restaurantList}
         options={{
           unmountOnBlur: true,
-          tabBarIcon: ({ focused }) => {
+          tabBarIcon: ({focused}) => {
             return (
               <MIcon
                 name="silverware-fork-knife"
@@ -125,9 +148,11 @@ const BottomTab = () => {
 
       <Tab.Screen
         name="ACCOUNT"
-        component={Account}
+        component={AccountStack}
+        listeners={AccountLis}
         options={{
-          tabBarIcon: ({ focused }) => {
+          unmountOnBlur: true,
+          tabBarIcon: ({focused}) => {
             return (
               <FontAwesome5
                 name="user-alt"
@@ -140,10 +165,10 @@ const BottomTab = () => {
       />
 
       <Tab.Screen
-        name="AUITO"
+        name="ASSISTENZA"
         component={Comman}
         options={{
-          tabBarIcon: ({ focused }) => {
+          tabBarIcon: ({focused}) => {
             return (
               <AntDesign
                 name="questioncircle"

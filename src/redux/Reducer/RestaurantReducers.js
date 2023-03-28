@@ -25,7 +25,9 @@ export default (state = initialState, action) => {
         loadding: action.payload,
       };
     case types.SETCATEGORY:
+      console.log('pay load in reducer ?/ ', action.payload);
       return {
+        ...state,
         selCategory: action.payload,
       };
     case types.LOGOUT:

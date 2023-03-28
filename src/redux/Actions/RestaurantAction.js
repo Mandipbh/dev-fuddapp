@@ -20,7 +20,7 @@ export const getpopularRestaurants = data => {
           }
         })
         .catch(c => {
-          dispatch({type: LOADINGRESTORANTI, payload: false});
+          dispatch({type: GETALLRISTORANTI, payload: []});
           console.log('catch of restaurants  ', c.response.data);
         });
     } catch (error) {
@@ -54,8 +54,9 @@ export const restaurantDetails = data => {
 };
 
 export const setCategory = payload => {
+  console.log('payload >> ', payload);
   return {
     type: SETCATEGORY,
-    payload,
+    payload: payload,
   };
 };

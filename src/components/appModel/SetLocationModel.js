@@ -1,5 +1,5 @@
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -9,29 +9,30 @@ import {
   Platform,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import { scale, theme } from '../../utils';
+import {scale, theme} from '../../utils';
 import Icon from 'react-native-vector-icons/Feather';
+import Toast from 'react-native-toast-notifications';
+
 import Icon1 from 'react-native-vector-icons/AntDesign';
 // import Toast from 'react-native-simple-toast';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 
-import { Label, Title } from '../Label';
-import { AddNewAddress, Button } from '../index';
-import { KeyboardAvoidingView } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import { getAllAddress, selectedAddress } from '../../redux/Actions/UserActions';
-import { useNavigation } from '@react-navigation/core';
-import { useToast } from 'react-native-toast-notifications';
-
+import {Label, Title} from '../Label';
+import {AddNewAddress, Button} from '../index';
+import {KeyboardAvoidingView} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
+import {getAllAddress, selectedAddress} from '../../redux/Actions/UserActions';
+import {useNavigation} from '@react-navigation/core';
+import {useToast} from 'react-native-toast-notifications';
 
 const SetLocationModel = props => {
-  const { isShow, close } = props;
+  const {isShow, close} = props;
   const [selAdd, setSelAdd] = useState(null);
   const [saveAddress, setSaveAddress] = useState([]);
   const [newAddressModel, setNewAddressModel] = useState(false);
   const addressList = useSelector(state => state.HomeReducers.addressList);
   const seladdress = useSelector(state => state.UserReducer.selAddress);
-
+  const toastRef = useRef();
   const dispatch = useDispatch();
   const toast = useToast();
 
@@ -72,7 +73,7 @@ const SetLocationModel = props => {
     if (place.geometry !== undefined) {
       const plcGeom = place.geometry;
       if (plcGeom.location !== undefined) {
-        const { lat, lng } = place?.geometry?.location;
+        const {lat, lng} = place?.geometry?.location;
         latt = lat;
         lngg = lng;
       }
@@ -156,8 +157,7 @@ const SetLocationModel = props => {
   };
   const handleLocationSet = () => {
     if (selAdd === null || selAdd === undefined) {
-      toast.show('Seleziona un indirizzo', toast, { duration: 1000 });
-
+      toastRef.current.show('Seleziona un indirizzo', toast, {duration: 1000});
       // Toast.show('Seleziona un indirizzo', Toast.show);
     } else {
       // close(isFromCheckOutpage);
@@ -173,7 +173,7 @@ const SetLocationModel = props => {
         statusBarTranslucent
         backdropColor={theme.colors.black1}
         backdropOpacity={0.5}
-        style={{ margin: 0 }}>
+        style={{margin: 0}}>
         <View
           style={[
             styles.mainContainer,
@@ -194,7 +194,7 @@ const SetLocationModel = props => {
               <>
                 <KeyboardAvoidingView
                   behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                  style={[styles.container, { paddingHorizontal: 0 }]}>
+                  style={[styles.container, {paddingHorizontal: 0}]}>
                   {/* <GooglePlacesAutocomplete
               placeholder="Inserisci indirizzo"
               disableScroll={false}
@@ -255,7 +255,7 @@ const SetLocationModel = props => {
                                   <View style={styles.row}>
                                     <Icon
                                       name="phone"
-                                      style={{ marginLeft: scale(8) }}
+                                      style={{marginLeft: scale(8)}}
                                     />
                                     <Label title={` ${item?.Telephone}`} />
                                   </View>
@@ -272,7 +272,7 @@ const SetLocationModel = props => {
                       backgroundColor: theme.colors.primary,
                       marginTop: scale(10),
                     }}
-                    titleStyle={{ color: theme.colors.white }}
+                    titleStyle={{color: theme.colors.white}}
                     onPress={() => {
                       handleLocationSet();
                     }}
@@ -317,6 +317,7 @@ const SetLocationModel = props => {
             )}
           </View>
         </View>
+        <Toast ref={toastRef} />
       </Modal>
       <AddNewAddress
         isVisible={newAddressModel}
@@ -427,7 +428,7 @@ const styles = StyleSheet.create({
     fontSize: scale(14),
     color: theme.colors.gray,
   },
-  nodataCon: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  nodataCon: {flex: 1, justifyContent: 'center', alignItems: 'center'},
 });
 
 export default SetLocationModel;

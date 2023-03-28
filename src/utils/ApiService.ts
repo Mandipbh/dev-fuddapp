@@ -72,7 +72,8 @@ export const API = {
   placeOrder:'Order/PlaceOrder',
   checkestaurantAvailability:'Restaurant/CheckRestaurantSlotAvailability',
   CalculateDeliveryPrice:'Restaurant/CalculateDeliveryPrice',
-  ReOrder:'Order/RepeatUserOrderById?'
+  ReOrder:'Order/RepeatUserOrderById?',
+  orderDetails:'Order/GetOrderDetailsById?id='
 };
 
 

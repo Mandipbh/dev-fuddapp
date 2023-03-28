@@ -8,20 +8,20 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/Feather';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import DatePicker from 'react-native-date-picker';
-import { scale, theme, timeSlot } from '../utils';
-import { Label, Loader, Restaurant, TimePickerModel, Title } from '../components';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
+import {scale, theme, timeSlot} from '../utils';
+import {Label, Loader, Restaurant, TimePickerModel, Title} from '../components';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import SliderModal from '../components/appModel/SliderModal';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
-import { getAllCategory } from '../redux/Actions/HomeAction';
+import {useDispatch, useSelector} from 'react-redux';
+import {useEffect} from 'react';
+import {getAllCategory} from '../redux/Actions/HomeAction';
 import moment from 'moment';
-import { getpopularRestaurants } from '../redux/Actions/RestaurantAction';
-import ApiService, { API } from '../utils/ApiService';
+import {getpopularRestaurants} from '../redux/Actions/RestaurantAction';
+import ApiService, {API} from '../utils/ApiService';
 
 const RestaurantScreen = () => {
   const navigation = useNavigation();
@@ -140,7 +140,6 @@ const RestaurantScreen = () => {
     dispatch(getAllCategory());
   }, [selCategory, timeSloat, date]);
 
-
   // const loadding = useSelector(state => state.RestaurantReducers.loadding);
 
   useEffect(() => {
@@ -169,7 +168,7 @@ const RestaurantScreen = () => {
     }
   };
 
-  const renderList = ({ item, index }) => {
+  const renderList = ({item, index}) => {
     return (
       <Restaurant
         item={item}
@@ -272,7 +271,7 @@ const RestaurantScreen = () => {
         </View>
 
         <FlatList
-          style={{ height: '70%' }}
+          style={{height: '70%'}}
           data={restaurantsData}
           renderItem={renderList}
           showsVerticalScrollIndicator={false}

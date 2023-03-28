@@ -18,8 +18,8 @@ const CategoryCard = props => {
       <View style={styles.itemView}>
         <TouchableOpacity
           style={[styles.categoryView, styles.shadow]}
-          onPress={async () => {
-            await dispatch(setCategory(item));
+          onPress={() => {
+            dispatch(setCategory(item));
             navigation.navigate('RISTORANTI');
           }}>
           <FastImage

@@ -1,49 +1,84 @@
-import {Platform, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import React from 'react';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Feather from 'react-native-vector-icons/Feather';
 import {scale, theme} from '../utils';
 import {Label, Title} from './Label';
+import {useNavigation} from '@react-navigation/core';
 
 const AboutUs = () => {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Title title="CHI SIAMO" style={{marginTop: scale(25)}} />
+      <View style={styles.headerView}>
+        <AntDesign
+          name="left"
+          color={theme.colors.black}
+          size={scale(22)}
+          onPress={() => {
+            navigation.goBack();
+          }}
+        />
+
+        <Title title="Assistenza" style={styles.titleScreen} />
+        <View />
       </View>
       <View style={styles.subConrtainer}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <Label
-            style={styles.lbl}
-            title="Il delivery è al centro di tutte le attività di Fuddapp, la missione è riuscire a portare i migliori ristoratori di Palermo a casa vostra, offrendovi un servizio efficiente, puntuale e performante."
-          />
-          <Label
-            title="Fuddapp è accessibile dal sito www.fuddapp.it e dalle app IOS e Android che potrete scaricare facilmente su tutti gli store."
-            style={[styles.lbl, {marginTop: scale(15)}]}
-          />
-          <Label
-            title="Siamo orgogliosi della nostra tecnologia che con il nostro algoritmo “A.n.c.i.o.” si basa, a lungo termine sullo studio delle abitudini del cliente, per consigliare con sempre maggiore facilità, cosa ordinare sulla nostra piattaforma."
-            style={[styles.lbl, {marginTop: scale(15)}]}
-          />
-          <Label
-            title="Fuddapp è formazione! Vogliamo che la nostra immagine sia associata ad alta affidabilità e competenza, per cui aggiorniamo di continuo i nostri riders, per aumentare il grado di professionalità che vogliamo ci contraddistingua."
-            style={[styles.lbl, {marginTop: scale(15)}]}
-          />
-          <Title title="Come funziona" style={{marginTop: scale(20)}} />
-          <Label
-            title={`Su FUDDAPP puoi scegliere tra tantissime attività di ristorazione e altro. Quando apri il sito o l’app, puoi scorrere l'elenco in cerca del tuo ristorante preferito, oppure cercare un nominativo specifico o un tipo di piatto a cui sei particolarmente legato. Una volta trovato quello che ti piace, aggiungilo al carrello e completa l’ordine.'`}
-            style={[styles.lbl, {marginTop: scale(15)}]}
-          />
-          <Label
-            title={`Al momento della conferma dell'ordine, potrai inserire il tuo indirizzo e/o registrarti cosi non dovrai reinserirlo dopo (anche se non sei obbligato a farlo), selezionare la fascia oraria di consegna desiderata, visualizzare il totale dell'ordine comprensivo di imposte e costo di consegna e, se tutto corretto, inviare l'ordine. Potrai decidere se pagare alla consegna o con carta di credito.`}
-            style={[styles.lbl, {marginTop: scale(15)}]}
-          />
-          <Label
-            title="Fuddapp è accessibile dal sito www.fuddapp.it e dalle app IOS e Android che potrete scaricare facilmente su tutti gli store."
-            style={[styles.lbl, {marginTop: scale(15)}]}
-          />
-          <Label
-            title="Su fuddapp potrai inoltre usufruire di codici promozionali e avrai una assistenza dedicata per tutte le problematiche relative il tuo ordine."
-            style={[styles.lbl, {marginTop: scale(15)}]}
-          />
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Feather
+              name="map-pin"
+              size={scale(20)}
+              color={theme.colors.black}
+            />
+            <Label
+              style={styles.subtitle}
+              title={`Via Val Di Mazara 33,\n90144 Palermo, Italia`}
+            />
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <Feather name="phone" size={scale(20)} color={theme.colors.black} />
+            <View>
+              <Label
+                style={[styles.subtitle, {paddingVertical: 0}]}
+                title={`Assistenza Clienti`}
+              />
+              <Label
+                style={[styles.subtitle, {paddingVertical: 0}]}
+                title={`0917483700`}
+              />
+            </View>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginVertical: scale(10),
+            }}>
+            <Feather name="phone" size={scale(20)} color={theme.colors.black} />
+            <View>
+              <Label
+                style={[styles.subtitle, {paddingVertical: 0}]}
+                title={`Assistenza\nRistoratori/Aziende`}
+              />
+              <Label
+                style={[styles.subtitle, {paddingVertical: 0}]}
+                title={`0917483220`}
+              />
+            </View>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <Feather name="mail" size={scale(20)} color={theme.colors.black} />
+            <Label style={styles.subtitle} title={`info@fuddapp.it`} />
+          </View>
         </ScrollView>
       </View>
     </View>
@@ -57,18 +92,45 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.colors.white,
   },
-  header: {
-    height: Platform.OS === 'android' ? scale(50) : scale(75),
-    backgroundColor: theme.colors.primary,
-    justifyContent: 'center',
+  headerView: {
+    flexDirection: 'row',
     alignItems: 'center',
+    height: scale(55),
+    paddingHorizontal: scale(15),
+  },
+  titleScreen: {
+    fontSize: scale(22),
+    alignSelf: 'center',
+    marginLeft: theme.SCREENWIDTH * 0.25,
   },
   subConrtainer: {
-    padding: scale(10),
-    height: '80%',
+    justifyContent: 'center',
+    // alignItems: 'center',
+    backgroundColor: theme.colors.white,
+    // marginHorizontal: scale(5),
+    padding: scale(15),
+    paddingHorizontal: scale(22),
+    shadowColor: theme.colors.gray,
+    shadowOffset: {
+      width: 0,
+      height: 0.2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: scale(3),
+    paddingVertical: theme.SCREENHEIGHT * 0.03,
+
+    elevation: scale(2),
+    borderRadius: scale(12),
+    marginTop: scale(35),
+    width: '90%',
+    alignSelf: 'center',
   },
-  lbl: {
-    color: theme.colors.gray,
+  subtitle: {
+    fontFamily: theme.fonts.josefinSans,
+    // textAlign: 'center',
     fontSize: scale(14),
+    paddingHorizontal: scale(10),
+    color: theme.colors.black11,
+    paddingVertical: scale(10),
   },
 });

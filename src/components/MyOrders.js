@@ -1,16 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
-import React, { useState, useEffect } from 'react';
-import { scale, theme } from '../utils';
+import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {scale, theme} from '../utils';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon1 from 'react-native-vector-icons/Ionicons';
-import { Label } from './Label';
-import ApiService, { API } from '../utils/ApiService';
-import { useDispatch, useSelector } from 'react-redux';
-import { getAllOrders } from '../redux/Actions/OrderAction';
+import {Label} from './Label';
+import ApiService, {API} from '../utils/ApiService';
+import {useDispatch, useSelector} from 'react-redux';
+import {getAllOrders} from '../redux/Actions/OrderAction';
 import moment from 'moment';
-import { useIsFocused, useNavigation } from '@react-navigation/core';
-import { AddToCart } from '../redux/Actions/CartAction';
+import {useIsFocused, useNavigation} from '@react-navigation/core';
+import {AddToCart} from '../redux/Actions/CartAction';
 
 // export const getAllOrders = () => {
 //   return async dispatch => {
@@ -111,7 +111,7 @@ const MyOrders = () => {
 
           navigation.navigate('RISTORANTI', {
             screen: 'Details',
-            params: { item: reOrderCartData, timeSlot: "10:00TO11:00" },
+            params: {item: reOrderCartData, timeSlot: '10:00TO11:00'},
           });
           // navigation.navigate('RISTORANTI', {
           //   screen: 'Cart',
@@ -129,18 +129,18 @@ const MyOrders = () => {
   return (
     <View>
       <ScrollView
-        style={{ height: theme.SCREENHEIGHT * 0.4 }}
+        style={{height: theme.SCREENHEIGHT * 0.4}}
         showsVerticalScrollIndicator={false}>
         {console.log('getAllOrder', JSON.stringify(getAllOrder, null, 4))}
         {getAllOrder &&
           getAllOrder?.map((oI, index) => {
             return (
               <View style={styles.mainCard} key={index}>
-                <View style={[styles.row, { alignItems: 'center' }]}>
-                  <View style={{ marginVertical: scale(8) }}>
-                    <View style={[styles.orderCon, { alignItems: 'center' }]}>
+                <View style={[styles.row, {alignItems: 'center'}]}>
+                  <View style={{marginVertical: scale(8)}}>
+                    <View style={[styles.orderCon, {alignItems: 'center'}]}>
                       <View
-                        style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        style={{flexDirection: 'row', alignItems: 'center'}}>
                         <Label
                           title={`${oI.Restaurant} `}
                           style={styles.prodTitle}
@@ -168,11 +168,12 @@ const MyOrders = () => {
                         </TouchableOpacity>
                       )}
                       <TouchableOpacity
-                        style={[styles.row, { alignItems: 'center' }]}
+                        style={[styles.row, {alignItems: 'center'}]}
                         onPress={() => {
                           selIndex === index
                             ? setIindex(null)
                             : setIindex(index);
+                          navigation.navigate('OrderDetails', {data: oI});
                         }}>
                         <Label
                           title="Dettagli "
@@ -195,7 +196,7 @@ const MyOrders = () => {
                       <View>
                         <Label
                           title={`Ordine n° - ${oI?.Number}`}
-                          style={{ fontSize: scale(11) }}
+                          style={{fontSize: scale(11)}}
                         />
                         <Label
                           title={`${moment(oI.DeliveryDate).format(
@@ -208,7 +209,7 @@ const MyOrders = () => {
                           title={`${oI?.DeliveryName}`}
                           style={styles.pd}
                         />
-                        <View style={styles.row1}>
+                        {/* <View style={styles.row1}>
                           <Icon
                             name="map-pin"
                             size={scale(12)}
@@ -216,10 +217,10 @@ const MyOrders = () => {
                           />
                           <Label
                             title={` ${oI?.DeliveryAddressPart}`}
-                            style={[styles.pd, { marginTop: scale(1) }]}
+                            style={[styles.pd, {marginTop: scale(1)}]}
                           />
-                        </View>
-                        <View style={styles.row1}>
+                        </View> */}
+                        {/* <View style={styles.row1}>
                           <Icon1
                             name="call"
                             size={scale(12)}
@@ -227,10 +228,10 @@ const MyOrders = () => {
                           />
                           <Label
                             title={` ${oI?.Telephone}`}
-                            style={[styles.pd, { marginTop: scale(1) }]}
+                            style={[styles.pd, {marginTop: scale(1)}]}
                           />
-                        </View>
-                        <View style={styles.row1}>
+                        </View> */}
+                        {/* <View style={styles.row1}>
                           <Icon1
                             name="mail"
                             size={scale(12)}
@@ -238,11 +239,11 @@ const MyOrders = () => {
                           />
                           <Label
                             title={` ${oI?.Email}`}
-                            style={[styles.pd, { marginTop: scale(1) }]}
+                            style={[styles.pd, {marginTop: scale(1)}]}
                           />
-                        </View>
+                        </View> */}
 
-                        <Label
+                        {/* <Label
                           title={`Pagamento - ${oI?.PaymentMethod}`}
                           style={[
                             styles.pd,
@@ -251,20 +252,20 @@ const MyOrders = () => {
                               // fontFamily: theme.fonts.josefinSans,
                             },
                           ]}
-                        />
-                        <View style={styles.row1}>
+                        /> */}
+                        {/* <View style={styles.row1}>
                           <Label
                             title="Note ordine :"
-                            style={{ fontSize: scale(11) }}
+                            style={{fontSize: scale(11)}}
                           />
                           <Label
                             title={` ${oI?.Comments}`}
                             style={[
                               styles.pd,
-                              { marginBottom: 0, marginLeft: scale(2) },
+                              {marginBottom: 0, marginLeft: scale(2)},
                             ]}
                           />
-                        </View>
+                        </View> */}
                       </View>
                     ) : (
                       <Label
@@ -333,7 +334,7 @@ const MyOrders = () => {
 
                       {/* <Label title={oI.orderdetails} /> */}
                     </View>
-                    <View style={styles.row}>
+                    {/* <View style={styles.row}>
                       <Label title={'Totale prodotti  '} />
                       <Label title={(oI?.SubTotal).toFixed(2)} />
                     </View>
@@ -365,14 +366,14 @@ const MyOrders = () => {
                       <View style={styles.row}>
                         <Label
                           title={oI?.DiscountName}
-                          style={{ color: theme.colors.red }}
+                          style={{color: theme.colors.red}}
                         />
                         <Label
                           title={`- €${(oI?.Discount).toFixed(2)}`}
-                          style={{ color: theme.colors.red }}
+                          style={{color: theme.colors.red}}
                         />
                       </View>
-                    )}
+                    )} */}
                     <View
                       style={[
                         styles.row,
@@ -386,7 +387,7 @@ const MyOrders = () => {
                       ]}>
                       <Label
                         title="Totale Finale"
-                        style={[styles.price, { fontWeight: '600' }]}
+                        style={[styles.price, {fontWeight: '600'}]}
                       />
                       <Label
                         title={`€${oI.Total.toFixed(2)}`}
@@ -453,6 +454,8 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.gray1,
     paddingVertical: scale(5),
     width: '100%',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
   row: {
     flexDirection: 'row',
@@ -465,6 +468,7 @@ const styles = StyleSheet.create({
   itemDetails: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginHorizontal: scale(5),
     // justifyContent: 'space-between',
   },
   row1: {

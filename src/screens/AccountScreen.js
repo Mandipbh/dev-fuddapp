@@ -96,7 +96,7 @@ const AccountScreen = ({route, props}) => {
   };
 
   const handleShowAlert = () => {
-    Alert.alert('Sei sicuro di voler andare?', null, [
+    Alert.alert('', 'Sei sicuro di voler andare?', [
       {
         text: 'ANNULLA',
         cancelable: true,

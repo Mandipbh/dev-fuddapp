@@ -8,3 +8,4 @@ export {default as CartScreen} from './CartScreen';
 export {default as Checkout} from './CheckoutScreen';
 export {default as ReOrderCartScreen} from './ReOrderCartScreen';
 export {default as ReOrderCheckOutScreen} from './ReOrderCheckOutScreen';
+export {default as OrderDetailScreen} from './OrderDetailScreen';

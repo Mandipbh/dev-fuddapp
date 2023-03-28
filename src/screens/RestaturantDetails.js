@@ -60,7 +60,7 @@ const RestaturantDetails = ({ route, navigation }) => {
     var cartCount = 0;
     console.log('RestDetail', cartData);
     setCartCount(cartCount);
-    cartData.map((data, index) => {
+    cartData?.map((data, index) => {
       if (data.restaurantId === route?.params?.item.ID) {
         cartCount++;
         setCartCount(cartCount);
