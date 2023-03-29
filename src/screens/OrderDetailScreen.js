@@ -32,6 +32,7 @@ const OrderDetails = ({props, route}) => {
       console.log('error delete catch ', error);
     }
   }, [params?.data]);
+  console.log(' params?.back ?? ', params?.back);
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
@@ -41,7 +42,13 @@ const OrderDetails = ({props, route}) => {
             color={theme.colors.black}
             size={scale(22)}
             onPress={() => {
-              navigation.goBack();
+              params?.back == 1
+                ? navigation.navigate('ACCOUNT', {
+                    screen: 'Account',
+                    params: {data: 3},
+                  })
+                : // navigation.navigate('ACCOUNT', {data: 3})
+                  navigation.goBack();
             }}
           />
 

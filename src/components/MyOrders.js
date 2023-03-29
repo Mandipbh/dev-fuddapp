@@ -131,9 +131,9 @@ const MyOrders = () => {
       <ScrollView
         style={{height: theme.SCREENHEIGHT * 0.4}}
         showsVerticalScrollIndicator={false}>
-        {console.log('getAllOrder', JSON.stringify(getAllOrder, null, 4))}
         {getAllOrder &&
           getAllOrder?.map((oI, index) => {
+            const iscurrentDate = moment(0, 'HH').diff(oI?.Date, 'days') == 0;
             return (
               <View style={styles.mainCard} key={index}>
                 <View style={[styles.row, {alignItems: 'center'}]}>
@@ -141,19 +141,28 @@ const MyOrders = () => {
                     <View style={[styles.orderCon, {alignItems: 'center'}]}>
                       <View
                         style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <Label
-                          title={`${oI.Restaurant} `}
-                          style={styles.prodTitle}
-                        />
-                        <Label
-                          title={' - ' + oI?.Status}
-                          style={{
-                            color: oI?.StatusColor,
-                            fontSize: scale(11),
-                          }}
-                        />
+                        <TouchableOpacity
+                          style={[styles.row, {alignItems: 'center'}]}
+                          onPress={() => {
+                            navigation.navigate('OrderDetails', {
+                              data: oI,
+                              back: 1,
+                            });
+                          }}>
+                          <Label
+                            title={`${oI.Restaurant} `}
+                            style={styles.prodTitle}
+                          />
+                          <Label
+                            title={' - ' + oI?.Status}
+                            style={{
+                              color: oI?.StatusColor,
+                              fontSize: scale(11),
+                            }}
+                          />
+                        </TouchableOpacity>
                       </View>
-                      {selIndex === index && (
+                      {selIndex === index && !iscurrentDate && (
                         <TouchableOpacity
                           style={styles.btn}
                           onPress={() => {
@@ -170,16 +179,17 @@ const MyOrders = () => {
                       <TouchableOpacity
                         style={[styles.row, {alignItems: 'center'}]}
                         onPress={() => {
-                          selIndex === index
-                            ? setIindex(null)
-                            : setIindex(index);
-                          navigation.navigate('OrderDetails', {data: oI});
+                          navigation.navigate('OrderDetails', {
+                            data: oI,
+                            back: 1,
+                          });
                         }}>
                         <Label
-                          title="Dettagli "
+                          title="Dettagli"
                           style={{
                             color: theme.colors.gray5,
                             fontSize: scale(12),
+                            textDecorationLine: 'underline',
                           }}
                         />
                         <Icon
@@ -188,6 +198,11 @@ const MyOrders = () => {
                           }
                           size={scale(18)}
                           color={theme.colors.gray}
+                          onPress={() =>
+                            selIndex === index
+                              ? setIindex(null)
+                              : setIindex(index)
+                          }
                         />
                       </TouchableOpacity>
                     </View>

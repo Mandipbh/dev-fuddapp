@@ -112,7 +112,10 @@ const DrawerModal = props => {
                   style={styles.textButton}
                   onPress={() => {
                     close();
-                    navigation.navigate('ACCOUNT', {data: 1});
+                    navigation.navigate('ACCOUNT', {
+                      screen: 'Account',
+                      data: 1,
+                    });
                   }}>
                   <Icon name="map-pin" size={25} color={theme.colors.purpal} />
                   <Text style={styles.btnText}>I MIEI INDIRIZZI</Text>
