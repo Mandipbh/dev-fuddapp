@@ -50,9 +50,13 @@ const CartScreen = ({ route }) => {
   const [tmpData, setTmpData] = useState([]);
   const [hasCartDataAvailable, setCartDataAvailable] = useState(false);
 
+  const [selectedTime, setTime] = useState('');
   var cartDataArray = [];
 
   useEffect(() => {
+    var timeslot = route?.params?.selectedTimeSlot;
+    setTime(timeslot);
+
     cartData.map((data, index) => {
       if (data.restaurantId == route?.params?.restaurantId) {
         cartDataArray.push(data);
@@ -336,7 +340,7 @@ const CartScreen = ({ route }) => {
                       : 0),
                   pTotal: pTotal,
                   restId: route?.params?.restaurantId,
-                  TimeSlot: route?.params?.selectedTimeSlot,
+                  TimeSlot: selectedTime,
                   cartdata: availableCartItem,
                 });
               }
