@@ -114,7 +114,7 @@ const DrawerModal = props => {
                     close();
                     navigation.navigate('ACCOUNT', {
                       screen: 'Account',
-                      data: 1,
+                      params: {data: 1},
                     });
                   }}>
                   <Icon name="map-pin" size={25} color={theme.colors.purpal} />
@@ -133,7 +133,10 @@ const DrawerModal = props => {
                 <TouchableOpacity
                   onPress={() => {
                     close();
-                    navigation.navigate('ACCOUNT', {data: 3});
+                    navigation.navigate('ACCOUNT', {
+                      screen: 'Account',
+                      params: {data: 3},
+                    });
                   }}
                   style={styles.textButton}>
                   <Icon

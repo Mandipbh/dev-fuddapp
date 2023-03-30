@@ -48,7 +48,10 @@ const AboutUs = () => {
                 title={`Assistenza Clienti`}
               />
               <Label
-                style={[styles.subtitle, {paddingVertical: 0}]}
+                style={[
+                  styles.subtitle,
+                  {paddingVertical: 0, fontFamily: theme.fonts.josefinSans},
+                ]}
                 title={`0917483700`}
               />
             </View>
@@ -66,7 +69,10 @@ const AboutUs = () => {
                 title={`Assistenza\nRistoratori/Aziende`}
               />
               <Label
-                style={[styles.subtitle, {paddingVertical: 0}]}
+                style={[
+                  styles.subtitle,
+                  {paddingVertical: 0, fontFamily: theme.fonts.josefinSans},
+                ]}
                 title={`0917483220`}
               />
             </View>
@@ -126,7 +132,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   subtitle: {
-    fontFamily: theme.fonts.josefinSans,
+    fontFamily: theme.fonts.semiBold,
     // textAlign: 'center',
     fontSize: scale(14),
     paddingHorizontal: scale(10),
