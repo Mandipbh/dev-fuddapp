@@ -21,6 +21,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import InputBox from '../InputBox';
 import {useToast} from 'react-native-toast-notifications';
 import Toast from 'react-native-toast-notifications';
+import { useEffect } from 'react';
 
 const AddNewAddress = props => {
   const {isVisible, close, title, subTitle} = props;
