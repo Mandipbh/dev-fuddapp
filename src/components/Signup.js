@@ -7,18 +7,18 @@ import {
   View,
 } from 'react-native';
 import React from 'react';
-import {images, scale, theme} from '../utils';
+import { images, scale, theme } from '../utils';
 import InputBox from './InputBox';
-import {Error, Label} from './Label';
+import { Error, Label } from './Label';
 import Button from './Button';
-import {useState} from 'react';
+import { useState } from 'react';
 import VarificationModel from './appModel/VarificationModel';
-import ApiService, {API} from '../utils/ApiService';
-import {useEffect} from 'react';
-import {useToast} from 'react-native-toast-notifications';
+import ApiService, { API } from '../utils/ApiService';
+import { useEffect } from 'react';
+import { useToast } from 'react-native-toast-notifications';
 
 const Signup = props => {
-  const {onPress, isFocus, moveLogin} = props;
+  const { onPress, isFocus, moveLogin } = props;
   const [name, setName] = useState('');
   const [sureName, setSureName] = useState('');
   const [email, setEmail] = useState('');
@@ -41,7 +41,7 @@ const Signup = props => {
   let error = false;
   const handleValidation = () => {
     let Emailreg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    let errr = {...errrMsg};
+    let errr = { ...errrMsg };
     if (name.trim() === '') {
       errr.nameErr = 'Inserisci il nome';
       error = true;
@@ -114,7 +114,7 @@ const Signup = props => {
           telephone: mobile,
           NewsLetterCheck: false,
         };
-        const options = {payloads: folderFrm};
+        const options = { payloads: folderFrm };
         ApiService.post(API.signUp, options)
           .then(res => {
             console.log('res of varifiy >> ', res);
@@ -126,7 +126,7 @@ const Signup = props => {
           })
           .catch(e => {
             setLoad(false);
-            toast.show(e.response?.data?.Errors[0], toast, {duration: 1000});
+            toast.show(e.response?.data?.Errors[0], toast, { duration: 1000 });
 
             // console.log('error in login> ', e.response?.data?.Errors[0]);
           });
@@ -211,16 +211,17 @@ const Signup = props => {
         />
       )}
 
-      <View style={styles.appTextView}>
+      {/* <View style={styles.appTextView}>
         <Image
           source={images.appIcon}
           style={styles.logo}
           resizeMode="contain"
         />
-        {/* <Text style={styles.text}>
+      
+      </View> */}
+      {/* <Text style={styles.text}>
           Fudd<Text style={styles.text1}>app</Text>
         </Text> */}
-      </View>
       <VarificationModel
         signUpData={signupRes}
         isVisible={varification}

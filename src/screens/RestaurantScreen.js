@@ -60,6 +60,8 @@ const RestaurantScreen = () => {
     state => state.RestaurantReducers?.restaurantList,
   );
 
+  console.log('restaurantData', restaurantData);
+
   useEffect(() => {
     if (selectedCat !== null) {
       setSelCategory(selectedCat?.Nome);
@@ -132,29 +134,31 @@ const RestaurantScreen = () => {
     dispatch(getAllCategory());
   }, [isFocuse]);
 
-
-
   useEffect(() => {
-    setLoadding(true);
+    if (selectedCat !== null) {
+      setSelCategory(selectedCat?.Nome);
+      console.log('selectedCat?.Nome', selectedCat?.Nome);
+    }
+
     const data = {
       date: moment(date).format('DD-MM-YYYY'),
-      timeSlot: timeSloat, //'16:00TO16:30',
+      timeSlot: displayedTimeSloat, //'16:00TO16:30',
       category: selCategory,
       latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
       longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
     };
-    console.log('Payload data', data);
-    setTimeSlot(timeSloat);
+    console.log('Payload of ', data);
     dispatch(getpopularRestaurants(data));
     dispatch(getAllCategory());
-  }, [selCategory, timeSloat, date]);
+  }, [date, displayedTimeSloat, selCategory]);
+
 
   // const loadding = useSelector(state => state.RestaurantReducers.loadding);
 
   useEffect(() => {
     setRestaurantsData(restaurantData?.Restaurants);
     setLoadding(false);
-  }, [selCategory, timeSloat, date]);
+  }, [isFocuse, selCategory, timeSloat, date, restaurantData]);
 
   const IconClosePicker = data => {
     setSelectedModal(false);
@@ -183,6 +187,7 @@ const RestaurantScreen = () => {
       item: item,
       restaurantsData: restaurantsData,
       timeSlot: displayedTimeSloat,
+      selectedDate: date,
     });
   };
 
