@@ -409,6 +409,8 @@ const RestaturantDetails = ({ route, navigation }) => {
               navigation.navigate('Cart', {
                 restaurantId: resId,
                 selectedTimeSlot: route?.params?.timeSlot,
+                selectedDate: route?.params?.selectedDate,
+
               });
               // setCartModel(!cartModel);
             }}>

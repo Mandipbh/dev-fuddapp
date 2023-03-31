@@ -12,9 +12,12 @@ export const getpopularRestaurants = data => {
       dispatch({type: LOADINGRESTORANTI, payload: true});
       const options = {payloads: data};
       console.log('getAllRestaurant payLoad ', data);
+
       ApiService.post(API.getAllRestaurant, options)
         .then(res => {
+          dispatch({type: GETALLRISTORANTI, payload: []});
           if (res) {
+            console.log('All Restaurant: ', res);
             dispatch({type: GETALLRISTORANTI, payload: res});
             dispatch({type: LOADINGRESTORANTI, payload: false});
           }
