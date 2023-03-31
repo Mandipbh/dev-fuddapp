@@ -20,7 +20,7 @@ import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
 import Icon from 'react-native-vector-icons/Feather';
 import InputBox from '../InputBox';
 import {useToast} from 'react-native-toast-notifications';
-import {useEffect} from 'react';
+import Toast from 'react-native-toast-notifications';
 
 const AddNewAddress = props => {
   const {isVisible, close, title, subTitle} = props;
@@ -35,21 +35,26 @@ const AddNewAddress = props => {
   const [streetNumber, setStreetNumber] = useState('');
   const addRef = useRef();
   const toast = useToast();
+  const toastRef = useRef();
 
   const validation = () => {
     let error = false;
     if (firstName === '') {
-      toast.show('Inserisci il tuo nome di battesimo', toast, {duration: 1000});
+      toastRef.current.show('Inserisci il tuo nome di battesimo', toast, {
+        duration: 1000,
+      });
       error = true;
     } else if (lastName === '') {
-      toast.show('AInserire il cognome', toast, {duration: 1000});
+      toastRef.current.show('AInserire il cognome', toast, {duration: 1000});
       error = true;
     } else if (address === '') {
-      toast.show('Inserisci un indirizzo valido', toast, {duration: 1000});
+      toastRef.current.show('Inserisci un indirizzo valido', toast, {
+        duration: 1000,
+      });
 
       error = true;
     } else if (mobile === '') {
-      toast.show('Inserisci un numero di cellulare valido', toast, {
+      toastRef.current.show('Inserisci un numero di cellulare valido', toast, {
         duration: 1000,
       });
 
@@ -64,7 +69,7 @@ const AddNewAddress = props => {
     if (!validation()) {
       if (addressData === '') {
         addRef.current?.setAddressText('');
-        toast.show(
+        toastRef.current.show(
           "Inserisci un indirizzo preciso con numero civico. L' indirizzo selezionato è troppo vago.",
           toast,
           {duration: 1000},
@@ -373,6 +378,7 @@ const AddNewAddress = props => {
           )}
         </View>
       </View>
+      <Toast ref={toastRef} />
     </Modal>
   );
 };

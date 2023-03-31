@@ -19,6 +19,8 @@ import { Title, Label, Error } from '../Label';
 import MonthPickerModel from './MonthPickerModel';
 import YearPickerModel from './YearPickerModel';
 import { useToast } from 'react-native-toast-notifications';
+import { useRef } from 'react';
+import Toast from 'react-native-toast-notifications';
 
 
 const OrderPaymentMethod = props => {
@@ -35,7 +37,7 @@ const OrderPaymentMethod = props => {
   const [monthModel, setMonthModel] = useState(false);
   const [yearModel, setYearModel] = useState(false);
   const toast = useToast();
-
+  const toastRef = useRef();
 
   const PaymentRequest = {
     PayType: paymentType,
@@ -72,7 +74,7 @@ const OrderPaymentMethod = props => {
           cvv === '' ||
           zip === '')
       ) {
-        toast.show(
+        toastRef.current.show(
           'Si prega di compilare tutti i dettagli della carta di credito',
           toast,
           {duration: 1000},
@@ -83,7 +85,7 @@ const OrderPaymentMethod = props => {
 
       // console.log('cardObject', cardObject);
     } else {
-      toast.show('Scegli il metodo di pagamento. ', toast, { duration: 1000 });
+      toastRef.current.show('Scegli il metodo di pagamento. ', toast, { duration: 1000 });
 
     }
   };
@@ -235,6 +237,7 @@ const OrderPaymentMethod = props => {
             </View>
           </View>
         </View>
+        <Toast ref={toastRef} />
       </Modal>
       {monthModel && (
         <MonthPickerModel
