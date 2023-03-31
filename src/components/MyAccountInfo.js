@@ -31,7 +31,7 @@ const MyAccountInfo = ({user}) => {
           />
         </View>
         <View style={styles.inputView}>
-          <Label title="EMAIL" style={styles.inputTitle} />
+          <Label title="E-MAIL" style={styles.inputTitle} />
           <InputBox
             placeholder={
               user?.UserInfo?.EMail ? user?.UserInfo?.EMail : 'email'
@@ -42,7 +42,7 @@ const MyAccountInfo = ({user}) => {
           />
         </View>
         <View style={styles.inputView}>
-          <Label title="Phone" style={styles.inputTitle} />
+          <Label title="Telefono" style={styles.inputTitle} />
           <InputBox
             placeholder={
               user?.UserInfo?.Telefono1
@@ -59,7 +59,7 @@ const MyAccountInfo = ({user}) => {
           onPress={() => {
             setModel(!passwordModel);
           }}>
-          <Label title="Password" style={styles.inputTitle} />
+          <Label title="Parola d'ordine" style={styles.inputTitle} />
           <InputBox
             placeholder="**********"
             style={styles.input}

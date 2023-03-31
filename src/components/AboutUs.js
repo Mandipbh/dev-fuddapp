@@ -44,7 +44,10 @@ const AboutUs = () => {
             <Feather name="phone" size={scale(20)} color={theme.colors.black} />
             <View>
               <Label
-                style={[styles.subtitle, {paddingVertical: 0}]}
+                style={[
+                  styles.subtitle,
+                  {paddingVertical: 0, color: theme.colors.primary},
+                ]}
                 title={`Assistenza Clienti`}
               />
               <Label
@@ -65,8 +68,11 @@ const AboutUs = () => {
             <Feather name="phone" size={scale(20)} color={theme.colors.black} />
             <View>
               <Label
-                style={[styles.subtitle, {paddingVertical: 0}]}
-                title={`Assistenza\nRistoratori/Aziende`}
+                style={[
+                  styles.subtitle,
+                  {paddingVertical: 0, color: theme.colors.primary},
+                ]}
+                title={`Assistenza Ristoratori/Aziende`}
               />
               <Label
                 style={[
@@ -126,8 +132,8 @@ const styles = StyleSheet.create({
     paddingVertical: theme.SCREENHEIGHT * 0.03,
 
     elevation: scale(2),
-    borderRadius: scale(12),
-    marginTop: scale(35),
+    borderRadius: scale(10),
+    marginTop: scale(10),
     width: '90%',
     alignSelf: 'center',
   },

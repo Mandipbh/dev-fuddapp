@@ -8,20 +8,20 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/Feather';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import DatePicker from 'react-native-date-picker';
-import { scale, theme, timeSlot } from '../utils';
-import { Label, Loader, Restaurant, TimePickerModel, Title } from '../components';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
+import {scale, theme, timeSlot} from '../utils';
+import {Label, Loader, Restaurant, TimePickerModel, Title} from '../components';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import SliderModal from '../components/appModel/SliderModal';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
-import { getAllCategory } from '../redux/Actions/HomeAction';
+import {useDispatch, useSelector} from 'react-redux';
+import {useEffect} from 'react';
+import {getAllCategory} from '../redux/Actions/HomeAction';
 import moment from 'moment';
-import { getpopularRestaurants } from '../redux/Actions/RestaurantAction';
-import ApiService, { API } from '../utils/ApiService';
+import {getpopularRestaurants} from '../redux/Actions/RestaurantAction';
+import ApiService, {API} from '../utils/ApiService';
 
 const RestaurantScreen = () => {
   const navigation = useNavigation();
@@ -46,7 +46,6 @@ const RestaurantScreen = () => {
 
   useEffect(() => {
     const timeSlotData = timeSlot();
-    console.log('timeSlotData ?? ', timeSlotData);
     setDisplayedTimeSlot(timeSlotData.dtime);
     setTimeSlot(timeSlotData.ptime);
   }, []);
@@ -62,82 +61,81 @@ const RestaurantScreen = () => {
 
   console.log('restaurantData', restaurantData);
 
+  // useEffect(() => {
+  //   if (selectedCat !== null) {
+  //     setSelCategory(selectedCat?.Nome);
+  //   }
+
+  //   //time logic start
+
+  //   // var now = `${moment(new Date()).format('HH:mm')}`;
+
+  //   // const times = now.split(':');
+  //   // let splitedHour = times[0];
+  //   // let splitedMin = times[1];
+  //   // let newHOur = 0;
+  //   // let newMin = '00';
+  //   // let newoundedTime = '';
+  //   // let newtimeSlot = '';
+  //   // let displaytimeslot = '';
+
+  //   // if (splitedMin >= 15 && splitedMin <= 30) {
+  //   //   newHOur = parseInt(splitedHour, 10);
+  //   //   newMin = '30'; //19:00
+  //   // } else if (splitedMin > 30 && splitedMin <= 45) {
+  //   //   newHOur = parseInt(splitedHour, 10);
+  //   //   newMin = '30';
+  //   // } else if (splitedMin > 45) {
+  //   //   newHOur = parseInt(splitedHour, 10) + 1;
+  //   //   newMin = '00';
+  //   // } else {
+  //   //   newHOur = parseInt(splitedHour, 10);
+  //   //   newMin = '00'; //18:00
+  //   // }
+
+  //   // if (splitedMin > 30) {
+  //   //   splitedMin = 60 - splitedMin;
+  //   // } else {
+  //   //   splitedMin = 30 - splitedMin;
+  //   // }
+
+  //   // now = moment(new Date()).add(splitedMin, 'm');
+  //   // var newRoundedTime = moment(new Date())
+  //   //   .add(splitedMin, 'm')
+  //   //   .format('HH:mm');
+  //   // var newEndroundTime = moment(now).add(30, 'm').format('HH:mm');
+
+  //   // newtimeSlot = newRoundedTime
+  //   //   .toString()
+  //   //   .concat('TO', newEndroundTime.toString());
+
+  //   // displaytimeslot = newRoundedTime
+  //   //   .toString()
+  //   //   .concat(' TO ', newEndroundTime.toString());
+  //   // console.log('newtimeSlot', newtimeSlot);
+
+  //   //END ....
+
+  //   const timeSlotData = timeSlot();
+  //   console.log('timeSlotData ?? ', timeSlotData);
+  //   setDisplayedTimeSlot(timeSlotData.dtime);
+  //   setTimeSlot(timeSlotData.ptime);
+
+  //   const data = {
+  //     date: moment(date).format('DD-MM-YYYY'),
+  //     timeSlot: timeSlotData.ptime, //'16:00TO16:30',
+  //     category: selCategory,
+  //     latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
+  //     longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
+  //   };
+  //   console.log('Payload of ??? ', data);
+  //   dispatch(getpopularRestaurants(data));
+  //   dispatch(getAllCategory());
+  // }, [isFocuse]);
+
   useEffect(() => {
     if (selectedCat !== null) {
       setSelCategory(selectedCat?.Nome);
-    }
-
-    //time logic start
-
-    // var now = `${moment(new Date()).format('HH:mm')}`;
-
-    // const times = now.split(':');
-    // let splitedHour = times[0];
-    // let splitedMin = times[1];
-    // let newHOur = 0;
-    // let newMin = '00';
-    // let newoundedTime = '';
-    // let newtimeSlot = '';
-    // let displaytimeslot = '';
-
-    // if (splitedMin >= 15 && splitedMin <= 30) {
-    //   newHOur = parseInt(splitedHour, 10);
-    //   newMin = '30'; //19:00
-    // } else if (splitedMin > 30 && splitedMin <= 45) {
-    //   newHOur = parseInt(splitedHour, 10);
-    //   newMin = '30';
-    // } else if (splitedMin > 45) {
-    //   newHOur = parseInt(splitedHour, 10) + 1;
-    //   newMin = '00';
-    // } else {
-    //   newHOur = parseInt(splitedHour, 10);
-    //   newMin = '00'; //18:00
-    // }
-
-    // if (splitedMin > 30) {
-    //   splitedMin = 60 - splitedMin;
-    // } else {
-    //   splitedMin = 30 - splitedMin;
-    // }
-
-    // now = moment(new Date()).add(splitedMin, 'm');
-    // var newRoundedTime = moment(new Date())
-    //   .add(splitedMin, 'm')
-    //   .format('HH:mm');
-    // var newEndroundTime = moment(now).add(30, 'm').format('HH:mm');
-
-    // newtimeSlot = newRoundedTime
-    //   .toString()
-    //   .concat('TO', newEndroundTime.toString());
-
-    // displaytimeslot = newRoundedTime
-    //   .toString()
-    //   .concat(' TO ', newEndroundTime.toString());
-    // console.log('newtimeSlot', newtimeSlot);
-
-    //END ....
-
-    const timeSlotData = timeSlot();
-    console.log('timeSlotData ?? ', timeSlotData);
-    setDisplayedTimeSlot(timeSlotData.dtime);
-    setTimeSlot(timeSlotData.ptime);
-
-    const data = {
-      date: moment(date).format('DD-MM-YYYY'),
-      timeSlot: timeSlotData.ptime, //'16:00TO16:30',
-      category: selCategory,
-      latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
-      longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
-    };
-    console.log('Payload of ??? ', data);
-    dispatch(getpopularRestaurants(data));
-    dispatch(getAllCategory());
-  }, [isFocuse]);
-
-  useEffect(() => {
-    if (selectedCat !== null) {
-      setSelCategory(selectedCat?.Nome);
-      console.log('selectedCat?.Nome', selectedCat?.Nome);
     }
 
     const data = {
@@ -150,8 +148,7 @@ const RestaurantScreen = () => {
     console.log('Payload of ', data);
     dispatch(getpopularRestaurants(data));
     dispatch(getAllCategory());
-  }, [date, displayedTimeSloat, selCategory]);
-
+  }, [date, displayedTimeSloat, selCategory, isFocuse]);
 
   // const loadding = useSelector(state => state.RestaurantReducers.loadding);
 
@@ -191,7 +188,7 @@ const RestaurantScreen = () => {
     });
   };
 
-  const renderList = ({ item, index }) => {
+  const renderList = ({item, index}) => {
     return (
       <Restaurant
         item={item}
@@ -290,7 +287,7 @@ const RestaurantScreen = () => {
         </View>
 
         <FlatList
-          style={{ height: '70%' }}
+          style={{height: '70%'}}
           data={restaurantsData}
           renderItem={renderList}
           showsVerticalScrollIndicator={false}
