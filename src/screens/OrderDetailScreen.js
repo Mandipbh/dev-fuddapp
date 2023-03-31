@@ -1,18 +1,18 @@
-import {SafeAreaView, ScrollView, StyleSheet, View} from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import React from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {scale, theme} from '../utils';
-import {Label, Title} from '../components/Label';
+import { scale, theme } from '../utils';
+import { Label, Title } from '../components/Label';
 import moment from 'moment';
-import {useNavigation} from '@react-navigation/core';
-import {useEffect} from 'react';
-import ApiService, {API} from '../utils/ApiService';
-import {useState} from 'react';
+import { useNavigation } from '@react-navigation/core';
+import { useEffect } from 'react';
+import ApiService, { API } from '../utils/ApiService';
+import { useState } from 'react';
 
-const OrderDetails = ({props, route}) => {
-  const {params} = route;
+const OrderDetails = ({ props, route }) => {
+  const { params } = route;
   const [oI, setOi] = useState(null);
   console.log('params?.data ?? ', params?.data);
   // const oI = params?.data;
@@ -44,11 +44,11 @@ const OrderDetails = ({props, route}) => {
             onPress={() => {
               params?.back == 1
                 ? navigation.navigate('ACCOUNT', {
-                    screen: 'Account',
-                    params: {data: 3},
-                  })
+                  screen: 'Account',
+                  params: { data: 3 },
+                })
                 : // navigation.navigate('ACCOUNT', {data: 3})
-                  navigation.goBack();
+                navigation.goBack();
             }}
           />
 
@@ -103,7 +103,7 @@ const OrderDetails = ({props, route}) => {
                   ]}>
                   <Label style={styles.subtitle1} title={'Status'} />
                   <Label
-                    style={[styles.subtitle, {color: theme.colors.primary}]}
+                    style={[styles.subtitle, { color: theme.colors.primary }]}
                     title={oI?.Status}
                   />
                 </View>
@@ -130,7 +130,7 @@ const OrderDetails = ({props, route}) => {
                     color={theme.colors.black}
                   />
                   <Label
-                    style={[styles.subtitle, {paddingVertical: scale(5)}]}
+                    style={[styles.subtitle, { paddingVertical: scale(5) }]}
                     title={` ${moment(oI?.DeliveryDate).format(
                       'ddd DD MMMM, yyyy',
                     )}     `}
@@ -161,7 +161,7 @@ const OrderDetails = ({props, route}) => {
                   }}>
                   <Label
                     title={` ${oI?.DeliveryName}`}
-                    style={[styles.subtitle, {textAlign: 'left'}]}
+                    style={[styles.subtitle, { textAlign: 'left' }]}
                   />
                   <View style={styles.mapCon}>
                     <Feather
@@ -170,7 +170,7 @@ const OrderDetails = ({props, route}) => {
                       color={theme.colors.black}
                     />
                     <Label
-                      style={[styles.subtitle, {textAlign: 'left'}]}
+                      style={[styles.subtitle, { textAlign: 'left' }]}
                       title={` ${oI?.DeliveryAddressPart}`}
                     />
                   </View>
@@ -201,7 +201,7 @@ const OrderDetails = ({props, route}) => {
               {oI?.Comments && (
                 <View style={styles.note}>
                   <Label
-                    style={[styles.subtitle, {width: '65%', textAlign: 'left'}]}
+                    style={[styles.subtitle, { width: '65%', textAlign: 'left' }]}
                     title={oI?.Comments}
                   />
                 </View>
@@ -246,8 +246,9 @@ const OrderDetails = ({props, route}) => {
 
               <View style={styles.row}>
                 <Label title={'Totale prodotti  '} />
-                <Label title={oI?.SubTotal?.toFixed(2)} />
+                <Label title={`€${oI?.SubTotal?.toFixed(2)}`} />
               </View>
+
               {oI?.MinOrderCharge > 0 && (
                 <View style={styles.row}>
                   <Label title={oI?.MinOrderChargeDesc} />
@@ -276,18 +277,18 @@ const OrderDetails = ({props, route}) => {
                 <View style={styles.row}>
                   <Label
                     title={oI?.DiscountName}
-                    style={{color: theme.colors.red}}
+                    style={{ color: theme.colors.red }}
                   />
                   <Label
                     title={`- €${(oI?.Discount).toFixed(2)}`}
-                    style={{color: theme.colors.red}}
+                    style={{ color: theme.colors.red }}
                   />
                 </View>
               )}
               <View style={styles.totalFin}>
                 <Label
                   title="Totale Finale"
-                  style={[styles.price, {fontWeight: '600'}]}
+                  style={[styles.price, { fontWeight: '600' }]}
                 />
                 <Label
                   title={`€${oI?.Total.toFixed(2)}`}
@@ -379,7 +380,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: scale(0.3),
     paddingVertical: scale(4),
   },
-  totalFin: {flexDirection: 'row', justifyContent: 'space-between'},
+  totalFin: { flexDirection: 'row', justifyContent: 'space-between' },
   price: {
     fontSize: scale(12),
     color: theme.colors.red,
@@ -413,7 +414,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     // justifyContent: 'space-between',
   },
-  scrollViewCon: {height: theme.SCREENHEIGHT * 0.73, overflow: 'hidden'},
+  scrollViewCon: { height: theme.SCREENHEIGHT * 0.73, overflow: 'hidden' },
   calCon: {
     flexDirection: 'row',
     alignItems: 'center',

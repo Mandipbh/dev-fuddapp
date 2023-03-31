@@ -1,16 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
-import React, {useState, useEffect} from 'react';
-import {scale, theme} from '../utils';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { scale, theme } from '../utils';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon1 from 'react-native-vector-icons/Ionicons';
-import {Label} from './Label';
-import ApiService, {API} from '../utils/ApiService';
-import {useDispatch, useSelector} from 'react-redux';
-import {getAllOrders} from '../redux/Actions/OrderAction';
+import { Label } from './Label';
+import ApiService, { API } from '../utils/ApiService';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllOrders } from '../redux/Actions/OrderAction';
 import moment from 'moment';
-import {useIsFocused, useNavigation} from '@react-navigation/core';
-import {AddToCart} from '../redux/Actions/CartAction';
+import { useIsFocused, useNavigation } from '@react-navigation/core';
+import { AddToCart } from '../redux/Actions/CartAction';
 
 // export const getAllOrders = () => {
 //   return async dispatch => {
@@ -61,58 +61,68 @@ const MyOrders = () => {
             JSON.stringify(res?.cartDetails, null, 4),
           );
 
-          var reOrderCartData = {
-            Adds: false,
-            AddsCode: '',
-            ID: res?.cartDetails?.Rest?.ID,
-            restaurantId: res?.cartDetails?.Rest?.ID,
-            Amount: res?.cartDetails?.Items[0]?.Amount,
-            Code: res?.cartDetails?.Items[0]?.Code,
-            Composition: res?.cartDetails?.Items[0]?.Composition,
-            Description: res?.cartDetails?.Items[0]?.Description,
-            Dinner: res?.cartDetails?.Items[0]?.Dinner,
-            Image: res?.cartDetails?.Items[0]?.Image,
-            Ingredients: res?.cartDetails?.Items[0]?.Ingredients,
-            Lunch: res?.cartDetails?.Items[0]?.lunch,
-            MakeTypes: res?.cartDetails?.Items[0]?.MakeTypes,
-            MasterId: res?.cartDetails?.Items[0]?.MasterId,
-            Name: res?.cartDetails?.Items[0]?.Name,
-            Qty: res?.cartDetails?.Items[0]?.Qty,
-            Vars: res?.cartDetails?.Items[0]?.Vars,
-            lstAddons:
-              res?.cartDetails?.Items[0].lstAddons !== null
-                ? res?.cartDetails?.Items[0].lstAddons
-                : [],
-            lstIngredients:
-              res?.cartDetails?.Items[0]?.lstIngredients !== null
-                ? res?.cartDetails?.Items[0]?.lstIngredients
-                : [],
-            lstMakeTypes:
-              res?.cartDetails?.Items[0]?.lstMakeTypes !== null
-                ? res?.cartDetails?.Items[0]?.lstMakeTypes
-                : [],
-            MinimumOrder: res?.cartDetails?.MinOrderAmount,
-            MinOrderSupplment: res?.cartDetails?.MinOrderCharge,
-            DeliveryFee: res?.cartDetails?.DeliveryFee,
-            OrderTotalCharge: res?.cartDetails?.OrderTotalCharge,
-            nNetAmount: res?.cartDetails?.Items[0]?.nNetAmount,
-            sAddonIDCSV: res?.cartDetails?.Items[0]?.sAddonIDCSV,
-            sAddonNameCSV: res?.cartDetails?.Items[0]?.sAddonNameCSV,
-            sIngredientIDCSV: res?.cartDetails?.Items[0]?.sIngredientIDCSV,
-            sIngredientNameCSV: res?.cartDetails?.Items[0]?.sIngredientNameCSV,
-            sMakeTypeIDCSV: res?.cartDetails?.Items[0]?.sMakeTypeIDCSV,
-            sMakeTypeNameCSV: res?.cartDetails?.Items[0]?.sMakeTypeNameCSV,
-            sTempID: res?.cartDetails?.Items[0]?.sTempID,
-            Items: res?.cartDetails.Items,
-          };
+          // var reOrderCartData = {
+          //   Adds: false,
+          //   AddsCode: '',
+          //   ID: res?.cartDetails?.Rest?.ID,
+          //   restaurantId: res?.cartDetails?.Rest?.ID,
+          //   Amount: res?.cartDetails?.Items[0]?.Amount,
+          //   Code: res?.cartDetails?.Items[0]?.Code,
+          //   Composition: res?.cartDetails?.Items[0]?.Composition,
+          //   Description: res?.cartDetails?.Items[0]?.Description,
+          //   Dinner: res?.cartDetails?.Items[0]?.Dinner,
+          //   Image: res?.cartDetails?.Items[0]?.Image,
+          //   Ingredients: res?.cartDetails?.Items[0]?.Ingredients,
+          //   Lunch: res?.cartDetails?.Items[0]?.lunch,
+          //   MakeTypes: res?.cartDetails?.Items[0]?.MakeTypes,
+          //   MasterId: res?.cartDetails?.Items[0]?.MasterId,
+          //   Name: res?.cartDetails?.Items[0]?.Name,
+          //   Qty: res?.cartDetails?.Items[0]?.Qty,
+          //   Vars: res?.cartDetails?.Items[0]?.Vars,
+          //   lstAddons:
+          //     res?.cartDetails?.Items[0].lstAddons !== null
+          //       ? res?.cartDetails?.Items[0].lstAddons
+          //       : [],
+          //   lstIngredients:
+          //     res?.cartDetails?.Items[0]?.lstIngredients !== null
+          //       ? res?.cartDetails?.Items[0]?.lstIngredients
+          //       : [],
+          //   lstMakeTypes:
+          //     res?.cartDetails?.Items[0]?.lstMakeTypes !== null
+          //       ? res?.cartDetails?.Items[0]?.lstMakeTypes
+          //       : [],
+          //   MinimumOrder: res?.cartDetails?.MinOrderAmount,
+          //   MinOrderSupplment: res?.cartDetails?.MinOrderCharge,
+          //   DeliveryFee: res?.cartDetails?.DeliveryFee,
+          //   OrderTotalCharge: res?.cartDetails?.OrderTotalCharge,
+          //   nNetAmount: res?.cartDetails?.Items[0]?.nNetAmount,
+          //   sAddonIDCSV: res?.cartDetails?.Items[0]?.sAddonIDCSV,
+          //   sAddonNameCSV: res?.cartDetails?.Items[0]?.sAddonNameCSV,
+          //   sIngredientIDCSV: res?.cartDetails?.Items[0]?.sIngredientIDCSV,
+          //   sIngredientNameCSV: res?.cartDetails?.Items[0]?.sIngredientNameCSV,
+          //   sMakeTypeIDCSV: res?.cartDetails?.Items[0]?.sMakeTypeIDCSV,
+          //   sMakeTypeNameCSV: res?.cartDetails?.Items[0]?.sMakeTypeNameCSV,
+          //   sTempID: res?.cartDetails?.Items[0]?.sTempID,
+          //   Items: res?.cartDetails.Items,
+          // };
 
-          OrderDataArray.push(reOrderCartData);
+          var Items = res?.cartDetails?.Items?.map((data, idx) => {
+            var newData = Object.assign(data, {
+              restaurantId: res?.cartDetails?.Rest?.ID,
+            });
+            OrderDataArray.push(newData);
+          });
           dispatch(AddToCart(OrderDataArray));
 
           navigation.navigate('RISTORANTI', {
             screen: 'Details',
-            params: {item: reOrderCartData, timeSlot: '10:00TO11:00'},
+            params: {
+              ID: res?.cartDetails?.Rest?.ID,
+              item: OrderDataArray,
+              timeSlot: '10:00TO11:00',
+            },
           });
+
           // navigation.navigate('RISTORANTI', {
           //   screen: 'Cart',
           //   params: {restaurantId: reOrderCartData?.ID},
@@ -129,20 +139,20 @@ const MyOrders = () => {
   return (
     <View>
       <ScrollView
-        style={{height: theme.SCREENHEIGHT * 0.4}}
+        style={{ height: theme.SCREENHEIGHT * 0.4 }}
         showsVerticalScrollIndicator={false}>
         {getAllOrder &&
           getAllOrder?.map((oI, index) => {
             const iscurrentDate = moment(0, 'HH').diff(oI?.Date, 'days') == 0;
             return (
               <View style={styles.mainCard} key={index}>
-                <View style={[styles.row, {alignItems: 'center'}]}>
-                  <View style={{marginVertical: scale(8)}}>
-                    <View style={[styles.orderCon, {alignItems: 'center'}]}>
+                <View style={[styles.row, { alignItems: 'center' }]}>
+                  <View style={{ marginVertical: scale(8) }}>
+                    <View style={[styles.orderCon, { alignItems: 'center' }]}>
                       <View
-                        style={{flexDirection: 'row', alignItems: 'center'}}>
+                        style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <TouchableOpacity
-                          style={[styles.row, {alignItems: 'center'}]}
+                          style={[styles.row, { alignItems: 'center' }]}
                           onPress={() => {
                             navigation.navigate('OrderDetails', {
                               data: oI,
@@ -177,7 +187,7 @@ const MyOrders = () => {
                         </TouchableOpacity>
                       )}
                       <TouchableOpacity
-                        style={[styles.row, {alignItems: 'center'}]}
+                        style={[styles.row, { alignItems: 'center' }]}
                         onPress={() => {
                           navigation.navigate('OrderDetails', {
                             data: oI,
@@ -211,7 +221,7 @@ const MyOrders = () => {
                       <View>
                         <Label
                           title={`Ordine n° - ${oI?.Number}`}
-                          style={{fontSize: scale(11)}}
+                          style={{ fontSize: scale(11) }}
                         />
                         <Label
                           title={`${moment(oI.DeliveryDate).format(
@@ -402,7 +412,7 @@ const MyOrders = () => {
                       ]}>
                       <Label
                         title="Totale Finale"
-                        style={[styles.price, {fontWeight: '600'}]}
+                        style={[styles.price, { fontWeight: '600' }]}
                       />
                       <Label
                         title={`€${oI.Total.toFixed(2)}`}
