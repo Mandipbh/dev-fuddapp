@@ -56,6 +56,8 @@ const RestaturantDetails = ({ route, navigation }) => {
 
   const [cartItemCount, setCartCount] = useState(0);
 
+  console.log('route_', route?.params);
+
   useEffect(() => {
     var cartCount = 0;
     console.log('RestDetail', cartData);

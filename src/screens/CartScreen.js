@@ -57,7 +57,7 @@ const CartScreen = ({ route }) => {
     var timeslot = route?.params?.selectedTimeSlot;
     setTime(timeslot);
 
-    cartData.map((data, index) => {
+    cartData?.map((data, index) => {
       if (data.restaurantId == route?.params?.restaurantId) {
         cartDataArray.push(data);
         setTmpData(cartDataArray);
@@ -115,12 +115,12 @@ const CartScreen = ({ route }) => {
   };
   const isLoginUser = useSelector(state => state.UserReducer?.login);
 
-  var availableCartItem = cartData.filter(function (data) {
+  var availableCartItem = cartData?.filter(function (data) {
     return data.restaurantId == route?.params?.restaurantId;
   });
   useEffect(() => {
     var hasCartData =
-      cartData.filter(function (data) {
+      cartData?.filter(function (data) {
         return data.restaurantId == route?.params?.restaurantId;
       }).length > 0;
     console.log('hasCartData', hasCartData);
