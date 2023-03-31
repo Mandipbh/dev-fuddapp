@@ -23,6 +23,9 @@ import InputBox from '../InputBox';
 import {isLogin, userData} from '../../redux/Actions/UserActions';
 import ApiService, {API} from '../../utils/ApiService';
 import { useToast } from 'react-native-toast-notifications';
+import { useRef } from 'react';
+import Toast from 'react-native-toast-notifications';
+
 
 const LoginModel = props => {
   const {isVisible, close} = props;
@@ -37,6 +40,7 @@ const LoginModel = props => {
   var regex = '^\\s+$';
   const disptch = useDispatch();
   const toast = useToast();
+  const toastRef = useRef();
 
   let error = false;
   const handleValidation = () => {
@@ -84,7 +88,7 @@ const LoginModel = props => {
           .catch(e => {
             setLoad(false);
             console.log('error in login> ', e.response);
-            toast.show(e.response?.data?.Errors[0], toast, { duration: 1000 });
+            toastRef.current.show(e.response?.data?.Errors[0], toast, { duration: 1000 });
 
           });
       } catch (e) {
@@ -161,6 +165,7 @@ const LoginModel = props => {
           </View>
         </View>
       </View>
+      <Toast ref={toastRef} />
       <BlurView
         style={styles.blurView}
         blurType="dark" // Values = dark, light, xlight .

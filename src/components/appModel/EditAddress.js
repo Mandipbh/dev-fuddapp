@@ -20,6 +20,7 @@ import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
 import Icon from 'react-native-vector-icons/Feather';
 import {Title, Error} from '../Label';
 import {useToast} from 'react-native-toast-notifications';
+import Toast from 'react-native-toast-notifications';
 
 const EditAddress = props => {
   const {isVisible, close, editData} = props;
@@ -34,6 +35,7 @@ const EditAddress = props => {
   const userData = useSelector(state => state?.UserReducer?.userDetails);
   const addRef = useRef();
   const toast = useToast();
+  const toastRef = useRef();
 
   const handlePlaceChanged = async (data, addData) => {
     const zipCode = data?.address_components.find(addressComponent =>
@@ -172,7 +174,7 @@ const EditAddress = props => {
         dispatch(getAllAddress());
       }
     } else {
-      toast.show('indirizzo non valido', toast, {duration: 1000});
+      toastRef.current.show('indirizzo non valido', toast, {duration: 1000});
 
       addRef.current?.setAddressText('');
     }
@@ -336,6 +338,7 @@ const EditAddress = props => {
           </View>
         </View>
       </View>
+      <Toast ref={toastRef} />
     </Modal>
   );
 };

@@ -10,6 +10,8 @@ import Button from '../Button';
 import InputBox from '../InputBox';
 import { Title, Label, Error } from '../Label';
 import { useToast } from 'react-native-toast-notifications';
+import { useRef } from 'react';
+import Toast from 'react-native-toast-notifications';
 
 
 const ChangePassword = props => {
@@ -24,7 +26,7 @@ const ChangePassword = props => {
   const [load, setLoad] = useState(false);
   let error = false;
   const toast = useToast();
-
+  const toastRef = useRef();
 
   const handleValidation = () => {
     if (oldPassword?.trim() === '') {
@@ -73,7 +75,7 @@ const ChangePassword = props => {
           })
           .catch(e => {
             setLoad(false);
-            toast.show(e.response?.data?.Errors[0], toast, { duration: 1000 });
+            toastRef.current.show(e.response?.data?.Errors[0], toast, { duration: 1000 });
 
             // console.log('error in login> ', e.response?.data?.Errors[0]);
           });
@@ -171,6 +173,7 @@ const ChangePassword = props => {
           </View>
         </View>
       </View>
+      <Toast ref={toastRef} />
     </Modal>
   );
 };

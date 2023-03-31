@@ -10,6 +10,9 @@ import Button from '../Button';
 import InputBox from '../InputBox';
 import { Title, Error } from '../Label';
 import { useToast } from 'react-native-toast-notifications';
+import { useRef } from 'react';
+import Toast from 'react-native-toast-notifications';
+
 
 const ForgotPassword = props => {
   const { isVisible, close, title } = props;
@@ -17,6 +20,7 @@ const ForgotPassword = props => {
   const [emailErr, setEmailErr] = useState('');
   const [load, setLoad] = useState(false);
   const toast = useToast();
+  const toastRef = useRef();
 
 
   let error = false;
@@ -51,8 +55,9 @@ const ForgotPassword = props => {
           })
           .catch(e => {
             setLoad(false);
-            toast.show(e.response?.data?.Errors[0], toast, { duration: 1000 });
-
+            toastRef.current.show(e.response?.data?.Errors[0], toast, {
+              duration: 1000,
+            });
           });
       } catch (e) {
         setLoad(false);
@@ -120,6 +125,7 @@ const ForgotPassword = props => {
           reducedTransparencyFallbackColor="white"
         />
       </View>
+      <Toast ref={toastRef} />
     </Modal>
   );
 };
