@@ -8,24 +8,24 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/Feather';
 import LottieView from 'lottie-react-native';
 import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Emptycart, scale, theme } from '../utils';
-import { Button, Label, Title, Error } from '../components';
-import { useNavigation, useIsFocused } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
-import { AddToCart } from '../redux/Actions/CartAction';
+import {Emptycart, scale, theme} from '../utils';
+import {Button, Label, Title, Error} from '../components';
+import {useNavigation, useIsFocused} from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
+import {AddToCart} from '../redux/Actions/CartAction';
 
-import ApiService, { API } from '../utils/ApiService';
+import ApiService, {API} from '../utils/ApiService';
 import moment from 'moment';
 import LoginModel from '../components/appModel/LoginModel';
 import SetLocationModel from '../components/appModel/SetLocationModel';
-import { timeSlot } from '../utils/TimeSlot';
+import {timeSlot} from '../utils/TimeSlot';
 import NextSlotAvailabilityModel from '../components/appModel/NextSlotAvailabilityModel';
 
-const CartScreen = ({ route }) => {
+const CartScreen = ({route}) => {
   const navigation = useNavigation();
   const cartData = useSelector(state => state?.CartReducer.cartData);
   const user = useSelector(state => state.UserReducer?.userDetails);
@@ -43,8 +43,6 @@ const CartScreen = ({ route }) => {
   const [locationModel, setLocationModel] = useState(false);
   const [nextSlotAvailability, setNextSlotAvailability] = useState(false);
   const isFocus = useIsFocused();
-
-  console.log('cartData_', cartData);
 
   const [listedCartData, setListedCartData] = useState([]);
   const [tmpData, setTmpData] = useState([]);
@@ -64,7 +62,6 @@ const CartScreen = ({ route }) => {
       }
     });
     setListedCartData(cartDataArray);
-    console.log('sdjhkhj', tmpData);
   }, [isFocus]);
 
   const incrimentCart = (selitm, idx) => {
@@ -77,7 +74,6 @@ const CartScreen = ({ route }) => {
     }, []);
     setTmpData(tmparr);
 
-    console.log('cartData+++', cartData);
     //dispatch(AddToCart(tmparr));
   };
 
@@ -87,7 +83,7 @@ const CartScreen = ({ route }) => {
       if (data.Name == selitm.Name) {
         if (data.Qty == 1) {
           // tmparr.remove(data);
-          console.log('87', cartData);
+
           const index = tmparr.indexOf(data);
           tmparr.splice(index, 1);
         } else {
@@ -96,7 +92,6 @@ const CartScreen = ({ route }) => {
       }
     }, []);
     setTmpData(tmparr);
-    console.log('cartData---', cartData);
 
     dispatch(AddToCart(tmparr));
   };
@@ -123,9 +118,7 @@ const CartScreen = ({ route }) => {
       cartData?.filter(function (data) {
         return data.restaurantId == route?.params?.restaurantId;
       }).length > 0;
-    console.log('hasCartData', hasCartData);
     setCartDataAvailable(hasCartData);
-    console.log('availableCartItem', availableCartItem);
 
     if (listedCartData !== null && listedCartData !== undefined) {
       calculatePrice();
@@ -134,7 +127,9 @@ const CartScreen = ({ route }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listedCartData, cartData, tmpData]);
-
+  {
+    console.log('route?.params>>>. ', route?.params);
+  }
   const getCalculateDeliveryPrice = total => {
     try {
       if (listedCartData) {
@@ -146,13 +141,11 @@ const CartScreen = ({ route }) => {
         };
 
         setLoad(true);
-        const options = { payloads: data };
-        console.log('CalculateDeliveryoptions', options);
+        const options = {payloads: data};
 
         ApiService.post(API.CalculateDeliveryPrice, options)
           .then(res => {
             if (res.Status === 'Success') {
-              console.log('res.DeliveryPrice ', res.DeliveryPrice);
               setDPrice(res.DeliveryPrice);
               setLoad(false);
             }
@@ -215,8 +208,8 @@ const CartScreen = ({ route }) => {
                       </View>
                     </View>
                     <View
-                      style={[styles.row, { justifyContent: 'space-between' }]}>
-                      <View style={[styles.row, { marginLeft: scale(35) }]}>
+                      style={[styles.row, {justifyContent: 'space-between'}]}>
+                      <View style={[styles.row, {marginLeft: scale(35)}]}>
                         <TouchableOpacity
                           style={styles.btn}
                           onPress={() => {
@@ -257,7 +250,7 @@ const CartScreen = ({ route }) => {
                   source={Emptycart}
                   autoPlay
                   loop
-                  style={{ height: scale(240) }}
+                  style={{height: scale(240)}}
                 />
                 <Title title="Carrello vuoto" />
               </View>
@@ -278,7 +271,7 @@ const CartScreen = ({ route }) => {
               <Title
                 title={`Sipplemento ordine inferiore a €${listedCartData[0].MinimumOrder}`}
                 MinOrderCharge
-                style={{ width: '70%' }}
+                style={{width: '70%'}}
               />
               <Title
                 title={`€ ${listedCartData[0]?.MinOrderSupplment?.toFixed(2)}`}
@@ -416,7 +409,7 @@ const styles = StyleSheet.create({
     margin: scale(15),
     maxHeight: theme.SCREENHEIGHT * 0.45,
   },
-  row: { flexDirection: 'row', alignItems: 'center' },
+  row: {flexDirection: 'row', alignItems: 'center'},
   items: {
     // marginVertical: scale(7),
     flexDirection: 'row',

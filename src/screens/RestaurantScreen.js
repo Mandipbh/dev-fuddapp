@@ -185,6 +185,7 @@ const RestaurantScreen = () => {
       restaurantsData: restaurantsData,
       timeSlot: displayedTimeSloat,
       selectedDate: date,
+      ID: item?.ID,
     });
   };
 

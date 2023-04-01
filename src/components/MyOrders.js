@@ -1,16 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
-import React, { useState, useEffect } from 'react';
-import { scale, theme } from '../utils';
+import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {scale, theme, timeSlot} from '../utils';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon1 from 'react-native-vector-icons/Ionicons';
-import { Label } from './Label';
-import ApiService, { API } from '../utils/ApiService';
-import { useDispatch, useSelector } from 'react-redux';
-import { getAllOrders } from '../redux/Actions/OrderAction';
+import {Label} from './Label';
+import ApiService, {API} from '../utils/ApiService';
+import {useDispatch, useSelector} from 'react-redux';
+import {getAllOrders} from '../redux/Actions/OrderAction';
 import moment from 'moment';
-import { useIsFocused, useNavigation } from '@react-navigation/core';
-import { AddToCart } from '../redux/Actions/CartAction';
+import {useIsFocused, useNavigation} from '@react-navigation/core';
+import {AddToCart} from '../redux/Actions/CartAction';
 
 // export const getAllOrders = () => {
 //   return async dispatch => {
@@ -52,7 +52,8 @@ const MyOrders = () => {
   }, [allOrders]);
 
   const handleGetOrderDetail = (orderId, Email) => {
-    console.log('orderId', orderId);
+    console.log('orderId', moment(new Date()).format('DD-MM-YYYY'));
+    const timeSlotData = timeSlot();
     try {
       ApiService.get(API.ReOrder + `id=${orderId}&userEmail=${Email}`)
         .then(res => {
@@ -109,6 +110,9 @@ const MyOrders = () => {
           var Items = res?.cartDetails?.Items?.map((data, idx) => {
             var newData = Object.assign(data, {
               restaurantId: res?.cartDetails?.Rest?.ID,
+              MinOrderSupplment:
+                res?.cartDetails?.Rest?.supplemento_ordine_minimo,
+              MinimumOrder: res?.cartDetails?.Rest?.MinimumOrder,
             });
             OrderDataArray.push(newData);
           });
@@ -117,12 +121,18 @@ const MyOrders = () => {
           navigation.navigate('RISTORANTI', {
             screen: 'Details',
             params: {
+              // item: item,
+              // restaurantsData: restaurantsData,
+              // timeSlot: displayedTimeSloat,
+              // selectedDate: date,
+              restaurantsData: res?.cartDetails?.Rest,
               ID: res?.cartDetails?.Rest?.ID,
               item: OrderDataArray,
-              timeSlot: '10:00TO11:00',
+              timeSlot: timeSlotData.ptime,
+              selectedDate: new Date(),
             },
           });
-
+          console.log('OrderDataArray >>>> ', OrderDataArray);
           // navigation.navigate('RISTORANTI', {
           //   screen: 'Cart',
           //   params: {restaurantId: reOrderCartData?.ID},
@@ -139,20 +149,20 @@ const MyOrders = () => {
   return (
     <View>
       <ScrollView
-        style={{ height: theme.SCREENHEIGHT * 0.4 }}
+        style={{height: theme.SCREENHEIGHT * 0.4}}
         showsVerticalScrollIndicator={false}>
         {getAllOrder &&
           getAllOrder?.map((oI, index) => {
             const iscurrentDate = moment(0, 'HH').diff(oI?.Date, 'days') == 0;
             return (
               <View style={styles.mainCard} key={index}>
-                <View style={[styles.row, { alignItems: 'center' }]}>
-                  <View style={{ marginVertical: scale(8) }}>
-                    <View style={[styles.orderCon, { alignItems: 'center' }]}>
+                <View style={[styles.row, {alignItems: 'center'}]}>
+                  <View style={{marginVertical: scale(8)}}>
+                    <View style={[styles.orderCon, {alignItems: 'center'}]}>
                       <View
-                        style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        style={{flexDirection: 'row', alignItems: 'center'}}>
                         <TouchableOpacity
-                          style={[styles.row, { alignItems: 'center' }]}
+                          style={[styles.row, {alignItems: 'center'}]}
                           onPress={() => {
                             navigation.navigate('OrderDetails', {
                               data: oI,
@@ -187,7 +197,7 @@ const MyOrders = () => {
                         </TouchableOpacity>
                       )}
                       <TouchableOpacity
-                        style={[styles.row, { alignItems: 'center' }]}
+                        style={[styles.row, {alignItems: 'center'}]}
                         onPress={() => {
                           navigation.navigate('OrderDetails', {
                             data: oI,
@@ -221,7 +231,7 @@ const MyOrders = () => {
                       <View>
                         <Label
                           title={`Ordine n° - ${oI?.Number}`}
-                          style={{ fontSize: scale(11) }}
+                          style={{fontSize: scale(11)}}
                         />
                         <Label
                           title={`${moment(oI.DeliveryDate).format(
@@ -412,7 +422,7 @@ const MyOrders = () => {
                       ]}>
                       <Label
                         title="Totale Finale"
-                        style={[styles.price, { fontWeight: '600' }]}
+                        style={[styles.price, {fontWeight: '600'}]}
                       />
                       <Label
                         title={`€${oI.Total.toFixed(2)}`}

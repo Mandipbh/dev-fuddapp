@@ -10,11 +10,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon1 from 'react-native-vector-icons/SimpleLineIcons';
 import Icon2 from 'react-native-vector-icons/Entypo';
-import { scale, theme } from '../utils';
+import {scale, theme} from '../utils';
 import {
   Button,
   CartModel,
@@ -24,16 +24,16 @@ import {
   Title,
 } from '../components';
 import LinearGradient from 'react-native-linear-gradient';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
-import { restaurantDetails } from '../redux/Actions/RestaurantAction';
-import ApiService, { API, APP_BASE_URL } from '../utils/ApiService';
-import { AddToCart } from '../redux/Actions/CartAction';
-import moment, { duration } from 'moment';
-import { useToast } from 'react-native-toast-notifications';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
+import {useEffect} from 'react';
+import {restaurantDetails} from '../redux/Actions/RestaurantAction';
+import ApiService, {API, APP_BASE_URL} from '../utils/ApiService';
+import {AddToCart} from '../redux/Actions/CartAction';
+import moment, {duration} from 'moment';
+import {useToast} from 'react-native-toast-notifications';
 
-const RestaturantDetails = ({ route, navigation }) => {
+const RestaturantDetails = ({route, navigation}) => {
   const [selectedIndex, setSelIndex] = useState(0);
   const [viewImg, setViewImg] = useState(false);
   const [imgPath, setImgPath] = useState(null);
@@ -47,7 +47,7 @@ const RestaturantDetails = ({ route, navigation }) => {
   const [resId, setrid] = useState(null);
   const [date, setDate] = useState(new Date());
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
-
+  console.log('resId >>> ', resId);
   const seladdress = useSelector(state => state.UserReducer.selAddress);
   // const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -66,29 +66,29 @@ const RestaturantDetails = ({ route, navigation }) => {
       if (data.restaurantId === route?.params?.item.ID) {
         cartCount++;
         setCartCount(cartCount);
+      } else if (data.restaurantId === route?.params?.ID) {
+        cartCount++;
+        setCartCount(cartCount);
       }
     });
   }, [isFocuse, cartItemCount]);
 
-
   //get restaurant details & menus
   useEffect(() => {
+    console.log('callll ', route?.params?.ID);
     if (route?.params) {
       setSelectedTimeSlot(route?.params?.timeSlot);
     }
 
-    if (route?.params?.item?.ID) {
-      setrid(route?.params?.item.ID);
+    if (route?.params?.ID) {
+      setrid(route?.params?.ID);
     }
-
-
-
 
     setLoad(true);
     const data = {
       latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
       longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
-      id: route?.params?.item?.ID,
+      id: route?.params?.item?.ID || route?.params?.ID,
       date: moment(date).format('DD-MM-YYYY'),
       timeSlot: `${moment(new Date()).format('HH:mm')}-${moment(new Date())
         .add(30, 'minute')
@@ -99,7 +99,7 @@ const RestaturantDetails = ({ route, navigation }) => {
     setLoad(true);
 
     try {
-      const options = { payloads: data };
+      const options = {payloads: data};
       ApiService.post(API.getPerticularRestaurant, options)
         .then(res => {
           if (res) {
@@ -177,7 +177,7 @@ const RestaturantDetails = ({ route, navigation }) => {
     // })
   }, [searchtxt]);
 
-  const renderMenus = ({ item, index }) => {
+  const renderMenus = ({item, index}) => {
     return (
       <View key={index} style={styles.menuView}>
         <TouchableOpacity
@@ -214,7 +214,7 @@ const RestaturantDetails = ({ route, navigation }) => {
                       />
                     </TouchableOpacity>
 
-                    <View style={{ marginLeft: scale(10) }}>
+                    <View style={{marginLeft: scale(10)}}>
                       <Label title={m?.Name} style={styles.productname} />
                       <Label
                         title={m?.Amount?.toFixed(2) + ' €'}
@@ -226,7 +226,7 @@ const RestaturantDetails = ({ route, navigation }) => {
                     name="plus"
                     size={scale(22)}
                     color={theme.colors.purpal}
-                    style={{ marginRight: scale(6) }}
+                    style={{marginRight: scale(6)}}
                     onPress={() => {
                       // console.log('onPress>', JSON.stringify(m, null, 4));
                       handleCartAddItem(m);
@@ -245,7 +245,7 @@ const RestaturantDetails = ({ route, navigation }) => {
     );
   };
 
-  const renderInfo = ({ item, index }) => {
+  const renderInfo = ({item, index}) => {
     const time = item?.Time?.replace('<br />', ' ');
     return (
       <View style={styles.menuViews} key={index}>
@@ -270,7 +270,7 @@ const RestaturantDetails = ({ route, navigation }) => {
         if (matchingObj) {
           matchingObj.Qty++;
         } else {
-          let itemQtyhandle = { ...item };
+          let itemQtyhandle = {...item};
           itemQtyhandle.Qty = 1;
           itemQtyhandle.restaurantId = route?.params?.item.ID;
           itemQtyhandle.MinimumOrder = details?.MinimumOrder;
@@ -278,9 +278,6 @@ const RestaturantDetails = ({ route, navigation }) => {
           itemQtyhandle.Image =
             details?.Menu?.ProductsImagePrefix + item?.Image;
           tmpArr.push(itemQtyhandle);
-
-
-
         }
         setSelItem(item);
         var cartCount = 0;
@@ -290,11 +287,10 @@ const RestaturantDetails = ({ route, navigation }) => {
             setCartCount(cartCount);
           }
         });
-
       } else {
         setSelItem(item);
         setCartModel(true);
-        let itemQtyhandle = { ...item };
+        let itemQtyhandle = {...item};
         itemQtyhandle.Qty = 1;
         itemQtyhandle.restaurantId = route?.params?.item.ID;
         itemQtyhandle.MinimumOrder = details?.MinimumOrder;
@@ -302,10 +298,7 @@ const RestaturantDetails = ({ route, navigation }) => {
         itemQtyhandle.Image = details?.Menu?.ProductsImagePrefix + item?.Image;
         // show?  null : tmpArr.push(itemQtyhandle) : null
         // console.log('handleCartData2', tmpArr.length);
-
       }
-
-
     }
   };
 
@@ -314,7 +307,6 @@ const RestaturantDetails = ({ route, navigation }) => {
   const handleCartAddItem = async item => {
     const tmpArr = cartData === undefined ? [] : [...cartData];
     // tmpArr.push(item);
-
 
     dispatch(AddToCart(tmpArr));
     if (
@@ -327,7 +319,7 @@ const RestaturantDetails = ({ route, navigation }) => {
       if (matchingObj) {
         matchingObj.Qty++;
       } else {
-        let itemQtyhandle = { ...item };
+        let itemQtyhandle = {...item};
         itemQtyhandle.Qty = 1;
         itemQtyhandle.restaurantId = route?.params?.item.ID;
         itemQtyhandle.MinimumOrder = details?.MinimumOrder;
@@ -336,8 +328,6 @@ const RestaturantDetails = ({ route, navigation }) => {
         tmpArr.push(itemQtyhandle);
       }
       setSelItem(item);
-      console.log('handleCartData1', tmpArr.length);
-
       var cartCount = 0;
       tmpArr.map((data, index) => {
         if (data.restaurantId == route?.params?.item.ID) {
@@ -345,11 +335,10 @@ const RestaturantDetails = ({ route, navigation }) => {
           setCartCount(cartCount);
         }
       });
-
     } else {
       setSelItem(item);
       setCartModel(true);
-      let itemQtyhandle = { ...item };
+      let itemQtyhandle = {...item};
       itemQtyhandle.Qty = 1;
       itemQtyhandle.restaurantId = route?.params?.item.ID;
       itemQtyhandle.MinimumOrder = details?.MinimumOrder;
@@ -357,7 +346,7 @@ const RestaturantDetails = ({ route, navigation }) => {
       itemQtyhandle.Image = details?.Menu?.ProductsImagePrefix + item?.Image;
       // show?  null : tmpArr.push(itemQtyhandle) : null
     }
-    toast.show('Articolo aggiunto nel carrello.', toast, { duration: 500 });
+    toast.show('Articolo aggiunto nel carrello.', toast, {duration: 500});
 
     // var countArray = [];
     // tmpArr.map(async (data, i) => {
@@ -370,6 +359,8 @@ const RestaturantDetails = ({ route, navigation }) => {
     //   }
     // }, []);
   };
+
+  console.log('route?.params?.selectedDate >>. ', route?.params?.selectedDate);
 
   return (
     <View style={styles.container}>
@@ -412,7 +403,6 @@ const RestaturantDetails = ({ route, navigation }) => {
                 restaurantId: resId,
                 selectedTimeSlot: route?.params?.timeSlot,
                 selectedDate: route?.params?.selectedDate,
-
               });
               // setCartModel(!cartModel);
             }}>
@@ -434,8 +424,8 @@ const RestaturantDetails = ({ route, navigation }) => {
           {restaurantData?.Percentage && (
             <LinearGradient
               colors={[theme.colors.purpal1, theme.colors.orange]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
+              start={{x: 0, y: 0}}
+              end={{x: 1, y: 0}}
               style={styles.linCon}>
               <Icon2
                 name="thumbs-up"
@@ -462,7 +452,7 @@ const RestaturantDetails = ({ route, navigation }) => {
       <View style={styles.options}>
         <Button
           title="Menu"
-          style={[styles.filBtn, styles.shadow, { shadowRadius: scale(10) }]}
+          style={[styles.filBtn, styles.shadow, {shadowRadius: scale(10)}]}
           onPress={() => {
             setSelectedItem(0);
           }}
@@ -472,7 +462,7 @@ const RestaturantDetails = ({ route, navigation }) => {
         />
         <Button
           title="Intormazioni"
-          style={[styles.filBtn, styles.shadow, { shadowRadius: scale(10) }]}
+          style={[styles.filBtn, styles.shadow, {shadowRadius: scale(10)}]}
           onPress={() => {
             setSelectedItem(1);
           }}
@@ -488,7 +478,7 @@ const RestaturantDetails = ({ route, navigation }) => {
             renderItem={renderMenus}
             showsVerticalScrollIndicator={false}
             style={[styles.menusView, styles.shadow]}
-            contentContainerStyle={{ paddingBottom: scale(30) }}
+            contentContainerStyle={{paddingBottom: scale(30)}}
             ListEmptyComponent={() => {
               return (
                 details?.Menu?.Categories?.length === 0 && (
@@ -524,7 +514,7 @@ const RestaturantDetails = ({ route, navigation }) => {
                             />
                           </TouchableOpacity>
 
-                          <View style={{ marginLeft: scale(10) }}>
+                          <View style={{marginLeft: scale(10)}}>
                             <Label title={m?.Name} style={styles.productname} />
                             <Label
                               title={m?.Amount?.toFixed(2) + ' €'}
@@ -536,7 +526,7 @@ const RestaturantDetails = ({ route, navigation }) => {
                           name="plus"
                           size={scale(22)}
                           color={theme.colors.purpal}
-                          style={{ marginRight: scale(6) }}
+                          style={{marginRight: scale(6)}}
                           onPress={() => {
                             handleCartAddItem(m);
 
@@ -554,7 +544,7 @@ const RestaturantDetails = ({ route, navigation }) => {
         )}
       </View>
       {selectedItem === 1 && (
-        <View style={{ height: theme.SCREENHEIGHT * 0.48 }}>
+        <View style={{height: theme.SCREENHEIGHT * 0.48}}>
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.infoContainer}>
               <View style={styles.textView}>
@@ -650,7 +640,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     width: '100%',
   },
-  cartBtn: { justifyContent: 'center', alignItems: 'center' },
+  cartBtn: {justifyContent: 'center', alignItems: 'center'},
   Cartcount: {
     position: 'absolute',
     fontWeight: '600',
