@@ -42,7 +42,6 @@ const ForgotPassword = props => {
         setLoad(true);
         ApiService.get(API.recoveryPassword + email)
           .then(res => {
-            console.log('res >>> ', res);
             if (res.Status === 'Success') {
               setLoad(false);
               // Toast.show(

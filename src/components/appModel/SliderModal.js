@@ -28,7 +28,6 @@ const SliderModal = props => {
   useEffect(() => {
     setSelCategory(selectedCat?.Id);
   }, []);
-  console.log('selCategory ??/ ', selectedCat);
   return (
     <Modal animationType="fade" visible={isVisible} style={styles.modalCon}>
       <BlurView

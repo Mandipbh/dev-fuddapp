@@ -1,5 +1,5 @@
-import {Dimensions} from 'react-native';
-const {width, height} = Dimensions.get('window');
+import { Dimensions } from 'react-native';
+const { width, height } = Dimensions.get('window');
 
 const theme = {
   fonts: {
@@ -28,7 +28,7 @@ const theme = {
     placeholder: '#b6bed4',
     green: '#4cd964',
     green1: '#bbdb9a',
-    green2:'#e9e9a7',
+    green2: '#e9e9a7',
     linkColor: '#808080',
     gray5: '#A3A3A3',
     catColor: '#F1F1F3',

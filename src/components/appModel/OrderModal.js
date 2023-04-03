@@ -31,7 +31,6 @@ const OrderModal = props => {
   useEffect(() => {
     dispatch(getAllOrders(user?.UserId));
     setgetAllOrder(allOrders?.OrderList);
-    console.log('OrderJson', JSON.stringify(allOrders?.OrderList, null, 4));
   }, []);
 
   useEffect(() => {

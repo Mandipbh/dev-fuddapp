@@ -47,7 +47,6 @@ const RestaturantDetails = ({ route, navigation }) => {
   const [resId, setrid] = useState(null);
   const [date, setDate] = useState(new Date());
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
-  console.log('resId >>> ', resId);
   const seladdress = useSelector(state => state.UserReducer.selAddress);
   // const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -56,11 +55,9 @@ const RestaturantDetails = ({ route, navigation }) => {
 
   const [cartItemCount, setCartCount] = useState(0);
 
-  console.log('route_', route?.params);
 
   useEffect(() => {
     var cartCount = 0;
-    console.log('RestDetail', cartData);
     setCartCount(cartCount);
     cartData?.map((data, index) => {
       if (data.restaurantId === route?.params?.item.ID) {
@@ -93,7 +90,7 @@ const RestaturantDetails = ({ route, navigation }) => {
     const data = {
       latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
       longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
-      id: resId,
+      id: route?.params?.item?.ID || route?.params?.ID,
       date: moment(date).format('DD-MM-YYYY'),
       timeSlot: `${moment(new Date()).format('HH:mm')}-${moment(new Date())
         .add(30, 'minute')
@@ -128,6 +125,9 @@ const RestaturantDetails = ({ route, navigation }) => {
 
     dispatch(restaurantDetails(data));
   }, [isFocuse]);
+  useEffect(() => {
+    setSearchTxt('');
+  }, [isFocuse])
 
   const restaurantData = useSelector(
     state => state.RestaurantReducers?.restaurantDetails,
@@ -260,7 +260,6 @@ const RestaturantDetails = ({ route, navigation }) => {
     );
   };
   const handleModel = async item => {
-    console.log('handleModel', item);
 
     setCartModel(false);
     if (item !== null) {
@@ -310,7 +309,6 @@ const RestaturantDetails = ({ route, navigation }) => {
   const cartData = useSelector(state => state?.CartReducer.cartData);
 
   const handleCartAddItem = async item => {
-    console.log('handleCartAddItem_resId', resId);
     const tmpArr = cartData === undefined ? [] : [...cartData];
     // tmpArr.push(item);
 
@@ -366,7 +364,6 @@ const RestaturantDetails = ({ route, navigation }) => {
     // }, []);
   };
 
-  console.log('route?.params?.selectedDate >>. ', route?.params?.selectedDate);
 
   return (
     <View style={styles.container}>

@@ -118,7 +118,6 @@ const Signup = props => {
         const options = {payloads: folderFrm};
         ApiService.post(API.signUp, options)
           .then(res => {
-            console.log('res of varifiy >> ', res);
             if (res.Status === 'Success') {
               setSignupRes(folderFrm);
               setVarification(true);

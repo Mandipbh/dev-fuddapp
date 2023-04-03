@@ -76,7 +76,6 @@ const AddNewAddress = props => {
           {duration: 1000},
         );
       } else {
-        console.log('Error2', 'success');
         try {
           const passData = {
             Address: addressData.Address,
@@ -102,11 +101,9 @@ const AddNewAddress = props => {
             Phone: mobile,
           };
           const options = {payloads: frmData};
-          console.log('options >>> ', frmData);
           ApiService.post('Users/SaveUserAddress', options)
             .then(res => {
               setLoad(false);
-              console.log('res address', res?.Status);
               if (res?.Status == 'Success') {
                 close();
                 dispatch(getAllAddress());
@@ -158,7 +155,6 @@ const AddNewAddress = props => {
         lngg = lng;
       }
     }
-    console.log('street_number ??? ', street_number);
     addrSel =
       place.formatted_address !== undefined ? place.formatted_address : '';
     placeName = place.name !== undefined ? place.name : '';
@@ -208,19 +204,15 @@ const AddNewAddress = props => {
       for (const obj of data.address_components) {
         if (obj.types.includes('route')) {
           addressName = obj.short_name;
-          console.log('addressName', addressName);
         } else if (obj.types.includes('street_number')) {
           numberStreet = obj.long_name;
           setStreetNumber(numberStreet);
-          console.log('numberStreet', numberStreet);
         } else if (obj.types.includes('postal_code')) {
           postalCode = obj.long_name;
-          console.log('postalCode', postalCode);
         }
       }
     }
 
-    console.log('data?.address_components >> ', data?.address_components);
     const frmData = {
       Latitute: latt?.toString(),
       Longitude: lngg.toString(),
@@ -242,10 +234,7 @@ const AddNewAddress = props => {
       setAddressData(frmData);
     }
 
-    console.log(
-      'stateRespstateRespstateResp  is this ',
-      JSON.stringify(frmData, null, 4),
-    );
+   
   };
   const clearData = () => {
     setFirstName('');

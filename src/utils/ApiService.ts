@@ -18,7 +18,7 @@ const execute = async (
 ) => {
   const base = APP_API_URL.replace(/~\/$/, '');
   const url = !fileUpload ? base + path : path;
-  console.log('url for api call ', url) ;
+  // console.log('url for api call ', url) ;
   //   if (token && !fileUpload) {
   //     headers.Authorization = `Bearer ${token}`;
   //   }

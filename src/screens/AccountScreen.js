@@ -45,7 +45,6 @@ const AccountScreen = ({route, props}) => {
     if (!isLoginUser) {
       setSelectedMenu(4);
     } else {
-      console.log('route?.params?.data ?>?? ', route?.params?.data);
       route?.params?.data === 1
         ? setSelectedMenu(2)
         : route?.params?.data === 11

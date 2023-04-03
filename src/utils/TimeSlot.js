@@ -25,7 +25,6 @@ const   timeSlot = () => {
   displaytimeslot = newRoundedTime
     .toString()
     .concat(' TO ', newEndroundTime.toString());
-  console.log('newtimeSlot', newtimeSlot);
 
   //   setDisplayedTimeSlot(displaytimeslot);
   //   setTimeSlot(newtimeSlot);

@@ -270,14 +270,11 @@ const HomeScreen = () => {
       for (const obj of data.address_components) {
         if (obj.types.includes('route')) {
           addressName = obj.short_name;
-          console.log('addressName', addressName);
         } else if (obj.types.includes('street_number')) {
           numberStreet = obj.long_name;
           setStreetNumber(numberStreet);
-          console.log('numberStreet', numberStreet);
         } else if (obj.types.includes('postal_code')) {
           postalCode = obj.long_name;
-          console.log('postalCode', postalCode);
         }
       }
     }
@@ -305,10 +302,12 @@ const HomeScreen = () => {
     };
     dispatch(selectedAddress(frmData));
   };
+  useEffect(() => {
+    dispatch(setCategory(null));
+  }, [isFocuse]);
 
   useEffect(() => {
     if (seladdress !== null && seladdress !== undefined) {
-      console.log('seladdress.StreetNo', seladdress.StreetNo);
       if (seladdress.StreetNo !== '') {
         ref.current?.setAddressText(seladdress?.AddressName);
       } else {

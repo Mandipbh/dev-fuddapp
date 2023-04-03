@@ -69,7 +69,6 @@ const ChangePassword = props => {
           .then(res => {
             setLoad(false);
             if (res.Status === 'Success') {
-              console.log('res of login >> ', res);
               close();
             }
           })

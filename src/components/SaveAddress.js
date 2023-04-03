@@ -55,11 +55,9 @@ const SaveAddress = ({ back }) => {
   const handleSave = () => {
     if (!validation()) {
       if (addressData === '') {
-        console.log('Error2', 'sdfdsfdfdf');
         addRef.current?.setAddressText('');
         toast.show("Inserisci un indirizzo preciso con numero civico. L' indirizzo selezionato è troppo vago.", toast, { duration: 1000 });
       } else {
-        console.log('Error2', 'success');
         try {
           setLoad(true);
           const frmData = {
@@ -70,11 +68,10 @@ const SaveAddress = ({ back }) => {
             Phone: mobile,
           };
           const options = { payloads: frmData };
-          console.log('options >>> ', frmData);
           ApiService.post('Users/SaveUserAddress', options)
             .then(res => {
+              console.log('res', '12345');
               setLoad(false);
-              console.log('res address', res?.Status);
               if (res?.Status == 'Success') {
                 back();
                 dispatch(getAllAddress());
@@ -82,6 +79,7 @@ const SaveAddress = ({ back }) => {
             })
             .catch(error => {
               setLoad(false);
+              console.log('res', '678');
               console.log('error catch ', error.response);
               back();
               dispatch(getAllAddress());
@@ -125,7 +123,6 @@ const SaveAddress = ({ back }) => {
         lngg = lng;
       }
     }
-    console.log('street_number ??? ', street_number);
     addrSel =
       place.formatted_address !== undefined ? place.formatted_address : '';
     placeName = place.name !== undefined ? place.name : '';
@@ -175,19 +172,15 @@ const SaveAddress = ({ back }) => {
       for (const obj of data.address_components) {
         if (obj.types.includes('route')) {
           addressName = obj.short_name;
-          console.log('addressName', addressName);
         } else if (obj.types.includes('street_number')) {
           numberStreet = obj.long_name;
           setStreetNumber(numberStreet);
-          console.log('numberStreet', numberStreet);
         } else if (obj.types.includes('postal_code')) {
           postalCode = obj.long_name;
-          console.log('postalCode', postalCode);
         }
       }
     }
 
-    console.log('data?.address_components >> ', data?.address_components);
     const frmData = {
       Latitute: latt?.toString(),
       Longitude: lngg.toString(),
@@ -208,11 +201,6 @@ const SaveAddress = ({ back }) => {
     } else {
       setAddressData(frmData);
     }
-
-    console.log(
-      'stateRespstateRespstateResp  is this ',
-      JSON.stringify(frmData, null, 4),
-    );
   };
 
   return (

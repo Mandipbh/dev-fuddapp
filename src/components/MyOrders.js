@@ -52,15 +52,11 @@ const MyOrders = () => {
   }, [allOrders]);
 
   const handleGetOrderDetail = (orderId, Email) => {
-    console.log('orderId', moment(new Date()).format('DD-MM-YYYY'));
     const timeSlotData = timeSlot();
     try {
       ApiService.get(API.ReOrder + `id=${orderId}&userEmail=${Email}`)
         .then(res => {
-          console.log(
-            'myOrderResponse',
-            JSON.stringify(res?.cartDetails, null, 4),
-          );
+        
 
           // var reOrderCartData = {
           //   Adds: false,
@@ -132,7 +128,6 @@ const MyOrders = () => {
               selectedDate: new Date(),
             },
           });
-          console.log('OrderDataArray >>>> ', OrderDataArray);
           // navigation.navigate('RISTORANTI', {
           //   screen: 'Cart',
           //   params: {restaurantId: reOrderCartData?.ID},

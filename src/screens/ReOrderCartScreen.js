@@ -6,21 +6,21 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/Feather';
 import LottieView from 'lottie-react-native';
 import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Emptycart, scale, theme} from '../utils';
-import {Button, Label, Title} from '../components';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
-import {useDispatch, useSelector} from 'react-redux';
-import {AddToCart, ReOrderAction} from '../redux/Actions/CartAction';
-import ApiService, {API} from '../utils/ApiService';
+import { Emptycart, scale, theme } from '../utils';
+import { Button, Label, Title } from '../components';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { AddToCart, ReOrderAction } from '../redux/Actions/CartAction';
+import ApiService, { API } from '../utils/ApiService';
 import moment from 'moment';
 import SetLocationModel from '../components/appModel/SetLocationModel';
-import {REORDERS} from '../redux/Actions/ActionsTypes';
+import { REORDERS } from '../redux/Actions/ActionsTypes';
 
-const ReOrderCartScreen = ({route}) => {
+const ReOrderCartScreen = ({ route }) => {
   const navigation = useNavigation();
   // const cartData = useSelector(state => state?.CartReducer.cartData);
   const user = useSelector(state => state.UserReducer?.userDetails);
@@ -56,7 +56,6 @@ const ReOrderCartScreen = ({route}) => {
   }, [isFoucse, dataArray]);
   const incrimentCart = (selitm, idx) => {
     const tmparr = [...dataArray];
-    console.log('tmparr ??? ', tmparr);
     tmparr[idx].Qty = tmparr[idx].Qty + 1;
     dispatch(ReOrderAction(tmparr));
     setDataArray(tmparr);
@@ -77,15 +76,12 @@ const ReOrderCartScreen = ({route}) => {
     try {
       ApiService.get(API.ReOrder + `id=${orderId}&userEmail=${Email}`)
         .then(res => {
-          console.log('RESPONSE_Order', JSON.stringify(res, null, 4));
-          dispatch({type: REORDERS, payload: res});
+          dispatch({ type: REORDERS, payload: res });
           setReOrderData(res);
         })
         .catch(error => {
-          console.log('error catch ', error);
         });
     } catch (error) {
-      console.log('error delete catch ', error);
     }
   };
 
@@ -137,7 +133,7 @@ const ReOrderCartScreen = ({route}) => {
     setDataArray(OrderDataArray);
     setPTotal(
       reOrderData?.cartDetails?.Items[0]?.Qty *
-        reOrderData?.cartDetails?.Items[0]?.Amount,
+      reOrderData?.cartDetails?.Items[0]?.Amount,
     );
     // calculatePrice();
   }, [reOrderData]);
@@ -166,9 +162,7 @@ const ReOrderCartScreen = ({route}) => {
         };
         setLoad(true);
 
-        const options = {payloads: data};
-        console.log('options', options);
-
+        const options = { payloads: data };
         ApiService.post(API.CalculateDeliveryPrice, options)
           .then(res => {
             if (res.Status === 'Success') {
@@ -177,12 +171,10 @@ const ReOrderCartScreen = ({route}) => {
             }
           })
           .catch(e => {
-            console.log('error response > . ', e.response);
             setLoad(false);
           });
       }
     } catch (e) {
-      console.log('e in CalculateDeliveryPrice ', e);
       setLoad(false);
     }
   };
@@ -217,11 +209,10 @@ const ReOrderCartScreen = ({route}) => {
 
           setLoad(true);
 
-          const options = {payloads: data};
+          const options = { payloads: data };
           ApiService.post(API.checkestaurantAvailability, options)
             .then(res => {
               if (res.Status === 'Success') {
-                console.log('res of RestaurantAvailability >> ', res);
                 setLoad(false);
                 setDelMsg('');
                 navigation.navigate('ReCheckOut', {
@@ -293,7 +284,7 @@ const ReOrderCartScreen = ({route}) => {
                       <Label title={i?.Code} style={styles.desc} />
                     </View>
                   </View>
-                  <View style={[styles.row, {justifyContent: 'space-evenly'}]}>
+                  <View style={[styles.row, { justifyContent: 'space-evenly' }]}>
                     <View style={[styles.row]}>
                       <TouchableOpacity
                         style={styles.btn}
@@ -334,7 +325,7 @@ const ReOrderCartScreen = ({route}) => {
                   source={Emptycart}
                   autoPlay
                   loop
-                  style={{height: scale(240)}}
+                  style={{ height: scale(240) }}
                 />
                 <Title title="Carrello vuoto" />
               </View>
@@ -353,7 +344,7 @@ const ReOrderCartScreen = ({route}) => {
             <View style={styles.priceingView}>
               <Title
                 title={`Sipplemento ordine inferiore a €${dataArray[0].MinimumOrder}`}
-                style={{width: '70%'}}
+                style={{ width: '70%' }}
               />
               <Title
                 title={`€ ${dataArray[0].MinOrderSupplment.toFixed(2)}`}
@@ -482,7 +473,7 @@ const styles = StyleSheet.create({
     margin: scale(15),
     maxHeight: theme.SCREENHEIGHT * 0.45,
   },
-  row: {flexDirection: 'row', alignItems: 'center'},
+  row: { flexDirection: 'row', alignItems: 'center' },
   items: {
     // marginVertical: scale(7),
     flexDirection: 'row',
