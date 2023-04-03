@@ -76,7 +76,6 @@ const LoginModel = props => {
         ApiService.post(API.login, options)
           .then(res => {
             if (res.Status === 'Success') {
-              console.log('res of login >> ', res);
               setLoad(false);
 
               // Toast.show('accesso riuscito', Toast.show);

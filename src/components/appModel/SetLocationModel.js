@@ -113,14 +113,11 @@ const SetLocationModel = props => {
       for (const obj of data.address_components) {
         if (obj.types.includes('route')) {
           addressName = obj.short_name;
-          console.log('addressName', addressName);
         } else if (obj.types.includes('street_number')) {
           numberStreet = obj.long_name;
           // setStreetNumber(numberStreet);
-          console.log('numberStreet', numberStreet);
         } else if (obj.types.includes('postal_code')) {
           postalCode = obj.long_name;
-          console.log('postalCode', postalCode);
         }
       }
     }
@@ -151,7 +148,6 @@ const SetLocationModel = props => {
 
   const handleAddress = item => {
     setSelAdd(item);
-    console.log('selected ADDress >> ', item);
 
     dispatch(selectedAddress(item));
   };
@@ -234,7 +230,6 @@ const SetLocationModel = props => {
                                 style={styles.btn}
                                 onPress={() => {
                                   handleAddress(item);
-                                  console.log('save add item >>> ', item);
                                 }}>
                                 <Label
                                   title={item?.AddressName}

@@ -50,7 +50,6 @@ const CartModel = props => {
     data?.lstAddons?.length > 0 && setAddonData(data?.lstAddons);
     // data?.lstAddons?.length === 0 && setAddonData([]);
     calculatePrice();
-    console.log('sMakeTypeNameCSV ?? ', data?.lstAddons);
   }, [data, wantProduct, addonData]);
 
   const handleAggiungi = async () => {
@@ -73,7 +72,6 @@ const CartModel = props => {
       lstMakeTypes: add3,
       Amount: data?.Amount + pTotal,
     };
-    console.log('product details >> ', ProductData);
     //   setProductDetails(productDetails);
     clearify();
     close(ProductData);
@@ -130,7 +128,6 @@ const CartModel = props => {
   };
 
   const deleteByIndexProduct = index => {
-    console.log('clicked position', index);
     const tmpArr = [...rIds];
     const x = tmpArr.splice(index, 1);
     setRIds(x);

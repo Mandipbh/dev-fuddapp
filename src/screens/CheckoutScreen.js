@@ -124,11 +124,9 @@ const CheckoutScreen = ({ route }) => {
 
       // setLoad(true);
       const options = { payloads: data };
-      console.log('options', options);
 
       ApiService.post(API.CalculateDeliveryPrice, options)
         .then(res => {
-          console.log('clg >>> ', res);
           if (res.Status === 'Success') {
             setGrandTotal(total + res.DeliveryPrice);
           }
@@ -184,7 +182,6 @@ const CheckoutScreen = ({ route }) => {
       const { total, pTotal, dPrice } = route?.params;
       setGrandTotal(total + dPrice);
       setProdTotal(pTotal);
-      console.log('pTotal ??? ', pTotal);
     }
   }, []);
   const dispatch = useDispatch();
@@ -392,15 +389,12 @@ const CheckoutScreen = ({ route }) => {
       })
       .map((i, index) => {
         cartdata.push(i);
-        console.log('loop', cartdata);
       });
-    console.log('handleRemainingCartData', cartdata);
     setAvailableData(cartdata);
   };
 
   const setAvailableData = data => {
     // setRemainingData(cartData);
-    console.log('cartData1', data);
     dispatch(AddToCart(data));
   };
 
@@ -424,8 +418,6 @@ const CheckoutScreen = ({ route }) => {
         lon: selAddress?.Lon,
       },
     };
-    console.log('cartDetailJson', JSON.stringify(cartDetailJson, null, 4));
-
     if (!isLoginUser) {
       toast.show("Accedi all'app", toast, { duration: 1000 });
       navigation.navigate('ACCOUNT');
@@ -545,7 +537,6 @@ const CheckoutScreen = ({ route }) => {
     setPaymentData(tmpData);
   }, [notes]);
 
-  console.log('cart data >>> ', cartData);
 
   return (
     <SafeAreaView style={styles.container}>

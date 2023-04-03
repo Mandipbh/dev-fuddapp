@@ -12,9 +12,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/Feather';
-import {images, scale, theme} from '../utils';
+import { images, scale, theme } from '../utils';
 import {
   Button,
   InputBox,
@@ -23,19 +23,19 @@ import {
   TimePickerModel,
   Title,
 } from '../components';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import SetLocationModel from '../components/appModel/SetLocationModel';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
-import ApiService, {API} from '../utils/ApiService';
-import {useEffect} from 'react';
-import {AddToCart} from '../redux/Actions/CartAction';
+import ApiService, { API } from '../utils/ApiService';
+import { useEffect } from 'react';
+import { AddToCart } from '../redux/Actions/CartAction';
 const keyboardVerticalOffset = Platform.OS === 'ios' ? scale(40) : 0;
 const startOfMonth = moment().format('YYYY-MM-DD');
 const endOfMonth = moment().endOf('month').format('YYYY-MM-DD');
 
-const ReOrderCheckOutScreen = ({route}) => {
+const ReOrderCheckOutScreen = ({ route }) => {
   const navigation = useNavigation();
   const [process, setProcesss] = useState(false);
   const [locationModel, setLocationModel] = useState(false);
@@ -77,9 +77,8 @@ const ReOrderCheckOutScreen = ({route}) => {
   };
 
   useEffect(() => {
-    console.log('route.params', route.params);
     if (route.params) {
-      const {total, pTotal} = route?.params;
+      const { total, pTotal } = route?.params;
       setGrandTotal(total);
       setProdTotal(pTotal);
     }
@@ -92,7 +91,6 @@ const ReOrderCheckOutScreen = ({route}) => {
       var restaurantId = restaurantData?.ID;
       setRId(restaurantId);
 
-      console.log('RID', rID);
 
       var now = `${moment(new Date()).format('HH:mm')}`;
 
@@ -118,8 +116,7 @@ const ReOrderCheckOutScreen = ({route}) => {
       // newEndroundTime = moment(now).add(30, 'm').format('HH:mm');
 
       let [hrs, min] = restaurantData?.OpeningTime.split(':').map(Number);
-      console.log('hrs', hrs);
-      console.log('min', min);
+  
 
       newtimeSlot = newRoundedTime
         .toString()
@@ -149,10 +146,7 @@ const ReOrderCheckOutScreen = ({route}) => {
         newEndroundTime = moment(now).add(30, 'm').format('HH:mm');
       }
 
-      console.log('now_', now);
-      console.log('newRoundedTime_', newRoundedTime);
-      console.log('restaurantOpeningTime_', restaurantOpeningTime);
-      console.log('newEndroundTime', newEndroundTime);
+
 
       var str1 =
         restaurantOpeningTime > newRoundedTime
@@ -170,32 +164,29 @@ const ReOrderCheckOutScreen = ({route}) => {
         newtimeSlot =
           restaurantOpeningTime > newRoundedTime
             ? restaurantOpeningTime
-                .toString()
-                .concat('TO', newEndroundTime.toString())
+              .toString()
+              .concat('TO', newEndroundTime.toString())
             : newRoundedTime
-                .toString()
-                .concat('TO', newEndroundTime.toString());
+              .toString()
+              .concat('TO', newEndroundTime.toString());
         setTimeSlot(newtimeSlot);
       } else {
         displaytimeslot = newRoundedTime
           .toString()
           .concat(' TO ', newEndroundTime.toString());
-        console.log('Noooo >>> ', displaytimeslot);
-        console.log('newEndroundTime ? ', newEndroundTime);
         setDisplayedTimeSlot(displaytimeslot);
 
         newtimeSlot =
           restaurantOpeningTime > newRoundedTime
             ? restaurantOpeningTime
-                .toString()
-                .concat('TO', newEndroundTime.toString())
+              .toString()
+              .concat('TO', newEndroundTime.toString())
             : newRoundedTime
-                .toString()
-                .concat('TO', newEndroundTime.toString());
+              .toString()
+              .concat('TO', newEndroundTime.toString());
         setTimeSlot(newtimeSlot);
       }
 
-      console.log('newtimeSlot', newtimeSlot);
       setTimeSlot(newtimeSlot);
     }
   }, [restaurantData]);
@@ -219,15 +210,13 @@ const ReOrderCheckOutScreen = ({route}) => {
           Email: user?.UserInfo !== undefined && userData?.EMail,
           ItemTotalCharge: prdTotal,
         };
-        console.log('handleCoupen ', folderFrm);
-        const options = {payloads: folderFrm};
+        const options = { payloads: folderFrm };
         ApiService.post(API.coupenCode, options)
           .then(res => {
             if (res.Status === 'Success') {
               const coupenAmt = res.Amount;
               setCoupenAmnt(coupenAmt);
             }
-            console.log('response >> ', res);
             setCoupenApplied(true);
           })
           .catch(c => {
@@ -257,7 +246,6 @@ const ReOrderCheckOutScreen = ({route}) => {
       : grandTotal.toFixed(2).replace('.', '');
 
   cartData.map(item => {
-    console.log('cartItem', item);
     var ingredientsList = [];
     var addOnsList = [];
     var makeTypeIds = [];
@@ -290,9 +278,6 @@ const ReOrderCheckOutScreen = ({route}) => {
       MakeTypeIds: makeTypeIds, //makeTypeIds.push([item.lstMakeTypes.Id])
     });
   });
-
-  //console.log('itemList >> ', JSON.stringify(itemList, null, 4));
-
   var cartDetailJson = {
     UserId: user?.UserInfo !== undefined && user?.UserInfo.Id,
     RestaurantId: 3,
@@ -307,9 +292,7 @@ const ReOrderCheckOutScreen = ({route}) => {
     PaymentRequest: paymentData,
   };
 
-  console.log('paymentData ?? ', paymentData);
   const handlePlaceOrder = () => {
-    console.log('cartDetailJson', JSON.stringify(cartDetailJson, null, 4));
 
     if (!isLoginUser) {
       Alert.alert('Please login into the App');
@@ -333,11 +316,9 @@ const ReOrderCheckOutScreen = ({route}) => {
     else {
       try {
         setLoad(true);
-        const options = {payloads: cartDetailJson};
-        console.log('payLoad', JSON.stringify(options, null, 4));
+        const options = { payloads: cartDetailJson };
         ApiService.post(API.placeOrder, options)
           .then(res => {
-            console.log('res of placeOrder >> ', res);
             if (res.Status === 'Success') {
               setLoad(false);
               setProcesss(!process);
@@ -400,7 +381,7 @@ const ReOrderCheckOutScreen = ({route}) => {
               behavior="position"
               keyboardVerticalOffset={keyboardVerticalOffset}>
               <ScrollView
-                contentContainerStyle={{paddingBottom: scale(10)}}
+                contentContainerStyle={{ paddingBottom: scale(10) }}
                 showsVerticalScrollIndicator={false}>
                 <View style={styles.mainContainer}>
                   <View
@@ -408,7 +389,7 @@ const ReOrderCheckOutScreen = ({route}) => {
                       styles.productView,
                       styles.row,
                       // eslint-disable-next-line react-native/no-inline-styles
-                      {justifyContent: 'space-between', marginTop: scale(40)},
+                      { justifyContent: 'space-between', marginTop: scale(40) },
                     ]}>
                     <View>
                       <Title title="Orario di consegna" />
@@ -419,7 +400,7 @@ const ReOrderCheckOutScreen = ({route}) => {
                           }}>
                           <Label
                             title={moment(date).format('DD-MM-YYYY')}
-                            style={{marginTop: scale(5), fontSize: scale(12)}}
+                            style={{ marginTop: scale(5), fontSize: scale(12) }}
                           />
                         </TouchableOpacity>
                         <TouchableOpacity
@@ -443,13 +424,13 @@ const ReOrderCheckOutScreen = ({route}) => {
                     style={[
                       styles.productView,
                       styles.row,
-                      {justifyContent: 'space-between'},
+                      { justifyContent: 'space-between' },
                     ]}>
-                    <View style={{width: '80%'}}>
+                    <View style={{ width: '80%' }}>
                       <Title title="Indirizzo di consegna" />
                       <Label
                         title={'Nome Cognome'}
-                        style={{color: theme.colors.gray}}
+                        style={{ color: theme.colors.gray }}
                       />
                       <Label
                         title={selAddress?.AddressName}
@@ -461,7 +442,7 @@ const ReOrderCheckOutScreen = ({route}) => {
                       />
                     </View>
                     <TouchableOpacity
-                      style={[styles.btn, {width: '20%'}]}
+                      style={[styles.btn, { width: '20%' }]}
                       onPress={() => {
                         setLocationModel(!locationModel);
                       }}>
@@ -472,13 +453,13 @@ const ReOrderCheckOutScreen = ({route}) => {
                     style={[
                       styles.productView,
                       styles.row,
-                      {justifyContent: 'space-between'},
+                      { justifyContent: 'space-between' },
                     ]}>
                     <View>
                       <Title title="Dati di pagamento" />
                       <Label
                         title="Carta di credito"
-                        style={{color: theme.colors.gray}}
+                        style={{ color: theme.colors.gray }}
                       />
                       <Label
                         title=""
@@ -501,7 +482,7 @@ const ReOrderCheckOutScreen = ({route}) => {
                     style={[
                       styles.productView,
                       styles.row,
-                      {justifyContent: 'space-between'},
+                      { justifyContent: 'space-between' },
                     ]}>
                     <View>
                       <Title title="Note per il ristorante" />
@@ -517,7 +498,6 @@ const ReOrderCheckOutScreen = ({route}) => {
                         }}
                         onChangeText={txt => {
                           setNotes(txt);
-                          console.log('notes >> ', txt);
                         }}
                         numberOfLines={4}
                       />
@@ -568,7 +548,7 @@ const ReOrderCheckOutScreen = ({route}) => {
                   <Label title="" />
                 </View>
                 <View
-                  style={[styles.priceingView, {paddingHorizontal: scale(8)}]}>
+                  style={[styles.priceingView, { paddingHorizontal: scale(8) }]}>
                   <Label title="Somma totale" />
                   <Label title={`€ ${grandTotal}`} />
                 </View>
@@ -577,12 +557,12 @@ const ReOrderCheckOutScreen = ({route}) => {
                     <View
                       style={[
                         styles.priceingView,
-                        {paddingHorizontal: scale(8)},
+                        { paddingHorizontal: scale(8) },
                       ]}>
                       <Label title="Fudd App Resto Promotion" />
                       <Label
                         title={`− € ${coupenAmnt}`}
-                        style={{color: theme.colors.red}}
+                        style={{ color: theme.colors.red }}
                       />
                     </View>
                     <View style={styles.divider} />
@@ -590,7 +570,7 @@ const ReOrderCheckOutScreen = ({route}) => {
                       style={[
                         styles.priceingView,
                         ,
-                        {paddingHorizontal: scale(8), paddingBottom: scale(30)},
+                        { paddingHorizontal: scale(8), paddingBottom: scale(30) },
                       ]}>
                       <Label title="Totale Finale" />
                       <Label
@@ -728,7 +708,7 @@ const styles = StyleSheet.create({
     shadowRadius: scale(9),
     // marginVertical: scale(10),
   },
-  row: {flexDirection: 'row', alignItems: 'center'},
+  row: { flexDirection: 'row', alignItems: 'center' },
   items: {
     // marginVertical: scale(7),
     flexDirection: 'row',

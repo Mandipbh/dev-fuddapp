@@ -123,13 +123,10 @@ const CartScreen = ({route}) => {
     if (listedCartData !== null && listedCartData !== undefined) {
       calculatePrice();
     } else {
-      console.log('cart is empty');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listedCartData, cartData, tmpData]);
-  {
-    console.log('route?.params>>>. ', route?.params);
-  }
+
   const getCalculateDeliveryPrice = total => {
     try {
       if (listedCartData) {

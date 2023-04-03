@@ -34,7 +34,6 @@ const VarificationModel = props => {
       const options = {payloads: folderFrm};
       ApiService.post(API.varifyUser, options)
         .then(res => {
-          console.log('res ', res?.Status);
           setLoad(false);
           //  "Status": "Success",
           if (res?.Status == 'Success') {

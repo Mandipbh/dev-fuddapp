@@ -8,20 +8,20 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/Feather';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import DatePicker from 'react-native-date-picker';
-import {scale, theme, timeSlot} from '../utils';
-import {Label, Loader, Restaurant, TimePickerModel, Title} from '../components';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
+import { scale, theme, timeSlot } from '../utils';
+import { Label, Loader, Restaurant, TimePickerModel, Title } from '../components';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import SliderModal from '../components/appModel/SliderModal';
-import {useDispatch, useSelector} from 'react-redux';
-import {useEffect} from 'react';
-import {getAllCategory} from '../redux/Actions/HomeAction';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { getAllCategory } from '../redux/Actions/HomeAction';
 import moment from 'moment';
-import {getpopularRestaurants} from '../redux/Actions/RestaurantAction';
-import ApiService, {API} from '../utils/ApiService';
+import { getpopularRestaurants } from '../redux/Actions/RestaurantAction';
+import ApiService, { API } from '../utils/ApiService';
 
 const RestaurantScreen = () => {
   const navigation = useNavigation();
@@ -35,7 +35,7 @@ const RestaurantScreen = () => {
   const [restaurantsData, setRestaurantsData] = useState([]);
   const [selCategory, setSelCategory] = useState('');
   const [search, setSearch] = useState();
-  const [loadding, setLoadding] = useState(false);
+  // const [loadding, setLoadding] = useState(false);
   const [paymentType, setPaymentType] = useState(null);
   const [pModel, setPmodel] = useState(false);
   const dispatch = useDispatch();
@@ -59,7 +59,6 @@ const RestaurantScreen = () => {
     state => state.RestaurantReducers?.restaurantList,
   );
 
-  console.log('restaurantData', restaurantData);
 
   // useEffect(() => {
   //   if (selectedCat !== null) {
@@ -145,18 +144,19 @@ const RestaurantScreen = () => {
       latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
       longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
     };
-    console.log('Payload of ', data);
     dispatch(getpopularRestaurants(data));
     dispatch(getAllCategory());
   }, [date, displayedTimeSloat, selCategory, isFocuse]);
 
-  // const loadding = useSelector(state => state.RestaurantReducers.loadding);
+  const loadding = useSelector(state => state.RestaurantReducers.loadding);
 
   useEffect(() => {
     setRestaurantsData(restaurantData?.Restaurants);
-    setLoadding(false);
+    // setLoadding(false);
   }, [isFocuse, selCategory, timeSloat, date, restaurantData]);
-
+  useEffect(() => {
+    setSearch('');
+  }, [isFocuse])
   const IconClosePicker = data => {
     setSelectedModal(false);
     if (data !== null) {
@@ -167,13 +167,11 @@ const RestaurantScreen = () => {
   };
 
   const handleTimer = time => {
-    console.log('time slo >> .', time);
     setTimeModel(!timeModel);
     if (time !== null) {
       const timeslot = time.replace(' ', 'TO');
 
       const displayTime = time.replace(' ', ' TO ');
-      console.log('displayTime', displayTime);
       setDisplayedTimeSlot(displayTime);
       setTimeSlot(timeslot);
     }
@@ -189,13 +187,12 @@ const RestaurantScreen = () => {
     });
   };
 
-  const renderList = ({item, index}) => {
+  const renderList = ({ item, index }) => {
     return (
       <Restaurant
         item={item}
         index={index}
         onPress={async () => {
-          console.log('_timeSloat', timeSloat);
           navigateScreen(item);
         }}
       />
@@ -288,7 +285,7 @@ const RestaurantScreen = () => {
         </View>
 
         <FlatList
-          style={{height: '70%'}}
+          style={{ height: '70%' }}
           data={restaurantsData}
           renderItem={renderList}
           showsVerticalScrollIndicator={false}

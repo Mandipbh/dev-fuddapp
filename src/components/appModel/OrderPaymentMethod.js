@@ -52,7 +52,6 @@ const OrderPaymentMethod = props => {
     sCustomerEmail: user?.UserInfo?.EMail,
     nAmount: nAmount,
   };
-  console.log('PaymentRequestPaymentRequest >> ', PaymentRequest);
   const cardObject = {
     sCardName: cardHolderName,
     sCardNumber: cardNumber,
@@ -254,7 +253,6 @@ const OrderPaymentMethod = props => {
           close={y => {
             setYearModel(false);
             y && setYear(y.toString());
-            console.log('year >> ', y);
           }}
         />
       )}

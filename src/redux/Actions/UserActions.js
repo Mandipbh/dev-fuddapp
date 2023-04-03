@@ -22,7 +22,6 @@ export const getAllAddress = id => {
         API.getAllAddress + getState().UserReducer?.userDetails?.UserId,
       ).then(res => {
         if (res) {
-          console.log('ressss >>> ', res);
           dispatch({type: types.GETALLADDRESS, payload: res});
         }
       });
@@ -35,7 +34,6 @@ export const getAllAddress = id => {
 
 //selected address by user
 export const selectedAddress = payload => {
-  console.log('payload >> ', payload);
   return {
     type: types.SELECTEDADDRESS,
     payload,

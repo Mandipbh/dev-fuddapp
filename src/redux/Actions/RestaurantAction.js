@@ -11,13 +11,11 @@ export const getpopularRestaurants = data => {
     try {
       dispatch({type: LOADINGRESTORANTI, payload: true});
       const options = {payloads: data};
-      console.log('getAllRestaurant payLoad ', data);
 
       ApiService.post(API.getAllRestaurant, options)
         .then(res => {
           dispatch({type: GETALLRISTORANTI, payload: []});
           if (res) {
-            console.log('All Restaurant: ', res);
             dispatch({type: GETALLRISTORANTI, payload: res});
             dispatch({type: LOADINGRESTORANTI, payload: false});
           }
@@ -40,7 +38,6 @@ export const restaurantDetails = data => {
       ApiService.post(API.getPerticularRestaurant, options)
         .then(res => {
           if (res) {
-            console.log('res?.RestaurantDetail', res?.RestaurantDetail);
             dispatch({
               type: GETRESTAURANTDETAILS,
               payload: res?.RestaurantDetail,
@@ -57,7 +54,6 @@ export const restaurantDetails = data => {
 };
 
 export const setCategory = payload => {
-  console.log('payload >> ', payload);
   return {
     type: SETCATEGORY,
     payload: payload,

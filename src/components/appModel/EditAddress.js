@@ -95,14 +95,11 @@ const EditAddress = props => {
       for (const obj of data.address_components) {
         if (obj.types.includes('route')) {
           addressName = obj.short_name;
-          console.log('addressName', addressName);
         } else if (obj.types.includes('street_number')) {
           numberStreet = obj.long_name;
           setStreetNumber(numberStreet);
-          console.log('numberStreet', numberStreet);
         } else if (obj.types.includes('postal_code')) {
           postalCode = obj.long_name;
-          console.log('postalCode', postalCode);
         }
       }
     }
@@ -137,7 +134,6 @@ const EditAddress = props => {
     }
     return false;
   };
-  console.log('editData ???? ', editData);
   const handleSave = () => {
     if (addressData !== '') {
       try {
@@ -151,12 +147,10 @@ const EditAddress = props => {
           Phone: mobile,
         };
         const options = {payloads: frmData};
-        console.log('options >>> ', frmData);
         ApiService.post('Users/SaveUserAddress', options)
           .then(res => {
             setLoad(false);
             close();
-            console.log('res address', res?.Status);
             if (res?.Status == 'Success') {
               dispatch(getAllAddress());
             }
