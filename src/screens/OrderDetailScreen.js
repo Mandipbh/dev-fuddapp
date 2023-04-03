@@ -278,7 +278,7 @@ const OrderDetails = ({props, route}) => {
                   })}
               </View>
 
-              <View style={styles.row}>
+              <View style={[styles.row, {top: scale(10)}]}>
                 <Label title={'Totale prodotti  '} />
                 <Label title={`€${oI?.SubTotal?.toFixed(2)}`} />
               </View>
@@ -375,7 +375,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '100%',
     marginVertical: scale(5),
-    borderBottomWidth: scale(0.5),
+    // borderBottomWidth: scale(0.5),
     paddingBottom: scale(5),
   },
   subtitle1: {
@@ -442,6 +442,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    borderBottomWidth: scale(0.2),
+    paddingVertical: scale(1),
   },
   row1: {
     flexDirection: 'row',

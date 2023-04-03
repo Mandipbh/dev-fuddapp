@@ -17,6 +17,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getAllAddress} from '../redux/Actions/UserActions';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import {useToast} from 'react-native-toast-notifications';
+import {useEffect} from 'react';
 
 const SaveAddress = ({back}) => {
   const [firstName, setFirstName] = useState('');
@@ -204,6 +205,8 @@ const SaveAddress = ({back}) => {
       Address: placeName,
     };
     if (frmData.StreetNo === '') {
+      toast.show('indirizzo non valido', toast, {duration: 500});
+      addRef.current?.setAddressText('');
       setAddressData('');
     } else {
       setAddressData(frmData);

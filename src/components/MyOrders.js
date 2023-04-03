@@ -56,8 +56,6 @@ const MyOrders = () => {
     try {
       ApiService.get(API.ReOrder + `id=${orderId}&userEmail=${Email}`)
         .then(res => {
-        
-
           // var reOrderCartData = {
           //   Adds: false,
           //   AddsCode: '',
@@ -149,6 +147,7 @@ const MyOrders = () => {
         {getAllOrder &&
           getAllOrder?.map((oI, index) => {
             const iscurrentDate = moment(0, 'HH').diff(oI?.Date, 'days') == 0;
+
             return (
               <View style={styles.mainCard} key={index}>
                 <View style={[styles.row, {alignItems: 'center'}]}>
@@ -177,7 +176,7 @@ const MyOrders = () => {
                           />
                         </TouchableOpacity>
                       </View>
-                      {selIndex === index && !iscurrentDate && (
+                      {!iscurrentDate && (
                         <TouchableOpacity
                           style={styles.btn}
                           onPress={() => {
@@ -205,6 +204,7 @@ const MyOrders = () => {
                             color: theme.colors.gray5,
                             fontSize: scale(12),
                             textDecorationLine: 'underline',
+                            marginRight: scale(8),
                           }}
                         />
                         <Icon
@@ -235,10 +235,10 @@ const MyOrders = () => {
                           style={styles.pd}
                         />
 
-                        <Label
+                        {/* <Label
                           title={`${oI?.DeliveryName}`}
                           style={styles.pd}
-                        />
+                        /> */}
                         {/* <View style={styles.row1}>
                           <Icon
                             name="map-pin"
@@ -342,23 +342,28 @@ const MyOrders = () => {
                     <View style={styles.detailsView}>
                       {oI?.OrderRows &&
                         oI?.OrderRows.map((product, idx) => {
+                          const productType =
+                            product?.Box?.split(':').slice(-1);
+                          console.log('productType ?? ', productType);
                           return (
-                            <View style={styles.itemDetails} key={idx}>
-                              <Label
-                                style={{
-                                  color: theme.colors.gray5,
-                                  fontSize: scale(11),
-                                }}
-                                title={`${product?.Qty}X `}
-                              />
-                              <Label
-                                style={{
-                                  color: theme.colors.gray5,
-                                  fontSize: scale(11),
-                                }}
-                                title={`${product?.Product}`}
-                              />
-                            </View>
+                            productType[0] == '' && (
+                              <View style={styles.itemDetails} key={idx}>
+                                <Label
+                                  style={{
+                                    color: theme.colors.gray5,
+                                    fontSize: scale(11),
+                                  }}
+                                  title={`${product?.Qty}X `}
+                                />
+                                <Label
+                                  style={{
+                                    color: theme.colors.gray5,
+                                    fontSize: scale(11),
+                                  }}
+                                  title={`${product?.Product}`}
+                                />
+                              </View>
+                            )
                           );
                         })}
 
@@ -410,9 +415,7 @@ const MyOrders = () => {
                         {
                           width: '100%',
                           marginBottom: scale(8),
-                          borderTopWidth: scale(0.7),
                           marginTop: scale(3),
-                          borderTopColor: theme.colors.gray5,
                         },
                       ]}>
                       <Label
@@ -479,9 +482,9 @@ const styles = StyleSheet.create({
   },
   detailsView: {
     borderTopWidth: scale(0.8),
-    borderBottomWidth: scale(0.5),
+    // borderBottomWidth: scale(0.5),
     marginVertical: scale(3),
-    borderColor: theme.colors.gray1,
+    borderTopColor: theme.colors.gray1,
     paddingVertical: scale(5),
     width: '100%',
     flexDirection: 'row',

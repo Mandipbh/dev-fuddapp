@@ -122,6 +122,8 @@ const EditAddress = props => {
     };
     if (frmData.StreetNo === '') {
       setAddressData('');
+      toast.show('indirizzo non valido', toast, {duration: 500});
+      addRef.current?.setAddressText('');
     } else {
       setAddressData(frmData);
     }
