@@ -7,18 +7,19 @@ import {
   View,
 } from 'react-native';
 import React from 'react';
-import { images, scale, theme } from '../utils';
+import {images, scale, theme} from '../utils';
 import InputBox from './InputBox';
-import { Error, Label } from './Label';
+import {Error, Label} from './Label';
 import Button from './Button';
-import { useState } from 'react';
+import {useState} from 'react';
 import VarificationModel from './appModel/VarificationModel';
-import ApiService, { API } from '../utils/ApiService';
-import { useEffect } from 'react';
-import { useToast } from 'react-native-toast-notifications';
+import ApiService, {API} from '../utils/ApiService';
+import {useEffect} from 'react';
+import {useToast} from 'react-native-toast-notifications';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const Signup = props => {
-  const { onPress, isFocus, moveLogin } = props;
+  const {onPress, isFocus, moveLogin} = props;
   const [name, setName] = useState('');
   const [sureName, setSureName] = useState('');
   const [email, setEmail] = useState('');
@@ -41,7 +42,7 @@ const Signup = props => {
   let error = false;
   const handleValidation = () => {
     let Emailreg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    let errr = { ...errrMsg };
+    let errr = {...errrMsg};
     if (name.trim() === '') {
       errr.nameErr = 'Inserisci il nome';
       error = true;
@@ -114,7 +115,7 @@ const Signup = props => {
           telephone: mobile,
           NewsLetterCheck: false,
         };
-        const options = { payloads: folderFrm };
+        const options = {payloads: folderFrm};
         ApiService.post(API.signUp, options)
           .then(res => {
             console.log('res of varifiy >> ', res);
@@ -126,7 +127,7 @@ const Signup = props => {
           })
           .catch(e => {
             setLoad(false);
-            toast.show(e.response?.data?.Errors[0], toast, { duration: 1000 });
+            toast.show(e.response?.data?.Errors[0], toast, {duration: 1000});
 
             // console.log('error in login> ', e.response?.data?.Errors[0]);
           });
@@ -138,108 +139,115 @@ const Signup = props => {
   };
 
   return (
-    <View style={styles.container}>
-      <Label title={'Registrati'} style={styles.title} />
-      <View style={styles.devider} />
-      <InputBox
-        value={name}
-        onChangeText={txt => {
-          setName(txt);
-        }}
-        placeholder="Nome"
-        style={styles.input}
-      />
-      {errrMsg.nameErr && <Error error={errrMsg.nameErr} />}
-      <InputBox
-        value={sureName}
-        onChangeText={txt => {
-          setSureName(txt);
-        }}
-        placeholder="Cognome"
-        style={styles.input}
-      />
-      {errrMsg.sureNameErr && <Error error={errrMsg.sureNameErr} />}
-      <InputBox
-        value={email}
-        onChangeText={txt => {
-          setEmail(txt);
-        }}
-        placeholder="Email"
-        style={styles.input}
-      />
-      {errrMsg.emailErr && <Error error={errrMsg.emailErr} />}
-      <InputBox
-        value={mobile}
-        onChangeText={txt => {
-          setMobile(txt);
-        }}
-        placeholder="N. Mobile "
-        keyboardType="numeric"
-        style={styles.input}
-      />
-      {errrMsg.mobileErr && <Error error={errrMsg.mobileErr} />}
-      <InputBox
-        value={password}
-        onChangeText={txt => {
-          setPassword(txt);
-        }}
-        placeholder="Password"
-        style={styles.input}
-        secureTextEntry
-      />
-      {errrMsg.passwordErr && <Error error={errrMsg.passwordErr} />}
-      <InputBox
-        value={CPasseword}
-        onChangeText={txt => {
-          setCPasseword(txt);
-        }}
-        placeholder="Conferma password"
-        style={styles.input}
-        secureTextEntry
-      />
-      {errrMsg.CPassewordErr && <Error error={errrMsg.CPassewordErr} />}
-      {load ? (
-        <ActivityIndicator size={scale(40)} color={theme.colors.primary} />
-      ) : (
-        <Button
-          title="Registrati"
-          style={styles.loginButton}
-          titleStyle={[styles.buttonLabel, {color: theme.colors.white}]}
-          onPress={() => {
-            handleSignup();
+    <KeyboardAwareScrollView
+      scrollEnabled={true}
+      bounces
+      contentContainerStyle={{
+        paddingBottom: theme.SCREENHEIGHT * 0.12,
+      }}
+      showsVerticalScrollIndicator={false}>
+      <View style={styles.container}>
+        <Label title={'Registrati'} style={styles.title} />
+        <View style={styles.devider} />
+        <InputBox
+          value={name}
+          onChangeText={txt => {
+            setName(txt);
           }}
+          placeholder="Nome"
+          style={styles.input}
         />
-      )}
-
-      {/* <View style={styles.appTextView}>
+        {errrMsg.nameErr && <Error error={errrMsg.nameErr} />}
+        <InputBox
+          value={sureName}
+          onChangeText={txt => {
+            setSureName(txt);
+          }}
+          placeholder="Cognome"
+          style={styles.input}
+        />
+        {errrMsg.sureNameErr && <Error error={errrMsg.sureNameErr} />}
+        <InputBox
+          value={email}
+          onChangeText={txt => {
+            setEmail(txt);
+          }}
+          placeholder="Email"
+          style={styles.input}
+        />
+        {errrMsg.emailErr && <Error error={errrMsg.emailErr} />}
+        <InputBox
+          value={mobile}
+          onChangeText={txt => {
+            setMobile(txt);
+          }}
+          placeholder="N. Mobile "
+          keyboardType="numeric"
+          style={styles.input}
+        />
+        {errrMsg.mobileErr && <Error error={errrMsg.mobileErr} />}
+        <InputBox
+          value={password}
+          onChangeText={txt => {
+            setPassword(txt);
+          }}
+          placeholder="Password"
+          style={styles.input}
+          secureTextEntry
+        />
+        {errrMsg.passwordErr && <Error error={errrMsg.passwordErr} />}
+        <InputBox
+          value={CPasseword}
+          onChangeText={txt => {
+            setCPasseword(txt);
+          }}
+          placeholder="Conferma password"
+          style={styles.input}
+          secureTextEntry
+        />
+        {errrMsg.CPassewordErr && <Error error={errrMsg.CPassewordErr} />}
+        {load ? (
+          <ActivityIndicator size={scale(40)} color={theme.colors.primary} />
+        ) : (
+          <Button
+            title="Registrati"
+            style={styles.loginButton}
+            titleStyle={[styles.buttonLabel, {color: theme.colors.white}]}
+            onPress={() => {
+              handleSignup();
+            }}
+          />
+        )}
+        {/* <View style={styles.appTextView}>
         <Image
-          source={images.appIcon}
-          style={styles.logo}
-          resizeMode="contain"
+        source={images.appIcon}
+        style={styles.logo}
+        resizeMode="contain"
         />
-      
+        
       </View> */}
-      {/* <Text style={styles.text}>
+        {/* <Text style={styles.text}>
           Fudd<Text style={styles.text1}>app</Text>
         </Text> */}
-      <VarificationModel
-        signUpData={signupRes}
-        isVisible={varification}
-        title="Attivazione Account"
-        close={() => {
-          setVarification(false);
-          moveLogin();
-        }}
-        closeVarification={handleClose}
-      />
-    </View>
+        <VarificationModel
+          signUpData={signupRes}
+          isVisible={varification}
+          title="Attivazione Account"
+          close={() => {
+            setVarification(false);
+            moveLogin();
+          }}
+          closeVarification={handleClose}
+        />
+      </View>
+    </KeyboardAwareScrollView>
   );
 };
 export default Signup;
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
-    alignItems: 'center',
+    // alignItems: 'center',
     backgroundColor: theme.colors.white,
     // marginHorizontal: scale(8),
     // padding: scale(15),
@@ -263,6 +271,7 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '100%',
+    marginLeft: scale(0),
   },
   devider: {
     height: scale(1),

@@ -42,7 +42,7 @@ const MyAccountInfo = ({user}) => {
           />
         </View>
         <View style={styles.inputView}>
-          <Label title="Telefono" style={styles.inputTitle} />
+          <Label title="TELEFONO" style={styles.inputTitle} />
           <InputBox
             placeholder={
               user?.UserInfo?.Telefono1
@@ -59,7 +59,7 @@ const MyAccountInfo = ({user}) => {
           onPress={() => {
             setModel(!passwordModel);
           }}>
-          <Label title="Parola d'ordine" style={styles.inputTitle} />
+          <Label title="PAROLA D'ORDINE" style={styles.inputTitle} />
           <InputBox
             placeholder="**********"
             style={styles.input}
