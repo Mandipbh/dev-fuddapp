@@ -1,21 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-undef */
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
+import {StyleSheet, View, TouchableOpacity, ScrollView} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import { scale, theme } from '../../utils';
+import {scale, theme} from '../../utils';
 import Modal from 'react-native-modal';
-import { Label, Title } from '../Label';
+import {Label, Title} from '../Label';
 import Button from '../Button';
-import { useState } from 'react';
+import {useState} from 'react';
 import AddCardModal from './AddCardModal';
-import { useEffect } from 'react';
-import { BlurView } from '@react-native-community/blur';
-import { AddToCart } from '../../redux/Actions/CartAction';
-import { acc } from 'react-native-reanimated';
+import {useEffect} from 'react';
+import {BlurView} from '@react-native-community/blur';
+import {AddToCart} from '../../redux/Actions/CartAction';
+import {acc} from 'react-native-reanimated';
 
 const CartModel = props => {
-  const { isVisible, close, data } = props;
+  const {isVisible, close, data} = props;
   const [cartModel, setCartModel] = useState(false);
   const [productDetails, setProductDetails] = useState([]);
   const [totalPrice, setPrice] = useState(0);
@@ -28,7 +28,7 @@ const CartModel = props => {
   const [show, setShow] = useState(false);
   const [selIndex, setIdx] = useState(0);
   const tmpDataForCircle = wantProduct?.ImportoUnitario;
-
+  console.log('wantProduct ?? ', wantProduct);
   // const popItem = ({ item }) => {
   //   rIds.includes(item?.IDRiga) ? setCheckBox(!checkbox) : null
   // }
@@ -50,13 +50,14 @@ const CartModel = props => {
     setProductDetails(data);
 
     //handle Default set value to Radio Button
-    handlebyDefaultValForMakeType();
 
     data?.lstAddons?.length > 0 && setAddonData(data?.lstAddons);
     // data?.lstAddons?.length === 0 && setAddonData([]);
     calculatePrice();
   }, [data, wantProduct, addonData]);
-
+  useEffect(() => {
+    handlebyDefaultValForMakeType(productDetails);
+  }, [productDetails?.lstMakeTypes?.length > 0, isVisible]);
   const handleAggiungi = async () => {
     const add1 = addonData.filter(x => x.Qty > 0);
     const add2 = productDetails.lstIngredients.filter(
@@ -168,14 +169,15 @@ const CartModel = props => {
     setProductDetails(tmpdata);
   };
 
-  const handlebyDefaultValForMakeType = () => {
-    if (productDetails?.lstMakeTypes?.length > 0) {
-      const subItems = productDetails?.lstMakeTypes;
+  const handlebyDefaultValForMakeType = dataofProd => {
+    if (dataofProd?.lstMakeTypes?.length > 0) {
+      const subItems = dataofProd?.lstMakeTypes;
+      // var revMyArr = [].concat(subItems).reverse();
       var min = subItems.reduce((prev, curr) =>
         prev.ImportoUnitario < curr.ImportoUnitario ? prev : curr,
       );
+      console.log('min??? ', min);
       setWantProduct(min);
-
     }
   };
 
@@ -238,7 +240,7 @@ const CartModel = props => {
 
           <View style={styles.itemContainer}>
             <ScrollView
-              contentContainerStyle={{ paddingBottom: theme.SCREENHEIGHT * 0.1 }}
+              contentContainerStyle={{paddingBottom: theme.SCREENHEIGHT * 0.1}}
               showsVerticalScrollIndicator={false}
               nestedScrollEnabled>
               {data?.lstAddons?.length > 0 && (
@@ -311,7 +313,7 @@ const CartModel = props => {
                                       </TouchableOpacity>
                                       <Label
                                         title={item?.Qty}
-                                        style={{ marginHorizontal: scale(8) }}
+                                        style={{marginHorizontal: scale(8)}}
                                       />
 
                                       <TouchableOpacity
@@ -450,6 +452,12 @@ const CartModel = props => {
                                         />
                                       )}
                                     </View>
+                                    {console.log(
+                                      item?.Id +
+                                        `\n` +
+                                        'Select' +
+                                        wantProduct?.Id,
+                                    )}
                                     <Icon
                                       name={
                                         item?.Id === wantProduct?.Id
