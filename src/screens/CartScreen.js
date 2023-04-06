@@ -51,7 +51,7 @@ const CartScreen = ({ route }) => {
   const [selectedTime, setTime] = useState('');
   var cartDataArray = [];
 
-  console.log('cartDataScreen', cartData);
+  console.log('cartDataScreen', JSON.stringify(cartData, null, 4));
 
   useEffect(() => {
     var timeslot = route?.params?.selectedTimeSlot;
@@ -206,9 +206,22 @@ const CartScreen = ({ route }) => {
                         <Label title={i?.Code} style={styles.desc} />
                       </View>
                     </View>
+                    { }
+                    {i?.lstIngredients?.length > 0 &&
+                      i?.lstIngredients?.map(item => (
+                        <Label title={item?.Descrizione} />
+                      ))}
+                    {i?.lstAddons?.length > 0 &&
+                      i?.lstAddons?.map(lsItem => (
+                        <Label title={lsItem?.Descrizione} />
+                      ))}
+                    {typeof i?.lstMakeTypes === 'object' && (
+                      <Label title={i?.lstMakeTypes?.Prodo} />
+                    )}
                     <View
-                      style={[styles.row, { justifyContent: 'space-between' }]}>
-                      <View style={[styles.row, { marginLeft: scale(35) }]}>
+                      // eslint-disable-next-line react-native/no-inline-styles
+                      style={[styles.row, {justifyContent: 'space-between'}]}>
+                      <View style={[styles.row, {marginLeft: scale(35)}]}>
                         <TouchableOpacity
                           style={styles.btn}
                           onPress={() => {
