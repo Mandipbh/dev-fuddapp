@@ -8,24 +8,24 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/Feather';
 import LottieView from 'lottie-react-native';
 import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Emptycart, scale, theme} from '../utils';
-import {Button, Label, Title, Error} from '../components';
-import {useNavigation, useIsFocused} from '@react-navigation/native';
-import {useDispatch, useSelector} from 'react-redux';
-import {AddToCart} from '../redux/Actions/CartAction';
+import { Emptycart, scale, theme } from '../utils';
+import { Button, Label, Title, Error } from '../components';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { AddToCart } from '../redux/Actions/CartAction';
 
-import ApiService, {API} from '../utils/ApiService';
+import ApiService, { API } from '../utils/ApiService';
 import moment from 'moment';
 import LoginModel from '../components/appModel/LoginModel';
 import SetLocationModel from '../components/appModel/SetLocationModel';
-import {timeSlot} from '../utils/TimeSlot';
+import { timeSlot } from '../utils/TimeSlot';
 import NextSlotAvailabilityModel from '../components/appModel/NextSlotAvailabilityModel';
 
-const CartScreen = ({route}) => {
+const CartScreen = ({ route }) => {
   const navigation = useNavigation();
   const cartData = useSelector(state => state?.CartReducer.cartData);
   const user = useSelector(state => state.UserReducer?.userDetails);
@@ -50,6 +50,8 @@ const CartScreen = ({route}) => {
 
   const [selectedTime, setTime] = useState('');
   var cartDataArray = [];
+
+  console.log('cartDataScreen', cartData);
 
   useEffect(() => {
     var timeslot = route?.params?.selectedTimeSlot;
@@ -138,7 +140,7 @@ const CartScreen = ({route}) => {
         };
 
         setLoad(true);
-        const options = {payloads: data};
+        const options = { payloads: data };
 
         ApiService.post(API.CalculateDeliveryPrice, options)
           .then(res => {
@@ -205,8 +207,8 @@ const CartScreen = ({route}) => {
                       </View>
                     </View>
                     <View
-                      style={[styles.row, {justifyContent: 'space-between'}]}>
-                      <View style={[styles.row, {marginLeft: scale(35)}]}>
+                      style={[styles.row, { justifyContent: 'space-between' }]}>
+                      <View style={[styles.row, { marginLeft: scale(35) }]}>
                         <TouchableOpacity
                           style={styles.btn}
                           onPress={() => {
@@ -247,7 +249,7 @@ const CartScreen = ({route}) => {
                   source={Emptycart}
                   autoPlay
                   loop
-                  style={{height: scale(240)}}
+                  style={{ height: scale(240) }}
                 />
                 <Title title="Carrello vuoto" />
               </View>
@@ -268,7 +270,7 @@ const CartScreen = ({route}) => {
               <Title
                 title={`Sipplemento ordine inferiore a €${listedCartData[0].MinimumOrder}`}
                 MinOrderCharge
-                style={{width: '70%'}}
+                style={{ width: '70%' }}
               />
               <Title
                 title={`€ ${listedCartData[0]?.MinOrderSupplment?.toFixed(2)}`}
@@ -406,7 +408,7 @@ const styles = StyleSheet.create({
     margin: scale(15),
     maxHeight: theme.SCREENHEIGHT * 0.45,
   },
-  row: {flexDirection: 'row', alignItems: 'center'},
+  row: { flexDirection: 'row', alignItems: 'center' },
   items: {
     // marginVertical: scale(7),
     flexDirection: 'row',
