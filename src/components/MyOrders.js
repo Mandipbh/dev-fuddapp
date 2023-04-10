@@ -142,7 +142,7 @@ const MyOrders = () => {
   return (
     <View>
       <ScrollView
-        style={{height: theme.SCREENHEIGHT * 0.4}}
+        style={{height: theme.SCREENHEIGHT * 0.43}}
         showsVerticalScrollIndicator={false}>
         {getAllOrder &&
           getAllOrder?.map((oI, index) => {
@@ -221,25 +221,26 @@ const MyOrders = () => {
                         />
                       </TouchableOpacity>
                     </View>
+                    {/* {selIndex === index ? ( */}
+                    <View style={{marginTop: scale(5)}}>
+                      <Label
+                        title={`${oI?.Number} - ${moment(
+                          oI.DeliveryDate,
+                        ).format('DD/MM/YYYY')} @ ${oI?.DeliveryTime}`}
+                        style={{fontSize: scale(11)}}
+                      />
+                      {/* <Label
+                        title={` ${moment(oI.DeliveryDate).format(
+                          'DD/MM/YYYY',
+                        )} @ ${oI?.DeliveryTime}`}
+                        style={styles.pd}
+                      /> */}
 
-                    {selIndex === index ? (
-                      <View>
-                        <Label
-                          title={`Ordine n° - ${oI?.Number}`}
-                          style={{fontSize: scale(11)}}
-                        />
-                        <Label
-                          title={`${moment(oI.DeliveryDate).format(
-                            'DD/MM/YYYY',
-                          )} @ ${oI?.DeliveryTime}`}
-                          style={styles.pd}
-                        />
-
-                        {/* <Label
+                      {/* <Label
                           title={`${oI?.DeliveryName}`}
                           style={styles.pd}
                         /> */}
-                        {/* <View style={styles.row1}>
+                      {/* <View style={styles.row1}>
                           <Icon
                             name="map-pin"
                             size={scale(12)}
@@ -250,7 +251,7 @@ const MyOrders = () => {
                             style={[styles.pd, {marginTop: scale(1)}]}
                           />
                         </View> */}
-                        {/* <View style={styles.row1}>
+                      {/* <View style={styles.row1}>
                           <Icon1
                             name="call"
                             size={scale(12)}
@@ -261,7 +262,7 @@ const MyOrders = () => {
                             style={[styles.pd, {marginTop: scale(1)}]}
                           />
                         </View> */}
-                        {/* <View style={styles.row1}>
+                      {/* <View style={styles.row1}>
                           <Icon1
                             name="mail"
                             size={scale(12)}
@@ -273,7 +274,7 @@ const MyOrders = () => {
                           />
                         </View> */}
 
-                        {/* <Label
+                      {/* <Label
                           title={`Pagamento - ${oI?.PaymentMethod}`}
                           style={[
                             styles.pd,
@@ -283,7 +284,7 @@ const MyOrders = () => {
                             },
                           ]}
                         /> */}
-                        {/* <View style={styles.row1}>
+                      {/* <View style={styles.row1}>
                           <Label
                             title="Note ordine :"
                             style={{fontSize: scale(11)}}
@@ -296,15 +297,15 @@ const MyOrders = () => {
                             ]}
                           />
                         </View> */}
-                      </View>
-                    ) : (
-                      <Label
-                        title={` ${oI.Number} — ${moment(
-                          oI.DeliveryDate,
-                        ).format('DD/MM/YYYY')}`}
-                        style={styles.pd}
-                      />
-                    )}
+                    </View>
+                    {/* ) : (
+                    <Label
+                      title={` ${oI.Number} — ${moment(oI.DeliveryDate).format(
+                        'DD/MM/YYYY',
+                      )}`}
+                      style={styles.pd}
+                    />
+                    )} */}
                   </View>
 
                   {/* <TouchableOpacity
@@ -461,7 +462,7 @@ const styles = StyleSheet.create({
     color: theme.colors.black,
   },
   pd: {
-    fontSize: scale(10),
+    fontSize: scale(12),
     marginBottom: scale(4),
     color: theme.colors.gray5,
   },

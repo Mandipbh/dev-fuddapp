@@ -259,21 +259,20 @@ const AccountScreen = ({route, props}) => {
             <Label title="Aggiungi indirizzo" style={styles.btnlbl} />
           </TouchableOpacity>
         )}
-
-        {showImg && (
-          <Image
-            source={images.appIcon}
-            style={{
-              height: scale(85),
-              width: theme.SCREENWIDTH * 0.5,
-              resizeMode: 'stretch',
-              alignSelf: 'center',
-              marginTop: scale(10),
-              // marginVertical: scale(5),
-            }}
-          />
-        )}
       </View>
+      {showImg && (
+        <Image
+          source={images.appIcon}
+          style={{
+            height: scale(85),
+            width: theme.SCREENWIDTH * 0.5,
+            resizeMode: 'stretch',
+            alignSelf: 'center',
+            position: 'absolute',
+            bottom: theme.SCREENHEIGHT * 0.11,
+          }}
+        />
+      )}
       <ContactModal isVisible={modalVisible} close={handleClose} />
     </SafeAreaView>
   );

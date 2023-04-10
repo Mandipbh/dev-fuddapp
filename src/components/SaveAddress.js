@@ -301,7 +301,7 @@ const SaveAddress = ({back}) => {
           />
         </ScrollView>
       </KeyboardAvoidingView>
-      <Image source={images.appIcon} style={styles.appIcon} />
+      {/* <Image source={images.appIcon} style={styles.appIcon} /> */}
       {load ? (
         <ActivityIndicator size="small" color={theme.colors.primary} />
       ) : (

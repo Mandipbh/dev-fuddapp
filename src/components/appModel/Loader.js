@@ -6,6 +6,7 @@ import {scale, theme, loader} from '../../utils';
 
 const Loader = props => {
   const {loading, background} = props;
+  console.log('loading >>> props ??? ', loading);
   return (
     <Modal
       transparent={loading}

@@ -1,21 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-undef */
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
+import {StyleSheet, View, TouchableOpacity, ScrollView} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import { scale, theme } from '../../utils';
+import {scale, theme} from '../../utils';
 import Modal from 'react-native-modal';
-import { Label, Title } from '../Label';
+import {Label, Title} from '../Label';
 import Button from '../Button';
-import { useState } from 'react';
+import {useState} from 'react';
 import AddCardModal from './AddCardModal';
-import { useEffect } from 'react';
-import { BlurView } from '@react-native-community/blur';
-import { AddToCart } from '../../redux/Actions/CartAction';
-import { acc } from 'react-native-reanimated';
+import {useEffect} from 'react';
+import {BlurView} from '@react-native-community/blur';
+import {AddToCart} from '../../redux/Actions/CartAction';
+import {acc} from 'react-native-reanimated';
 
 const CartModel = props => {
-  const { isVisible, close, data } = props;
+  const {isVisible, close, data} = props;
   const [cartModel, setCartModel] = useState(false);
   const [productDetails, setProductDetails] = useState([]);
   const [totalPrice, setPrice] = useState(0);
@@ -28,7 +28,6 @@ const CartModel = props => {
   const [show, setShow] = useState(false);
   const [selIndex, setIdx] = useState(0);
   const tmpDataForCircle = wantProduct?.ImportoUnitario;
-  console.log('wantProduct ?? ', wantProduct);
   // const popItem = ({ item }) => {
   //   rIds.includes(item?.IDRiga) ? setCheckBox(!checkbox) : null
   // }
@@ -197,20 +196,11 @@ const CartModel = props => {
         reducedTransparencyFallbackColor="white"
       />
       <View style={styles.container}>
-        <Icon
-          name="x"
-          size={scale(20)}
-          color={theme.colors.white}
-          style={styles.closeIcon}
-          onPress={() => {
-            clearify();
-          }}
-        />
         <View style={styles.subView}>
           <Icon
             name="x"
-            size={scale(20)}
-            color={theme.colors.bla}
+            size={scale(30)}
+            color={theme.colors.black}
             style={styles.closeIcon}
             onPress={() => {
               clearify();
@@ -242,7 +232,7 @@ const CartModel = props => {
 
           <View style={styles.itemContainer}>
             <ScrollView
-              contentContainerStyle={{ paddingBottom: theme.SCREENHEIGHT * 0.1 }}
+              contentContainerStyle={{paddingBottom: theme.SCREENHEIGHT * 0.1}}
               showsVerticalScrollIndicator={false}
               nestedScrollEnabled>
               {data?.lstAddons?.length > 0 && (
@@ -315,7 +305,7 @@ const CartModel = props => {
                                       </TouchableOpacity>
                                       <Label
                                         title={item?.Qty}
-                                        style={{ marginHorizontal: scale(8) }}
+                                        style={{marginHorizontal: scale(8)}}
                                       />
 
                                       <TouchableOpacity
@@ -456,9 +446,9 @@ const CartModel = props => {
                                     </View>
                                     {console.log(
                                       item?.Id +
-                                      `\n` +
-                                      'Select' +
-                                      wantProduct?.Id,
+                                        `\n` +
+                                        'Select' +
+                                        wantProduct?.Id,
                                     )}
                                     <Icon
                                       name={
@@ -518,7 +508,7 @@ const styles = StyleSheet.create({
   },
   closeIcon: {
     alignSelf: 'flex-end',
-    margin: scale(5),
+    padding: scale(5),
     // marginBottom: scale(10),
   },
   categoryTitle: {
@@ -640,6 +630,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: scale(14),
     color: theme.colors.black,
+    width: theme.SCREENWIDTH * 0.6,
   },
   itemprice: {
     color: theme.colors.gray,

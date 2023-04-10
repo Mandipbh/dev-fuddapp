@@ -290,8 +290,8 @@ const OrderDetails = ({props, route}) => {
                 </View>
               )}
               {oI?.DeliveryFee > 0 && (
-                <View style={styles.row}>
-                  <Label title={'Impasto Gluten Free'} />
+                <View style={[styles.row, {marginTop: scale(-3.5)}]}>
+                  <Label title={'Spese di consegna'} />
                   <Label title={`€${(oI?.DeliveryFee).toFixed(2)}`} />
                 </View>
               )}
