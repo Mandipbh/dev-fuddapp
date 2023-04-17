@@ -6,19 +6,19 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
-import {images, scale, theme} from '../utils';
+import React, { useState } from 'react';
+import { images, scale, theme } from '../utils';
 import InputBox from './InputBox';
-import {Label} from './Label';
+import { Label } from './Label';
 import ChangePassword from './appModel/ChangePassword';
 
-const MyAccountInfo = ({user}) => {
+const MyAccountInfo = ({ user }) => {
   const [passwordModel, setModel] = useState(false);
   return (
     <View>
       <ScrollView
         style={{
-          height: theme.SCREENHEIGHT * 0.4,
+          height: theme.SCREENHEIGHT * 0.6,
         }}
         showsVerticalScrollIndicator={false}>
         <View style={styles.inputView}>
@@ -55,7 +55,7 @@ const MyAccountInfo = ({user}) => {
           />
         </View>
         <TouchableOpacity
-          style={[styles.inputView, {width: '100%'}]}
+          style={[styles.inputView, { width: '100%' }]}
           onPress={() => {
             setModel(!passwordModel);
           }}>
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     // marginLeft: 0,
     marginVertical: scale(8),
   },
-  input: {marginBottom: scale(3), width: '100%', alignSelf: 'center'},
+  input: { marginBottom: scale(3), width: '100%', alignSelf: 'center' },
   inputTitle: {
     fontSize: scale(11),
     color: theme.colors.gray,

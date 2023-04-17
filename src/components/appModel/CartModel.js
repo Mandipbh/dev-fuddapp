@@ -235,6 +235,81 @@ const CartModel = props => {
               contentContainerStyle={{paddingBottom: theme.SCREENHEIGHT * 0.1}}
               showsVerticalScrollIndicator={false}
               nestedScrollEnabled>
+              {productDetails?.lstMakeTypes?.length > 0 && (
+                <>
+                  <TouchableOpacity
+                    style={styles.categoryTitle}
+                    onPress={() => {
+                      selIndex === 2 ? setIdx(null) : setIdx(2);
+                    }}>
+                    <Title title={'Comeil prodotto?'} />
+                    <Icon
+                      name={selIndex === 2 ? 'chevron-up' : 'chevron-down'}
+                      size={scale(22)}
+                      color={theme.colors.gray}
+                    />
+                  </TouchableOpacity>
+                  {selIndex === 2 && (
+                    <ScrollView
+                      style={{
+                        height: null,
+                        maxHeight: theme.SCREENHEIGHT * 0.68,
+                      }}
+                      nestedScrollEnabled>
+                      {productDetails?.lstMakeTypes?.length > 0 && (
+                        <View style={styles.card}>
+                          <View style={styles.subItem}>
+                            {productDetails?.lstMakeTypes?.map(
+                              (item, index) => {
+                                return (
+                                  <View style={styles.itemView}>
+                                    <View>
+                                      <Label
+                                        title={item?.Prodo}
+                                        style={styles.name}
+                                      />
+                                      {item?.ImportoUnitario !== 0 && (
+                                        <Label
+                                          title={`${item?.ImportoUnitario.toFixed(
+                                            2,
+                                          )}€`}
+                                          style={styles.itemprice}
+                                        />
+                                      )}
+                                    </View>
+                                    {console.log(
+                                      item?.Id +
+                                        '\n' +
+                                        'Select' +
+                                        wantProduct?.Id,
+                                    )}
+                                    <Icon
+                                      name={
+                                        item?.Id === wantProduct?.Id
+                                          ? 'check-circle'
+                                          : 'circle'
+                                      } //circle
+                                      size={scale(20)}
+                                      color={
+                                        item?.Id !== wantProduct?.Id
+                                          ? theme.colors.gray
+                                          : theme.colors.primary
+                                      }
+                                      onPress={() => {
+                                        setWantProduct(item);
+                                      }}
+                                    />
+                                  </View>
+                                );
+                              },
+                            )}
+                          </View>
+                        </View>
+                      )}
+                    </ScrollView>
+                  )}
+                </>
+              )}
               {data?.lstAddons?.length > 0 && (
                 <>
                   <TouchableOpacity
@@ -332,7 +407,6 @@ const CartModel = props => {
                   )}
                 </>
               )}
-
               {productDetails?.lstIngredients?.length > 0 && (
                 <>
                   <TouchableOpacity
@@ -391,81 +465,6 @@ const CartModel = props => {
                                         />
                                       )}
                                     </TouchableOpacity>
-                                  </View>
-                                );
-                              },
-                            )}
-                          </View>
-                        </View>
-                      )}
-                    </ScrollView>
-                  )}
-                </>
-              )}
-              {productDetails?.lstMakeTypes?.length > 0 && (
-                <>
-                  <TouchableOpacity
-                    style={styles.categoryTitle}
-                    onPress={() => {
-                      selIndex === 2 ? setIdx(null) : setIdx(2);
-                    }}>
-                    <Title title={'Comeil prodotto?'} />
-                    <Icon
-                      name={selIndex === 2 ? 'chevron-up' : 'chevron-down'}
-                      size={scale(22)}
-                      color={theme.colors.gray}
-                    />
-                  </TouchableOpacity>
-                  {selIndex === 2 && (
-                    <ScrollView
-                      style={{
-                        height: null,
-                        maxHeight: theme.SCREENHEIGHT * 0.68,
-                      }}
-                      nestedScrollEnabled>
-                      {productDetails?.lstMakeTypes?.length > 0 && (
-                        <View style={styles.card}>
-                          <View style={styles.subItem}>
-                            {productDetails?.lstMakeTypes?.map(
-                              (item, index) => {
-                                return (
-                                  <View style={styles.itemView}>
-                                    <View>
-                                      <Label
-                                        title={item?.Prodo}
-                                        style={styles.name}
-                                      />
-                                      {item?.ImportoUnitario !== 0 && (
-                                        <Label
-                                          title={`${item?.ImportoUnitario.toFixed(
-                                            2,
-                                          )}€`}
-                                          style={styles.itemprice}
-                                        />
-                                      )}
-                                    </View>
-                                    {console.log(
-                                      item?.Id +
-                                        `\n` +
-                                        'Select' +
-                                        wantProduct?.Id,
-                                    )}
-                                    <Icon
-                                      name={
-                                        item?.Id === wantProduct?.Id
-                                          ? 'check-circle'
-                                          : 'circle'
-                                      } //circle
-                                      size={scale(20)}
-                                      color={
-                                        item?.Id !== wantProduct?.Id
-                                          ? theme.colors.gray
-                                          : theme.colors.primary
-                                      }
-                                      onPress={() => {
-                                        setWantProduct(item);
-                                      }}
-                                    />
                                   </View>
                                 );
                               },

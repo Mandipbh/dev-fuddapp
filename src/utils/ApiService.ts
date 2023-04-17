@@ -1,8 +1,10 @@
 import axios from 'axios';
 // import { BASE_URL } from '../constants';
 
-const APP_API_URL = 'https://dc34-43-228-229-22.in.ngrok.io/api/';
-export const APP_BASE_URL = 'https://dc34-43-228-229-22.in.ngrok.io/';
+
+
+const APP_API_URL = 'https://8fec-43-228-229-22.ngrok-free.app/api/';
+export const APP_BASE_URL = 'https://8fec-43-228-229-22.ngrok-free.app/';
 axios.interceptors.request.use(config => config);
 
 const execute = async (
@@ -42,7 +44,7 @@ const execute = async (
 
   try {
     let res = await axios(url, options);
-    console.info('res ===> ', res);
+    // console.info('res ===> ', res);
     return res.data;
   } catch (err: any) {
     if (err.response.status === 401) {

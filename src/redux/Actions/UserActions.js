@@ -8,6 +8,20 @@ export const isLogin = payload => {
   };
 };
 
+export const storeTime = payload => {
+  return {
+    type: types.STORED_TIME,
+    payload,
+  };
+};
+
+export const storeDate = payload => {
+  return {
+    type: types.STORED_DATE,
+    payload,
+  };
+};
+
 export const userData = payload => {
   return {
     type: types.USER_DETAILS,

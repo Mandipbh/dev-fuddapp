@@ -6,6 +6,8 @@ const initialState = {
   userDetails: '',
   address: [],
   selAddress: null,
+  storedTime: null,
+  storedDate: null,
 };
 
 export default (state = initialState, action) => {
@@ -14,6 +16,16 @@ export default (state = initialState, action) => {
       return {
         ...state,
         login: action.payload,
+      };
+    case types.STORED_TIME:
+      return {
+        ...state,
+        storedTime: action.payload,
+      };
+    case types.STORED_DATE:
+      return {
+        ...state,
+        storedDate: action.payload,
       };
     case types.USER_DETAILS: {
       return {

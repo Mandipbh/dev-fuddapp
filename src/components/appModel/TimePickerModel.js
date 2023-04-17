@@ -7,19 +7,23 @@ import {
   View,
 } from 'react-native';
 import React from 'react';
-import {scale, theme} from '../../utils';
+import { scale, theme } from '../../utils';
 import Modal from 'react-native-modal';
 import Feather from 'react-native-vector-icons/Feather';
-import {Label, Title} from '../Label';
-import {useState} from 'react';
+import { Label, Title } from '../Label';
+import { useState } from 'react';
 import moment from 'moment';
-import {useEffect} from 'react';
-import {BlurView} from '@react-native-community/blur';
+import { useEffect } from 'react';
+import { BlurView } from '@react-native-community/blur';
+import Toast from 'react-native-toast-notifications';
+
 
 const TimePickerModel = props => {
-  const {isVisible, close} = props;
+  const { isVisible, close } = props;
   const [timeSloat, setTimeSlot] = useState([]);
   const [selTime, setSelTime] = useState(null);
+
+
   useEffect(() => {
     let x = {
       slotInterval: 30,
@@ -70,7 +74,7 @@ const TimePickerModel = props => {
         <View style={styles.header}>
           <Title
             title="Seleziona il tempo "
-            style={{paddingBottom: scale(2), marginLeft: scale(5)}}
+            style={{ paddingBottom: scale(2), marginLeft: scale(5) }}
           />
           {/* <Feather
             name="x"
@@ -82,7 +86,7 @@ const TimePickerModel = props => {
           /> */}
         </View>
 
-        <View style={{height: theme.SCREENHEIGHT * 0.24, marginTop: scale(10)}}>
+        <View style={{ height: theme.SCREENHEIGHT * 0.24, marginTop: scale(10) }}>
           <ScrollView showsVerticalScrollIndicator={false}>
             {timeSloat.map((item, index) => {
               return (
@@ -150,7 +154,7 @@ const styles = StyleSheet.create({
     marginVertical: scale(10),
     alignItems: 'center',
   },
-  btnText: {marginLeft: scale(10), fontWeight: '600'},
+  btnText: { marginLeft: scale(10), fontWeight: '600' },
   timeBtn: {
     padding: scale(5),
   },
