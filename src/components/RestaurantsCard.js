@@ -10,14 +10,14 @@ import React from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon1 from 'react-native-vector-icons/Entypo';
-import {Label, Title} from './Label';
-import {scale, theme} from '../utils';
-import {APP_BASE_URL} from '../utils/ApiService';
-import {useNavigation} from '@react-navigation/core';
+import { Label, Title } from './Label';
+import { scale, theme } from '../utils';
+import { APP_BASE_URL } from '../utils/ApiService';
+import { useNavigation } from '@react-navigation/core';
 import FastImage from 'react-native-fast-image';
 
 const RestaurantsCard = props => {
-  const {item, index, Popular} = props;
+  const { item, index, Popular } = props;
   const navigation = useNavigation();
   return (
     <View style={styles.itemView} key={index}>
@@ -26,29 +26,29 @@ const RestaurantsCard = props => {
         onPress={() => {
           Popular
             ? navigation.navigate('RISTORANTI', {
-                screen: 'Details',
-                params: {item: item},
-              })
+              screen: 'Details',
+              params: { item: item, resData: item },
+            })
             : // navigation.navigate('RISTORANTI', {category: item})
-              // navigation.navigate('RISTORANTI', {
-              //   screen: 'Details',
-              //   params: {item: item},
-              // })
-              Linking.openURL(item?.ExternalUrl);
+            // navigation.navigate('RISTORANTI', {
+            //   screen: 'Details',
+            //   params: {item: item},
+            // })
+            Linking.openURL(item?.ExternalUrl);
         }}>
         <FastImage
-          source={{uri: Popular ? APP_BASE_URL + item?.Canvas : item?.Canvas}}
+          source={{ uri: Popular ? APP_BASE_URL + item?.Canvas : item?.Canvas }}
           style={styles.categoryIcon}
         />
       </TouchableOpacity>
       <Title title={item.Name} style={styles.resLabel} numberOfLines={1} />
       <Label title={item?.Tags} style={styles.location} numberOfLines={1} />
       {Popular && (
-        <View style={[styles.row, {justifyContent: 'space-between'}]}>
+        <View style={[styles.row, { justifyContent: 'space-between' }]}>
           <LinearGradient
             colors={[theme.colors.purpal1, theme.colors.orange]}
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 0}}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
             style={styles.linBtn}>
             <Icon1
               name="thumbs-up"

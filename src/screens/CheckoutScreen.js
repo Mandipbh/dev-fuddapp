@@ -12,10 +12,10 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
-import {images, scale, theme, timeSlot} from '../utils';
+import { images, scale, theme, timeSlot } from '../utils';
 import {
   Button,
   InputBox,
@@ -24,23 +24,24 @@ import {
   TimePickerModel,
   Title,
 } from '../components';
-import {useToast} from 'react-native-toast-notifications';
+import { useToast } from 'react-native-toast-notifications';
 
-import {useIsFocused, useNavigation} from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import SetLocationModel from '../components/appModel/SetLocationModel';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
-import ApiService, {API} from '../utils/ApiService';
-import {useEffect} from 'react';
-import {AddToCart} from '../redux/Actions/CartAction';
+import ApiService, { API } from '../utils/ApiService';
+import { useEffect } from 'react';
+import { AddToCart } from '../redux/Actions/CartAction';
 import NextSlotAvailabilityModel from '../components/appModel/NextSlotAvailabilityModel';
-import {selectedAddress} from '../redux/Actions/UserActions';
+import { selectedAddress } from '../redux/Actions/UserActions';
+import { useRef } from 'react';
 const keyboardVerticalOffset = Platform.OS === 'ios' ? scale(40) : 0;
 const startOfMonth = moment().format('YYYY-MM-DD');
 const endOfMonth = moment().endOf('month').format('YYYY-MM-DD');
 
-const CheckoutScreen = ({route}) => {
+const CheckoutScreen = ({ route }) => {
   const navigation = useNavigation();
   const [process, setProcesss] = useState(false);
   const [locationModel, setLocationModel] = useState(false);
@@ -75,6 +76,7 @@ const CheckoutScreen = ({route}) => {
   const [delMsg, setDelMsg] = useState('');
   const [checkTimeslot, setCheckTimeslot] = useState('');
   const toast = useToast();
+  const toastRef = useRef();
 
   const selectedCat = useSelector(
     state => state?.RestaurantReducers?.selCategory,
@@ -89,15 +91,69 @@ const CheckoutScreen = ({route}) => {
     setDate(route?.params?.selectedDate);
   }, [isFocus]);
 
+  function getTimeAsNumberOfMinutes(time) {
+    var timeParts = time.split(':');
+
+    var timeInMinutes = timeParts[0] * 60 + timeParts[1];
+
+    return timeInMinutes;
+  }
+
   const handleTimer = time => {
-    setTimeModel(!timeModel);
-    // console.log('TIME >> ', time);
-    if (time !== null) {
-      const timeslot = time?.replace(' ', 'TO');
-      const dTimeSlot = time?.replace(' ', ' TO ');
-      setTimeSlot(timeslot);
-      setDisplayedTimeSlot(dTimeSlot);
-      setCheckTimeslot(timeslot);
+    let today = new Date();
+    let date1 =
+      today.getDate() +
+      '-' +
+      parseInt(today.getMonth() + 1) +
+      '-' +
+      today.getFullYear();
+
+    let date2 =
+      date?.getDate() +
+      '-' +
+      parseInt(date?.getMonth() + 1) +
+      '-' +
+      date?.getFullYear();
+
+    let currentDateTime = new Date(date1)?.getTime();
+    let selectedDateTime = new Date(date2)?.getTime();
+
+    //selected time check logic
+    var timeParts1 = time?.split(' ');
+    var timePart2 = timeParts1 !== null && timeParts1 !== undefined && timeParts1[0]?.split(':');
+    var selecetdHour = (timePart2 !== null && timePart2 !== undefined) && parseInt(timePart2[0]) * 60;
+    var selectedMin = (timePart2 !== null && timePart2 !== undefined) && parseInt(timePart2[1]);
+
+    //current time check logic
+    var hours = new Date().getHours(); //To get the Current Hours
+    var min = new Date().getMinutes(); //To get the Current Minutes
+
+    var time1InMinutesForTime1 = selecetdHour + selectedMin;
+    var time1InMinutesForTime2 = hours * 60 + min;
+
+    if (currentDateTime == selectedDateTime) {
+      if (time1InMinutesForTime1 < time1InMinutesForTime2) {
+        alert('Seleziona un orario valido', { duration: 500 });
+      } else {
+        setTimeModel(!timeModel);
+        // console.log('TIME >> ', time);
+        if (time !== null) {
+          const timeslot = time?.replace(' ', 'TO');
+          const dTimeSlot = time?.replace(' ', ' TO ');
+          setTimeSlot(timeslot);
+          setDisplayedTimeSlot(dTimeSlot);
+          setCheckTimeslot(timeslot);
+        }
+      }
+    } else if (selectedDateTime > currentDateTime) {
+      setTimeModel(!timeModel);
+      if (time !== null) {
+        const timeslot = time?.replace(' ', 'TO');
+        const dTimeSlot = time?.replace(' ', ' TO ');
+        setTimeSlot(timeslot);
+        setDisplayedTimeSlot(dTimeSlot);
+        setCheckTimeslot(timeslot);
+      }
     }
   };
 
@@ -113,7 +169,7 @@ const CheckoutScreen = ({route}) => {
 
   const getCalculateDeliveryPrice = total => {
     try {
-      const {total, pTotal, dPrice} = route?.params;
+      const { total, pTotal, dPrice } = route?.params;
 
       const data = {
         Latitute: selAddress?.Lat === undefined ? '' : selAddress?.Lat,
@@ -123,7 +179,7 @@ const CheckoutScreen = ({route}) => {
       };
 
       // setLoad(true);
-      const options = {payloads: data};
+      const options = { payloads: data };
 
       ApiService.post(API.CalculateDeliveryPrice, options)
         .then(res => {
@@ -179,7 +235,7 @@ const CheckoutScreen = ({route}) => {
 
   useEffect(() => {
     if (route.params) {
-      const {total, pTotal, dPrice} = route?.params;
+      const { total, pTotal, dPrice } = route?.params;
       setGrandTotal(total + dPrice);
       setProdTotal(pTotal);
     }
@@ -272,7 +328,7 @@ const CheckoutScreen = ({route}) => {
           Email: user?.UserInfo !== undefined && userData?.EMail,
           ItemTotalCharge: prdTotal,
         };
-        const options = {payloads: folderFrm};
+        const options = { payloads: folderFrm };
         ApiService.post(API.coupenCode, options)
           .then(res => {
             if (res.Status === 'Success') {
@@ -283,7 +339,7 @@ const CheckoutScreen = ({route}) => {
             setCoupenApplied(true);
           })
           .catch(c => {
-            toast.show(c.response?.data?.Errors[0], toast, {duration: 1000});
+            toast.show(c.response?.data?.Errors[0], toast, { duration: 1000 });
 
             setCoupenApplied(false);
             console.log('error catch', c.response?.data.Errors[0]);
@@ -293,7 +349,7 @@ const CheckoutScreen = ({route}) => {
         console.log('error of try ', error);
       }
     } else {
-      toast.show('Inserisci il codice sconto', toast, {duration: 1000});
+      toast.show('Inserisci il codice sconto', toast, { duration: 1000 });
     }
   };
   const handlePaymentMethod = data => {
@@ -419,20 +475,20 @@ const CheckoutScreen = ({route}) => {
       },
     };
     if (!isLoginUser) {
-      toast.show("Accedi all'app", toast, {duration: 1000});
+      toast.show("Accedi all'app", toast, { duration: 1000 });
       navigation.navigate('ACCOUNT');
     } else if (date === null || date === undefined) {
-      toast.show('Seleziona la data', toast, {duration: 1000});
+      toast.show('Seleziona la data', toast, { duration: 1000 });
     } else if (timeSloat === null || timeSloat === undefined) {
-      toast.show('Seleziona Time Slot', toast, {duration: 1000});
+      toast.show('Seleziona Time Slot', toast, { duration: 1000 });
     } else if (
       paymentData?.PayType === null ||
       paymentData?.PayType === undefined ||
       paymentData == ''
     ) {
-      toast.show('Scegli il metodo di pagamento.', toast, {duration: 1000});
+      toast.show('Scegli il metodo di pagamento.', toast, { duration: 1000 });
     } else if (locationModel === undefined || locationModel === null) {
-      toast.show("Seleziona l'indirizzo", toast, {duration: 1000});
+      toast.show("Seleziona l'indirizzo", toast, { duration: 1000 });
     }
     //  else if (notes === undefined || notes === null) {
     //   Alert.alert('Please add notes');
@@ -440,7 +496,7 @@ const CheckoutScreen = ({route}) => {
     else {
       try {
         setLoad(true);
-        const options = {payloads: cartDetailJson};
+        const options = { payloads: cartDetailJson };
         ApiService.post(API.placeOrder, options)
           .then(res => {
             //  console.log('res of placeOrder >> ', res);
@@ -451,7 +507,6 @@ const CheckoutScreen = ({route}) => {
               setCoupenApplied(false);
               setCoupenAmnt(0);
               dispatch(selectedAddress(null));
-
               handleRemainingCartData();
               //dispatch(AddToCart([]));
             }
@@ -459,7 +514,7 @@ const CheckoutScreen = ({route}) => {
           .catch(e => {
             setLoad(false);
             console.log('error in placeOrder> ', e.response?.data);
-            toast.show(e.response?.data?.Errors[0], toast, {duration: 1000});
+            toast.show(e.response?.data?.Errors[0], toast, { duration: 1000 });
           });
       } catch (e) {
         console.log('e in placeOrder ', e);
@@ -484,7 +539,7 @@ const CheckoutScreen = ({route}) => {
           };
           setLoad(true);
 
-          const options = {payloads: data};
+          const options = { payloads: data };
 
           //  console.log('payloads_options', options);
 
@@ -521,7 +576,7 @@ const CheckoutScreen = ({route}) => {
                 e?.response.data,
               );
 
-              toast.show(e.response?.data?.Errors[0], toast, {duration: 1000});
+              toast.show(e.response?.data?.Errors[0], toast, { duration: 1000 });
             });
         }
       } catch (e) {
@@ -532,7 +587,7 @@ const CheckoutScreen = ({route}) => {
   };
 
   useEffect(() => {
-    let tmpData = {...paymentData};
+    let tmpData = { ...paymentData };
     tmpData.Notes = notes;
     setPaymentData(tmpData);
   }, [notes]);
@@ -560,17 +615,17 @@ const CheckoutScreen = ({route}) => {
           <Image source={images.check} style={styles.checkImg} />
           <Title title="Ordine Completato!" style={styles.ordin} />
           <TouchableOpacity
-            style={{padding: scale(5)}}
+            style={{ padding: scale(5) }}
             onPress={() =>
               // navigation.navigate('OrderDetails', {data: placeOrderResponse})
               navigation.navigate('ACCOUNT', {
                 screen: 'OrderDetails',
-                params: {data: placeOrderResponse},
+                params: { data: placeOrderResponse },
               })
             }>
             <Label
               style={styles.orderDetailButton}
-              title={`dettagli dell'ordine`}
+              title={"dettagli dell'ordine"}
             />
           </TouchableOpacity>
         </View>
@@ -587,14 +642,14 @@ const CheckoutScreen = ({route}) => {
               behavior="position"
               keyboardVerticalOffset={keyboardVerticalOffset}>
               <ScrollView
-                contentContainerStyle={{paddingBottom: scale(10)}}
+                contentContainerStyle={{ paddingBottom: scale(10) }}
                 showsVerticalScrollIndicator={false}>
                 <View style={styles.mainContainer}>
                   <View
                     style={[
                       styles.productView,
                       styles.row,
-                      {justifyContent: 'space-between', marginTop: scale(40)},
+                      { justifyContent: 'space-between', marginTop: scale(40) },
                     ]}>
                     <View>
                       <Title title="Orario di consegna" />
@@ -605,7 +660,7 @@ const CheckoutScreen = ({route}) => {
                           }}>
                           <Label
                             title={moment(date).format('DD-MM-YYYY')}
-                            style={{marginTop: scale(5), fontSize: scale(12)}}
+                            style={{ marginTop: scale(5), fontSize: scale(12) }}
                           />
                         </TouchableOpacity>
                         <TouchableOpacity
@@ -629,9 +684,9 @@ const CheckoutScreen = ({route}) => {
                     style={[
                       styles.productView,
                       styles.row,
-                      {justifyContent: 'space-between'},
+                      { justifyContent: 'space-between' },
                     ]}>
-                    <View style={{width: '80%'}}>
+                    <View style={{ width: '80%' }}>
                       <Title title="Indirizzo di consegna" />
 
                       <Label
@@ -644,7 +699,7 @@ const CheckoutScreen = ({route}) => {
                       />
                     </View>
                     <TouchableOpacity
-                      style={[styles.btn, {width: '20%'}]}
+                      style={[styles.btn, { width: '20%' }]}
                       onPress={() => {
                         setLocationModel(!locationModel);
                       }}>
@@ -655,14 +710,14 @@ const CheckoutScreen = ({route}) => {
                     style={[
                       styles.productView,
                       styles.row,
-                      {justifyContent: 'space-between'},
+                      { justifyContent: 'space-between' },
                     ]}>
                     <View>
                       <Title title="Dati di pagamento" />
                       {paymentData?.PaymentMethodID && (
                         <Label
                           title={paymentData?.PaymentMethodID}
-                          style={{color: theme.colors.gray}}
+                          style={{ color: theme.colors.gray }}
                         />
                       )}
                     </View>
@@ -678,7 +733,7 @@ const CheckoutScreen = ({route}) => {
                     style={[
                       styles.productView,
                       styles.row,
-                      {justifyContent: 'space-between'},
+                      { justifyContent: 'space-between' },
                     ]}>
                     <View>
                       <Title title="Note per il ristorante" />
@@ -746,7 +801,7 @@ const CheckoutScreen = ({route}) => {
                 <View
                   style={[
                     styles.priceingView,
-                    {paddingHorizontal: scale(5), paddingBottom: scale(10)},
+                    { paddingHorizontal: scale(5), paddingBottom: scale(10) },
                   ]}>
                   <Label title="Somma totale" />
                   <Label title={`€ ${grandTotal.toFixed(2)}`} />
@@ -756,12 +811,12 @@ const CheckoutScreen = ({route}) => {
                     <View
                       style={[
                         styles.priceingView,
-                        {paddingHorizontal: scale(8)},
+                        { paddingHorizontal: scale(8) },
                       ]}>
                       <Label title="Fudd App Resto Promotion" />
                       <Label
                         title={`− € ${coupenAmnt}`}
-                        style={{color: theme.colors.red}}
+                        style={{ color: theme.colors.red }}
                       />
                     </View>
                     <View style={styles.divider} />
@@ -769,7 +824,7 @@ const CheckoutScreen = ({route}) => {
                       style={[
                         styles.priceingView,
                         ,
-                        {paddingHorizontal: scale(8), paddingBottom: scale(30)},
+                        { paddingHorizontal: scale(8), paddingBottom: scale(30) },
                       ]}>
                       <Label title="Totale Finale" />
                       <Label
@@ -818,7 +873,11 @@ const CheckoutScreen = ({route}) => {
         // maximumDate={new Date(endOfMonth)}
         minimumDate={new Date(startOfMonth)}
       />
-      <TimePickerModel isVisible={timeModel} close={handleTimer} />
+      <TimePickerModel
+        ref={toastRef}
+        isVisible={timeModel}
+        close={handleTimer}
+      />
       <SetLocationModel
         // fromCheckOut={true}
         isShow={locationModel}
@@ -930,7 +989,7 @@ const styles = StyleSheet.create({
     shadowRadius: scale(9),
     // marginVertical: scale(10),
   },
-  row: {flexDirection: 'row', alignItems: 'center'},
+  row: { flexDirection: 'row', alignItems: 'center' },
   items: {
     // marginVertical: scale(7),
     flexDirection: 'row',

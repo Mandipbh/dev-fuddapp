@@ -7,11 +7,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Icon1 from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/Fontisto';
-import {images, scale, theme} from '../utils';
+import { images, scale, theme } from '../utils';
 import {
   Address,
   ContactModal,
@@ -23,14 +23,14 @@ import {
   Signup,
   Title,
 } from '../components';
-import {profileData} from '../utils/MockData';
-import {useDispatch, useSelector} from 'react-redux';
-import {useIsFocused, useNavigation, useRoute} from '@react-navigation/core';
-import {isLogin, logout, selectedAddress} from '../redux/Actions/UserActions';
+import { profileData } from '../utils/MockData';
+import { useDispatch, useSelector } from 'react-redux';
+import { useIsFocused, useNavigation, useRoute } from '@react-navigation/core';
+import { isLogin, logout, selectedAddress } from '../redux/Actions/UserActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
-const AccountScreen = ({route, props}) => {
+const AccountScreen = ({ route, props }) => {
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [showImg, setImg] = useState(true);
   const [text, setText] = useState('');
@@ -48,10 +48,10 @@ const AccountScreen = ({route, props}) => {
       route?.params?.data === 1
         ? setSelectedMenu(2)
         : route?.params?.data === 11
-        ? setSelectedMenu(11)
-        : route?.params?.data === 3
-        ? setSelectedMenu(0)
-        : setSelectedMenu(1);
+          ? setSelectedMenu(11)
+          : route?.params?.data === 3
+            ? setSelectedMenu(0)
+            : setSelectedMenu(null);
     }
   }, [isFoucse]);
 
@@ -141,11 +141,11 @@ const AccountScreen = ({route, props}) => {
           />
         </View>
         {selectedMenu == null && (
-          <View style={{alignItems: 'center'}}>
-            <Title title="Benvenuto" style={{fontSize: scale(18)}} />
+          <View style={{ alignItems: 'center' }}>
+            <Title title="Benvenuto" style={{ fontSize: scale(18) }} />
             <Title
               title={user?.UserInfo?.RagSoc}
-              style={{fontSize: scale(18)}}
+              style={{ fontSize: scale(18) }}
             />
           </View>
         )}
@@ -204,7 +204,7 @@ const AccountScreen = ({route, props}) => {
             <Login
               isFocus={isFoucse}
               onPress={() => {
-                setSelectedMenu(1);
+                setSelectedMenu(null);
               }}
               onPressRegister={() => {
                 setSelectedMenu(5);
@@ -260,7 +260,7 @@ const AccountScreen = ({route, props}) => {
           </TouchableOpacity>
         )}
       </View>
-      {showImg && (
+      {/* {showImg && (
         <Image
           source={images.appIcon}
           style={{
@@ -272,7 +272,7 @@ const AccountScreen = ({route, props}) => {
             bottom: theme.SCREENHEIGHT * 0.11,
           }}
         />
-      )}
+      )} */}
       <ContactModal isVisible={modalVisible} close={handleClose} />
     </SafeAreaView>
   );
@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
     height: scale(55),
     paddingHorizontal: scale(5),
   },
-  appLogo: {resizeMode: 'contain', alignSelf: 'center'},
+  appLogo: { resizeMode: 'contain', alignSelf: 'center' },
   option: {
     paddingVertical: scale(10),
   },

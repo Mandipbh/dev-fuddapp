@@ -17,10 +17,12 @@ const Address = () => {
   const [editModel, setEditModel] = useState(false);
   const [selData, setSelData] = useState(null);
   const [load, setLoad] = useState(false);
+
   useEffect(() => {
     setLoad(true);
     dispatch(getAllAddress());
   }, []);
+
   useEffect(() => {
     setAddressData(addressList?.UserAddresses);
     setTimeout(() => {
@@ -41,11 +43,12 @@ const Address = () => {
       console.log('error delete catch ', error);
     }
   };
+
   return (
     <View>
       <ScrollView
         style={{
-          maxHeight: theme.SCREENHEIGHT * 0.4,
+          maxHeight: theme.SCREENHEIGHT * 0.5,
           minHeight: theme.SCREENHEIGHT * 0.3,
         }}
         showsVerticalScrollIndicator={false}>

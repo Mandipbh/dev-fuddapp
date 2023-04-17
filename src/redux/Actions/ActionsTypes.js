@@ -1,6 +1,9 @@
 export const IS_LOGIN = 'IS_LOGIN';
 export const LOGOUT = 'LOGOUT';
 export const USER_DETAILS = 'USER_DETAILS';
+export const STORED_TIME = 'STORED_TIME';
+export const STORED_DATE = 'STORED_DATE';
+
 
 export const GETAllCATEGORY = 'GETAllCATEGORY';
 export const SELECTEDADDRESS = 'SELECTEDADDRESS';

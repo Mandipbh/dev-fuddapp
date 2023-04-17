@@ -8,20 +8,21 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/Feather';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import DatePicker from 'react-native-date-picker';
-import {scale, theme, timeSlot} from '../utils';
-import {Label, Loader, Restaurant, TimePickerModel, Title} from '../components';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
+import { scale, theme, timeSlot } from '../utils';
+import { Label, Loader, Restaurant, TimePickerModel, Title } from '../components';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import SliderModal from '../components/appModel/SliderModal';
-import {useDispatch, useSelector} from 'react-redux';
-import {useEffect} from 'react';
-import {getAllCategory} from '../redux/Actions/HomeAction';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { getAllCategory } from '../redux/Actions/HomeAction';
 import moment from 'moment';
-import {getpopularRestaurants} from '../redux/Actions/RestaurantAction';
-import ApiService, {API} from '../utils/ApiService';
+import { getpopularRestaurants } from '../redux/Actions/RestaurantAction';
+import ApiService, { API } from '../utils/ApiService';
+import { storeDate, storeTime } from '../redux/Actions/UserActions';
 
 const RestaurantScreen = () => {
   const navigation = useNavigation();
@@ -43,11 +44,17 @@ const RestaurantScreen = () => {
   const [load, setLoad] = useState(false);
   const cartData = useSelector(state => state?.CartReducer.cartData);
   const startOfMonth = moment().format('YYYY-MM-DD');
+  const [newTime, setNewTime] = useState();
+
+  const storedTime = useSelector(state => state.UserReducer.storedTime);
+
+  const storedDate = useSelector(state => state.UserReducer.storedDate);
 
   useEffect(() => {
     const timeSlotData = timeSlot();
     setDisplayedTimeSlot(timeSlotData.dtime);
     setTimeSlot(timeSlotData.ptime);
+    // dispatch(storeDateTime(timeSlotData?.dtime));
   }, []);
 
   const selectedCat = useSelector(
@@ -137,12 +144,19 @@ const RestaurantScreen = () => {
     }
 
     const data = {
-      date: moment(date).format('DD-MM-YYYY'),
-      timeSlot: displayedTimeSloat, //'16:00TO16:30',
+      date: moment(
+        storedDate == null || storedDate === undefined ? date : storedDate,
+      ).format('DD-MM-YYYY'),
+      timeSlot:
+        storedTime == undefined || storedTime == null
+          ? displayedTimeSloat
+          : storedTime, //'16:00TO16:30',
       category: selCategory,
       latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
       longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
     };
+
+    console.log('data', data);
     dispatch(getpopularRestaurants(data));
     dispatch(getAllCategory());
   }, [date, displayedTimeSloat, selCategory, isFocuse]);
@@ -169,10 +183,10 @@ const RestaurantScreen = () => {
     setTimeModel(!timeModel);
     if (time !== null) {
       const timeslot = time.replace(' ', 'TO');
-
       const displayTime = time.replace(' ', ' TO ');
       setDisplayedTimeSlot(displayTime);
       setTimeSlot(timeslot);
+      dispatch(storeTime(displayTime));
     }
   };
 
@@ -180,13 +194,16 @@ const RestaurantScreen = () => {
     navigation.navigate('Details', {
       item: item,
       restaurantsData: restaurantsData,
-      timeSlot: displayedTimeSloat,
-      selectedDate: date,
+      resData: item,
+      timeSlot: storedTime == undefined || storedTime == null
+        ? displayedTimeSloat
+        : storedTime,
+      selectedDate: storedDate == null || storedDate === undefined ? date : storedDate,
       ID: item?.ID,
     });
   };
 
-  const renderList = ({item, index}) => {
+  const renderList = ({ item, index }) => {
     return (
       <Restaurant
         item={item}
@@ -243,7 +260,14 @@ const RestaurantScreen = () => {
               setTimeModel(!timeModel);
             }}>
             <Icon name="clock" size={scale(15)} color={theme.colors.gray2} />
-            <Label title={displayedTimeSloat} style={styles.lbl} />
+            <Label
+              title={
+                storedTime == undefined || storedTime == null
+                  ? displayedTimeSloat
+                  : storedTime
+              }
+              style={styles.lbl}
+            />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.btn}
@@ -252,7 +276,11 @@ const RestaurantScreen = () => {
             }}>
             <Icon name="calendar" size={scale(15)} color={theme.colors.gray2} />
             <Label
-              title={moment(date).format('DD-MM-YYYY')}
+              title={moment(
+                storedDate == null || storedDate == undefined
+                  ? date
+                  : storedDate,
+              ).format('DD-MM-YYYY')}
               style={styles.lbl}
             />
           </TouchableOpacity>
@@ -284,7 +312,7 @@ const RestaurantScreen = () => {
         </View>
 
         <FlatList
-          style={{height: '70%'}}
+          style={{ height: '70%' }}
           data={restaurantsData}
           renderItem={renderList}
           showsVerticalScrollIndicator={false}
@@ -314,6 +342,8 @@ const RestaurantScreen = () => {
         onConfirm={date => {
           setOpen(false);
           setDate(date);
+          dispatch(storeDate(date));
+          console.log('datePicker', date);
         }}
         onCancel={() => {
           setOpen(false);

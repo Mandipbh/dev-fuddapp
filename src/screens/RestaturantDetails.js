@@ -68,7 +68,7 @@ const RestaturantDetails = ({ route, navigation }) => {
       }
     });
   }, [isFocuse, cartItemCount]);
-  console.log('route?.params ??? ', route?.params);
+  console.log('route?.params.datacanvas ??? ', route?.params.resData);
   //get restaurant details & menus
   useEffect(() => {
     if (route?.params) {
@@ -403,9 +403,10 @@ const RestaturantDetails = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
+      {console.log('canvas', APP_BASE_URL + route?.params?.resData?.Canvas)}
       <ImageBackground
         source={{
-          uri: APP_BASE_URL + restaurantData?.Canvas,
+          uri: APP_BASE_URL + route?.params?.resData?.Canvas,
         }}
         style={styles.backImage}
         imageStyle={styles.image}>
@@ -453,14 +454,20 @@ const RestaturantDetails = ({ route, navigation }) => {
             />
           </TouchableOpacity>
         </View>
-        <Title title={restaurantData?.Name} style={styles.headerTitle} />
+        <Title
+          title={route?.params?.resData?.Name}
+          style={styles.headerTitle}
+        />
         <View style={styles.subtitleView}>
-          {restaurantData?.Tags !== undefined && !load && (
-            <Label title={restaurantData?.Tags} style={styles.subTitle} />
+          {route?.params?.resData?.Tags !== undefined && !load && (
+            <Label
+              title={route?.params?.resData?.Tags}
+              style={styles.subTitle}
+            />
           )}
         </View>
         <View style={styles.bottomView}>
-          {restaurantData?.Percentage && (
+          {route?.params?.resData?.Percentage && (
             <LinearGradient
               colors={[theme.colors.purpal1, theme.colors.orange]}
               start={{ x: 0, y: 0 }}
@@ -472,7 +479,7 @@ const RestaturantDetails = ({ route, navigation }) => {
                 size={scale(12)}
               />
               <Text
-                style={styles.review}>{`${restaurantData?.Percentage}%`}</Text>
+                style={styles.review}>{`${route?.params?.resData?.Percentage}%`}</Text>
             </LinearGradient>
           )}
           {!restaurantData?.IsOpen && (

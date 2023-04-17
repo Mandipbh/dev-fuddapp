@@ -78,13 +78,20 @@ const CartScreen = ({ route }) => {
     });
     var makeTypeObj = selitm?.lstMakeTypes;
     // listedCartData[idx].Qty = listedCartData[idx].Qty + 1;
+
+    console.log('ingredient', lstIngredient);
+
     const tmparr = [...cartData];
     tmparr.map(async (data, i) => {
+      console.log('Data_ingredient', data.lstIngredients);
       if (
         data.Name == selitm.Name &&
-        JSON.stringify(data.lstAddons) === JSON.stringify(lstAddOns) &&
+        JSON.stringify(data.lstAddons === null ? [] : data.lstAddons) ===
+          JSON.stringify(lstAddOns) &&
         JSON.stringify(data.lstMakeTypes) === JSON.stringify(makeTypeObj) &&
-        JSON.stringify(data.lstIngredients) === JSON.stringify(lstIngredient)
+        JSON.stringify(
+          data.lstIngredients === null ? [] : data.lstIngredients,
+        ) === JSON.stringify(lstIngredient)
       ) {
         tmparr[i].Qty = tmparr[i].Qty + 1;
       }
@@ -110,9 +117,12 @@ const CartScreen = ({ route }) => {
     tmparr.map(async (data, i) => {
       if (
         data.Name == selitm.Name &&
-        JSON.stringify(data.lstAddons) === JSON.stringify(lstAddOns) &&
+        JSON.stringify(data.lstAddons === null ? [] : data.lstAddons) ===
+        JSON.stringify(lstAddOns) &&
         JSON.stringify(data.lstMakeTypes) === JSON.stringify(makeTypeObj) &&
-        JSON.stringify(data.lstIngredients) === JSON.stringify(lstIngredient)
+        JSON.stringify(
+          data.lstIngredients === null ? [] : data.lstIngredients,
+        ) === JSON.stringify(lstIngredient)
       ) {
         if (data.Qty == 1) {
           // tmparr.remove(data);
