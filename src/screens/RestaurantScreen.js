@@ -143,21 +143,22 @@ const RestaurantScreen = () => {
       setSelCategory(selectedCat?.Nome);
     }
 
+    console.log('selCategory>>', selCategory);
     const data = {
       date: moment(
         storedDate == null || storedDate === undefined ? date : storedDate,
       ).format('DD-MM-YYYY'),
       timeSlot:
         storedTime == undefined || storedTime == null
-          ? displayedTimeSloat
-          : storedTime, //'16:00TO16:30',
+          ? displayedTimeSloat?.replace(/ /g, '')
+          : storedTime?.replace(/ /g, ''), //'16:00TO16:30',
       category: selCategory,
       latitute: seladdress?.Lat === undefined ? '' : seladdress?.Lat,
       longitude: seladdress?.Lon === undefined ? '' : seladdress?.Lon,
     };
 
-    console.log('data', data);
-    dispatch(getpopularRestaurants(data));
+    console.log('data>>', data);
+    selCategory !== 'NONE' && dispatch(getpopularRestaurants(data));
     dispatch(getAllCategory());
   }, [date, displayedTimeSloat, selCategory, isFocuse]);
 
@@ -174,8 +175,10 @@ const RestaurantScreen = () => {
     setSelectedModal(false);
     if (data !== null) {
       setSelCategory(data?.Nome);
-    } else {
+    } else if (data == null) {
       setSelCategory('');
+    } else {
+      setSelCategory('NONE');
     }
   };
 
@@ -195,10 +198,12 @@ const RestaurantScreen = () => {
       item: item,
       restaurantsData: restaurantsData,
       resData: item,
-      timeSlot: storedTime == undefined || storedTime == null
-        ? displayedTimeSloat
-        : storedTime,
-      selectedDate: storedDate == null || storedDate === undefined ? date : storedDate,
+      timeSlot:
+        storedTime == undefined || storedTime == null
+          ? displayedTimeSloat
+          : storedTime,
+      selectedDate:
+        storedDate == null || storedDate === undefined ? date : storedDate,
       ID: item?.ID,
     });
   };
@@ -410,7 +415,6 @@ const styles = StyleSheet.create({
     height: scale(45),
     backgroundColor: theme.colors.white,
     borderRadius: scale(20),
-
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: scale(10),

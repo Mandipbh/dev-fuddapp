@@ -1,21 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-undef */
 import React from 'react';
-import {StyleSheet, View, TouchableOpacity, ScrollView} from 'react-native';
+import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import {scale, theme} from '../../utils';
+import { scale, theme } from '../../utils';
 import Modal from 'react-native-modal';
-import {Label, Title} from '../Label';
+import { Label, Title } from '../Label';
 import Button from '../Button';
-import {useState} from 'react';
+import { useState } from 'react';
 import AddCardModal from './AddCardModal';
-import {useEffect} from 'react';
-import {BlurView} from '@react-native-community/blur';
-import {AddToCart} from '../../redux/Actions/CartAction';
-import {acc} from 'react-native-reanimated';
+import { useEffect } from 'react';
+import { BlurView } from '@react-native-community/blur';
+import { AddToCart } from '../../redux/Actions/CartAction';
+import { acc } from 'react-native-reanimated';
 
 const CartModel = props => {
-  const {isVisible, close, data} = props;
+  const { isVisible, close, data } = props;
   const [cartModel, setCartModel] = useState(false);
   const [productDetails, setProductDetails] = useState([]);
   const [totalPrice, setPrice] = useState(0);
@@ -170,6 +170,10 @@ const CartModel = props => {
     setProductDetails(tmpdata);
   };
 
+  useEffect(() => {
+    productDetails?.lstMakeTypes?.length > 0 && setIdx(2);
+  }, [isVisible]);
+
   const handlebyDefaultValForMakeType = dataofProd => {
     if (dataofProd?.lstMakeTypes?.length > 0) {
       const subItems = dataofProd?.lstMakeTypes;
@@ -232,7 +236,7 @@ const CartModel = props => {
 
           <View style={styles.itemContainer}>
             <ScrollView
-              contentContainerStyle={{paddingBottom: theme.SCREENHEIGHT * 0.1}}
+              contentContainerStyle={{ paddingBottom: theme.SCREENHEIGHT * 0.1 }}
               showsVerticalScrollIndicator={false}
               nestedScrollEnabled>
               {productDetails?.lstMakeTypes?.length > 0 && (
@@ -279,9 +283,9 @@ const CartModel = props => {
                                     </View>
                                     {console.log(
                                       item?.Id +
-                                        '\n' +
-                                        'Select' +
-                                        wantProduct?.Id,
+                                      '\n' +
+                                      'Select' +
+                                      wantProduct?.Id,
                                     )}
                                     <Icon
                                       name={
@@ -380,7 +384,7 @@ const CartModel = props => {
                                       </TouchableOpacity>
                                       <Label
                                         title={item?.Qty}
-                                        style={{marginHorizontal: scale(8)}}
+                                        style={{ marginHorizontal: scale(8) }}
                                       />
 
                                       <TouchableOpacity

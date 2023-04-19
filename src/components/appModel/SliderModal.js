@@ -7,16 +7,16 @@ import {
 } from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/Feather';
-import {scale, theme} from '../../utils';
+import { scale, theme } from '../../utils';
 import Modal from 'react-native-modal';
-import {useState} from 'react';
-import {BlurView} from '@react-native-community/blur';
-import {useEffect} from 'react';
-import {Title} from '../Label';
-import {useSelector} from 'react-redux';
+import { useState } from 'react';
+import { BlurView } from '@react-native-community/blur';
+import { useEffect } from 'react';
+import { Title } from '../Label';
+import { useSelector } from 'react-redux';
 
 const SliderModal = props => {
-  const {isVisible, close, data} = props;
+  const { isVisible, close, data } = props;
   const [selCategory, setSelCategory] = useState(null);
   const [categoryData, setCategoryData] = useState([]);
   useEffect(() => {
@@ -39,9 +39,9 @@ const SliderModal = props => {
       />
       <View style={styles.container}>
         <TouchableOpacity
-          style={{top: 40, alignSelf: 'flex-end'}}
+          style={{ top: 40, alignSelf: 'flex-end' }}
           onPress={() => close()}></TouchableOpacity>
-        <View style={{marginTop: scale(50)}}>
+        <View style={{ marginTop: scale(50) }}>
           <View style={styles.headerContainer}>
             <Title
               title=" Tutte le cucine"
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     margin: 0,
     backgroundColor: 'transparent',
   },
-  btnText: {marginLeft: scale(10), fontWeight: '600'},
+  btnText: { marginLeft: scale(10), fontWeight: '600' },
   mainText: {
     fontSize: 20,
     fontWeight: '700',
