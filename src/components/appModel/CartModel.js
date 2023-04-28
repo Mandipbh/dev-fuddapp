@@ -77,7 +77,7 @@ const CartModel = props => {
       clearify();
       close(ProductData);
     } else {
-      alert('Seleziona almeno un makeType.');
+      alert('Seleziona almeno un tipo di marca.');
     }
   };
 
