@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-undef */
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { scale, theme } from '../../utils';
 import Modal from 'react-native-modal';
@@ -55,35 +55,30 @@ const CartModel = props => {
     calculatePrice();
   }, [data, wantProduct, addonData]);
 
-  useEffect(() => {
-    handlebyDefaultValForMakeType(productDetails);
-  }, [productDetails]);
+  // useEffect(() => {
+  //   handlebyDefaultValForMakeType(productDetails);
+  // }, [productDetails]);
 
   const handleAggiungi = async () => {
-    const add1 = addonData.filter(x => x.Qty > 0);
-    const add2 = productDetails.lstIngredients.filter(
-      x => x.IsChecked === true,
-    );
-    const add3 = wantProduct;
-
-    // console.log(' addonData.filter(x=>x.Qty > 0).map(selectedItem=>{ z ? ',add1)
-    //  await  addonData.filter(x=>x.Qty > 0).map(selectedItem=>{
-    //     const new_addOns = { ...productDetails, "lstAddons": selectedItem , "lstMakeTypes": wantProduct}
-    //     console.log('new_lstAddons >> ',new_addOns)
-    //     setProductDetails(new_addOns)
-    //   })
-    const ProductData = {
-      ...productDetails,
-      lstAddons: add1,
-      lstIngredients: add2,
-      lstMakeTypes: add3,
-      Amount: data?.Amount + pTotal,
-    };
-    //   setProductDetails(productDetails);
-    clearify();
-    close(ProductData);
-
-    //    console.log('tmpData',productDetails)
+    if (wantProduct !== null && wantProduct !== undefined) {
+      const add1 = addonData.filter(x => x.Qty > 0);
+      const add2 = productDetails.lstIngredients.filter(
+        x => x.IsChecked === true,
+      );
+      const add3 = wantProduct;
+      const ProductData = {
+        ...productDetails,
+        lstAddons: add1,
+        lstIngredients: add2,
+        lstMakeTypes: add3,
+        Amount: data?.Amount + pTotal,
+      };
+      //   setProductDetails(productDetails);
+      clearify();
+      close(ProductData);
+    } else {
+      alert('Seleziona almeno un makeType.');
+    }
   };
 
   // const handleCartAddItem = async item => {
@@ -174,17 +169,17 @@ const CartModel = props => {
     productDetails?.lstMakeTypes?.length > 0 && setIdx(2);
   }, [isVisible]);
 
-  const handlebyDefaultValForMakeType = dataofProd => {
-    if (dataofProd?.lstMakeTypes?.length > 0) {
-      const subItems = dataofProd?.lstMakeTypes;
-      // var revMyArr = [].concat(subItems).reverse();
-      var checkedObj = subItems.reduce((prev, curr) =>
-        prev.ImportoUnitario < curr.ImportoUnitario ? prev : curr,
-      );
-      console.log('min??? ', checkedObj);
-      setWantProduct(checkedObj);
-    }
-  };
+  // const handlebyDefaultValForMakeType = dataofProd => {
+  //   if (dataofProd?.lstMakeTypes?.length > 0) {
+  //     const subItems = dataofProd?.lstMakeTypes;
+  //     // var revMyArr = [].concat(subItems).reverse();
+  //     var checkedObj = subItems.reduce((prev, curr) =>
+  //       prev.ImportoUnitario < curr.ImportoUnitario ? prev : curr,
+  //     );
+  //     console.log('min??? ', checkedObj);
+  //     setWantProduct(checkedObj);
+  //   }
+  // };
 
   return (
     <Modal
@@ -281,12 +276,6 @@ const CartModel = props => {
                                         />
                                       )}
                                     </View>
-                                    {console.log(
-                                      item?.Id +
-                                      '\n' +
-                                      'Select' +
-                                      wantProduct?.Id,
-                                    )}
                                     <Icon
                                       name={
                                         item?.Id === wantProduct?.Id
@@ -498,6 +487,7 @@ const CartModel = props => {
         </View>
         {/* <AddCardModal isVisible={cartModel} close={closeModal} /> */}
       </View>
+
     </Modal>
   );
 };
