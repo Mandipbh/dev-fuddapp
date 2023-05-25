@@ -3,8 +3,8 @@ import axios from 'axios';
 
 
 
-const APP_API_URL = 'https://8fec-43-228-229-22.ngrok-free.app/api/';
-export const APP_BASE_URL = 'https://8fec-43-228-229-22.ngrok-free.app/';
+const APP_API_URL = 'https://f000-43-228-229-22.ngrok-free.app/api/';
+export const APP_BASE_URL = 'https://f000-43-228-229-22.ngrok-free.app/';
 axios.interceptors.request.use(config => config);
 
 const execute = async (

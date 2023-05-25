@@ -54,7 +54,6 @@ const RestaturantDetails = ({route, navigation}) => {
   const toast = useToast();
 
   const [cartItemCount, setCartCount] = useState(0);
-
   useEffect(() => {
     var cartCount = 0;
     setCartCount(cartCount);
@@ -258,29 +257,38 @@ const RestaturantDetails = ({route, navigation}) => {
     );
   };
   const handleModel = async item => {
+    console.log('item12', item);
     if (item !== null) {
       toast.show('Articolo aggiunto nel carrello.', toast, {duration: 300});
     }
 
     var lstAddOns = [];
-    item?.lstAddons?.map(addOn => {
+    await item?.lstAddons?.map(addOn => {
       lstAddOns.push(addOn);
     });
 
     var lstIngredient = [];
-    item?.lstIngredients?.map(ingredient => {
+    await item?.lstIngredients?.map(ingredient => {
       lstIngredient.push(ingredient);
     });
 
-    var makeTypeObj = item?.lstMakeTypes;
+    var menuIDList = [];
+    await item?.CompositionBodyTypeIds?.map(id => {
+      menuIDList.push(id.ID);
+    });
 
+    console.log('menuIDList', menuIDList);
+
+    var makeTypeObj = item?.lstMakeTypes;
 
     setCartModel(false);
     if (item !== null) {
       if (item !== undefined) {
         const tmpArr = cartData === undefined ? [] : [...cartData];
+        console.log('Itemmm288', item);
         // tmpArr.push(item);
 
+        console.log('tmpArr', tmpArr);
         dispatch(AddToCart(tmpArr));
 
         var matchingObj = await cartData.find(o => {
@@ -292,6 +300,7 @@ const RestaturantDetails = ({route, navigation}) => {
           );
         });
 
+        console.log('matchingObj', JSON.stringify(matchingObj, null, 4));
         // console.log('matchingObj', matchingObj);
         // if (matchingObj !== undefined) {
         // }
@@ -305,6 +314,7 @@ const RestaturantDetails = ({route, navigation}) => {
         } else {
           let itemQtyhandle = {...item};
           itemQtyhandle.Qty = 1;
+          itemQtyhandle.menuIdList = menuIDList;
           itemQtyhandle.restaurantId = resId;
           itemQtyhandle.MinimumOrder = details?.MinimumOrder;
           itemQtyhandle.MinOrderSupplment = details?.MinOrderSupplment;
@@ -326,6 +336,7 @@ const RestaturantDetails = ({route, navigation}) => {
         let itemQtyhandle = {...item};
         itemQtyhandle.Qty = 1;
         itemQtyhandle.restaurantId = resId;
+        itemQtyhandle.menuIdList = menuIDList;
         itemQtyhandle.MinimumOrder = details?.MinimumOrder;
         itemQtyhandle.MinOrderSupplment = details?.MinOrderSupplment;
         itemQtyhandle.Image = details?.Menu?.ProductsImagePrefix + item?.Image;
@@ -340,13 +351,12 @@ const RestaturantDetails = ({route, navigation}) => {
   const handleCartAddItem = async item => {
     const tmpArr = cartData === undefined ? [] : [...cartData];
     // tmpArr.push(item);
-
-
     dispatch(AddToCart(tmpArr));
     if (
       item?.lstIngredients?.length === 0 &&
       item?.lstAddons?.length === 0 &&
-      item?.lstAddons.length === 0
+      item?.lstAddons.length === 0 &&
+      item?.lstCompositions?.length === 0
     ) {
       var matchingObj = await cartData.find(o => o.Name === item.Name);
 
@@ -355,8 +365,10 @@ const RestaturantDetails = ({route, navigation}) => {
         toast.show('Quantità di prodotti aumentata', toast, {duration: 1000});
       } else {
         let itemQtyhandle = {...item};
+        console.log('Itemmm362', itemQtyhandle);
         itemQtyhandle.Qty = 1;
         itemQtyhandle.restaurantId = resId;
+        itemQtyhandle.menuIdList = [];
         itemQtyhandle.MinimumOrder = details?.MinimumOrder;
         itemQtyhandle.MinOrderSupplment = details?.MinOrderSupplment;
         itemQtyhandle.Image = details?.Menu?.ProductsImagePrefix + item?.Image;
@@ -378,6 +390,7 @@ const RestaturantDetails = ({route, navigation}) => {
       let itemQtyhandle = {...item};
       itemQtyhandle.Qty = 1;
       itemQtyhandle.restaurantId = resId;
+      itemQtyhandle.menuIdList = [];
       itemQtyhandle.MinimumOrder = details?.MinimumOrder;
       itemQtyhandle.MinOrderSupplment = details?.MinOrderSupplment;
       itemQtyhandle.Image = details?.Menu?.ProductsImagePrefix + item?.Image;

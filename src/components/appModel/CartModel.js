@@ -1,21 +1,27 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-undef */
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import { scale, theme } from '../../utils';
+import {scale, theme} from '../../utils';
 import Modal from 'react-native-modal';
-import { Label, Title } from '../Label';
+import {Label, Title} from '../Label';
 import Button from '../Button';
-import { useState } from 'react';
+import {useState} from 'react';
 import AddCardModal from './AddCardModal';
-import { useEffect } from 'react';
-import { BlurView } from '@react-native-community/blur';
-import { AddToCart } from '../../redux/Actions/CartAction';
-import { acc } from 'react-native-reanimated';
+import {useEffect} from 'react';
+import {BlurView} from '@react-native-community/blur';
+import {AddToCart} from '../../redux/Actions/CartAction';
+import {acc} from 'react-native-reanimated';
 
 const CartModel = props => {
-  const { isVisible, close, data } = props;
+  const {isVisible, close, data} = props;
   const [cartModel, setCartModel] = useState(false);
   const [productDetails, setProductDetails] = useState([]);
   const [totalPrice, setPrice] = useState(0);
@@ -24,9 +30,14 @@ const CartModel = props => {
   const [checkbox, setCheckBox] = useState(0);
   const [count, setCount] = useState(0);
   let [addonData, setAddonData] = useState([]);
+  let [menu, setMenu] = useState([]);
   const [pTotal, setPTotal] = useState(0);
   const [show, setShow] = useState(false);
   const [selIndex, setIdx] = useState(0);
+  const [CompisitionBodyTypes, setCompisitionBodyTypes] = useState([]);
+  const [comIndex, setComIndex] = useState(null);
+  const [menuList, setMenuList] = useState(null);
+
   const tmpDataForCircle = wantProduct?.ImportoUnitario;
   // const popItem = ({ item }) => {
   //   rIds.includes(item?.IDRiga) ? setCheckBox(!checkbox) : null
@@ -47,20 +58,21 @@ const CartModel = props => {
   useEffect(() => {
     setPrice(data?.Amount);
     setProductDetails(data);
-
+    setCompisitionBodyTypes(data?.lstCompositions);
     //handle Default set value to Radio Button
 
+    console.log('addons', data?.lstAddons);
     data?.lstAddons?.length > 0 && setAddonData(data?.lstAddons);
     // data?.lstAddons?.length === 0 && setAddonData([]);
     calculatePrice();
-  }, [data, wantProduct, addonData]);
+    console.log('clecked skdhks');
+  }, [data, wantProduct, addonData, menu]);
 
   // useEffect(() => {
   //   handlebyDefaultValForMakeType(productDetails);
   // }, [productDetails]);
-
   const handleAggiungi = async () => {
-    if (wantProduct !== null && wantProduct !== undefined) {
+    if (productDetails?.lstMakeTypes.length === 0) {
       const add1 = addonData.filter(x => x.Qty > 0);
       const add2 = productDetails.lstIngredients.filter(
         x => x.IsChecked === true,
@@ -72,12 +84,32 @@ const CartModel = props => {
         lstIngredients: add2,
         lstMakeTypes: add3,
         Amount: data?.Amount + pTotal,
+        CompositionBodyTypeIds: menu,
       };
       //   setProductDetails(productDetails);
       clearify();
       close(ProductData);
     } else {
-      alert('Seleziona almeno un tipo di marca.');
+      if (wantProduct !== null && wantProduct !== undefined) {
+        const add1 = addonData.filter(x => x.Qty > 0);
+        const add2 = productDetails.lstIngredients.filter(
+          x => x.IsChecked === true,
+        );
+        const add3 = wantProduct;
+        const ProductData = {
+          ...productDetails,
+          lstAddons: add1,
+          lstIngredients: add2,
+          lstMakeTypes: add3,
+          Amount: data?.Amount + pTotal,
+          menuIds: menu,
+        };
+        //   setProductDetails(productDetails);
+        clearify();
+        close(ProductData);
+      } else {
+        alert('Seleziona almeno un tipo di marca.');
+      }
     }
   };
 
@@ -126,6 +158,7 @@ const CartModel = props => {
     setProductDetails([]);
     setWantProduct(null);
     setCartModel(false);
+    setMenu([]);
     close(null);
   };
 
@@ -139,21 +172,28 @@ const CartModel = props => {
 
   const calculatePrice = () => {
     const tmparr = [...addonData];
+    console.log('Arra', tmparr);
     const initialValue = 0;
     const total = tmparr.reduce(
       (accumulator, current) => accumulator + current.Prezzo * current.Qty,
       initialValue,
     );
-    // let total = tmparr[idx]
 
-    const totalValue = total + tmpDataForCircle || total;
+    const menuCalculation =
+      menu.length !== 0 &&
+      menu.map(item => item.Prezzo).reduce((prev, next) => prev + next);
+
+    console.log('menuCalculation', menuCalculation);
+
+    // let total = tmparr[idx]
+    const totalValue = total + tmpDataForCircle || total + menuCalculation;
     setPTotal(totalValue);
   };
 
   const handleIngredienti = (item, index) => {
     const lstIngredients = [...productDetails.lstIngredients];
     if (lstIngredients[index]?.IsChecked) {
-      lstIngredients[index].IsChecked = false; // lstIngredients[index]?.IsChecked = false
+      lstIngredients[index].IsChecked = false;
     } else {
       lstIngredients[index].IsChecked = true;
     }
@@ -165,8 +205,27 @@ const CartModel = props => {
     setProductDetails(tmpdata);
   };
 
+  const handleAddMenu = menuData => {
+    const index = menu.findIndex(item => item.ID === menuData.ID);
+
+    console.log('202', menuData);
+    console.log('pTotal', pTotal);
+    const newArray = [...menu];
+    if (index !== -1) {
+      newArray.splice(index, 1);
+      setPTotal(pTotal - Number(menuData.Prezzo));
+    } else {
+      newArray.push(menuData);
+      setPTotal(pTotal + Number(menuData.Prezzo));
+    }
+    console.log('Prezzo', typeof menuData.Prezzo);
+    setMenu(newArray);
+  };
+  const isexist = checkItem => {
+    return menu.findIndex(item => item.ID === checkItem.ID);
+  };
   useEffect(() => {
-    productDetails?.lstMakeTypes?.length > 0 && setIdx(2);
+    setIdx(2);
   }, [isVisible]);
 
   // const handlebyDefaultValForMakeType = dataofProd => {
@@ -180,7 +239,6 @@ const CartModel = props => {
   //     setWantProduct(checkedObj);
   //   }
   // };
-
   return (
     <Modal
       style={styles.Maincontainer}
@@ -231,7 +289,7 @@ const CartModel = props => {
 
           <View style={styles.itemContainer}>
             <ScrollView
-              contentContainerStyle={{ paddingBottom: theme.SCREENHEIGHT * 0.1 }}
+              contentContainerStyle={{paddingBottom: theme.SCREENHEIGHT * 0.1}}
               showsVerticalScrollIndicator={false}
               nestedScrollEnabled>
               {productDetails?.lstMakeTypes?.length > 0 && (
@@ -373,7 +431,7 @@ const CartModel = props => {
                                       </TouchableOpacity>
                                       <Label
                                         title={item?.Qty}
-                                        style={{ marginHorizontal: scale(8) }}
+                                        style={{marginHorizontal: scale(8)}}
                                       />
 
                                       <TouchableOpacity
@@ -469,6 +527,71 @@ const CartModel = props => {
                   )}
                 </>
               )}
+              {CompisitionBodyTypes !== undefined &&
+                CompisitionBodyTypes?.length > 0 &&
+                CompisitionBodyTypes?.map((item, index) => {
+                  return (
+                    <>
+                      <TouchableOpacity
+                        style={styles.categoryTitle}
+                        onPress={() => {
+                          index === comIndex
+                            ? setComIndex(null)
+                            : setComIndex(index);
+                        }}
+                        key={index.toString()}>
+                        <Title title={`${item?.Header} (${item?.Max})`} />
+                        <Icon
+                          name={
+                            index === comIndex ? 'chevron-up' : 'chevron-down'
+                          }
+                          size={scale(22)}
+                          color={theme.colors.gray}
+                        />
+                      </TouchableOpacity>
+                      <ScrollView>
+                        {item?.CompisitionBodyTypes !== undefined &&
+                          comIndex === index &&
+                          item?.CompisitionBodyTypes.map((menu, i) => {
+                            return (
+                              <View style={styles.itemView} key={index}>
+                                <View>
+                                  <Label
+                                    title={menu?.Descrizione}
+                                    style={styles.name}
+                                  />
+                                  {menu?.Prezzo !== 0 && (
+                                    <Label
+                                      title={`${menu?.Prezzo?.toFixed(2)}€`}
+                                      style={styles.itemprice}
+                                    />
+                                  )}
+                                </View>
+                                <TouchableOpacity
+                                  onPress={() => {
+                                    handleAddMenu(menu, i);
+                                  }}>
+                                  {isexist(menu) !== -1 ? (
+                                    <Icon
+                                      name="check-square"
+                                      size={scale(20)}
+                                      color={theme.colors.primary}
+                                    />
+                                  ) : (
+                                    <Icon
+                                      name="square"
+                                      size={scale(20)}
+                                      color={theme.colors.primary}
+                                    />
+                                  )}
+                                </TouchableOpacity>
+                              </View>
+                            );
+                          })}
+                      </ScrollView>
+                    </>
+                  );
+                })}
             </ScrollView>
           </View>
         </View>
@@ -487,7 +610,6 @@ const CartModel = props => {
         </View>
         {/* <AddCardModal isVisible={cartModel} close={closeModal} /> */}
       </View>
-
     </Modal>
   );
 };
